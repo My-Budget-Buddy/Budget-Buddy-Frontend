@@ -13,8 +13,21 @@
 
 1. **Feature Development**
    - Create a new branch from `dev` for your feature. You can name the branch based on the feature or include your name to indicate ownership. For example:
-     - Naming by feature: `git checkout -b feature/new-feature dev`
-     - Naming by owner and feature: `git checkout -b eric-feature dev`
+     - Naming by feature:
+       
+       `git checkout -b feature/new-feature`
+       
+       OR
+       
+       `git checkout -b feature/new-feature dev` (specifying base branch)
+       
+     - Naming by owner and feature:
+
+       `git checkout -b eric-feature`
+
+       OR
+
+         `git checkout -b eric-feature dev` (specifying base branch)
    - Work on your feature branch and commit changes:
      
      `git add . (for all files)`
