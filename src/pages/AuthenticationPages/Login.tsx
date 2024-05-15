@@ -20,6 +20,15 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const fields = {
+      // @ts-expect-error untyped form elements
+      email: e.currentTarget.elements.email.value,
+      // @ts-expect-error untyped form elements
+      password: e.currentTarget.elements.password.value,
+    };
+
+    console.log(fields);
+
     return;
   };
 
@@ -63,6 +72,7 @@ const Login: React.FC = () => {
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
                     />
                     <button
                       type="button"

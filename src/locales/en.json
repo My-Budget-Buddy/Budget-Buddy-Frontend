@@ -7,7 +7,11 @@
       "password": "Password",
       "hide": "Hide Password",
       "show": "Show Password",
-      "google": "Sign in with Google"
+      "google": "Sign in with Google",
+      "register": "Create Account",
+      "register-desc": "Create an account to begin tracking your finances",
+      "new-password": "Create Password",
+      "confirm-password": "Confirm Password"
     }
   }
 }
