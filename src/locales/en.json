@@ -1,7 +1,13 @@
 {
   "translation": {
     "auth": {
-      "login": "Log in"
+      "login": "Log in",
+      "login-desc": "Access your account and view your dashboard.",
+      "email": "Email Address",
+      "password": "Password",
+      "hide": "Hide Password",
+      "show": "Show Password",
+      "google": "Sign in with Google"
     }
   }
 }

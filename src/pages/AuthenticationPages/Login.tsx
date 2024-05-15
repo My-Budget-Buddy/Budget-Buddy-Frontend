@@ -78,9 +78,9 @@ const Login: React.FC = () => {
                   </Fieldset>
                 </Form>
 
-                <div className="border-top border-base-lighter margin-top-6 padding-top-1">
+                <div className="border-top border-base-lighter margin-top-4 padding-top-4">
                   <Button type="button" outline className="width-full">
-                    Sign in with Google
+                    {t("auth.google")}
                   </Button>
                 </div>
               </div>

@@ -1,7 +1,13 @@
 {
   "translation": {
     "auth": {
-      "login": "Iniciar sesión"
+      "login": "Iniciar sesión",
+      "login-desc": "Accede a tu cuenta y consulta el panel de control.",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "hide": "Ocultar Contraseña",
+      "show": "Mostrar Contraseña",
+      "google": "Iniciar sesión con Google"
     }
   }
 }
