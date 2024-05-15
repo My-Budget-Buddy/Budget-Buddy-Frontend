@@ -23,44 +23,67 @@ const Dashboard: React.FC = () => {
                     <div id="accounts-container" className="flex-auto w-1/3">
                         <h1>Accounts</h1>
                         <Accordion bordered={false} items={
-                            [
-                                {
-                                    title: "Checking",
-                                    content: (<p>test</p>),
-                                    expanded: false,
-                                    id: "Checking",
-                                    headingLevel: "h4",
-                                }
-                                ,
-                                {
-                                    title: "Credit Cards",
-                                    content: (<p>test</p>),
-                                    expanded: false,
-                                    id: "credit-cards",
-                                    headingLevel: "h4",
-                                },
-                                {
-                                    title: "Net Cash",
-                                    content: (<p>test</p>),
-                                    expanded: false,
-                                    id: "net-cash",
-                                    headingLevel: "h4",
-                                },
-                                {
-                                    title: "Savings",
-                                    content: (<p>test</p>),
-                                    expanded: false,
-                                    id: "savings",
-                                    headingLevel: "h4",
-                                },
-                                {
-                                    title: "Investments",
-                                    content: (<p>test</p>),
-                                    expanded: false,
-                                    id: "investments",
-                                    headingLevel: "h4",
-                                },
-                            ]
+                            [{
+                                title: (
+                                    <div className="flex justify-between">
+                                        <p><Icon.AccountBalance/> Checking</p>
+                                        <p><Icon.AttachMoney/>[money]</p>
+                                    </div>
+                                ),
+                                content: (<p>test</p>),
+                                expanded: false,
+                                id: "Checking",
+                                headingLevel: "h4",
+                            }
+                            ,
+                            {
+                                title: (
+                                    <div className="flex justify-between">
+                                        <p><Icon.CreditCard/> Credit Cards</p>
+                                        <p><Icon.AttachMoney/>[money]</p>
+                                    </div>
+                                ),
+                                content: (<p>test</p>),
+                                expanded: false,
+                                id: "credit-cards",
+                                headingLevel: "h4",
+                            },
+                            {
+                                title: (
+                                    <div className="flex justify-between">
+                                        <p><Icon.AccountBalance/> Net Cash</p>
+                                        <p><Icon.AttachMoney/>[money]</p>
+                                    </div>
+                                ),
+                                content: (<p>test</p>),
+                                expanded: false,
+                                id: "net-cash",
+                                headingLevel: "h4",
+                            },
+                            {
+                                title: (
+                                    <div className="flex justify-between">
+                                        <p><Icon.AccountBalance/> Savings</p>
+                                        <p><Icon.AttachMoney/>[money]</p>
+                                    </div>
+                                ),
+                                content: (<p>test</p>),
+                                expanded: false,
+                                id: "savings",
+                                headingLevel: "h4",
+                            },
+                            {
+                                title: (
+                                    <div className="flex justify-between">
+                                        <p><Icon.AccountBalance/> investments</p>
+                                        <p><Icon.AttachMoney/>[money]</p>
+                                    </div>
+                                ),
+                                content: (<p>test</p>),
+                                expanded: false,
+                                id: "investments",
+                                headingLevel: "h4",
+                            }]
                         } />
                     </div>
                 </div>
@@ -111,15 +134,33 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div id="budgets-container">
                     <h1>Budgets</h1>
-                    <div className="flex">
-                        <Gauge width={100} height={100} value={60} />
-                        <p>[Budget namet]</p>
-                        <p>
-                            <Icon.AttachMoney />
-                            [Amount spent so far]
-                        </p>
+                    <div className="flex items-center">
+                        <Gauge width={150} height={150} value={60} />
+                        <div className="w-3/5 flex flex-col items-center">
+                            <div id="budget-items" className="grid-row flex-justify">
+                                <p>[Budget namet]</p>
+                                <p>
+                                    <Icon.AttachMoney />
+                                    [Amount spent so far]
+                                </p>
+                            </div>
+                            <div id="budget-items" className="grid-row flex-justify">
+                                <p>[Budget namet]</p>
+                                <p>
+                                    <Icon.AttachMoney />
+                                    [Amount spent so far]
+                                </p>
+                            </div>
+                            <div id="budget-items" className="grid-row flex-justify">
+                                <p>[Budget namet]</p>
+                                <p>
+                                    <Icon.AttachMoney />
+                                    [Amount spent so far]
+                                </p>
+                            </div>
+                            <Button className="dashboard-btn" type="submit" onClick={()=> {}}>View Full Budget</Button>
+                        </div>
                     </div>
-                    <Button type="submit" onClick={()=> {}}>View Full Budget</Button>
                 </div>
             </div>
         </div>
