@@ -31,7 +31,7 @@ function App() {
             {/*Private Routes*/}
             <Route path={"/dashboard"} element={<AppLayout/>}>
                 <Route index element={<Dashboard/>}/>
-                <Route path={"profile"} element={<Accounts/>}/>
+                <Route path={"accounts"} element={<Accounts/>}/>
                 <Route path={"budgets"} element={<Budgets/>}/>
                 <Route path={"spending"} element={<Spending/>}/>
 
@@ -39,7 +39,6 @@ function App() {
                 <Route path={"transactions/:id"} element={<TransactionHistory/>}/>
 
                 <Route path={"tax"} element={<Tax/>}/>
-
             </Route>
         </Routes>
     </div>

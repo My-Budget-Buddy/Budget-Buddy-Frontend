@@ -1,66 +1,30 @@
-# Budget-Buddy-Frontend
+# React + TypeScript + Vite
 
-### `main`
-- The `main` branch is the stable branch used for deployment.
-- All changes must be merged into `main` through pull requests.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### `dev`
-- The `dev` branch is used for development.
-- All changes must be merged into `dev` through pull requests.
-- Features are merged into the `dev` branch for possible integration and testing.
+Currently, two official plugins are available:
 
-## Workflow
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-1. **Feature Development**
-   - Create a new branch from `dev` for your feature. You can name the branch based on the feature or include your name to indicate ownership. For example:
-     - Naming by feature:
-       
-       `git checkout -b feature/new-feature`
-       
-       OR
-       
-       `git checkout -b feature/new-feature dev` (specifying base branch)
-       
-     - Naming by owner and feature:
+## Expanding the ESLint configuration
 
-       `git checkout -b eric-feature`
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-       OR
+- Configure the top-level `parserOptions` property like this:
 
-         `git checkout -b eric-feature dev` (specifying base branch)
-   - Work on your feature branch and commit changes:
-     
-     `git add . (for all files)`
-     
-      `git add xxx.jsx (for xxx.jsx only)`
-   
-      `git commit -m “”`
-   
-   - Push your feature branch to GitHub:
-     
-     `git push -u origin feature/new-feature`
-     
-     OR
-     
-     `git push -u origin eric-feature`
+```js
+export default {
+  // other rules...
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+  },
+}
+```
 
-3. **Merging Features**
-   - Create a pull request from your feature branch into `dev` on Github.
-   - Once reviewed and approved, merge the pull request into `dev`:
-
-    Reviewer can review a branch locally:
-   
-     **Fetch the Latest Changes**
-   
-   `git fetch origin`
-   
-    `git checkout eric-feature`
-   
-5. **Updating `dev` Branch**
-   - Checkout the `dev` branch:
-
-     `git checkout dev`
-     
-   - Pull (pull is fetches and merges in one commend) the latest changes from `origin dev` to ensure your local `dev` branch is up-to-date:
-     
-      `git pull origin dev`
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
