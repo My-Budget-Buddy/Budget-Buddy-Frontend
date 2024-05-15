@@ -11,7 +11,9 @@
       "register": "Create Account",
       "register-desc": "Create an account to begin tracking your finances",
       "new-password": "Create Password",
-      "confirm-password": "Confirm Password"
+      "confirm-password": "Confirm Password",
+      "to-register": "Don't have an account?",
+      "to-login": "Already have an account?"
     }
   }
 }

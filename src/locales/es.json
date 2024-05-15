@@ -11,7 +11,9 @@
       "register": "Crear cuenta",
       "register-desc": "Crea una cuenta para empezar a gestionar tus finanzas",
       "new-password": "Crear contraseña",
-      "confirm-password": "Confirmar contraseña"
+      "confirm-password": "Confirmar contraseña",
+      "to-register": "¿No tienes una cuenta?",
+      "to-login": "¿Ya tienes una cuenta?"
     }
   }
 }

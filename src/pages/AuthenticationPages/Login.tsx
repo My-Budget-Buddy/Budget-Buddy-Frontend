@@ -8,6 +8,7 @@ import {
   TextInput,
   GridContainer,
 } from "@trussworks/react-uswds";
+import { Link } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -54,7 +55,7 @@ const Login: React.FC = () => {
           {/* Main Form Content */}
           <Grid row className="flex-justify-center">
             <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
-              <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest">
+              <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
                 <h1 className="margin-bottom-0">{t("auth.login")}</h1>
                 <Form onSubmit={handleSubmit}>
                   <Fieldset legend={t("auth.login-desc")} legendStyle="default">
@@ -94,6 +95,13 @@ const Login: React.FC = () => {
                   </Button>
                 </div>
               </div>
+
+              <p className="text-center">
+                {t("auth.to-register")}{" "}
+                <Link to="/register" className="usa-link">
+                  {t("auth.register")}
+                </Link>
+              </p>
             </Grid>
           </Grid>
         </GridContainer>
