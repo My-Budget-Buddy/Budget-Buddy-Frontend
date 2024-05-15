@@ -1,10 +1,15 @@
+import { Grid, GridContainer } from '@trussworks/react-uswds';
+
 const Transactions: React.FC = () => {
     return (
-        <section>
-            <h1>Transactions</h1>
-            <p>Welcome to the TransactionsPage!</p>
-        </section>
-    )
+        <>
+            <GridContainer>
+                <Grid row>
+
+                </Grid>
+            </GridContainer>
+        </>
+    );
 }
 
 export default Transactions;
