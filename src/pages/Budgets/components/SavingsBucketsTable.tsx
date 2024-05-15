@@ -1,7 +1,8 @@
-import { Button, Table } from "@trussworks/react-uswds";
+import {  Table } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import SavingsBucketRow from "./SavingsBucketRow";
 import { SavingsBucketRowProps } from "../../../util/interfaces/interfaces";
+import NewBucketModal from "./NewBucketModal";
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
@@ -18,18 +19,23 @@ function SavingsBucketTable() {
     function refreshSavingsBuckets() {
         //GET request to bucket endpoint
         // .then -> setListOfBuckets(response)
-        setListOfBuckets([{data: { name: "name", amount: 5, category: "misc" }},{data: { name: "name2", amount: 55, category: "misc" }}]);
+        setListOfBuckets([
+            {data: { name: "name", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false, category: "misc" }}, 
+            {data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false, category: "misc" }}
+        ]);
     }
     
     return (
         <>
-            <Table>
+            <div>Buckets Table</div>
 
+            <Table>
                 <thead>
-                <p>Buckets Table</p>
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">amount</th>
+                        <th scope="col">required</th>
+                        <th scope="col">reserved</th>
+                        <th scope="col"> --- </th>
                         <th scope="col">category</th>
                     </tr>
                 </thead>
@@ -40,7 +46,10 @@ function SavingsBucketTable() {
                 </tbody>
             </Table>
 
-            <Button onClick={sendNewBucket} type={"button"}>Add new savings bucket</Button>
+            <NewBucketModal action={sendNewBucket}>
+                Add new savings bucket
+            </NewBucketModal>
+
         </>
     );
 }

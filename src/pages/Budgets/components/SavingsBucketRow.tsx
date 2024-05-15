@@ -6,7 +6,9 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
       <tr>
         {/* Render your component using the data */}
         <td>{data.name}</td>
-        <td>{data.amount}</td>
+        <td>{data.amount_required}</td>
+        <td>{data.amount_reserved}</td>
+        <td>{data.is_currently_reserved}</td>
         <td>{data.category}</td>
       </tr>
     );
