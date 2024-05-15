@@ -1,4 +1,13 @@
-import { SavingsBucketRowProps } from "../../../util/interfaces/interfaces";
+interface SavingsBucketRowProps {
+    data: {
+      name: string;
+      amount_required: number;
+      amount_reserved: number;
+      is_currently_reserved: boolean;
+      category: string;
+      // Add more fields as needed
+    };
+  }
 
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     // Your component logic here

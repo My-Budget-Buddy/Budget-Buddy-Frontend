@@ -1,8 +1,18 @@
 import {  Table } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import SavingsBucketRow from "./SavingsBucketRow";
-import { SavingsBucketRowProps } from "../../../util/interfaces/interfaces";
 import NewBucketModal from "./NewBucketModal";
+
+interface SavingsBucketRowProps {
+    data: {
+      name: string;
+      amount_required: number;
+      amount_reserved: number;
+      is_currently_reserved: boolean;
+      category: string;
+      // Add more fields as needed
+    };
+  }
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);

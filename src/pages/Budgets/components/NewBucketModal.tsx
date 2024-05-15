@@ -1,6 +1,6 @@
 import { ButtonGroup, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
 import React, { useRef, useState } from 'react';
-import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
+// import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
 import CategoryPicker from './CategoryPicker';
 
 interface NewBucketModalProps {
@@ -8,14 +8,23 @@ interface NewBucketModalProps {
   children: React.ReactNode;
 }
 
-const NewBucketModal: React.FC<NewBucketModalProps> = ({ action, children }) => {
-    const [formData, setFormData] = useState<SavingsBucketRowProps>( {data:{
+interface SavingsBucketRowPropsAlt {
+      name: string;
+      amount_required: number;
+      amount_reserved: number;
+      is_currently_reserved: boolean;
+      category: string;
+      // Add more fields as needed
+  }
+
+const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
+    const [formData, setFormData] = useState<SavingsBucketRowPropsAlt>( {
         name: "name", 
         amount_required: 1000, 
         amount_reserved: 5, 
         is_currently_reserved: false, 
         category: "misc" 
-      }});
+      });
     
     const modalRef = useRef<ModalRef>(null);
 
@@ -30,19 +39,19 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ action, children }) => 
       };
 
     const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    // TODO
+    const { value } = e.target;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any 
     setFormData((prevState: any) => ({
         ...prevState,
-        [name]: value
-    }));
+        ["category"]: value
+      }));
+    
     };
     
       const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        console.log(action)
+        console.log(formData)
         //TODO Post to endpoint with data
 
       };
@@ -60,9 +69,9 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ action, children }) => 
             Add new savings bucket
           </ModalHeading>
             <div>
-                <TextInput  type="text" name="name" value={formData.data.name} onChange={handleChangeInput} placeholder="Name" id={''} />
-                <TextInput  type="number" name="amount" value={formData.data.amount_required} onChange={handleChangeInput} placeholder="Amount" id={''} />
-                <CategoryPicker value={formData.data.category} onChange={handleChangeSelect}/> 
+                <TextInput  type="text" name="name" value={formData.name} onChange={handleChangeInput} placeholder="Name" id={''} />
+                <TextInput  type="number" name="amount" value={formData.amount_required} onChange={handleChangeInput} placeholder="Amount" id={''} />
+                <CategoryPicker value={formData.category} onChange={handleChangeSelect}/> 
             </div>
             
           <ModalFooter>
