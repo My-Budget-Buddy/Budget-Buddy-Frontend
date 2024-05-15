@@ -1,9 +1,55 @@
-import { Card, CardBody, CardGroup, CardHeader, Table, Title } from "@trussworks/react-uswds";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button, Card, CardBody, CardGroup, CardHeader, Table, Title } from "@trussworks/react-uswds";
 
-const TransactionHistory: React.FC = () => {
-    const Name: string = "temp";
-    const total: number = 1000.00;
-    const transactions: number = 2;
+
+
+
+function TransactionHistory() {
+    const Name: string = "Hot dogs";
+    const transactions: any = [
+        {
+            "id": 10,
+            "Date": "10/11/2023",
+            "Name": "Hot dog breakfast",
+            "Category": "Food",
+            "Amount": "2.33"
+        },
+        {
+            "id": 11,
+            "Date": "10/11/2023",
+            "Name": "Hot dog wating for train",
+            "Category": "Food",
+            "Amount": "4.66"
+        },
+        {
+            "id": 12,
+            "Date": "10/11/2023",
+            "Name": "Hot dog at lunch",
+            "Category": "Food",
+            "Amount": "9.33"
+        },
+        {
+            "id": 13,
+            "Date": "10/12/2023",
+            "Name": "Hot dog breakfast",
+            "Category": "Food",
+            "Amount": "2.33"
+        },
+        {
+            "id": 14,
+            "Date": "10/12/2023",
+            "Name": "Hot dog wating for train",
+            "Category": "Food",
+            "Amount": "4.66"
+        },
+        {
+            "id": 15,
+            "Date": "10/12/2023",
+            "Name": "Hot dog at lunch",
+            "Category": "Food",
+            "Amount": "9.33"
+        }
+    ]
     return (
         <>
             <div className="px-5">
@@ -15,27 +61,35 @@ const TransactionHistory: React.FC = () => {
                         </CardHeader>
                         <CardBody>
                             <Table bordered={false} fullWidth={true}>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Actions</th>
-                                    <th>Amount</th>
-                                </tr>
-                                <tr>
-                                    <td>
-
-                                    </td>
-                                </tr>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {transactions.map((transaction: any) => (
+                                        <tr key={transaction.id}>
+                                            <td>{transaction.Date}</td>
+                                            <td>{transaction.Name}</td>
+                                            <td>{transaction.Category}</td>
+                                            <td><Button type={"button"}>Note</Button><Button type={"button"}>Del</Button></td>
+                                            <td>{transaction.Amount}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                             </Table>
                         </CardBody>
                     </Card>
                     <Card gridLayout={{ col: 4 }}>
                         <CardHeader>Summary</CardHeader>
                         <CardBody>
-                            Total spent: {total}
+                            Total spent: {transactions.reduce((sum: any, cur: any) => sum + Number(cur.Amount), 0.0)}
                             <hr />
-                            Total transactions: {transactions}
+                            Total transactions: {transactions.length}
                         </CardBody>
                     </Card>
                 </CardGroup>
