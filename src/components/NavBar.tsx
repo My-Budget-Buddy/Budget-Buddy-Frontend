@@ -49,6 +49,7 @@ const NavBar = () => {
           <Link
             to={pages.path}
             className="w-full usa-button min-w-full text-left items-center"
+            key={pages.path}
           >
             <pages.icon className="mr-3" /> {pages.title}
           </Link>
