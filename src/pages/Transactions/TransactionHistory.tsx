@@ -18,7 +18,7 @@ function TransactionHistory() {
     const transactionsInit: Transaction[] = [
         {
             "id": 10,
-            "Date": "10/11/2023",
+            "Date": "2023-10-11",
             "Name": "Hot dog breakfast",
             "Category": "Food",
             "Amount": 2.33,
@@ -27,7 +27,7 @@ function TransactionHistory() {
         },
         {
             "id": 11,
-            "Date": "10/11/2023",
+            "Date": "2023-10-11",
             "Name": "Hot dog wating for train",
             "Category": "Food",
             "Amount": 4.66,
@@ -36,7 +36,7 @@ function TransactionHistory() {
         },
         {
             "id": 12,
-            "Date": "10/11/2023",
+            "Date": "2023-10-11",
             "Name": "Hot dog at lunch",
             "Category": "Food",
             "Amount": 9.33,
@@ -45,7 +45,7 @@ function TransactionHistory() {
         },
         {
             "id": 13,
-            "Date": "10/12/2023",
+            "Date": "2023-10-12",
             "Name": "Hot dog breakfast",
             "Category": "Food",
             "Amount": 2.33,
@@ -54,7 +54,7 @@ function TransactionHistory() {
         },
         {
             "id": 14,
-            "Date": "10/12/2023",
+            "Date": "2023-10-12",
             "Name": "Hot dog wating for train",
             "Category": "Food",
             "Amount": 4.66,
@@ -63,7 +63,7 @@ function TransactionHistory() {
         },
         {
             "id": 15,
-            "Date": "10/12/2023",
+            "Date": "2023-10-12",
             "Name": "Hot dog at lunch",
             "Category": "Food",
             "Amount": 9.33,
@@ -84,14 +84,14 @@ function TransactionHistory() {
         "***3231"
     ]
     const [transactions, setTransactions] = useState<any | null>(transactionsInit);
-    const [currentTransaction, setCurrentTranscation] = useState<Transaction>(transactions[0]);
+    const [currentTransaction, setCurrentTransacation] = useState<Transaction>(transactions[0]);
     const modalRef = useRef<ModalRef>(null);
 
     return (
         <>
             <Modal ref={modalRef} id="note-modal" isLarge>
                 <div className="grid grid-cols-6 gap-5">
-                    <DatePicker id={""} name={"Date"} className="col-span-3" value={currentTransaction.Date} />
+                    <DatePicker id={""} name={"Date"} className="col-span-3" defaultValue={currentTransaction.Date} />
                     <div className="col-span-3" />
                     <hr className="col-span-6" />
                     <div className="col-span-4">
@@ -161,7 +161,7 @@ function TransactionHistory() {
                                                     <td>{transaction.Date}</td>
                                                     <td>{transaction.Name}</td>
                                                     <td>{transaction.Category}</td>
-                                                    <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
+                                                    <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => setCurrentTransacation(transaction)}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
                                                     <td>{transaction.Amount}</td>
                                                 </tr>
                                             </>
