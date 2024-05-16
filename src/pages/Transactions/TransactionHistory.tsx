@@ -148,7 +148,6 @@ function TransactionHistory() {
         const { name, value } = event.target;
         setTransactions((transactions.map((transaction, index) => {
             if (index === current) {
-                console.log({ ...transaction, [name]: value })
                 return {
                     ...transaction,
                     [name]: value
@@ -162,7 +161,7 @@ function TransactionHistory() {
 
     useEffect(() => {
         setCurrentTransacation(transactions[current]);
-    }, [transactions]);
+    }, [transactions, current]);
 
     return (
         <>
@@ -239,7 +238,7 @@ function TransactionHistory() {
                                             <td>{transaction.Date}</td>
                                             <td>{transaction.Name}</td>
                                             <td>{transaction.Category}</td>
-                                            <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index); setCurrentTransacation(transaction); }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
+                                            <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index) }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
                                             <td>{transaction.Amount}</td>
                                         </tr>
                                     ))}
