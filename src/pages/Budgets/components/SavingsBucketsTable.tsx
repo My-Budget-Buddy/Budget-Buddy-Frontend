@@ -31,7 +31,7 @@ function SavingsBucketTable() {
         // .then -> setListOfBuckets(response)
         setListOfBuckets([
             {data: { name: "name", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false, category: "misc" }}, 
-            {data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false, category: "misc" }}
+            {data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: true, category: "misc" }}
         ]);
     }
     
@@ -45,8 +45,8 @@ function SavingsBucketTable() {
                         <th scope="col">Name</th>
                         <th scope="col">required</th>
                         <th scope="col">reserved</th>
-                        <th scope="col"> --- </th>
-                        <th scope="col">category</th>
+                        <th scope="col"> </th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
