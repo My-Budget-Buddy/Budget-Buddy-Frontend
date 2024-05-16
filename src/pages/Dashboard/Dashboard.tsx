@@ -1,7 +1,10 @@
 import { LineChart, Gauge } from "@mui/x-charts";
-import { Accordion, Table, Icon, Button } from "@trussworks/react-uswds";
+import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalHeading, ModalFooter, ModalRef } from "@trussworks/react-uswds";
+import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
+    const modalRef = useRef<ModalRef>(null)
 
     return (
         <div className="flex flex-col flex-wrap content-center">
@@ -125,12 +128,36 @@ const Dashboard: React.FC = () => {
                                     test
                                 </td>
                                 <td >
-                                    <Icon.NavigateNext />
+                                    <ModalToggleButton modalRef={modalRef} opener>
+                                        <Icon.NavigateNext />
+                                    </ModalToggleButton>
+                                    <Modal ref={modalRef} id="example-modal-1" aria-labelledby="modal-1-heading" aria-describedby="modal-1-description">
+                                        <ModalHeading id="modal-1-heading">
+                                            [Name]
+                                        </ModalHeading>
+                                        <div className="usa-prose">
+                                            <p id="modal-1-description">
+                                            [account]
+                                            [date]
+                                            </p>
+                                            <p id="modal-1-description">
+                                            [category]
+                                            [amount]
+                                            </p>
+                                        </div>
+                                        <ModalFooter>
+                                            <ModalToggleButton modalRef={modalRef} closer>
+                                                Go Back
+                                            </ModalToggleButton>
+                                        </ModalFooter>
+                                    </Modal>
                                 </td>
                             </tr>
                         </tbody>
                     </Table>
-                    <Button type="submit" onClick={()=> {}}>View All Transactions</Button>
+                    <Link to="/dashboard/transactions" className="text-center">
+                        <Button type="submit" >View All Transactions</Button>
+                    </Link>
                 </div>
                 <div id="budgets-container">
                     <h1>Budgets</h1>
@@ -138,27 +165,29 @@ const Dashboard: React.FC = () => {
                         <Gauge width={150} height={150} value={60} />
                         <div className="w-3/5 flex flex-col items-center">
                             <div id="budget-items" className="grid-row flex-justify">
-                                <p>[Budget namet]</p>
+                                <p>[Budget name]</p>
                                 <p>
                                     <Icon.AttachMoney />
                                     [Amount spent so far]
                                 </p>
                             </div>
                             <div id="budget-items" className="grid-row flex-justify">
-                                <p>[Budget namet]</p>
+                                <p>[Budget name]</p>
                                 <p>
                                     <Icon.AttachMoney />
                                     [Amount spent so far]
                                 </p>
                             </div>
                             <div id="budget-items" className="grid-row flex-justify">
-                                <p>[Budget namet]</p>
+                                <p>[Budget name]</p>
                                 <p>
                                     <Icon.AttachMoney />
                                     [Amount spent so far]
                                 </p>
                             </div>
-                            <Button className="dashboard-btn" type="submit" onClick={()=> {}}>View Full Budget</Button>
+                            <Link to="/dashboard/budgets">
+                                <Button className="mt-10" type="submit" >View Full Budget</Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
