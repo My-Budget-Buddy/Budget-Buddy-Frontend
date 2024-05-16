@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Card, CardBody, CardGroup, CardHeader, DatePicker, Icon, InputGroup, InputPrefix, InputSuffix, Label, Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea, Title } from "@trussworks/react-uswds";
-import React, { useRef, useState } from "react";
+import { Button, Card, CardBody, CardGroup, CardHeader, DatePicker, Form, Icon, InputGroup, InputPrefix, Label, Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea, Title } from "@trussworks/react-uswds";
+import React, { useEffect, useRef, useState } from "react";
 
 
 interface Transaction {
@@ -83,57 +83,137 @@ function TransactionHistory() {
         "***6612",
         "***3231"
     ]
-    const [transactions, setTransactions] = useState<any | null>(transactionsInit);
-    const [currentTransaction, setCurrentTransacation] = useState<Transaction>(transactions[0]);
+    const [transactions, setTransactions] = useState<Array<Transaction>>(transactionsInit);
+    const [currentTransaction, setCurrentTransacation] = useState<Transaction>(transactions[0])
+    const [current, setCurrent] = useState<number>(0);
     const modalRef = useRef<ModalRef>(null);
+
+
+    useEffect(() => {
+
+    }, [transactions])
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const form = event.target;
+        const { Name, Date, Category, Amount, Note, Account } = form;
+        console.log(event);
+        setTransactions((transactions.map((transaction, index) => {
+            if (index === current) {
+                return {
+                    ...transaction,
+                    "Date": Date.value,
+                    "Name": Name.value,
+                    "Category": Category.value,
+                    "Amount": Amount.value,
+                    "Note": Note.value,
+                    "Account": Account.value
+                }
+            }
+            else
+                return transaction;
+        })));
+    }
+
+
+    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.target;
+        setTransactions((transactions.map((transaction, index) => {
+            if (index === current) {
+                return {
+                    ...transaction,
+                    [name]: value
+                }
+            }
+            else
+                return transaction;
+        })));
+    }
+
+    function handleAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+        const { name, value } = event.target;
+        setTransactions((transactions.map((transaction, index) => {
+            if (index === current) {
+                return {
+                    ...transaction,
+                    [name]: value
+                }
+            }
+            else
+                return transaction;
+        })));
+    }
+
+    function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        const { name, value } = event.target;
+        setTransactions((transactions.map((transaction, index) => {
+            if (index === current) {
+                console.log({ ...transaction, [name]: value })
+                return {
+                    ...transaction,
+                    [name]: value
+                }
+            }
+            else
+                return transaction;
+        })), );
+        console.log(transactions);
+    }
+
+    useEffect(() => {
+        setCurrentTransacation(transactions[current]);
+    }, [transactions]);
 
     return (
         <>
             <Modal ref={modalRef} id="note-modal" isLarge>
-                <div className="grid grid-cols-6 gap-5">
-                    <DatePicker id={""} name={"Date"} className="col-span-3" defaultValue={currentTransaction.Date} />
-                    <div className="col-span-3" />
-                    <hr className="col-span-6" />
-                    <div className="col-span-4">
-                        <Label htmlFor={"transaction-name"}>Name</Label>
-                        <TextInput value={currentTransaction.Name} id={"transaction-name"} name={"transaction-name"} type={"text"} />
-                        <Label htmlFor={"transaction-amount"}>Amount</Label>
-                        <InputGroup>
-                            <InputPrefix>$</InputPrefix>
-                            <TextInput value={currentTransaction.Amount} id={"transaction-amount"} name={"transaction-amount"} type={"number"} />
-                        </InputGroup>
-                        <Label htmlFor={"transaction-category"}>Category</Label>
-                        <div className="grid grid-cols-8">
-                            <Select id={"transaction-category"} name={"transaction-category"} defaultValue={currentTransaction.Category} className="col-span-7">
-                                {categories.map((category: string) => {
-                                    return (
-                                        <React.Fragment key={category}>
-                                            <option value={category}>{category}</option>
-                                        </React.Fragment>
-                                    )
-                                })}
-                            </Select>
-                            <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button>
+                <Form onSubmit={handleSubmit} large>
+                    <div className="grid grid-cols-6 gap-5">
+                        <input id={"transaction-date"} name={"Date"} className="col-span-3 usa-input usa-date-picker_external-inpu" type={"Date"} value={currentTransaction.Date} onChange={handleInputChange} />
+                        <div className="col-span-3" />
+                        <hr className="col-span-6" />
+                        <div className="col-span-4">
+                            <Label htmlFor={"transaction-name"}>Name</Label>
+                            <TextInput value={currentTransaction.Name} id={"transaction-name"} name={"Name"} type={"text"} onChange={handleInputChange} />
+                            <Label htmlFor={"transaction-amount"}>Amount</Label>
+                            <InputGroup>
+                                <InputPrefix>$</InputPrefix>
+                                <TextInput value={currentTransaction.Amount} id={"transaction-amount"} name={"Amount"} type={"number"} onChange={handleInputChange} />
+                            </InputGroup>
+                            <Label htmlFor={"transaction-category"}>Category</Label>
+                            <div className="grid grid-cols-8">
+                                <Select id={"transaction-category"} name={"Category"} value={currentTransaction.Category} onChange={handleSelectChange} className="col-span-7">
+                                    {categories.map((category: string) => {
+                                        return (
+                                            <React.Fragment key={category}>
+                                                <option value={category}>{category}</option>
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </Select>
+                                <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button>
+                            </div>
+                            <Label htmlFor="transaction-note">Notes</Label>
+                            <Textarea value={currentTransaction.Note} id="transaction-note" onChange={handleAreaChange} name="Note" />
+                            <ModalToggleButton modalRef={modalRef} type="submit">submit</ModalToggleButton>
                         </div>
-                        <Label htmlFor="transaction-note">Notes</Label>
-                        <Textarea value={currentTransaction.Note} id="transaction-note" name="transaction-note" />
-                    </div>
-                    <div className="col-span-2">
-                        <Label htmlFor="transaction-account">Account</Label>
-                        <div className="grid grid-cols-8">
-                            <Select id={"transaction-account"} name={"transaction-account"} defaultValue={currentTransaction.Account} className="col-span-7">
-                                {accounts.map((account: string) => {
-                                    return (
-                                        <React.Fragment key={account}>
-                                            <option value={account}>{account}</option>
-                                        </React.Fragment>
-                                    )
-                                })}
-                            </Select>
-                            <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button>
+                        <div className="col-span-2">
+                            <Label htmlFor="transaction-account">Account</Label>
+                            <div className="grid grid-cols-8">
+                                <Select id={"transaction-account"} name={"Account"} value={currentTransaction.Account} onChange={handleSelectChange} className="col-span-7">
+                                    {accounts.map((account: string) => {
+                                        return (
+                                            <React.Fragment key={account}>
+                                                <option value={account}>{account}</option>
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </Select>
+                                <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Form>
             </Modal>
             <div className="px-5">
                 <Title>{`${Name} transaction history`}</Title>
@@ -154,19 +234,15 @@ function TransactionHistory() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {transactions.map((transaction: Transaction) => {
-                                        return (
-                                            <>
-                                                <tr key={transaction.id}>
-                                                    <td>{transaction.Date}</td>
-                                                    <td>{transaction.Name}</td>
-                                                    <td>{transaction.Category}</td>
-                                                    <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => setCurrentTransacation(transaction)}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
-                                                    <td>{transaction.Amount}</td>
-                                                </tr>
-                                            </>
-                                        );
-                                    })}
+                                    {transactions.map((transaction: Transaction, index: number) => (
+                                        <tr key={index}>
+                                            <td>{transaction.Date}</td>
+                                            <td>{transaction.Name}</td>
+                                            <td>{transaction.Category}</td>
+                                            <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index); setCurrentTransacation(transaction); }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
+                                            <td>{transaction.Amount}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </Table>
                         </CardBody>
