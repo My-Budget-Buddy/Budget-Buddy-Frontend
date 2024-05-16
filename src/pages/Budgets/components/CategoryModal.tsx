@@ -4,11 +4,11 @@ import { useRef } from "react";
 interface CategoryProps {
     category: string;
     budgeted: number;
-    reserve: boolean;
+    isReserved: boolean;
     notes: string;
 }
 
-const CategoryModal: React.FC<CategoryProps> = ({ category, budgeted, reserve, notes }) => {
+const CategoryModal: React.FC<CategoryProps> = ({ category, budgeted, isReserved, notes }) => {
     const modalRef = useRef<ModalRef>(null);
     return(
         <>
@@ -27,7 +27,7 @@ const CategoryModal: React.FC<CategoryProps> = ({ category, budgeted, reserve, n
                 <Label htmlFor='budgeted'>Monthly Budget</Label>
                 <TextInput id='budgeted' name='budgeted' type='number' defaultValue={ budgeted }></TextInput>
 
-                <Checkbox id='reserve' name="reserve-checkbox" label='Reserve budget from available funds' className="mt-8" checked={ reserve } onChange={() => {}}/>
+                <Checkbox id='is-reserved' name="is-reserved-checkbox" label='Reserve budget from available funds' className="mt-8" defaultChecked={ isReserved } onChange={() => {}}/>
 
                 <Label htmlFor='notes' >Notes:</Label>
                 <Textarea id="notes" name="notes" defaultValue={ notes }/>
