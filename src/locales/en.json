@@ -13,7 +13,8 @@
       "new-password": "Create Password",
       "confirm-password": "Confirm Password",
       "to-register": "Don't have an account?",
-      "to-login": "Already have an account?"
+      "to-login": "Already have an account?",
+      "username": "Username"
     }
   }
 }

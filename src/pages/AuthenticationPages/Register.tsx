@@ -26,9 +26,9 @@ const Register: React.FC = () => {
 
     const fields = {
       // @ts-expect-error untyped form elements
-      email: e.currentTarget.elements.email.value,
+      username: e.currentTarget.elements.username.value,
       // @ts-expect-error untyped form elements
-      password: e.currentTarget.elements["new-password"].value,
+      password: e.currentTarget.elements.password.value,
     };
 
     if (confirmPassword !== fields.password)
@@ -61,17 +61,17 @@ const Register: React.FC = () => {
             <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
               <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
                 <h1 className="margin-bottom-0">{t("auth.register")}</h1>
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit} className="min-w-full">
                   <Fieldset
                     legend={t("auth.register-desc")}
                     legendStyle="default"
                   >
-                    <Label htmlFor="email">{t("auth.email")}</Label>
+                    <Label htmlFor="username">{t("auth.username")}</Label>
                     <TextInput
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
+                      id="username"
+                      name="username"
+                      type="text"
+                      autoComplete="username"
                       required
                     />
 
