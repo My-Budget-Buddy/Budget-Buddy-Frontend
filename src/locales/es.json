@@ -13,7 +13,8 @@
       "new-password": "Crear contraseña",
       "confirm-password": "Confirmar contraseña",
       "to-register": "¿No tienes una cuenta?",
-      "to-login": "¿Ya tienes una cuenta?"
+      "to-login": "¿Ya tienes una cuenta?",
+      "username": "Nombre de usuario."
     }
   }
 }
