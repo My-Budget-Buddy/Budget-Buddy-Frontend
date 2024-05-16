@@ -1,9 +1,27 @@
-import { Title } from "@trussworks/react-uswds";
+import { Table, Title } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { AxisConfig } from "@mui/x-charts";
+import { AxisConfig, legendClasses } from "@mui/x-charts";
+import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
+import { Tooltip } from '@mui/material';
 
 const Spending: React.FC = () => {
+
+
+    const [spendingCategories, setSpendingCategories] = useState([]);
+
+    const mockcategories = [
+        { name: 'Groceries', value: 300 },
+        { name: 'Entertainment', value: 150 },
+        { name: 'Dining', value: 200 },
+        { name: 'Transportation', value: 100 },
+        { name: 'Healthcare', value: 80 },
+        { name: 'Living Expenses', value: 1000 },
+        { name: 'Shopping', value: 120 },
+        { name: 'Investments', value: 50 },
+        { name: 'Miscellaneous', value: 50 },
+    ];
+
 
     //starting state
     const [spendingData, setSpendingData] = useState({
@@ -97,16 +115,104 @@ const Spending: React.FC = () => {
     const earnedValues = chartData.map(d => d.earned);
 
 
+    const testContent = (
+        <>
+            <thead>
+                <tr>
+                    <th scope="col">Category</th>
+                    <th scope="col">% Spend</th>
+                    <th scope="col">Change</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Groceries</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Entertainment</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Dining</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Transportation</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Healthcare</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Living Expenses</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Shopping</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Investments</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">Miscellaneous</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+            </tbody>
+        </>
+    )
+
+
 
     return (
-        <div className="flex">
+        <div className="min-w-screen">
             <div className="flex-1">
-                <section className="overflow-auto h-screen">
+                <section className="h-screen">
                     <Title className="ml-3">Spending Overview</Title>{" "}
                     {/* Title for the page */}
                     {/* Full-width row */}
                     <div className="bg-blue-300 p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center">
-                        <h2>Full Width Component</h2>
+
 
                         <BarChart
                             xAxis={[{ scaleType: 'band', data: categories, categoryGapRatio: 0.5 } as AxisConfig<'band'>,
@@ -117,15 +223,56 @@ const Spending: React.FC = () => {
 
                             ]}
                             grid={{ horizontal: true }}
-                            width={1000}
-                            height={300}
+                            width={1400}
+                            height={400}
                         />
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
-                        <div className="flex justify-center items-center flex-3 bg-green-300 p-4 m-2 min-h-[30rem] rounded-md ">
-                            <h2>Large Pie Chart</h2>
-                            {/* More content here */}
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[50rem] rounded-md shadow-lg">
+                            <h2></h2>
+
+
+
+                            <PieChart
+                                series={[
+                                    {
+                                        data: mockcategories.map((d) => ({ label: d.name, id: d.name, value: d.value })),
+                                        innerRadius: 83,
+                                        outerRadius: 150,
+                                        paddingAngle: 1,
+                                        cornerRadius: 3,
+                                        startAngle: -180,
+                                        endAngle: 180,
+                                        cx: 350,
+                                        cy: 150,
+                                        arcLabel: 
+                                            (item) => `${item.label}: ${item.value}`,
+                                        arcLabelMinAngle: 45,
+
+                                       
+                                        valueFormatter: (v, { dataIndex }) => {
+                                          const { name } = mockcategories[dataIndex];
+                                          return `$ ${v.value} `;
+                                        
+                                    },   
+                                }
+                                ]}
+
+                                sx={{
+                                    [`& .${pieArcLabelClasses.root}`]: {
+                                      fill: 'white',
+                                      fontWeight: 'bold',
+                                    },
+                                    [`.${legendClasses.root}`]: {
+                                        transform: 'translate(2px, 0)',
+                                      },
+                                  }}
+                            />
+
+                            <div className="w-full">
+                                <Table bordered={false} className="w-full">{testContent}</Table>
+                            </div>
                         </div>
                         <div className="flex justify-center items-center flex-1 bg-yellow-300 p-4 m-2 rounded-md">
                             <h2>Text or Info</h2>
