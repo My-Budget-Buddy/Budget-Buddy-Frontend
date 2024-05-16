@@ -37,7 +37,7 @@ const SummaryComponent: React.FC = () => {
                         <div>$amount</div>
                     </div>
                     <div className='flex flex-col items-center'>
-                        <div className='text-lg'>Total Spending Budget</div>
+                        <div className='text-lg'>Remaining</div>
                         <div>$amount</div>
                     </div>
                 </div>
