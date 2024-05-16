@@ -1,5 +1,5 @@
 import { Checkbox } from "@trussworks/react-uswds";
-import CategoryModal from "./CategoryModal";
+import EditBudgetModal from "./EditBudgetModal";
 
 interface BudgetsRowProps {
     category: string;
@@ -27,7 +27,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved,
                         { remaining > 0 ? <div className='text-green-600'>${remaining}</div> : <div className='text-red-600'>${remaining}</div> }
                         <Checkbox id={category} name="is-reserved-checkbox" label='Mark as reserved' className="ml-4" defaultChecked={ isReserved } onChange={() => {}}/>
                     </div>
-                    <CategoryModal category={category} budgeted={ budgeted } isReserved={ isReserved } notes={ notes } />
+                    <EditBudgetModal category={category} budgeted={ budgeted } isReserved={ isReserved } notes={ notes } />
                 </div>
             </td>
         </tr>

@@ -22,7 +22,7 @@ const CategoryModal: React.FC<CategoryProps> = ({ category, budgeted, isReserved
                 </ModalHeading>
                 
                 <Label htmlFor='category'>Category</Label>
-                <TextInput id='category' name='category' type='text' defaultValue={ category }></TextInput>
+                <TextInput id='category' name='category' type='text' defaultValue={ category } disabled></TextInput>
 
                 <Label htmlFor='budgeted'>Monthly Budget</Label>
                 <TextInput id='budgeted' name='budgeted' type='number' defaultValue={ budgeted }></TextInput>
