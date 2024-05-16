@@ -1,9 +1,11 @@
 import { Button, Form, TextInput, FormGroup, Label, Textarea, Fieldset, DatePicker, Select, RequiredMarker, StepIndicator, StepIndicatorStep, CardGroup, CardHeader, CardBody, CardFooter, Card, GridContainer, Grid, Accordion, Table   } from '@trussworks/react-uswds';
 import React from 'react';
 import { ChangeEvent, FormEvent, useState, useEffect, FocusEvent} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const DisplayTaxTables: React.FC = () => {
+    const nav = useNavigate();
     interface TableData {
       formType: string;
       organization: string;
@@ -54,11 +56,15 @@ const DisplayTaxTables: React.FC = () => {
       }
       return sortConfig.direction === 'ascending' ? '▲' : '▼';
     };
+
+    const redirectToEditView = () =>{
+        nav('/dashboard/tax/w2/0')
+    }
   
     return (
       <>
         <div>
-          <h2>First Table</h2>
+          <h2>Tax Forms</h2>
           <Table fullWidth fixed striped>
             <thead>
               <tr>
@@ -76,7 +82,7 @@ const DisplayTaxTables: React.FC = () => {
                   <td>{data.year}</td>
                   <td>
                     <div className="action-buttons">
-                      <button className="usa-button usa-button--primary">Edit</button>
+                      <button className="usa-button usa-button--primary" onClick={redirectToEditView}>Edit</button>
                       <button className="usa-button usa-button--secondary">Delete</button>
                     </div>
                   </td>
@@ -85,7 +91,7 @@ const DisplayTaxTables: React.FC = () => {
             </tbody>
           </Table>
   
-          <h2>Second Table</h2>
+          <h2>Tax Form Archives</h2>
           <Table fullWidth fixed striped>
             <thead>
               <tr>
