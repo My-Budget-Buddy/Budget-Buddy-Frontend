@@ -2,13 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+.main-content{
+  width: 100%;
+}
+.nav-container{
+  min-width: 250px;
+  min-height: 100vh;
+}
+
+.dashboard-btn{
+  margin-top: 20px;
+}
+.nav-btns{
+  margin-top: 60px;
+}
+.nav-btns > a{
+  padding: 12px;
+}
+.nav-btns > a > button{
+  min-width: 165px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+.nav-btns > a > button{
+  min-width: 160px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+.nav-btns > a > button > .usa-icon{
+  margin-right: 10px;
+}
 #budget-items{
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   padding: 12px;
   width: 100%;
-}
-
-.dashboard-btn{
-  margin-top: 20px;
 }
