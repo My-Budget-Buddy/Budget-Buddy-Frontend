@@ -1,0 +1,19 @@
+{
+  "translation": {
+    "auth": {
+      "login": "Iniciar sesión",
+      "login-desc": "Accede a tu cuenta y consulta el panel de control.",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "hide": "Ocultar Contraseña",
+      "show": "Mostrar Contraseña",
+      "google": "Iniciar sesión con Google",
+      "register": "Crear cuenta",
+      "register-desc": "Crea una cuenta para empezar a gestionar tus finanzas",
+      "new-password": "Crear contraseña",
+      "confirm-password": "Confirmar contraseña",
+      "to-register": "¿No tienes una cuenta?",
+      "to-login": "¿Ya tienes una cuenta?"
+    }
+  }
+}

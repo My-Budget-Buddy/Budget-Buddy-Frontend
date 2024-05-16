@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#budget-items{
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  padding: 12px;
+  width: 100%;
+}
+
+.dashboard-btn{
+  margin-top: 20px;
+}
