@@ -4,7 +4,7 @@ import { Accordion, Table, Icon, Button } from "@trussworks/react-uswds";
 const Dashboard: React.FC = () => {
   return (
     <div className="flex flex-col flex-wrap content-center">
-      <div className="px-14 w-full">
+      <div className="w-full">
         <h1>Welcome [add user name]</h1>
         <div className="flex">
           <div id="chart-container" className="flex-auto w-2/3">

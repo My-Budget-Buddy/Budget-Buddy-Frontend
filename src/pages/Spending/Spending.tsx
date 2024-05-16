@@ -3,7 +3,7 @@ import { Title } from "@trussworks/react-uswds";
 const Spending: React.FC = () => {
   return (
     <div className="flex">
-      <div className="flex-1 px-14">
+      <div className="flex-1">
         <section className="overflow-auto h-screen">
           <Title className="ml-3">Spending Overview</Title>{" "}
           {/* Title for the page */}
