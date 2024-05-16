@@ -5,7 +5,7 @@ const NewCategoryModal: React.FC = () => {
     const modalRef = useRef<ModalRef>(null);
     return(
         <>
-            <ModalToggleButton modalRef={modalRef} opener>
+            <ModalToggleButton modalRef={modalRef} opener className='mx-2'>
                 Add Budget
             </ModalToggleButton>
 
