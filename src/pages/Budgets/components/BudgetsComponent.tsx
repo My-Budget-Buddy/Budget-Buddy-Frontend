@@ -1,8 +1,20 @@
 import { Table, Button, ButtonGroup } from '@trussworks/react-uswds'
 import BudgetsRow from './BudgetsRow'
 import NewCategoryModal from './NewCategoryModal'
+import { useEffect, useState } from 'react';
 
 const BudgetsComponent: React.FC = () => {
+
+    const [Budgets, setBudgets] = useState([]);
+
+    useEffect(() => {
+        /* GET budgets
+            .then(response => {
+                setBudgets(response)
+            })
+        */
+    }, [])
+
     return (
         <>
             {/* May 2024 Budget ------  PreviousMonthButton -- NextMonthButton */}
@@ -31,9 +43,9 @@ const BudgetsComponent: React.FC = () => {
                     {/* budgets.map((budget) => {
                         <BudgetsRow />
                     }) */}
-                    <BudgetsRow category='Phone Bill' budgeted={55} actual={0} reserve={true} notes='' />
-                    <BudgetsRow category='Gasoline' budgeted={80} actual={95} reserve={false} notes='Road trip coming up!' />
-                    <BudgetsRow category='Restaurants' budgeted={155} actual={88} reserve={false} notes='' />
+                    <BudgetsRow category='Phone Bill' budgeted={55} actual={0} isReserved={true} notes='' />
+                    <BudgetsRow category='Gasoline' budgeted={80} actual={95} isReserved={false} notes='Road trip coming up!' />
+                    <BudgetsRow category='Restaurants' budgeted={155} actual={88} isReserved={false} notes='' />
                 </tbody>
             </Table>
             <div className='flex flex-col'>
