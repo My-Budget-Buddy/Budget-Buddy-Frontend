@@ -1,6 +1,6 @@
 import { Table, Button, ButtonGroup } from '@trussworks/react-uswds'
 import BudgetsRow from './BudgetsRow'
-import NewCategoryModal from './NewCategoryModal'
+import NewBudgetModal from './NewBudgetModal'
 import { useEffect, useState } from 'react';
 
 const BudgetsComponent: React.FC = () => {
@@ -26,7 +26,7 @@ const BudgetsComponent: React.FC = () => {
                 </ButtonGroup>
 
             </div>
-            <NewCategoryModal />
+            <NewBudgetModal />
 
             <Table className='w-full'>
                 <thead>
@@ -49,7 +49,7 @@ const BudgetsComponent: React.FC = () => {
                 </tbody>
             </Table>
             <div className='flex flex-col'>
-                <NewCategoryModal />
+                <NewBudgetModal />
             </div>
         </>
     )

@@ -1,8 +1,9 @@
-import {  Checkbox, Label, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput, Textarea } from "@trussworks/react-uswds";
+import {  Checkbox, Label, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, Select, TextInput, Textarea } from "@trussworks/react-uswds";
 import { useRef } from "react";
 
 const NewCategoryModal: React.FC = () => {
     const modalRef = useRef<ModalRef>(null);
+
     return(
         <>
             <ModalToggleButton modalRef={modalRef} opener className='mx-2'>
@@ -14,8 +15,18 @@ const NewCategoryModal: React.FC = () => {
                     Add a new Budget
                 </ModalHeading>
                 
-                <Label htmlFor='category'>Category</Label>
-                <TextInput id='category' name='category' type='text'></TextInput>
+                <Label htmlFor="input-select">Category</Label>
+                <Select id="input-select" name="input-select">
+                    <option>- Select -</option>
+                    {/* GET category list from transactions service
+                        categories.map((category)=>{
+                            <option value={category.name}>{category.name}</option>
+                        })
+                    */}
+                    <option value='category 1'>category 1</option>
+                    <option value='category 2'>category 2</option>
+                    <option value='category 3'>category 3</option>
+                </Select>
 
                 <Label htmlFor='budgeted'>Monthly Budget</Label>
                 <TextInput id='budgeted' name='budgeted' type='number'></TextInput>
