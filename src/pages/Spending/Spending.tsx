@@ -3,11 +3,7 @@ import { Title } from "@trussworks/react-uswds";
 const Spending: React.FC = () => {
   return (
     <div className="flex">
-      {/* Mock Sidebar */}
-      <div className="w-64 h-screen bg-red-500 fixed flex justify-center items-center">
-        <h1 className="text-xl ml-2">Mock navbar, delete once created</h1>
-      </div>
-      <div className="flex-1 ml-64">
+      <div className="flex-1 px-14">
         <section className="overflow-auto h-screen">
           <Title className="ml-3">Spending Overview</Title>{" "}
           {/* Title for the page */}
