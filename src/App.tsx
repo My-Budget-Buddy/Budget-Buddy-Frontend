@@ -16,6 +16,7 @@ import Register from "./pages/AuthenticationPages/Register.tsx";
 
 function App() {
 
+  
   return (
     <div className={"App"}>
 
