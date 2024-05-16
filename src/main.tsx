@@ -4,13 +4,17 @@ import App from "./App.tsx";
 import "./index.css";
 import "@trussworks/react-uswds/lib/uswds.css";
 import "@trussworks/react-uswds/lib/index.css";
-import { BrowserRouter } from "react-router-dom";
+import { router } from './routing/Router.tsx'
+import {
+  RouterProvider,
+} from "react-router-dom";
 import "./i18n.ts";
+
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+      <RouterProvider router={router} />
+          <App/>
   </React.StrictMode>
 );
