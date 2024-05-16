@@ -215,7 +215,7 @@ function TransactionHistory() {
                     </div>
                 </Form>
             </Modal>
-            <div className="px-5">
+            <div>
                 <Title>{`${Name} transaction history`}</Title>
                 <CardGroup>
                     <Card gridLayout={{ col: 8 }}>
