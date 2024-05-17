@@ -19,12 +19,16 @@ const Spending: React.FC = () => {
         'Miscellaneous': <Icon.MoreHoriz style={{ color: 'green', fontSize: '1.4rem' }} />,
     };
 
-    const calculateIconPosition = (startAngle: number, endAngle: number, radius: number, cx: number, cy: number) => {
-        const angle = (startAngle + endAngle) / 2;
-        const radians = (angle * Math.PI) / 180;
-        const x = cx + radius * Math.cos(radians);
-        const y = cy + radius * Math.sin(radians);
-        return { x, y };
+    const categoryColors: { [key: string]: string } = {
+        'Groceries': '#4caf50', 
+        'Entertainment': '#ff5722', 
+        'Dining': '#ff9800', 
+        'Transportation': '#2196f3', 
+        'Healthcare': '#9c27b0', 
+        'Living Expenses': '#673ab7', 
+        'Shopping': '#3f51b5', 
+        'Investments': '#00bcd4', 
+        'Miscellaneous': '#607d8b', 
     };
 
 
@@ -147,7 +151,7 @@ const Spending: React.FC = () => {
             </thead>
             <tbody>
                 <tr>
-                    <th scope="row"> <Icon.LocalGroceryStore style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}/>Groceries</th>
+                    <th scope="row"> <Icon.LocalGroceryStore style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }} />Groceries</th>
                     <td>
                         test
                     </td>
@@ -171,7 +175,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row"> <Icon.DirectionsCar style={{ color: 'black', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Transportation</th>
+                    <th scope="row"> <Icon.DirectionsCar style={{ color: 'black', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Transportation</th>
                     <td>
                         test
                     </td>
@@ -179,7 +183,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.MedicalServices style={{ color: 'blue', fontSize: '1.4rem', marginRight: '0.8rem' }}  />Healthcare</th>
+                    <th scope="row">  <Icon.MedicalServices style={{ color: 'blue', fontSize: '1.4rem', marginRight: '0.8rem' }} />Healthcare</th>
                     <td>
                         test
                     </td>
@@ -187,7 +191,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.Home style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Living Expenses</th>
+                    <th scope="row">  <Icon.Home style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Living Expenses</th>
                     <td>
                         test
                     </td>
@@ -195,7 +199,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.Clothes style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Shopping</th>
+                    <th scope="row">  <Icon.Clothes style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Shopping</th>
                     <td>
                         test
                     </td>
@@ -203,7 +207,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row"> <Icon.TrendingUp style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Investments</th>
+                    <th scope="row"> <Icon.TrendingUp style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Investments</th>
                     <td>
                         test
                     </td>
@@ -211,7 +215,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.MoreHoriz style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  />  Miscellaneous</th>
+                    <th scope="row">  <Icon.MoreHoriz style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }} />  Miscellaneous</th>
                     <td>
                         test
                     </td>
@@ -270,7 +274,7 @@ const Spending: React.FC = () => {
                     <Title className="ml-3">Spending Overview</Title>{" "}
                     {/* Title for the page */}
                     {/* Full-width row */}
-                    <div className="bg-blue-300 p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center">
+                    <div className="bg-gray-100 p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center">
 
 
                         <BarChart
@@ -288,8 +292,8 @@ const Spending: React.FC = () => {
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
-                        
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[55rem] rounded-md shadow-xl border-4 border-indigo-500/50">
+
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[55rem] rounded-md border-4 border-blue-200">
                             <h2></h2>
 
 
@@ -301,45 +305,41 @@ const Spending: React.FC = () => {
                                             label: d.name,
                                             id: d.name,
                                             value: d.value,
-                                            icon: categoryIcons[d.name]
+                                            icon: categoryIcons[d.name],
+                                            color: categoryColors[d.name], 
                                         })),
-                                        innerRadius: 75,
-                                        outerRadius: 150,
+                                        innerRadius: 95,
+                                        outerRadius: 180,
                                         paddingAngle: 1,
                                         cornerRadius: 3,
                                         startAngle: -180,
                                         endAngle: 180,
-                                        cx: 350,
-                                        cy: 150,
-                                        arcLabel: 
+                                        cx: 400,
+                                        cy: 180,
+                                        arcLabel:
                                             (item) => `${item.label}: ${item.value}`,
-                                            
+
                                         arcLabelMinAngle: 45,
 
-                                       
+
                                         valueFormatter: (v, { dataIndex }) => {
-                                          const { name } = mockcategories[dataIndex];
-                                          return `$ ${v.value} `;
-                                        
-                                    },   
-                                }
+                                            const { name } = mockcategories[dataIndex];
+                                            return `$ ${v.value} `;
+
+                                        },
+                                    }
                                 ]}
 
                                 sx={{
                                     [`& .${pieArcLabelClasses.root}`]: {
-                                      fill: 'white',
-                                      fontWeight: 'bold',
+                                        fill: 'white',
+                                        fontWeight: 'bold',
                                     },
                                     [`.${legendClasses.root}`]: {
                                         transform: 'translate(2px, 0)',
-                                      },
-                                  }}
+                                    },
+                                }}
                             />
-
-
-
-
-
 
 
 
@@ -348,7 +348,7 @@ const Spending: React.FC = () => {
                                 <Table bordered={false} className="w-full">{categoryExpenses}</Table>
                             </div>
                         </div>
-                        <div className="flex justify-center items-center flex-1 bg-yellow-300 p-4 m-2 rounded-md">
+                        <div className="flex justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-200">
                             <h2></h2>
                             <Table bordered={false} className="w-full">{topExpenses}</Table>
                         </div>
