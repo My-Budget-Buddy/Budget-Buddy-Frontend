@@ -1,5 +1,5 @@
 import { Checkbox } from "@trussworks/react-uswds";
-import EditBudgetModal from "./EditBudgetModal";
+import EditBudgetModal from "../modals/EditBudgetModal";
 
 interface BudgetsRowProps {
     category: string;

@@ -3,25 +3,21 @@ import React, { useRef, useState } from 'react';
 // import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
 
 interface NewBucketModalProps {
-  action: () => void;
-  children: React.ReactNode;
+    action: () => void;
+    data: SavingsBucketRowPropsAlt
 }
 
+
 interface SavingsBucketRowPropsAlt {
-      name: string;
-      amount_required: number;
-      amount_reserved: number;
-      is_currently_reserved: boolean;
-      // Add more fields as needed
+    name: string;
+    amount_required: number;
+    amount_reserved: number;
+    is_currently_reserved: boolean;
   }
 
-const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
-    const [formData, setFormData] = useState<SavingsBucketRowPropsAlt>( {
-        name: "name", 
-        amount_required: 1000, 
-        amount_reserved: 5, 
-        is_currently_reserved: false, 
-      });
+
+const EditBucketModal: React.FC<NewBucketModalProps> = ({ action, data }) => {
+    const [formData, setFormData] = useState<SavingsBucketRowPropsAlt>(data);
     
     const modalRef = useRef<ModalRef>(null);
 
@@ -34,20 +30,19 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
           [name]: value
         }));
       };
-
       const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
         console.log(formData)
+        console.log(action)
         //TODO Post to endpoint with data
 
       };
 
   return (
     <div>
-      <h2>{children}</h2>
       <ModalToggleButton modalRef={modalRef} opener>
-        Add new savings bucket
+          Edit Bucket
         </ModalToggleButton>
         
 
@@ -57,7 +52,7 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
           </ModalHeading>
             <div>
                 <TextInput  type="text" name="name" value={formData.name} onChange={handleChangeInput} placeholder="Name" id={''} />
-                <TextInput  type="number" name="amount_required" value={formData.amount_required} onChange={handleChangeInput} placeholder="Amount" id={''} />
+                <TextInput  type="number" name="amount_required" value={formData.amount_required} onChange={handleChangeInput} placeholder="Amount required" id={''} />
             </div>
             
           <ModalFooter>
@@ -78,4 +73,4 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
   );
 };
 
-export default NewBucketModal;
+export default EditBucketModal;
