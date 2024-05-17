@@ -1,4 +1,4 @@
-import { ButtonGroup, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
+import { ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
 import React, { useRef, useState } from 'react';
 // import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
 
@@ -42,9 +42,9 @@ const EditBucketModal: React.FC<NewBucketModalProps> = ({ action, data }) => {
       };
 
   return (
-    <div>
-      <ModalToggleButton modalRef={modalRef} opener>
-          Edit Bucket
+    <>
+      <ModalToggleButton modalRef={modalRef} opener unstyled>
+        <Icon.Edit />
         </ModalToggleButton>
         
 
@@ -71,7 +71,7 @@ const EditBucketModal: React.FC<NewBucketModalProps> = ({ action, data }) => {
 
 
       {/* <Button onClick={action}>Add new savings bucket</Button> */}
-    </div>
+    </>
   );
 };
 

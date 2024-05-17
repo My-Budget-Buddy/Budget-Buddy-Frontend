@@ -45,10 +45,9 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
 
   return (
     <div>
-      <h2>{children}</h2>
       <ModalToggleButton modalRef={modalRef} opener>
-        Add new savings bucket
-        </ModalToggleButton>
+        {children}
+      </ModalToggleButton>
         
 
         <Modal ref={modalRef} id="example-modal-1" aria-labelledby="modal-1-heading" aria-describedby="modal-1-description">

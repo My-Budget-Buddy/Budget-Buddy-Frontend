@@ -1,4 +1,4 @@
-import { Button } from '@trussworks/react-uswds';
+import { Button, Icon } from '@trussworks/react-uswds';
 import React, { useEffect, useState } from 'react';
 
 interface ReservedMoniesInputProps {
@@ -22,7 +22,7 @@ const ReservedMoniesInput: React.FC<ReservedMoniesInputProps> = ({amount}) => {
   };
 
   return (
-    <div style={{ maxWidth: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className='flex items-center justify-center max-w-8'>
         <input
             type="number"
             value={value}
@@ -30,8 +30,8 @@ const ReservedMoniesInput: React.FC<ReservedMoniesInputProps> = ({amount}) => {
             style={{ marginRight: '10px',  maxWidth: '60px', border: '1px solid #ccc'}}
         />
         <div>
-            <Button onClick={handleDecrement} type={'button'}>-</Button>
-            <Button onClick={handleIncrement} type={'button'}>+</Button>
+            <Button onClick={handleIncrement} type={'button'} className='' unstyled><Icon.Add /></Button>
+            <Button onClick={handleDecrement} type={'button'} unstyled><Icon.Remove /></Button>
         </div>
     </div>
 

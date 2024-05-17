@@ -8,17 +8,17 @@ interface CategoryProps {
     notes: string;
 }
 
-const CategoryModal: React.FC<CategoryProps> = ({ category, budgeted, isReserved, notes }) => {
+const EditBudgetModal: React.FC<CategoryProps> = ({ category, budgeted, isReserved, notes }) => {
     const modalRef = useRef<ModalRef>(null);
     return(
         <>
             <ModalToggleButton modalRef={modalRef} opener unstyled>
-                <Icon.NavigateNext />
+                <Icon.Edit />
             </ModalToggleButton>
 
             <Modal ref={modalRef} aria-labelledby="modal-3-heading" aria-describedby="modal-3-description" id="example-modal-3">
                 <ModalHeading id="modal-3-heading">
-                    Budget
+                   Edit Budget
                 </ModalHeading>
                 
                 <Label htmlFor='category'>Category</Label>
@@ -42,4 +42,4 @@ const CategoryModal: React.FC<CategoryProps> = ({ category, budgeted, isReserved
     )
 }
 
-export default CategoryModal
+export default EditBudgetModal
