@@ -1,4 +1,4 @@
-import { Table, Title } from "@trussworks/react-uswds";
+import { Icon, Table, Title } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { AxisConfig, legendClasses } from "@mui/x-charts";
@@ -6,6 +6,26 @@ import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import { Tooltip } from '@mui/material';
 
 const Spending: React.FC = () => {
+
+    const categoryIcons: { [key: string]: JSX.Element } = {
+        'Groceries': <Icon.LocalGroceryStore style={{ color: 'green', fontSize: '1.4rem' }} />,
+        'Entertainment': <Icon.Youtube style={{ color: 'black', fontSize: '1.4rem' }} />,
+        'Dining': <Icon.Restaurant style={{ color: 'black', fontSize: '1.4rem' }} />,
+        'Transportation': <Icon.DirectionsCar style={{ color: 'black', fontSize: '1.4rem' }} />,
+        'Healthcare': <Icon.MedicalServices style={{ color: 'blue', fontSize: '1.4rem' }} />,
+        'Living Expenses': <Icon.Home style={{ color: 'green', fontSize: '1.4rem' }} />,
+        'Shopping': <Icon.Clothes style={{ color: 'green', fontSize: '1.4rem' }} />,
+        'Investments': <Icon.TrendingUp style={{ color: 'green', fontSize: '1.4rem' }} />,
+        'Miscellaneous': <Icon.MoreHoriz style={{ color: 'green', fontSize: '1.4rem' }} />,
+    };
+
+    const calculateIconPosition = (startAngle: number, endAngle: number, radius: number, cx: number, cy: number) => {
+        const angle = (startAngle + endAngle) / 2;
+        const radians = (angle * Math.PI) / 180;
+        const x = cx + radius * Math.cos(radians);
+        const y = cy + radius * Math.sin(radians);
+        return { x, y };
+    };
 
 
     const [spendingCategories, setSpendingCategories] = useState([]);
@@ -115,7 +135,94 @@ const Spending: React.FC = () => {
     const earnedValues = chartData.map(d => d.earned);
 
 
-    const testContent = (
+    const categoryExpenses = (
+        <>
+            <thead>
+                <tr>
+                    <th scope="col">Category</th>
+                    <th scope="col">% Spend</th>
+                    <th scope="col">Change</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row"> <Icon.LocalGroceryStore style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}/>Groceries</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">  <Icon.Youtube style={{ color: 'black', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Entertainment</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">  <Icon.Restaurant style={{ color: 'black', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Dining</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row"> <Icon.DirectionsCar style={{ color: 'black', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Transportation</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">  <Icon.MedicalServices style={{ color: 'blue', fontSize: '1.4rem', marginRight: '0.8rem' }}  />Healthcare</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">  <Icon.Home style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Living Expenses</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">  <Icon.Clothes style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Shopping</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row"> <Icon.TrendingUp style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  /> Investments</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <th scope="row">  <Icon.MoreHoriz style={{ color: 'green', fontSize: '1.4rem', marginRight: '0.8rem' }}  />  Miscellaneous</th>
+                    <td>
+                        test
+                    </td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+            </tbody>
+        </>
+    )
+
+    const topExpenses = (
         <>
             <thead>
                 <tr>
@@ -136,54 +243,6 @@ const Spending: React.FC = () => {
                 </tr>
                 <tr>
                     <th scope="row">Entertainment</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Dining</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Transportation</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Healthcare</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Living Expenses</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Shopping</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Investments</th>
                     <td>
                         test
                     </td>
@@ -229,7 +288,8 @@ const Spending: React.FC = () => {
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[50rem] rounded-md shadow-lg">
+                        
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[55rem] rounded-md shadow-xl border-4 border-indigo-500/50">
                             <h2></h2>
 
 
@@ -237,8 +297,13 @@ const Spending: React.FC = () => {
                             <PieChart
                                 series={[
                                     {
-                                        data: mockcategories.map((d) => ({ label: d.name, id: d.name, value: d.value })),
-                                        innerRadius: 83,
+                                        data: mockcategories.map((d) => ({
+                                            label: d.name,
+                                            id: d.name,
+                                            value: d.value,
+                                            icon: categoryIcons[d.name]
+                                        })),
+                                        innerRadius: 75,
                                         outerRadius: 150,
                                         paddingAngle: 1,
                                         cornerRadius: 3,
@@ -248,6 +313,7 @@ const Spending: React.FC = () => {
                                         cy: 150,
                                         arcLabel: 
                                             (item) => `${item.label}: ${item.value}`,
+                                            
                                         arcLabelMinAngle: 45,
 
                                        
@@ -270,13 +336,21 @@ const Spending: React.FC = () => {
                                   }}
                             />
 
+
+
+
+
+
+
+
+
                             <div className="w-full">
-                                <Table bordered={false} className="w-full">{testContent}</Table>
+                                <Table bordered={false} className="w-full">{categoryExpenses}</Table>
                             </div>
                         </div>
                         <div className="flex justify-center items-center flex-1 bg-yellow-300 p-4 m-2 rounded-md">
-                            <h2>Text or Info</h2>
-                            {/* More content here */}
+                            <h2></h2>
+                            <Table bordered={false} className="w-full">{topExpenses}</Table>
                         </div>
                     </div>
                 </section>
