@@ -11,6 +11,7 @@ import {
     Label,
     Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea } from '@trussworks/react-uswds';
 import React, { useState, useRef, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 
 interface Transaction {
     id: number;
@@ -71,11 +72,15 @@ const Transactions: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>(transactionsInit);
     const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[0]);
     const [current, setCurrent] = useState<number>(0);
+    const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
 
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactionsInit);
     const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
 
     const modalRef = useRef<ModalRef>(null);
+    const infoRef = useRef<ModalRef>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (selectedCategory === 'All Categories') {
@@ -161,6 +166,16 @@ const Transactions: React.FC = () => {
         console.log(transactions);
     }
 
+    const handleInfoOpen = (transaction: Transaction) => {
+        setInfoTransaction(transaction);
+
+    };
+
+    const handleViewHistory = (infoTransaction: Transaction) => {
+        navigate(`/dashboard/transactions/${encodeURIComponent(infoTransaction.name)}`);
+    };
+
+
 
 
     return (
@@ -233,6 +248,11 @@ const Transactions: React.FC = () => {
                                             </Button>
                                         </td>
                                         <td><Icon.AttachMoney />{transaction.amount}</td>
+                                        <td>
+                                            <ModalToggleButton type="button" className="usa-button--unstyled" modalRef={infoRef} onClick={()=> handleInfoOpen(transaction)}>
+                                                <Icon.NavigateNext/>
+                                            </ModalToggleButton>
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -284,6 +304,58 @@ const Transactions: React.FC = () => {
                     </div>
                 </Form>
             </Modal>
+
+
+            {/* Detailed Info Transaction Modal */}
+            <Modal ref={infoRef} id="transaction-info-modal" isLarge>
+                {infoTransaction && (
+                    <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
+                        {/* Top Container: Date and View History Button */}
+                        <div className="flex justify-between items-center mb-6">
+                            <div className="flex gap-4 items-center">
+                                <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
+                                    <div>{infoTransaction.date}</div>
+                                </div>
+                                <Button
+                                    type="button"
+                                    onClick={() => handleViewHistory(infoTransaction)}>
+                                    View History
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-black my-4"></div>
+
+                        {/* Bottom Container: Info Details */}
+                        <div className="flex gap-6">
+                            {/* Left Container */}
+                            <div className="flex flex-col w-2/3">
+                                <div className="mb-6">
+                                    <h3 className="text-2xl font-bold">{infoTransaction.name}</h3>
+                                    <p className="mt-2 text-xl">${infoTransaction.amount.toFixed(2)}</p>
+                                    <p className="mt-4 text-lg">{infoTransaction.category}</p>
+                                    <div className="mt-6 p-4 bg-gray-200 rounded-lg">
+                                        <p className="text-md">{infoTransaction.note || 'No notes available'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Right Container */}
+                            <div className="flex flex-col w-1/3">
+                                <div className="border-l border-black pl-6 h-full">
+                                    <h4 className="text-xl">Account</h4>
+                                    <div className="flex items-center mt-3 text-sm text-gray-500">
+                                        <Icon.AccountBalance className="mr-2" />
+                                        <div>{infoTransaction.account}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </Modal>
+
+
+
         </div>
     );
 };
