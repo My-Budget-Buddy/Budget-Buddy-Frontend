@@ -1,7 +1,9 @@
 import { Accordion, Grid, GridContainer, Icon } from "@trussworks/react-uswds";
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
 import AccountModal from "./AccountModal";
 import { useState } from "react";
+import { green } from "@mui/material/colors";
 
 const Accounts: React.FC = () => {
     const [showTooltip, setShowTooltip] = useState(false);
@@ -10,13 +12,10 @@ const Accounts: React.FC = () => {
         throw new Error("Function not implemented.");
     }
 
-    function handleEdit(): void {
-        throw new Error("Function not implemented.");
-    }
-
     return (
         <>
             <h1>Accounts</h1>
+
             <div className="flex justify-end">
                 <AccountModal />
             </div>
@@ -36,9 +35,10 @@ const Accounts: React.FC = () => {
                             ),
                             content: (
                                 <div>
-                                    <GridContainer>
-                                        <Grid row>
+                                    <GridContainer >
+                                        <Grid row >
                                             <Grid
+                                                className="flex justify-start"
                                                 tablet={{
                                                     col: 2,
                                                 }}
@@ -68,9 +68,6 @@ const Accounts: React.FC = () => {
                                                 }}
                                             >
                                                 {<p>
-                                                    <button className="px-2" onClick={() => handleEdit()}>
-                                                    <Icon.Edit />
-                                                    </button>
                                                     <button onClick={() => handleDelete()}>
                                                         <Icon.Delete />
                                                     </button>
@@ -97,7 +94,7 @@ const Accounts: React.FC = () => {
                                     <GridContainer>
                                         <Grid row>
                                             <Grid
-
+                                                className="flex justify-start"
                                                 tablet={{
                                                     col: 2,
                                                 }}
@@ -127,9 +124,6 @@ const Accounts: React.FC = () => {
                                                 }}
                                             >
                                                 {<p>
-                                                    <button className="px-2" onClick={() => handleEdit()}>
-                                                    <Icon.Edit />
-                                                    </button>
                                                     <button onClick={() => handleDelete()}>
                                                         <Icon.Delete />
                                                     </button>
@@ -156,6 +150,7 @@ const Accounts: React.FC = () => {
                                     <GridContainer>
                                         <Grid row>
                                             <Grid
+                                                className="flex justify-start"
                                                 tablet={{
                                                     col: 2,
                                                 }}
@@ -185,9 +180,6 @@ const Accounts: React.FC = () => {
                                                 }}
                                             >
                                                 {<p>
-                                                    <button className="px-2" onClick={() => handleEdit()}>
-                                                    <Icon.Edit />
-                                                    </button>
                                                     <button onClick={() => handleDelete()}>
                                                         <Icon.Delete />
                                                     </button>
@@ -214,6 +206,7 @@ const Accounts: React.FC = () => {
                                     <GridContainer>
                                         <Grid row>
                                             <Grid
+                                                className="flex justify-start"
                                                 tablet={{
                                                     col: 2,
                                                 }}
@@ -243,9 +236,6 @@ const Accounts: React.FC = () => {
                                                 }}
                                             >
                                                 {<p>
-                                                    <button className="px-2" onClick={() => handleEdit()}>
-                                                    <Icon.Edit />
-                                                    </button>
                                                     <button onClick={() => handleDelete()}>
                                                         <Icon.Delete />
                                                     </button>
@@ -262,9 +252,8 @@ const Accounts: React.FC = () => {
                     ]}
                 />
                 <div className="py-4">
-                    <h1>Insights</h1>
                     <div className="flex items-center">
-                        <h2 className="mr-2">Net Cash</h2>
+                        <h1 className="mr-2">Net Cash</h1>
                         <span
                             onMouseEnter={() => setShowTooltip(true)}
                             onMouseLeave={() => setShowTooltip(false)}
@@ -273,14 +262,49 @@ const Accounts: React.FC = () => {
                             <Icon.Help />
                             {/* Render tooltip conditionally */}
                             {showTooltip && (
-                                <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-48">
+                                <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-40">
                                     Net Cash is all debits subtracted by credits.
                                 </div>
                             )}
                         </span>
                     </div>
-                    <div className="py-5">
-                        <p>$17,000 - $2,310 = $14,690</p>
+                    <div className="flex justify-center pt-6">
+                        <Gauge width={500}
+                            height={200}
+                            value={14690}
+                            valueMin={0}
+                            valueMax={17000} // max is the total of your assets
+                            startAngle={-60}
+                            endAngle={60}
+                            sx={{
+                                [`& .${gaugeClasses.valueText}`]: {
+                                    fontSize: '40px', // Adjust the font size // Change the color to blue
+                                    fontWeight: 'bold', // Make the text bold
+                                    transform: 'translate(0px, -50px)', // Adjust position if needed
+                                },
+                                [`& .${gaugeClasses.valueArc}`]: {
+                                    fill: '#52b202',
+                                },
+                            }}
+                            text={({ value }) => `${value}`}
+                        />
+                    </div>
+                    <div className="flex justify-center">
+                        <table className="w-50  divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider border-r border-gray-600">Total Assets:</th>
+                                    <th className="px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider border-gray-600">Total Debts:</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                        
+                                <tr>
+                                    <td className="px-6 py-4 whitespace-nowrap border-r border-gray-600">$17,000</td>
+                                    <td className="px-6 py-4 whitespace-nowrap border-gray-600">$2,310</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
