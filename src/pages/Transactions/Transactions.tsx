@@ -28,6 +28,21 @@ const transactionsInit: Transaction[] = [
     { id: 3, date: '2023-10-11', name: 'McDonalds', category: 'Dining Out', amount: 5.00, note: '', account: '***3231' },
     { id: 4, date: '2023-10-11', name: 'Shell', category: 'Transportation', amount: 20.00, note: '', account: '***1703' },
     { id: 5, date: '2023-10-11', name: 'Walmart', category: 'Groceries', amount: 50.00, note: '', account: '***6612' },
+    { id: 6, date: '2023-10-12', name: 'AT&T', category: 'Bills & Utilities', amount: 90.00, note: '', account: '***1703' },
+    { id: 7, date: '2023-10-12', name: 'Whole Foods', category: 'Groceries', amount: 75.85, note: '', account: '***6612' },
+    { id: 8, date: '2023-10-13', name: 'Target', category: 'Groceries', amount: 55.50, note: '', account: '***3231' },
+    { id: 9, date: '2023-10-14', name: 'Chevron', category: 'Transportation', amount: 45.00, note: '', account: '***1703' },
+    { id: 10, date: '2023-10-15', name: 'Chipotle', category: 'Dining Out', amount: 15.00, note: '', account: '***6612' },
+    { id: 11, date: '2023-10-15', name: 'Chick-fil-A', category: 'Dining Out', amount: 10.00, note: '', account: '***3231' },
+    { id: 12, date: '2023-10-15', name: 'Chase', category: 'Bills & Utilities', amount: 100.00, note: '', account: '***6612' },
+    { id: 13, date: '2023-10-16', name: 'Amazon', category: 'Groceries', amount: 70.00, note: '', account: '***3231' },
+    { id: 14, date: '2023-10-17', name: 'Speedway', category: 'Transportation', amount: 25.00, note: '', account: '***1703' },
+    { id: 15, date: '2023-10-18', name: 'Papa Johns', category: 'Dining Out', amount: 20.00, note: '', account: '***6612' },
+    { id: 16, date: '2023-10-18', name: 'KFC', category: 'Dining Out', amount: 15.00, note: '', account: '***3231' },
+    { id: 17, date: '2023-10-19', name: 'Verizon', category: 'Bills & Utilities', amount: 80.00, note: '', account: '***6612' },
+    { id: 18, date: '2023-10-20', name: 'Starbucks', category: 'Dining Out', amount: 10.00, note: '', account: '***3231' },
+    { id: 19, date: '2023-10-21', name: 'Dunkin', category: 'Dining Out', amount: 5.00, note: '', account: '***1703' },
+    { id: 20, date: '2023-10-22', name: 'T-Mobile', category: 'Bills & Utilities', amount: 40.00, note: '', account: '***6612' },
 ];
 
 const categories: Array<string> = [
@@ -35,6 +50,15 @@ const categories: Array<string> = [
     "Groceries",
     "Dining Out",
     "Transportation",
+    "Entertainment",
+    "Health & Fitness",
+    "Personal Care",
+    "Shopping",
+    "Travel",
+    "Education",
+    "Gifts & Donations",
+    "Investments",
+    "Fees & Charges",
 ];
 
 const accounts: Array<string> = [
@@ -47,11 +71,20 @@ const Transactions: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>(transactionsInit);
     const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[0]);
     const [current, setCurrent] = useState<number>(0);
+
+    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactionsInit);
+    const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
+
     const modalRef = useRef<ModalRef>(null);
 
     useEffect(() => {
+        if (selectedCategory === 'All Categories') {
+            setFilteredTransactions(transactions);
+        } else {
+            setFilteredTransactions(transactions.filter(transaction => transaction.category === selectedCategory));
+        }
+    }, [selectedCategory, transactions]);
 
-    }, [transactions])
 
     useEffect(() => {
         setCurrentTransaction(transactions[current]);
@@ -150,10 +183,10 @@ const Transactions: React.FC = () => {
                 <select className="p-2 w-40">
                     <option>All dates</option>
                 </select>
-                <select className="p-2 w-40">
+                <select className="p-2 w-40" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
                     <option>All Categories</option>
                     {categories.map(category => (
-                        <option key={category}>{category}</option>
+                        <option key={category} value={category}>{category}</option>
                     ))}
                 </select>
                 <select className="p-2 w-40">
@@ -186,7 +219,7 @@ const Transactions: React.FC = () => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {transactions.map((transaction, index) => (
+                                {filteredTransactions.map((transaction, index) => (
                                     <tr key={index}>
                                         <td>{transaction.date}</td>
                                         <td>{transaction.name}</td>
@@ -200,7 +233,6 @@ const Transactions: React.FC = () => {
                                             </Button>
                                         </td>
                                         <td><Icon.AttachMoney />{transaction.amount}</td>
-                                        <td><Icon.NavigateNext/></td>
                                     </tr>
                                 ))}
                                 </tbody>
