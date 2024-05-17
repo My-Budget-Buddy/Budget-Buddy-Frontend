@@ -15,6 +15,7 @@ interface SavingsBucketRowProps {
 
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
   const [currentlyReserved, setCurrentlyReserved] = useState<boolean>(data.is_currently_reserved);
+  const [amountReserved, setAmountReserved] = useState<number>(data.amount_reserved);
 
   return (
       <tr>
@@ -22,7 +23,9 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
         {/* TODO Fix css */}
         <td style={{ width: '200px' }}>{data.amount_required}</td>
         {/* TODO add the onChange method to ReservedMoniesInput */}
-        <td style={{ width: '200px' }}><ReservedMoniesInput amount={data.amount_reserved} /></td> 
+        <td style={{ width: '200px' }}><ReservedMoniesInput amount={data.amount_reserved} onChange={(amount_reserved: number) => {
+          setAmountReserved(amount_reserved);
+        }}/></td> 
         <td>
           <Checkbox id={data.name} name={"is_currently_reserved"} label={"Mark as reserved"} checked={currentlyReserved} onChange={() => {
             setCurrentlyReserved(!currentlyReserved);
