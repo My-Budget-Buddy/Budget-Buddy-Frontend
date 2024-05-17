@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
     const modalRef = useRef<ModalRef>(null)
-
     const [recentTransactions, setRecentTransactions] = useState(
         [{
             accountId: 1234,
@@ -34,6 +33,9 @@ const Dashboard: React.FC = () => {
         }
     ])
 
+    const [currentTransaction, setCurrentTransacation] = useState(recentTransactions[0])
+    
+
     // ----Recent Transactions ---
     // using getTransactionFromLast7Days
     // useEffect(() => {
@@ -53,7 +55,6 @@ const Dashboard: React.FC = () => {
     // }, [])
 
 
-console.log("modalRef: ", modalRef)
     return (
         <div className="flex flex-col flex-wrap ">
             <h1>Welcome [add user name]</h1>
@@ -142,67 +143,25 @@ console.log("modalRef: ", modalRef)
                 <Table className="w-full">
                     <thead>
                         <tr>
-                            <th>
-                                Date
-                            </th>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Category
-                            </th>
-                            <th>
-                                Amount
-                            </th>
-                            <th>
-                                
-                            </th>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {recentTransactions.map((recentTransaction, idx)=> (
                             <>
-                                <tr key={recentTransaction.accountId+recentTransaction.date}>
-                                    <td>
-                                        {recentTransaction.date}
-                                    </td>
-                                    <td>
-                                        {recentTransaction.vendorName}
-                                    </td>
-                                    <td>
-                                        {recentTransaction.category}
-                                    </td>
-                                    <td>
-                                        <Icon.AttachMoney />
-                                        {recentTransaction.amount}
-                                    </td>
+                                <tr key={idx}>
+                                    <td>{recentTransaction.date}</td>
+                                    <td>{recentTransaction.vendorName}</td>
+                                    <td>{recentTransaction.category}</td>
+                                    <td><Icon.AttachMoney />{recentTransaction.amount}</td>
                                     <td >
-                                        <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled">
+                                        <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={() => setCurrentTransacation(recentTransactions[idx])}>
                                             <Icon.NavigateNext />
                                         </ModalToggleButton>
-                                        <Modal ref={modalRef} id={"example-modal-"+idx} aria-labelledby={"modal-"+idx+"-heading"} aria-describedby={"modal-"+idx+"-description"}>
-                                            <ModalHeading id={"modal-"+idx+"-heading"}>
-                                                {recentTransaction.category}: {recentTransaction.vendorName}
-                                            </ModalHeading>
-                                            <div className="usa-prose">
-                                                <div id={"modal-"+idx+"-description"} className="flex justify-between">
-                                                    <p>
-                                                        Account: {recentTransaction.accountId}
-                                                    </p>
-                                                    <p>
-                                                        {recentTransaction.date}
-                                                    </p>
-                                                </div>
-                                                <p className="text-center">
-                                                    <Icon.AttachMoney />{recentTransaction.amount}
-                                                </p>
-                                            </div>
-                                            <ModalFooter className="text-center">
-                                                <ModalToggleButton modalRef={modalRef} closer>
-                                                    Go Back
-                                                </ModalToggleButton>
-                                            </ModalFooter>
-                                        </Modal>
                                     </td>
                                 </tr>
                             </>
@@ -220,24 +179,15 @@ console.log("modalRef: ", modalRef)
                     <div className="w-3/5 flex flex-col items-center">
                         <div id="budget-items" className="grid-row flex-justify">
                             <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
+                            <p><Icon.AttachMoney />[Amount spent so far]</p>
                         </div>
                         <div id="budget-items" className="grid-row flex-justify">
                             <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
+                            <p><Icon.AttachMoney />[Amount spent so far]</p>
                         </div>
                         <div id="budget-items" className="grid-row flex-justify">
                             <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
+                            <p><Icon.AttachMoney />[Amount spent so far]</p>
                         </div>
                         <Link to="/dashboard/budgets">
                             <Button className="mt-10" type="submit" >View Full Budget</Button>
@@ -245,7 +195,27 @@ console.log("modalRef: ", modalRef)
                     </div>
                 </div>
             </div>
+            <Modal ref={modalRef} id="example-modal" aria-labelledby="modal-heading" aria-describedby="modal-description">
+                <ModalHeading id="modal-heading">
+                    {currentTransaction.category}: {currentTransaction.vendorName}
+                </ModalHeading>
+                <div className="usa-prose">
+                    <div id="modal-description" className="flex justify-between">
+                        <p>Account: {currentTransaction.accountId}</p>
+                        <p>{currentTransaction.date}</p>
+                    </div>
+                    <p className="text-center">
+                        <Icon.AttachMoney />{currentTransaction.amount}
+                    </p>
+                </div>
+                <ModalFooter className="text-center">
+                    <ModalToggleButton modalRef={modalRef} closer>
+                        Go Back
+                    </ModalToggleButton>
+                </ModalFooter>
+            </Modal>
         </div>
+        
     )
 }
 
