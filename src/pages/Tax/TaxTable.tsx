@@ -2,6 +2,7 @@ import { Button, Form, TextInput, FormGroup, Label, Textarea, Fieldset, DatePick
 import React from 'react';
 import { ChangeEvent, FormEvent, useState, useEffect, FocusEvent} from 'react';
 import { useNavigate } from 'react-router-dom';
+import TaxNav from './TaxNav';
 
 
 const DisplayTaxTables: React.FC = () => {
@@ -60,9 +61,14 @@ const DisplayTaxTables: React.FC = () => {
     const redirectToEditView = () =>{
         nav('/dashboard/tax/w2/0')
     }
+    
   
     return (
       <>
+      <div className="flex flex-col flex-wrap content-center">
+        <div>
+          <TaxNav />
+        </div>
         <div>
           <h2>Tax Forms</h2>
           <Table fullWidth fixed striped>
@@ -120,6 +126,7 @@ const DisplayTaxTables: React.FC = () => {
               ))}
             </tbody>
           </Table>
+        </div>
         </div>
       </>
     );
