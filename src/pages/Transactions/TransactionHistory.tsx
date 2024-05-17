@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Card, CardBody, CardGroup, CardHeader, DatePicker, Form, Icon, InputGroup, InputPrefix, Label, Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea, Title } from "@trussworks/react-uswds";
+import { Button, Card, CardBody, CardGroup, CardHeader, Form, Icon, InputGroup, InputPrefix, Label, Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea, Title } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
 
 
@@ -95,8 +95,7 @@ function TransactionHistory() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const form = event.target;
-        const { Name, Date, Category, Amount, Note, Account } = form;
+        const { Name, Date, Category, Amount, Note, Account } = event.target;
         console.log(event);
         setTransactions((transactions.map((transaction, index) => {
             if (index === current) {
