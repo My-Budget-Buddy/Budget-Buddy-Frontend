@@ -6,7 +6,7 @@ import { Fieldset, Form, FormGroup, Label, TextInput } from "@trussworks/react-u
 
 const PersonalInfoStep: React.FC = () => {
 
-    const W2info = useSelector((state: RootState) => state.w2); // get taxpayerInfo from Redux store
+    const W2info = useSelector((state: RootState) => state.w2); 
     const dispatch = useDispatch();
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement> ) => {
@@ -14,8 +14,7 @@ const PersonalInfoStep: React.FC = () => {
         const { name, value } = e.target;
         const updateW2info = { ...W2info, [name]: value };
         dispatch(setW2Info(updateW2info));
-        console.log("Currently in HandleChange");
-        console.log(updateW2info);
+        
     };
 
 
