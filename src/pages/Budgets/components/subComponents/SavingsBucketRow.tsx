@@ -2,10 +2,9 @@ import { Checkbox } from "@trussworks/react-uswds";
 import EditBucketModal from "../modals/EditBucketModal";
 import { useEffect, useRef, useState } from "react";
 import ReservedMoniesInput from "./ReservedMoniesInput";
-import { useDispatch, useSelector } from "react-redux";
-import { FormSubmissionState, State } from "../../../../util/misc/interfaces";
+import { State } from "../../../../util/misc/interfaces";
 import { allowNewFetch, markAsReturned, markAsSending } from "../../../../util/redux/formSubmissionStateSlice";
-import { useAppSelector } from "../../../../util/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 
 interface SavingsBucketRowProps {
   // Nested data interface is useful to keep simple top level component declarations
@@ -20,7 +19,7 @@ interface SavingsBucketRowProps {
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
   const [currentlyReserved, setCurrentlyReserved] = useState<boolean>(data.is_currently_reserved);
   const [amountReserved, setAmountReserved] = useState<number>(data.amount_reserved);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   //fetchCall can be either a PUT or a DELETE. 
   const fetchCall = useRef<Promise<Response>>(null);

@@ -1,10 +1,5 @@
-import { Checkbox } from "@trussworks/react-uswds";
-import EditBucketModal from "../modals/EditBucketModal";
-import { useState } from "react";
-import ReservedMoniesInput from "./ReservedMoniesInput";
 
 /**
- * Currently, this is just a copy of the SavingsBucketRow component.
  * In the future, we should remove the modals and use custom input components in their place. 
  * Essentially, the custom input component would add or replace a new or existing bucket/budget row, allowing you to 'edit in place'. This would allow the user to stay on the same page, see/interact with all the data on the page, and not break user flow like a modal would (remember, we are supposed to use modals sparingly). 
  * A preliminary idea is to have add new InputSavingsBucketRow when the 'add savings bucket' button is pressed. This new bucket would have input fields rather than read-only fields. Then the user presses a 'submit' button on that row to attempt to save the bucket. 
@@ -23,20 +18,11 @@ interface SavingsBucketRowProps {
 }
 
 const InputSavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
-  const [currentlyReserved, setCurrentlyReserved] = useState<boolean>(data.is_currently_reserved);
 
   return (
       <tr>
         <td>{data.name}</td>
-        {/* TODO Fix css */}
-        <td style={{ width: '200px' }}>{data.amount_required}</td>
-        <td style={{ width: '200px' }}><ReservedMoniesInput amount={data.amount_reserved}/></td>
-        <td>
-          <Checkbox id={data.name} name={"is_currently_reserved"} label={"Mark as reserved"} checked={currentlyReserved} onChange={() => {
-            setCurrentlyReserved(!currentlyReserved);
-          }}/>
-          </td>
-        <td><EditBucketModal action={function (): void {}} data={{...data}}/></td>
+        {/* TODO */}
       </tr>
     );
   };
