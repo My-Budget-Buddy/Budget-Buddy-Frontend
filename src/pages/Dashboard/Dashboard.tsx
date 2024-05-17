@@ -3,6 +3,23 @@ import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalHeading,
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+interface AccountTotals {
+    checking?: number;
+    credit?: number;
+    savings?: number;
+    investment?: number
+}
+
+interface AccountType {
+    type: string,
+    userId: number,
+    accountNumber: number,
+    routingNumber: number,
+    institution: string,
+    investmentRate: number,
+    startingBalance: number,
+    currentBalance: number
+}
 
 const Dashboard: React.FC = () => {
     const modalRef = useRef<ModalRef>(null)
@@ -34,7 +51,49 @@ const Dashboard: React.FC = () => {
     ])
 
     const [currentTransaction, setCurrentTransacation] = useState(recentTransactions[0])
-    
+    const [accountTotals, setAccountTotals] = useState({
+        checking: 0,
+        credit: 0,
+        savings: 0,
+        investment: 0
+    })
+    const [netCash, setNetCash] = useState(0)
+
+    //---Calculate net cash---
+    // useEffect(()=> {
+    //     setNetCash(accountTotals.checking + accountTotals.investment + accountTotals.savings - accountTotals.credit)
+    // }, [accountTotals])
+
+
+    // ----Get Accounts----
+    //backend: /accounts/userId
+    // useEffect(() => {
+    //     fetch("http://localhost:8080/accounts/123", {
+    //         credentials: "include",
+    //         method: "GET",
+    //     })
+    //     .then((data) => {
+    //         if (data.ok){
+    //             return data.json()
+    //         }else{
+    //             console.log("Error fetching account data")
+    //         }
+    //     })
+    //     .then((accounts)=> {
+    //         let totals= accounts.reduce((prev: AccountTotals, account: AccountType)=> {
+    //             const accountType = account.type.toLowerCase() as keyof AccountTotals
+    //             prev[accountType]! += account.currentBalance
+    //             return prev
+    //         }, {checking: 0,
+    //             credit: 0,
+    //             savings: 0,
+    //             investment: 0})
+    //         setAccountTotals(totals)
+    //     })
+    //     .catch((error)=> {
+    //         console.log('There was an error getting account data', error)
+    //     })
+    // }, [])
 
     // ----Recent Transactions ---
     // using getTransactionFromLast7Days
@@ -77,8 +136,8 @@ const Dashboard: React.FC = () => {
                         [{
                             title: (
                                 <div className="flex justify-between">
-                                    <p><Icon.AccountBalance/> Checking</p>
-                                    <p><Icon.AttachMoney/>[money]</p>
+                                    <p><Icon.AccountBalance/> Checkings</p>
+                                    <p>Total: <Icon.AttachMoney/>{accountTotals.checking}</p>
                                 </div>
                             ),
                             content: (<p>test</p>),
@@ -91,7 +150,7 @@ const Dashboard: React.FC = () => {
                             title: (
                                 <div className="flex justify-between">
                                     <p><Icon.CreditCard/> Credit Cards</p>
-                                    <p><Icon.AttachMoney/>[money]</p>
+                                    <p>Total: <Icon.AttachMoney/>{accountTotals.credit}</p>
                                 </div>
                             ),
                             content: (<p>test</p>),
@@ -103,7 +162,7 @@ const Dashboard: React.FC = () => {
                             title: (
                                 <div className="flex justify-between">
                                     <p><Icon.AccountBalance/> Net Cash</p>
-                                    <p><Icon.AttachMoney/>[money]</p>
+                                    <p>Total: <Icon.AttachMoney/>{netCash}</p>
                                 </div>
                             ),
                             content: (<p>test</p>),
@@ -115,7 +174,7 @@ const Dashboard: React.FC = () => {
                             title: (
                                 <div className="flex justify-between">
                                     <p><Icon.AccountBalance/> Savings</p>
-                                    <p><Icon.AttachMoney/>[money]</p>
+                                    <p>Total: <Icon.AttachMoney/>{accountTotals.savings}</p>
                                 </div>
                             ),
                             content: (<p>test</p>),
@@ -127,7 +186,7 @@ const Dashboard: React.FC = () => {
                             title: (
                                 <div className="flex justify-between">
                                     <p><Icon.AccountBalance/> investments</p>
-                                    <p><Icon.AttachMoney/>[money]</p>
+                                    <p>Total: <Icon.AttachMoney/>{accountTotals.investment}</p>
                                 </div>
                             ),
                             content: (<p>test</p>),
