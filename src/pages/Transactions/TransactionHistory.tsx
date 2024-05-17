@@ -154,8 +154,7 @@ function TransactionHistory() {
             }
             else
                 return transaction;
-        })), );
-        console.log(transactions);
+        })));
     }
 
     useEffect(() => {
@@ -238,7 +237,8 @@ function TransactionHistory() {
                                             <td>{transaction.Name}</td>
                                             <td>{transaction.Category}</td>
                                             <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index) }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
-                                            <td>{transaction.Amount}</td>
+                                            <td><Icon.AttachMoney />{transaction.Amount}</td>
+                                            <td><Icon.NavigateNext /></td>
                                         </tr>
                                     ))}
                                 </tbody>
