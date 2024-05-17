@@ -22,9 +22,13 @@ const LandingLayout: React.FC = () => {
   return (
     <div className="layout-container">
       {/* Header component */}
-      <Header basic showMobileOverlay={mobileExpanded}>
+      <Header
+        basic
+        showMobileOverlay={mobileExpanded}
+        className="relative z-50"
+      >
         <div className="usa-nav-container">
-          <div className="usa-navbar w-full">
+          <div className="usa-navbar w-full flex justify-between">
             <Link to="/">
               <Title>BudgetBuddy</Title>
             </Link>
@@ -44,7 +48,9 @@ const LandingLayout: React.FC = () => {
       </Header>
 
       <main className="min-h-full w-full">
-        <Outlet />
+        <div className="relative isolate px-6 pt-14 lg:px-8">
+          <Outlet />
+        </div>
       </main>
       {/*<FooterComponent/>*/}
     </div>
