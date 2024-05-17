@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Card, CardBody, CardGroup, CardHeader, DatePicker, Form, Icon, InputGroup, InputPrefix, Label, Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea, Title } from "@trussworks/react-uswds";
+import { Button, Card, CardBody, CardGroup, CardHeader, Form, Icon, InputGroup, InputPrefix, Label, Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea, Title } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
 
 
@@ -95,8 +95,7 @@ function TransactionHistory() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const form = event.target;
-        const { Name, Date, Category, Amount, Note, Account } = form;
+        const { Name, Date, Category, Amount, Note, Account } = event.target;
         console.log(event);
         setTransactions((transactions.map((transaction, index) => {
             if (index === current) {
@@ -148,7 +147,6 @@ function TransactionHistory() {
         const { name, value } = event.target;
         setTransactions((transactions.map((transaction, index) => {
             if (index === current) {
-                console.log({ ...transaction, [name]: value })
                 return {
                     ...transaction,
                     [name]: value
@@ -162,7 +160,7 @@ function TransactionHistory() {
 
     useEffect(() => {
         setCurrentTransacation(transactions[current]);
-    }, [transactions]);
+    }, [transactions, current]);
 
     return (
         <>
@@ -239,7 +237,7 @@ function TransactionHistory() {
                                             <td>{transaction.Date}</td>
                                             <td>{transaction.Name}</td>
                                             <td>{transaction.Category}</td>
-                                            <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index); setCurrentTransacation(transaction); }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
+                                            <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index) }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
                                             <td>{transaction.Amount}</td>
                                         </tr>
                                     ))}
