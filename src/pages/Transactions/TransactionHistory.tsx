@@ -169,20 +169,20 @@ function TransactionHistory() {
             <Modal ref={modalRef} id="note-modal" isLarge>
                 <Form onSubmit={handleSubmit} large>
                     <div className="grid grid-cols-6 gap-5">
-                        <input id={"transaction-date"} name={"Date"} className="col-span-3 usa-input usa-date-picker_external-inpu" type={"date"} value={currentTransaction.date} onChange={handleInputChange} />
+                        <input id={"transaction-date"} name={"date"} className="col-span-3 usa-input usa-date-picker_external-inpu" type={"date"} value={currentTransaction.date} onChange={handleInputChange} />
                         <div className="col-span-3" />
                         <hr className="col-span-6" />
                         <div className="col-span-4">
                             <Label htmlFor={"transaction-name"}>Name</Label>
-                            <TextInput value={currentTransaction.name} id={"transaction-name"} name={"Name"} type={"text"} onChange={handleInputChange} />
+                            <TextInput value={currentTransaction.name} id={"transaction-name"} name={"name"} type={"text"} onChange={handleInputChange} />
                             <Label htmlFor={"transaction-amount"}>Amount</Label>
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
-                                <TextInput value={currentTransaction.amount} id={"transaction-amount"} name={"Amount"} type={"number"} onChange={handleInputChange} />
+                                <TextInput value={currentTransaction.amount} id={"transaction-amount"} name={"amount"} type={"number"} onChange={handleInputChange} />
                             </InputGroup>
                             <Label htmlFor={"transaction-category"}>Category</Label>
                             <div className="grid grid-cols-8">
-                                <Select id={"transaction-category"} name={"Category"} value={currentTransaction.category} onChange={handleSelectChange} className="col-span-7">
+                                <Select id={"transaction-category"} name={"category"} value={currentTransaction.category} onChange={handleSelectChange} className="col-span-8">
                                     {categories.map((category: string) => {
                                         return (
                                             <React.Fragment key={category}>
@@ -191,16 +191,16 @@ function TransactionHistory() {
                                         )
                                     })}
                                 </Select>
-                                <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button>
+                                {/* <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button> */}
                             </div>
                             <Label htmlFor="transaction-note">Notes</Label>
-                            <Textarea value={currentTransaction.note} id="transaction-note" onChange={handleAreaChange} name="Note" />
+                            <Textarea value={currentTransaction.note} id="transaction-note" onChange={handleAreaChange} name="note" />
                             <ModalToggleButton modalRef={modalRef} type="submit">submit</ModalToggleButton>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">Account</Label>
                             <div className="grid grid-cols-8">
-                                <Select id={"transaction-account"} name={"Account"} value={currentTransaction.account} onChange={handleSelectChange} className="col-span-7">
+                                <Select id={"transaction-account"} name={"account"} value={currentTransaction.account} onChange={handleSelectChange} className="col-span-8">
                                     {accounts.map((account: string) => {
                                         return (
                                             <React.Fragment key={account}>
@@ -209,7 +209,7 @@ function TransactionHistory() {
                                         )
                                     })}
                                 </Select>
-                                <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button>
+                                {/* <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button> */}
                             </div>
                         </div>
                     </div>
@@ -250,7 +250,7 @@ function TransactionHistory() {
                     <Card gridLayout={{ col: 4 }}>
                         <CardHeader>Summary</CardHeader>
                         <CardBody>
-                            Total spent: {transactions.reduce((sum: any, cur: any) => sum + Number(cur.Amount), 0.0)}
+                            Total spent: {transactions.reduce((sum , cur ) => sum + Number(cur.amount), 0.0)}
                             <hr />
                             Total transactions: {transactions.length}
                         </CardBody>
