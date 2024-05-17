@@ -5,6 +5,7 @@ import ReservedMoniesInput from "./ReservedMoniesInput";
 import { useDispatch, useSelector } from "react-redux";
 import { FormSubmissionState, State } from "../../../../util/misc/interfaces";
 import { allowNewFetch, markAsReturned, markAsSending } from "../../../../util/redux/formSubmissionStateSlice";
+import { useAppSelector } from "../../../../util/redux/hooks";
 
 interface SavingsBucketRowProps {
   // Nested data interface is useful to keep simple top level component declarations
@@ -23,8 +24,10 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
 
   //fetchCall can be either a PUT or a DELETE. 
   const fetchCall = useRef<Promise<Response>>(null);
-  const formState = useSelector((state: FormSubmissionState) => state.status);
 
+
+  const formState = useAppSelector((state) => state.formStatus.status);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +46,11 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
           console.error('Error fetching data:', error);
         }
       } else {
-        console.error("Attempted to illegally submit form while still waiting on previous form to send");
+        if(formState !== State.READY){
+          console.error("Attempted to illegally submit form while still waiting on previous form to send");
+        }
+
+        console.log(formState)
       }
     };
   

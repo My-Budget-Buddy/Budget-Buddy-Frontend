@@ -3,7 +3,8 @@ export interface FormSubmissionState {
 }
 
 export enum State {
-    WAITING = 0,
-    SENDING,
-    RETURNED
+    READY = 0, //A request can be sent.
+    WAITING = 1, // The program has marked that a form will be sent, but has not actually made a fetch request yet.
+    SENDING = 2, // A fetch request or form has been submitted over the network.
+    RETURNED = 3 // A request has returned from the network.
 }

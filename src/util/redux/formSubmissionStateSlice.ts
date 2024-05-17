@@ -9,12 +9,23 @@ export const formSubmissionStateSlice = createSlice({
 // Essentially, this is a locking mutex.
   name: 'submissionState',
   initialState: {
-    status: State.WAITING
+    status: State.READY
   } as FormSubmissionState,
   reducers: {
     // After the state changed to RETURNED, make sure to manually set it back to WAITING
     allowNewFetch: state => {
-      state.status = State.WAITING; 
+      if(state.status === State.RETURNED){
+        state.status = State.READY; 
+      } else {
+        console.log("Error- form RETURNED but you are unable to send a new form. Try refreshing the page.")
+      }
+    },
+    beginFormSubmission: state => {
+      if(state.status === State.READY){
+        state.status = State.WAITING; 
+      } else {
+        console.log("Error- form RETURNED but you are unable to send a new form. Try refreshing the page.")
+      }
     },
     markAsSending: state => {
       if(state.status === State.WAITING){
@@ -26,8 +37,11 @@ export const formSubmissionStateSlice = createSlice({
       }
     },
     markAsReturned: state => {
-      state.status = State.RETURNED; 
-    }
+      if(state.status === State.SENDING){
+        state.status = State.RETURNED; 
+      } else {
+        console.log("Error- form RETURNED but you are unable to send a new form. Try refreshing the page.")
+      }    }
   }
 })
 
