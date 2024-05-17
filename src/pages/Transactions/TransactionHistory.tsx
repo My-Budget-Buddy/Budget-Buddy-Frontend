@@ -32,7 +32,7 @@ function TransactionHistory() {
             "category": "Food",
             "amount": 4.66,
             "note": "Anywhere from 1 to 2 hot dogs",
-            "account": "***1703"
+            "account": "***3231"
         },
         {
             "id": 12,
@@ -59,7 +59,7 @@ function TransactionHistory() {
             "category": "Food",
             "amount": 4.66,
             "note": "Yeah 2 hot dogs",
-            "account": "***1703"
+            "account": "***6612"
         },
         {
             "id": 15,
@@ -68,7 +68,7 @@ function TransactionHistory() {
             "category": "Food",
             "amount": 9.33,
             "note": "I don't skip lunch",
-            "account": "***1703"
+            "account": "***3231"
         }
     ]
 
@@ -87,6 +87,7 @@ function TransactionHistory() {
     const [current, setCurrent] = useState<number>(0);
     const [currentTransaction, setCurrentTransacation] = useState<Transaction>(transactions[current])
     const modalRef = useRef<ModalRef>(null);
+    const infoRef = useRef<ModalRef>(null);
 
     type TransactionTarget = EventTarget & {
         name: HTMLInputElement,
@@ -166,6 +167,49 @@ function TransactionHistory() {
 
     return (
         <>
+            <div>
+                <Title>{`${Name} transaction history`}</Title>
+                <CardGroup>
+                    <Card gridLayout={{ col: 8 }}>
+                        <CardHeader>
+                            <h1>All transactions</h1>
+                        </CardHeader>
+                        <CardBody>
+                            <Table bordered={false} fullWidth={true}>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {transactions.map((transaction: Transaction, index: number) => (
+                                        <tr key={index}>
+                                            <td>{transaction.date}</td>
+                                            <td>{transaction.name}</td>
+                                            <td>{transaction.category}</td>
+                                            <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index) }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
+                                            <td><Icon.AttachMoney />{transaction.amount}</td>
+                                            <td><ModalToggleButton type="button" className="usa-button--unstyled" modalRef={infoRef} onClick={() => { setCurrent(index) }}><Icon.NavigateNext /></ModalToggleButton></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </CardBody>
+                    </Card>
+                    <Card gridLayout={{ col: 4 }}>
+                        <CardHeader>Summary</CardHeader>
+                        <CardBody>
+                            Total spent: {transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0)}
+                            <hr />
+                            Total transactions: {transactions.length}
+                        </CardBody>
+                    </Card>
+                </CardGroup>
+            </div>
             <Modal ref={modalRef} id="note-modal" isLarge>
                 <Form onSubmit={handleSubmit} large>
                     <div className="grid grid-cols-6 gap-5">
@@ -215,48 +259,50 @@ function TransactionHistory() {
                     </div>
                 </Form>
             </Modal>
-            <div>
-                <Title>{`${Name} transaction history`}</Title>
-                <CardGroup>
-                    <Card gridLayout={{ col: 8 }}>
-                        <CardHeader>
-                            <h1>All transactions</h1>
-                        </CardHeader>
-                        <CardBody>
-                            <Table bordered={false} fullWidth={true}>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Name</th>
-                                        <th>Category</th>
-                                        <th>Actions</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {transactions.map((transaction: Transaction, index: number) => (
-                                        <tr key={index}>
-                                            <td>{transaction.date}</td>
-                                            <td>{transaction.name}</td>
-                                            <td>{transaction.category}</td>
-                                            <td><ModalToggleButton type={"button"} className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index) }}><Icon.Edit size={4} /></ModalToggleButton><Button type={"button"} className="usa-button--unstyled"><Icon.Delete size={4} /></Button></td>
-                                            <td>{transaction.amount}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        </CardBody>
-                    </Card>
-                    <Card gridLayout={{ col: 4 }}>
-                        <CardHeader>Summary</CardHeader>
-                        <CardBody>
-                            Total spent: {transactions.reduce((sum , cur ) => sum + Number(cur.amount), 0.0)}
-                            <hr />
-                            Total transactions: {transactions.length}
-                        </CardBody>
-                    </Card>
-                </CardGroup>
-            </div>
+            <Modal ref={infoRef} id="info-modal" isLarge>
+                <div className="grid grid-cols-6 gap-5">
+                    <input name={"date"} className="col-span-3 usa-input usa-date-picker_external-inpu" type={"date"} value={currentTransaction.date} onChange={handleInputChange} readOnly disabled/>
+                    <div className="col-span-3" />
+                    <hr className="col-span-6" />
+                    <div className="col-span-4">
+                        <Label htmlFor={"info-name"}>Name</Label>
+                        <TextInput value={currentTransaction.name} id={"info-name"} name={"name"} type={"text"} onChange={handleInputChange} readOnly disabled/>
+                        <Label htmlFor={"info-amount"}>Amount</Label>
+                        <InputGroup>
+                            <InputPrefix>$</InputPrefix>
+                            <TextInput value={currentTransaction.amount} id={"info-amount"} name={"amount"} type={"number"} onChange={handleInputChange} readOnly disabled />
+                        </InputGroup>
+                        <Label htmlFor={"info-category"}>Category</Label>
+                        <div className="grid grid-cols-8">
+                            <Select id={"info-category"} name={"category"} value={currentTransaction.category} onChange={handleSelectChange} className="col-span-8" disabled>
+                                {categories.map((category: string) => {
+                                    return (
+                                        <React.Fragment key={category}>
+                                            <option value={category}>{category}</option>
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                        <Label htmlFor="info-note">Notes</Label>
+                        <Textarea value={currentTransaction.note} id="info-note" onChange={handleAreaChange} name="note" readOnly disabled />
+                    </div>
+                    <div className="col-span-2">
+                        <Label htmlFor="info-account">Account</Label>
+                        <div className="grid grid-cols-8">
+                            <Select id={"info-account"} name={"account"} value={currentTransaction.account} onChange={handleSelectChange} className="col-span-8" disabled>
+                                {accounts.map((account: string) => {
+                                    return (
+                                        <React.Fragment key={account}>
+                                            <option value={account}>{account}</option>
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </>
     )
 }
