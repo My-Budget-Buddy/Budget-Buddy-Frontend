@@ -1,26 +1,12 @@
-import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
+import { Icon, Table, Title, Button} from "@trussworks/react-uswds";
 import React, { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { AxisConfig, BarItemIdentifier, legendClasses } from "@mui/x-charts";
+import { AxisConfig, legendClasses } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import axios from 'axios';
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-type Month = 'january' | 'february' | 'march' | 'april' | 'may' | 'june' | 'july' | 'august' | 'september' | 'october' | 'november' | 'december';
-
-type Transaction = {
-    transactionId: number;
-    userId: number;
-    accountId: number;
-    vendorName: string;
-    amount: number;
-    category: string;
-    description: string;
-    date: string;
-};
-
-const Spending: React.FC = () => {
-    const navigate = useNavigate();
+const SpendingMonth: React.FC = () => {
 
     const categoryIcons: { [key: string]: JSX.Element } = {
         'Groceries': <Icon.LocalGroceryStore style={{ color: 'green', fontSize: '1.4rem' }} />,
@@ -35,15 +21,15 @@ const Spending: React.FC = () => {
     };
 
     const categoryColors: { [key: string]: string } = {
-        'Groceries': '#90c8f4',
-        'Entertainment': '#f7e748',
-        'Dining': '#6ed198',
-        'Transportation': '#af98f9',
-        'Healthcare': '#fd6d6d',
-        'Living Expenses': '#5a7ffa',
-        'Shopping': '#fe992b',
-        'Investments': '#f7b7e5',
-        'Miscellaneous': '#dce2e1',
+        'Groceries': '#90c8f4', 
+        'Entertainment': '#f7e748', 
+        'Dining': '#6ed198', 
+        'Transportation': '#af98f9', 
+        'Healthcare': '#fd6d6d', 
+        'Living Expenses': '#d7f5a4', 
+        'Shopping': '#fe992b', 
+        'Investments': '#f7b7e5', 
+        'Miscellaneous': '#dce2e1', 
     };
 
 
@@ -65,142 +51,131 @@ const Spending: React.FC = () => {
 
 
     //starting state
-    const [spendingData, setSpendingData] = useState<Record<Month, number>>({
+    const [spendingData, setSpendingData] = useState({
         january: 0,
         february: 0,
         march: 0,
         april: 0,
-        may: 0,
-        june: 0,
-        july: 0,
-        august: 0,
-        september: 0,
-        october: 0,
-        november: 0,
-        december: 0,
+      
     });
 
 
-    const [earnedData, setEarnedData] = useState<Record<Month, number>>({
+    const [earnedData, setEarnedData] = useState({
         january: 0,
         february: 0,
         march: 0,
         april: 0,
-        may: 0,
-        june: 0,
-        july: 0,
-        august: 0,
-        september: 0,
-        october: 0,
-        november: 0,
-        december: 0,
+        
+       
     });
-    /*
-        useEffect(() => {
-          
-            const fetchData = async () => {
-                const spending = {
-                    january: 4000,
-                    february: 3000,
-                    march: 5000,
-                    april: 2000,
-                    may: 4500,
-                    june: 3000,
-                    july: 5000,
-                    august: 4000,
-                    september: 450,
-                    october: 5000,
-                    november: 4000,
-                    december: 6000,
-                };
-                const earned = {
-                    january: 8000,
-                    february: 7500,
-                    march: 9000,
-                    april: 6500,
-                    may: 8500,
-                    june: 7000,
-                    july: 8000,
-                    august: 8500,
-                    september: 9000,
-                    october: 9500,
-                    november: 8000,
-                    december: 10000,
-                };
-                setSpendingData(spending);
-                setEarnedData(earned);
+
+    useEffect(() => {
+      
+        const fetchData = async () => {
+            const spending = {
+                january: 4000,
+                february: 3000,
+                march: 5000,
+                april: 2000,
+               
+                
             };
-            fetchData();
-        }, []);
-    
-    */
-    const handleItemClick = (event: React.MouseEvent<SVGElement>, barItemIdentifier: BarItemIdentifier) => {
-        const { dataIndex } = barItemIdentifier;
-        const month = categories[dataIndex];
-        navigate(`/dashboard/spending/${month}`);
+            const earned = {
+                january: 8000,
+                february: 7500,
+                march: 9000,
+                april: 6500,
+             
+              
+            };
+            setSpendingData(spending);
+            setEarnedData(earned);
+        };
+        fetchData();
+    }, []);
+
+
+    const handleItemClick = (event: any, params: { data: any; dataIndex: any; }) => {
+        const { data, dataIndex } = params;
+        const month = data[dataIndex].month;
+        console.log(`Clicked on month: ${month}`);
+        // You can add more logic here to display details about the clicked month
+        alert(`Details for ${month}`);
     };
 
 
 
-
+/*
     //fetch from backend here
     useEffect(() => {
-
+      
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get<Transaction[]>('http://localhost:8083/transactions/user/1');
-                console.log(response.data);
-                const transactions = response.data;
-                console.log('Fetched transactions:', transactions);
-                const updatedSpendingData: Record<Month, number> = { ...spendingData };
-                const updatedEarnedData: Record<Month, number> = { ...earnedData };
+                const response = await axios.get('http://localhost:8083/transactions/user/{userId}');
+                const fetchedTransactions = response.data;
+                setTransactions(fetchedTransactions);
 
-                transactions.forEach((transaction: Transaction) => {
-                    const monthIndex = new Date(transaction.date).getMonth();
-                    const amount = transaction.amount;
-                    const monthKeys: Month[] = [
-                        'january', 'february', 'march', 'april', 'may', 'june',
-                        'july', 'august', 'september', 'october', 'november', 'december'
-                    ];
-                    const monthKey = monthKeys[monthIndex];
 
-                    if (transaction.category === 'INCOME') {
-                        updatedEarnedData[monthKey] += amount;
-                    } else {
-                        updatedSpendingData[monthKey] += amount;
+                const spending = {
+                    january: 0,
+                    february: 0,
+                    march: 0,
+                    april: 0,
+                    may: 0,
+                    june: 0,
+                    july: 0,
+                    august: 0,
+                    september: 0,
+                    october: 0,
+                    november: 0,
+                    december: 0,
+                };
+
+                const earned = {
+                    january: 0,
+                    february: 0,
+                    march: 0,
+                    april: 0,
+                    may: 0,
+                    june: 0,
+                    july: 0,
+                    august: 0,
+                    september: 0,
+                    october: 0,
+                    november: 0,
+                    december: 0,
+                };
+            
+           fetchedTransactions.forEach(transaction => {                                 //iterate over each transaction
+                    const month = new Date(transaction.transaction_date).getMonth();   //extract month from transaction date
+                    const amount = transaction.transaction_amount;
+                    if (transaction.transaction_category === 'INCOME') {                //if the transaction category is income, add to earned
+                        earned[Object.keys(earned)[month]] += amount;
+                    } else {                                                                //otherwise, add to spending
+                        spending[Object.keys(spending)[month]] += amount;
                     }
                 });
+            
 
-                console.log('Updated spending data:', updatedSpendingData);
-                console.log('Updated earned data:', updatedEarnedData);
+            setSpendingData(spending);
+            setEarnedData(earned);
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+        }
+    };
 
-
-                setSpendingData(updatedSpendingData);
-                setEarnedData(updatedEarnedData);
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-            }
-        };
-
-        fetchTransactions();
+    fetchTransactions();
     }, []);
-
+    */
 
 
     // bar chart
     const chartData = [
-        { month: 'January', spending: spendingData.january, earned: earnedData.january },
-        { month: 'February', spending: spendingData.february, earned: earnedData.february },
-        { month: 'March', spending: spendingData.march, earned: earnedData.march },
-        { month: 'April', spending: spendingData.april, earned: earnedData.april },
-        { month: 'May', spending: spendingData.may, earned: earnedData.may },
-        { month: 'June', spending: spendingData.june, earned: earnedData.june },
-        { month: 'July', spending: spendingData.july, earned: earnedData.july },
-        { month: 'August', spending: spendingData.august, earned: earnedData.august },
-        { month: 'September', spending: spendingData.september, earned: earnedData.september },
-        { month: 'October', spending: spendingData.october, earned: earnedData.october },
-        { month: 'November', spending: spendingData.november, earned: earnedData.november },
-        { month: 'December', spending: spendingData.december, earned: earnedData.december },
+        { month: 'Week 1', spending: spendingData.january, earned: earnedData.january },
+        { month: 'Week 2', spending: spendingData.february, earned: earnedData.february },
+        { month: 'Week 3', spending: spendingData.march, earned: earnedData.march },
+        { month: 'Week 4', spending: spendingData.april, earned: earnedData.april },
+      
     ];
 
     const categories = chartData.map(d => d.month);
@@ -220,7 +195,7 @@ const Spending: React.FC = () => {
             </thead>
             <tbody>
                 <tr>
-                    <th scope="row"> <Icon.LocalGroceryStore style={{ color: '#389ad7', fontSize: '1.4rem', marginRight: '0.8rem' }} />Groceries</th>
+                    <th scope="row"> <Icon.LocalGroceryStore style={{ color: '#90c8f4', fontSize: '1.4rem', marginRight: '0.8rem' }} />Groceries</th>
                     <td>
                         test
                     </td>
@@ -228,7 +203,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.Youtube style={{ color: '#ecb704', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Entertainment</th>
+                    <th scope="row">  <Icon.Youtube style={{ color: '#f7e748', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Entertainment</th>
                     <td>
                         test
                     </td>
@@ -236,7 +211,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.Restaurant style={{ color: '#36b248', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Dining</th>
+                    <th scope="row">  <Icon.Restaurant style={{ color: '#6ed198', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Dining</th>
                     <td>
                         test
                     </td>
@@ -244,7 +219,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row"> <Icon.DirectionsCar style={{ color: '#5a40b8', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Transportation</th>
+                    <th scope="row"> <Icon.DirectionsCar style={{ color: '#af98f9', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Transportation</th>
                     <td>
                         test
                     </td>
@@ -252,7 +227,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.MedicalServices style={{ color: '#de1f1f', fontSize: '1.4rem', marginRight: '0.8rem' }} />Healthcare</th>
+                    <th scope="row">  <Icon.MedicalServices style={{ color: '#fd6d6d', fontSize: '1.4rem', marginRight: '0.8rem' }} />Healthcare</th>
                     <td>
                         test
                     </td>
@@ -260,7 +235,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.Home style={{ color: '#3054bd', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Living Expenses</th>
+                    <th scope="row">  <Icon.Home style={{ color: '#d7f5a4', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Living Expenses</th>
                     <td>
                         test
                     </td>
@@ -276,7 +251,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row"> <Icon.TrendingUp style={{ color: '#d024a4', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Investments</th>
+                    <th scope="row"> <Icon.TrendingUp style={{ color: '#f7b7e5', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Investments</th>
                     <td>
                         test
                     </td>
@@ -284,7 +259,7 @@ const Spending: React.FC = () => {
                     <td>test</td>
                 </tr>
                 <tr>
-                    <th scope="row">  <Icon.MoreHoriz style={{ color: '#a6a5a6', fontSize: '1.4rem', marginRight: '0.8rem' }} />  Miscellaneous</th>
+                    <th scope="row">  <Icon.MoreHoriz style={{ color: '#dce2e1', fontSize: '1.4rem', marginRight: '0.8rem' }} />  Miscellaneous</th>
                     <td>
                         test
                     </td>
@@ -340,13 +315,13 @@ const Spending: React.FC = () => {
         <div className="min-w-screen">
             <div className="flex-1">
                 <section className="h-screen">
-                    <Title className="ml-3">Spending Overview</Title>{" "}
-                    <Link to="/dashboard/spending/${month}" className="mr-3">
-                        <Button type="button" className="ml-3">See Current Month</Button>
+                    <Title className="ml-3"> Month Name Overview</Title>{" "}
+                    <Link to="/dashboard/spending" className="mr-3">
+                    <Button type="button" className="ml-3">Back</Button>
                     </Link>
                     {/* Title for the page */}
                     {/* Full-width row */}
-                    <div className="p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center border-4 border-gray-200">
+                    <div className="bg-gray-100 p-4 m-2 min-h-[10rem] rounded-md flex justify-center items-center">
 
 
                         <BarChart
@@ -360,7 +335,7 @@ const Spending: React.FC = () => {
                             grid={{ horizontal: true }}
                             width={1400}
                             height={400}
-                            onItemClick={handleItemClick}
+                          
                         />
                     </div>
                     {/* Second row with two columns */}
@@ -379,7 +354,7 @@ const Spending: React.FC = () => {
                                             id: d.name,
                                             value: d.value,
                                             icon: categoryIcons[d.name],
-                                            color: categoryColors[d.name],
+                                            color: categoryColors[d.name], 
                                         })),
                                         innerRadius: 95,
                                         outerRadius: 180,
@@ -432,4 +407,4 @@ const Spending: React.FC = () => {
     );
 };
 
-export default Spending;
+export default SpendingMonth;
