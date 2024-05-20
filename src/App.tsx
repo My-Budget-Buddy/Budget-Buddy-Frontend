@@ -37,7 +37,7 @@ function App() {
                 <Route path={"spending"} element={<Spending/>}/>
 
                 <Route path={"transactions"} element={<Transactions/>}/>
-                <Route path={"transactions/:id"} element={<TransactionHistory/>}/>
+                <Route path={"transactions/:name"} element={<TransactionHistory/>}/>
 
                 <Route path={"tax"} element={<Tax/>}/>
                 <Route path={"tax/:formType/:id"} element={<TaxEditView/>}/>
