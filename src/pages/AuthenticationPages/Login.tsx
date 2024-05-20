@@ -23,7 +23,7 @@ const Login: React.FC = () => {
 
     const fields = {
       // @ts-expect-error untyped form elements
-      username: e.currentTarget.elements.username.value,
+      email: e.currentTarget.elements.email.value,
       // @ts-expect-error untyped form elements
       password: e.currentTarget.elements.password.value,
     };
@@ -35,77 +35,76 @@ const Login: React.FC = () => {
 
   return (
     <main>
-      <div className="bg-base-lightest">
-        <GridContainer className="usa-section">
-          {/* Error Alert */}
-          <Grid row className="flex-justify-center margin-bottom-205">
-            <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
-              {error && (
-                <Alert
-                  type="error"
-                  heading="Error Logging In"
-                  headingLevel="h4"
-                >
-                  {error}
-                </Alert>
-              )}
-            </Grid>
+      <GridContainer className="usa-section">
+        {/* Error Alert */}
+        <Grid row className="flex-justify-center margin-bottom-205">
+          <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
+            {error && (
+              <Alert type="error" heading="Error Logging In" headingLevel="h4">
+                {error}
+              </Alert>
+            )}
           </Grid>
+        </Grid>
 
-          {/* Main Form Content */}
-          <Grid row className="flex-justify-center">
-            <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
-              <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
-                <h1 className="margin-bottom-0">{t("auth.login")}</h1>
-                <Form onSubmit={handleSubmit} className="min-w-full">
-                  <Fieldset legend={t("auth.login-desc")} legendStyle="default">
-                    <Label htmlFor="username">{t("auth.username")}</Label>
-                    <TextInput
-                      id="username"
-                      name="username"
-                      type="text"
-                      autoComplete="username"
-                      required
-                    />
+        {/* Main Form Content */}
+        <Grid row className="flex-justify-center">
+          <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
+            <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
+              <h1 className="margin-bottom-0">{t("auth.login")}</h1>
+              <Form onSubmit={handleSubmit} className="min-w-full">
+                <Fieldset legend={t("auth.login-desc")} legendStyle="default">
+                  <Label htmlFor="email">{t("auth.email")}</Label>
+                  <TextInput
+                    id="email"
+                    name="email"
+                    type="text"
+                    autoComplete="email"
+                    required
+                  />
 
-                    <Label htmlFor="password">{t("auth.password")}</Label>
-                    <TextInput
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      title="Toggle Password Visibility"
-                      className="usa-show-password"
-                      aria-controls="password"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                    >
-                      {showPassword ? t("auth.show") : t("auth.hide")}
-                    </button>
+                  <Label htmlFor="password">{t("auth.password")}</Label>
+                  <TextInput
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    title="Toggle Password Visibility"
+                    className="usa-show-password"
+                    aria-controls="password"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? t("auth.show") : t("auth.hide")}
+                  </button>
 
-                    <Button type="submit">{t("auth.login")}</Button>
-                  </Fieldset>
-                </Form>
+                  <Button type="submit">{t("auth.login")}</Button>
+                </Fieldset>
+              </Form>
 
-                <div className="border-top border-base-lighter margin-top-4 padding-top-4">
-                  <Button type="button" outline className="width-full">
-                    {t("auth.google")}
-                  </Button>
-                </div>
+              {/* separator */}
+              <div className="flex justify-center items-center my-8">
+                <div className="border-t-[1px] border-[#dfe1e2] w-full" />
+                <p className="px-3 text-neutral-400">OR</p>
+                <div className="border-t-[1px] border-[#dfe1e2] w-full" />
               </div>
 
-              <p className="text-center">
-                {t("auth.to-register")}{" "}
-                <Link to="/register" className="usa-link">
-                  {t("auth.register")}
-                </Link>
-              </p>
-            </Grid>
+              <Button type="button" outline className="width-full">
+                {t("auth.google")}
+              </Button>
+            </div>
+
+            <p className="text-center">
+              {t("auth.to-register")}{" "}
+              <Link to="/register" className="usa-link">
+                {t("auth.register")}
+              </Link>
+            </p>
           </Grid>
-        </GridContainer>
-      </div>
+        </Grid>
+      </GridContainer>
     </main>
   );
 };
