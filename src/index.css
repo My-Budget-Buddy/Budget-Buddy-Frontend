@@ -12,9 +12,10 @@
   height: 100vh;
 }
 
-#budget-items {
-  border-bottom: 1px solid black;
-  border-left: 1px solid black;
-  padding: 12px;
-  width: 100%;
+#net-cash:hover{
+  cursor: default;
+  background-color: #f0f0f0;
+}
+#net-cash:focus{
+  outline: none;
 }
