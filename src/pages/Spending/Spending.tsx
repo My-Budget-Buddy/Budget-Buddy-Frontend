@@ -95,7 +95,7 @@ const Spending: React.FC = () => {
         november: 0,
         december: 0,
     });
-    /*
+    
         useEffect(() => {
           
             const fetchData = async () => {
@@ -133,7 +133,7 @@ const Spending: React.FC = () => {
             fetchData();
         }, []);
     
-    */
+    
     const handleItemClick = (event: React.MouseEvent<SVGElement>, barItemIdentifier: BarItemIdentifier) => {
         const { dataIndex } = barItemIdentifier;
         const month = categories[dataIndex];
@@ -142,7 +142,7 @@ const Spending: React.FC = () => {
 
 
 
-
+/*
     //fetch from backend here
     useEffect(() => {
 
@@ -185,7 +185,7 @@ const Spending: React.FC = () => {
         fetchTransactions();
     }, []);
 
-
+*/
 
     // bar chart
     const chartData = [
