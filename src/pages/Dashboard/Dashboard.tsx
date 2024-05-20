@@ -172,19 +172,34 @@ const Dashboard: React.FC = () => {
     }, [])
 
 
+    // --- Budgets --
+    // backend: /budgets/userId
+    useEffect(()=> {
+        const fetchBudgets = async () => {
+            try {
+                const response = await axios.get("http://localhost:8084/budgets/123", {
+                    // withCredentials: true,
+                })
+                console.log('response: ', response.data)
+            } catch (err) {
+                console.log('There was an error fetching budgets: ', err)
+            }
+        }
+        fetchBudgets()
+    }, [])
+
     return (
         <div className="flex flex-col flex-wrap ">
             <h1>Welcome [add user name]</h1>
             <div className="flex">
-                <div id="chart-container" className="flex-auto w-2/3">
-                    <h1>Current Spend this month:</h1>
-                    <h1 className="flex items-center"><Icon.AttachMoney/>{monthlySpend}</h1>
+                <div id="chart-container" className="flex flex-col flex-auto w-2/3 bg-accent-cool-lighter p-8 mr-12 rounded-lg">
+                    <h1 className="flex items-center text-2xl font-bold ">Current spend this month: <Icon.AttachMoney/>{monthlySpend}</h1>
                     <LineChart
                         xAxis={[{ 
                             scaleType: "point",
                             data: (
                             monthlyTransactions.map((transaction)=> (
-                                parseInt(transaction.date.toString().slice(8,10))
+                                transaction.date.toString().slice(5,10)
                             ))
                         ) }]}
                         series={[
@@ -194,20 +209,23 @@ const Dashboard: React.FC = () => {
                                         transaction.total
                                     ))
                                 ),
+                                yAxisKey: 'rightAxisId',
                                 area: true,
                                 color: '#005ea2',
                             },
                         ]}
-                        
                         height={300}
+                        leftAxis={null}
+                        yAxis={[{id: "rightAxisId"}]}
+                        rightAxis="rightAxisId"
                     />
                 </div>
                 <div id="accounts-container" className="flex-auto w-1/3">
-                    <h1>Accounts</h1>
+                    <h1 >Accounts</h1>
                     {allAccounts.length ? 
                     <>
                         <Accordion bordered={false} items={
-                            allAccounts.map((acc, idx)=> {
+                            allAccounts.map((acc)=> {
                                 return {
                                     title: (
                                         <div key={acc.id} className="flex justify-between items-center">
@@ -235,7 +253,7 @@ const Dashboard: React.FC = () => {
                             })
                         } /> 
                         <div className="usa-accordion" >
-                            <button type="button" className="usa-accordion__button" >
+                            <button type="button" className="usa-accordion__button " id="net-cash">
                                 <div className="flex justify-between items-center">
                                     <p className="flex items-center"><Icon.AccountBalance className="mr-2" />Net Cash</p>
                                     <p className="flex items-center"><Icon.AttachMoney/> {netCash}</p> 
@@ -300,16 +318,16 @@ const Dashboard: React.FC = () => {
                 <h1>Budgets</h1>
                 <div className="flex items-center">
                     <Gauge width={150} height={150} value={60} />
-                    <div className="w-3/5 flex flex-col items-center">
-                        <div id="budget-items" className="grid-row flex-justify">
+                    <div className="w-3/5 flex flex-col items-center border-l border-black pl-6 h-full">
+                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
                             <p>[Budget name]</p>
                             <p><Icon.AttachMoney />[Amount spent so far]</p>
                         </div>
-                        <div id="budget-items" className="grid-row flex-justify">
+                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
                             <p>[Budget name]</p>
                             <p><Icon.AttachMoney />[Amount spent so far]</p>
                         </div>
-                        <div id="budget-items" className="grid-row flex-justify">
+                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
                             <p>[Budget name]</p>
                             <p><Icon.AttachMoney />[Amount spent so far]</p>
                         </div>
