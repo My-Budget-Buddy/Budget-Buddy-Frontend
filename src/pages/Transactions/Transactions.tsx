@@ -9,9 +9,10 @@ import {
     InputGroup,
     InputPrefix,
     Label,
-    Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea } from '@trussworks/react-uswds';
+    Modal, ModalRef, ModalToggleButton, Select, Table, TextInput, Textarea
+} from '@trussworks/react-uswds';
 import React, { useState, useRef, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface Transaction {
     id: number;
@@ -162,7 +163,7 @@ const Transactions: React.FC = () => {
             }
             else
                 return transaction;
-        })), );
+        })));
         console.log(transactions);
     }
 
@@ -218,43 +219,43 @@ const Transactions: React.FC = () => {
             {/* Bottom Container aka Transaction Table */}
             <div className="flex-grow">
                 <CardGroup>
-                    <Card gridLayout={{col: 12}}>
+                    <Card gridLayout={{ col: 12 }}>
                         <CardHeader className="flex justify-center mb-5">
                             <h1>List of Transactions</h1>
                         </CardHeader>
                         <CardBody>
                             <Table fullWidth striped>
                                 <thead>
-                                <tr>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Category</th>
-                                    <th scope="col">Actions</th>
-                                    <th scope="col">Amount</th>
-                                </tr>
+                                    <tr>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Actions</th>
+                                        <th scope="col">Amount</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {filteredTransactions.map((transaction, index) => (
-                                    <tr key={index}>
-                                        <td>{transaction.date}</td>
-                                        <td>{transaction.name}</td>
-                                        <td>{transaction.category}</td>
-                                        <td>
-                                            <ModalToggleButton type="button" className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index); setCurrentTransaction(transaction); }}>
-                                                <Icon.Edit />
-                                            </ModalToggleButton>
-                                            <Button type="button" className="usa-button--unstyled">
-                                                <Icon.Delete />
-                                            </Button>
-                                        </td>
-                                        <td><Icon.AttachMoney />{transaction.amount}</td>
-                                        <td>
-                                            <ModalToggleButton type="button" className="usa-button--unstyled" modalRef={infoRef} onClick={()=> handleInfoOpen(transaction)}>
-                                                <Icon.NavigateNext/>
-                                            </ModalToggleButton>
-                                        </td>
-                                    </tr>
-                                ))}
+                                    {filteredTransactions.map((transaction, index) => (
+                                        <tr key={index}>
+                                            <td>{transaction.date}</td>
+                                            <td>{transaction.name}</td>
+                                            <td>{transaction.category}</td>
+                                            <td>
+                                                <ModalToggleButton type="button" className="usa-button--unstyled" modalRef={modalRef} onClick={() => { setCurrent(index); setCurrentTransaction(transaction); }}>
+                                                    <Icon.Edit />
+                                                </ModalToggleButton>
+                                                <Button type="button" className="usa-button--unstyled">
+                                                    <Icon.Delete />
+                                                </Button>
+                                            </td>
+                                            <td><Icon.AttachMoney />{transaction.amount}</td>
+                                            <td>
+                                                <ModalToggleButton type="button" className="usa-button--unstyled" modalRef={infoRef} onClick={() => handleInfoOpen(transaction)}>
+                                                    <Icon.NavigateNext />
+                                                </ModalToggleButton>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </Table>
                         </CardBody>
