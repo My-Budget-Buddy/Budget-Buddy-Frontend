@@ -6,8 +6,13 @@ import "@trussworks/react-uswds/lib/uswds.css";
 import "@trussworks/react-uswds/lib/index.css";
 import { BrowserRouter } from "react-router-dom";
 import "./i18n.ts";
+<<<<<<< HEAD
 import { Provider } from 'react-redux'
 import {store} from './util/redux/store.js'
+=======
+import { Provider } from "react-redux";
+import store from "./store/Store.tsx";
+>>>>>>> origin/demobranch
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
