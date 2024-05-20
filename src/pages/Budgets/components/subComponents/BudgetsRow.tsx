@@ -15,7 +15,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved,
 
     // The amount of money that will be reserved if the box is checked. It will always be greater than or equal to 0
     const reservedValue = remaining >= 0 ? remaining : 0;
-
+    console.log("test")
     return(
         <tr>
             <td>{category}</td>
