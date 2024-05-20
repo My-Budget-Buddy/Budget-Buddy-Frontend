@@ -5,6 +5,7 @@ import ReservedMoniesInput from "./ReservedMoniesInput";
 import { State } from "../../../../util/misc/interfaces";
 import { allowNewFetch, markAsReturned, markAsSending } from "../../../../util/redux/formSubmissionStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
+import DeleteBucketModal from "../modals/DeleteBucketModal";
 
 interface SavingsBucketRowProps {
   // Nested data interface is useful to keep simple top level component declarations
@@ -72,6 +73,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
           }}/>
           </td>
         <td><EditBucketModal data={{data}}> EDIT BUCKET MODAL </EditBucketModal></td>
+        <DeleteBucketModal />
       </tr>
     );
   };
