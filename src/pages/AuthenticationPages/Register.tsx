@@ -26,7 +26,7 @@ const Register: React.FC = () => {
 
     const fields = {
       // @ts-expect-error untyped form elements
-      username: e.currentTarget.elements.username.value,
+      email: e.currentTarget.elements.email.value,
       // @ts-expect-error untyped form elements
       password: e.currentTarget.elements.password.value,
     };
@@ -61,12 +61,12 @@ const Register: React.FC = () => {
                   legend={t("auth.register-desc")}
                   legendStyle="default"
                 >
-                  <Label htmlFor="username">{t("auth.username")}</Label>
+                  <Label htmlFor="email">{t("auth.email")}</Label>
                   <TextInput
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
                     required
                   />
 

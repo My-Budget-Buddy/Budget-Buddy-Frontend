@@ -23,7 +23,7 @@ const Login: React.FC = () => {
 
     const fields = {
       // @ts-expect-error untyped form elements
-      username: e.currentTarget.elements.username.value,
+      email: e.currentTarget.elements.email.value,
       // @ts-expect-error untyped form elements
       password: e.currentTarget.elements.password.value,
     };
@@ -54,12 +54,12 @@ const Login: React.FC = () => {
               <h1 className="margin-bottom-0">{t("auth.login")}</h1>
               <Form onSubmit={handleSubmit} className="min-w-full">
                 <Fieldset legend={t("auth.login-desc")} legendStyle="default">
-                  <Label htmlFor="username">{t("auth.username")}</Label>
+                  <Label htmlFor="email">{t("auth.email")}</Label>
                   <TextInput
-                    id="username"
-                    name="username"
+                    id="email"
+                    name="email"
                     type="text"
-                    autoComplete="username"
+                    autoComplete="email"
                     required
                   />
 
