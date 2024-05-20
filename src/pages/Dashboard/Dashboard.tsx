@@ -50,91 +50,91 @@ const Dashboard: React.FC = () => {
 
     
     // ---Calculate net cash---
-    // useEffect(()=> {
-    //     let total=0
-    //     allAccounts.map((acc)=> {
-    //         if(acc.id === "checking"){
-    //             total += acc.balance
-    //         }else{
-    //             total -= acc.balance
-    //         }
-    //     })
-    //     setNetCash(total)
-    // }, [allAccounts])
+    useEffect(()=> {
+        let total=0
+        allAccounts.map((acc)=> {
+            if(acc.id === "checking"){
+                total += acc.balance
+            }else{
+                total -= acc.balance
+            }
+        })
+        setNetCash(total)
+    }, [allAccounts])
 
 
     // ----Get Accounts----
     // backend: /accounts/userId
-    // useEffect(() => {
-    //     const fetchAccounts = async () => {
-    //         try{
-    //             const response = await axios.get("http://localhost:8080/accounts/123", {
-    //                 // withCredentials: true,
-    //             })
-    //             const accounts = response.data
-    //             console.log("accounts: ", accounts)
-    //             let allAccounts: AllAccountsType[] = accounts.reduce((prev: AllAccountsType[], account: InitialAccountType)=> {
-    //                 const accountId = account.type.toLowerCase()
+    useEffect(() => {
+        const fetchAccounts = async () => {
+            try{
+                const response = await axios.get("http://localhost:8080/accounts/123", {
+                    // withCredentials: true,
+                })
+                const accounts = response.data
+                console.log("accounts: ", accounts)
+                let allAccounts: AllAccountsType[] = accounts.reduce((prev: AllAccountsType[], account: InitialAccountType)=> {
+                    const accountId = account.type.toLowerCase()
 
-    //                 let type
-    //                 if (account.type === "CHECKING"){
-    //                     type = "Checkings"
-    //                 }else if (account.type === "SAVINGS"){
-    //                     type = "Savings"
-    //                 }else if (account.type === "CREDIT"){
-    //                     type = "Credit Cards"
-    //                 }else{
-    //                     type = "Investments"
-    //                 }
+                    let type
+                    if (account.type === "CHECKING"){
+                        type = "Checkings"
+                    }else if (account.type === "SAVINGS"){
+                        type = "Savings"
+                    }else if (account.type === "CREDIT"){
+                        type = "Credit Cards"
+                    }else{
+                        type = "Investments"
+                    }
 
-    //                 const existingAccount = prev.find(acc => acc.id === accountId);
-    //                 if (existingAccount) {
-    //                     existingAccount.balance += account.currentBalance;
-    //                     existingAccount.accounts.push({
-    //                         accountNumber: account.accountNumber,
-    //                         routingNumber: account.routingNumber,
-    //                         currentBalance: account.currentBalance,
-    //                         institution: account.institution
-    //                     })
-    //                 } else {
-    //                     prev.push({ 
-    //                         id: accountId, 
-    //                         type: type, 
-    //                         balance: account.currentBalance, 
-    //                         accounts: [{
-    //                             accountNumber: account.accountNumber,
-    //                             routingNumber: account.routingNumber,
-    //                             currentBalance: account.currentBalance,
-    //                             institution: account.institution
-    //                         }]
-    //                     });
-    //                 }
-    //                 return prev;
-    //                 }, [])
-    //             setAllAccounts(allAccounts)
-    //         }catch (err){
-    //             console.log("There was an error fetching account data: ", err)
-    //         }
-    //     }
-    //     fetchAccounts()
-    // }, [])
+                    const existingAccount = prev.find(acc => acc.id === accountId);
+                    if (existingAccount) {
+                        existingAccount.balance += account.currentBalance;
+                        existingAccount.accounts.push({
+                            accountNumber: account.accountNumber,
+                            routingNumber: account.routingNumber,
+                            currentBalance: account.currentBalance,
+                            institution: account.institution
+                        })
+                    } else {
+                        prev.push({ 
+                            id: accountId, 
+                            type: type, 
+                            balance: account.currentBalance, 
+                            accounts: [{
+                                accountNumber: account.accountNumber,
+                                routingNumber: account.routingNumber,
+                                currentBalance: account.currentBalance,
+                                institution: account.institution
+                            }]
+                        });
+                    }
+                    return prev;
+                    }, [])
+                setAllAccounts(allAccounts)
+            }catch (err){
+                console.log("There was an error fetching account data: ", err)
+            }
+        }
+        fetchAccounts()
+    }, [])
 
 
     // ----Recent Transactions ---
     // backend: /transactions/recentTransactions/userId
-    // useEffect(() => {
-    //     const fetchTransactions = async () => {
-    //         try{
-    //             const response = await axios.get("http://localhost:8083/transactions/recentTransactions/123", {
-    //                 // withCredentials: true,
-    //             })
-    //             setRecentTransactions(response.data)
-    //         }catch (err){
-    //             console.log("There was an error fetching recent tranactions: ", err)
-    //         }
-    //     }
-    //     fetchTransactions()
-    // }, [])
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try{
+                const response = await axios.get("http://localhost:8083/transactions/recentTransactions/123", {
+                    // withCredentials: true,
+                })
+                setRecentTransactions(response.data)
+            }catch (err){
+                console.log("There was an error fetching recent tranactions: ", err)
+            }
+        }
+        fetchTransactions()
+    }, [])
 
 
     // --- Monthly Transactions --
@@ -160,31 +160,42 @@ const Dashboard: React.FC = () => {
                 <div id="accounts-container" className="flex-auto w-1/3">
                     <h1>Accounts</h1>
                     {allAccounts.length ? 
-                    <Accordion bordered={false} items={
-                        allAccounts.map((acc)=> {
-                            return {
-                                title: (
-                                    <div className="flex justify-between items-center">
-                                        <p className="flex items-center"><Icon.AccountBalance className="mr-2" />{acc.type}</p>
-                                        <p className="flex items-center"><Icon.AttachMoney/> {acc.balance}</p>
-                                    </div>
-                                ),
-                                content: (acc.accounts.map((account)=> (
-                                    <div className="flex justify-between">
-                                        <div className="flex">
-                                            <p className="mr-2">{account.accountNumber}</p>|
-                                            <p className="ml-2">{account.institution}</p>
+                    <>
+                        <Accordion bordered={false} items={
+                            allAccounts.map((acc)=> {
+                                return {
+                                    title: (
+                                        <div className="flex justify-between items-center">
+                                            <p className="flex items-center"><Icon.AccountBalance className="mr-2" />{acc.type}</p>
+                                            <p className="flex items-center"><Icon.AttachMoney/> {acc.balance}</p>
                                         </div>
-                                        <p className="flex items-center"><Icon.AttachMoney/>{account.currentBalance}</p>
-                                    </div>
-                                ))
-                                ),
-                                expanded: false,
-                                id: (`${acc.id}`),
-                                headingLevel: "h4"
-                            }
-                        })
-                    } /> : 
+                                    ),
+                                    content: (acc.accounts.map((account)=> (
+                                        <div className="flex justify-between">
+                                            <div className="flex">
+                                                <p className="mr-2">{account.accountNumber}</p>|
+                                                <p className="ml-2">{account.institution}</p>
+                                            </div>
+                                            <p className="flex items-center"><Icon.AttachMoney/>{account.currentBalance}</p>
+                                        </div>
+                                    ))
+                                    ),
+                                    expanded: false,
+                                    id: (`${acc.id}`),
+                                    headingLevel: "h4"
+                                }
+                            })
+                        } /> 
+                        <div className="usa-accordion" >
+                            <button type="button" className="usa-accordion__button" >
+                                <div className="flex justify-between items-center">
+                                    <p className="flex items-center"><Icon.AccountBalance className="mr-2" />Net Cash</p>
+                                    <p className="flex items-center"><Icon.AttachMoney/> {netCash}</p> 
+                                </div>
+                            </button>
+                        </div>
+                    </>
+                    : 
                     <div className="flex flex-col items-center">
                         <p className="mb-4">You don't have any accounts set up yet</p>
                         <Link to="/dashboard/accounts" >
