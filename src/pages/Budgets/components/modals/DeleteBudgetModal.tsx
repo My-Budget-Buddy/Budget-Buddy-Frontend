@@ -1,8 +1,40 @@
-import {  ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
+import {  Button, ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
 import { useRef } from "react";
+import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
+import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
+import { timedDelay } from "../../../../util/util";
 
 const DeleteBudgetModal: React.FC = () => {
+    const dispatch = useAppDispatch();  
+    const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);    
+  
     const modalRef = useRef<ModalRef>(null);
+  
+    async function sendBudgetDeleteRequest(){
+      // Sets buttons to 'waiting', prevent closing
+      dispatch(setIsSending(true));
+  
+      console.log("DELETING BUDGET..."); // <--- This is the bucket to send to the post endpoint
+  
+      await timedDelay(1000);
+  
+      console.log("BUDGET DELETED: ")
+
+      // Reallow all user input again
+      dispatch(setIsSending(false));
+  }
+  
+    async function handleSubmit(e: React.FormEvent) {
+      e.preventDefault();
+  
+      await sendBudgetDeleteRequest();
+      // if successful:
+      // short Delay with sent message
+      // if error:
+      // stop and show error message
+      modalRef.current?.toggleModal();
+    }
+
     return(
         <>
             <ModalToggleButton modalRef={modalRef} opener unstyled>
@@ -19,10 +51,10 @@ const DeleteBudgetModal: React.FC = () => {
                 
                 <ModalFooter>
                 <ButtonGroup>
-                    <ModalToggleButton modalRef={modalRef} secondary closer>
-                        Delete
-                    </ModalToggleButton>
-                    <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
+                    <Button onClick={handleSubmit} disabled={isSending} type={'button'} secondary>
+                        Submit new
+                    </Button>
+                    <ModalToggleButton modalRef={modalRef} disabled={isSending} closer unstyled className="padding-105 text-center">
                         Go back
                     </ModalToggleButton>
                 </ButtonGroup>

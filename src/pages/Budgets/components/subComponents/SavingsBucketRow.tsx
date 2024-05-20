@@ -22,6 +22,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
   const [amountReserved, setAmountReserved] = useState<number>(data.amount_reserved);
   const dispatch = useAppDispatch();  
   const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);    
+  const [initialized, setInitialized] = useState(false);
 
   //Buffered submission for PUT requests that change the reserved amount/is_currently_reserved. If no new changes in 5 seconds, then send the PUT.
   const [lastEditTime, setLastEditTime] = useState<Date | null>(null);
@@ -66,7 +67,6 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     dispatch(setIsSending(false));
 }
 
-const [initialized, setInitialized] = useState(false);
 
 useEffect(() => {
   // After component mounts, set initialized to true

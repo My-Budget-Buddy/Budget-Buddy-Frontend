@@ -19,6 +19,7 @@ const NewCategoryModal: React.FC = () => {
     const dispatch = useAppDispatch();  
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);    
   
+    //TODO Use something to handle form state in the formData state object. This is just a starting point.
     const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
       
@@ -31,9 +32,6 @@ const NewCategoryModal: React.FC = () => {
         },
       }));
     };
-  
-  
-    
   
     async function sendNewBudget(bucket : BudgetProps){
       // Sets buttons to 'waiting', prevent closing
@@ -49,15 +47,14 @@ const NewCategoryModal: React.FC = () => {
   
       // Reallow all user input again
       dispatch(setIsSending(false));
-  }
-  
-  
-  
+    }
+
     async function handleSubmit(e: React.FormEvent){
       e.preventDefault();
       await sendNewBudget(formData)
       modalRef.current?.toggleModal();
     }
+
     return(
         <>
             <ModalToggleButton modalRef={modalRef} opener className='mx-2'>
