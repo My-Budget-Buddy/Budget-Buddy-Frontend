@@ -1,8 +1,49 @@
-import {  ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
+import {  Button, ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
 import { useRef } from "react";
+import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
+import { timedDelay } from "../../../../util/util";
+import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 
 const DeleteBucketModal: React.FC = () => {
     const modalRef = useRef<ModalRef>(null);
+    const dispatch = useAppDispatch();  
+    const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);    
+
+    async function sendDeleteRequest(){
+        // Sets buttons to 'waiting', prevent closing
+        dispatch(setIsSending(true));
+    
+        //send post to endpoint
+        //on success, refreshSavingsBuckets();
+    
+        //POST to endpoint
+        // const repsonse = await fetch(... send bucket)
+        console.log("DELETING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+    
+        await timedDelay(1000);
+    
+        console.log("BUCKET DELETED: ")
+    
+        //if good: refreshSavingsBuckets
+        //else: return error
+    
+        // Reallow all user input again
+        dispatch(setIsSending(false));
+    }
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+    
+        await sendDeleteRequest();
+        // if successful:
+        // short Delay with sent message
+        // if error:
+        // stop and show error message
+    
+        modalRef.current?.toggleModal();
+      }
+    
+
     return(
         <>
             <ModalToggleButton modalRef={modalRef} opener unstyled>
@@ -19,10 +60,10 @@ const DeleteBucketModal: React.FC = () => {
                 
                 <ModalFooter>
                     <ButtonGroup>
-                        <ModalToggleButton modalRef={modalRef} secondary closer>
-                            Delete
-                        </ModalToggleButton>
-                        <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
+                        <Button onClick={handleSubmit} disabled={isSending} type={'button'} secondary>
+                                Delete
+                        </Button>
+                        <ModalToggleButton modalRef={modalRef} disabled={isSending} closer unstyled className="padding-105 text-center">
                             Go back
                         </ModalToggleButton>
                     </ButtonGroup>
