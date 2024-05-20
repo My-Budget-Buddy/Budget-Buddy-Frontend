@@ -2,6 +2,7 @@ import { LineChart, Gauge } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalHeading, ModalFooter, ModalRef } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 interface AccountTotals {
     checking?: number;
@@ -34,9 +35,6 @@ interface TransactionType {
 
 const Dashboard: React.FC = () => {
     const modalRef = useRef<ModalRef>(null)
-    const [recentTransactions, setRecentTransactions] = useState<TransactionType[]>([])
-
-    const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null);
     const [accountTotals, setAccountTotals] = useState({
         checking: 0,
         credit: 0,
@@ -44,6 +42,9 @@ const Dashboard: React.FC = () => {
         investment: 0
     })
     const [netCash, setNetCash] = useState(0)
+    const [recentTransactions, setRecentTransactions] = useState<TransactionType[]>([])
+    const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null)
+
 
     //---Calculate net cash---
     // useEffect(()=> {
@@ -53,55 +54,44 @@ const Dashboard: React.FC = () => {
 
     // ----Get Accounts----
     //backend: /accounts/userId
-    // useEffect(() => {
-    //     fetch("http://localhost:8080/accounts/123", {
-    //         // credentials: "include",
-    //         method: "GET",
-    //     })
-    //     .then((data) => {
-    //         if (data.ok){
-    //             return data.json()
-    //         }else{
-    //             console.log("Error fetching account data")
-    //         }
-    //     })
-    //     .then((accounts)=> {
-    //         let totals= accounts.reduce((prev: AccountTotals, account: AccountType)=> {
-    //             const accountType = account.type.toLowerCase() as keyof AccountTotals
-    //             prev[accountType]! += account.currentBalance
-    //             return prev
-    //         }, {checking: 0,
-    //             credit: 0,
-    //             savings: 0,
-    //             investment: 0})
-    //         setAccountTotals(totals)
-    //     })
-    //     .catch((error)=> {
-    //         console.log('There was an error getting account data', error)
-    //     })
-    // }, [])
+    useEffect(() => {
+        const fetchAccounts = async () => {
+            try{
+                const response = await axios.get("http://localhost:8080/accounts/123", {
+                    // withCredentials: true,
+                })
+                const accounts = response.data
+                let totals= accounts.reduce((prev: AccountTotals, account: AccountType)=> {
+                    const accountType = account.type.toLowerCase() as keyof AccountTotals
+                    prev[accountType]! += account.currentBalance
+                    return prev
+                }, {checking: 0,
+                    credit: 0,
+                    savings: 0,
+                    investment: 0})
+                setAccountTotals(totals)
+            }catch (err){
+                console.log("There was an error fetching account data: ", err)
+            }
+        }
+        fetchAccounts()
+    }, [])
 
     // ----Recent Transactions ---
-    // useEffect(() => {
-    //     fetch("http://localhost:8083/transactions/recentTransactions/123", {
-    //         // credentials: "include",
-    //         method: "GET",
-    //     })
-    //     .then((data) => {
-    //         if (data.ok){
-    //             return data.json()
-    //         }else{
-    //             console.log("Error fetching recent transaction data")
-    //         }
-    //     })
-    //     .then((transactions)=> {
-    //         console.log('transaction: ', transactions)
-    //         setRecentTransactions(transactions)
-    //     })
-    //     .catch((error)=> {
-    //         console.log('There was an error getting recent transactions', error)
-    //     })
-    // }, [])
+    //backend: /transactions/recentTransactions/userId
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try{
+                const response = await axios.get("http://localhost:8083/transactions/recentTransactions/123", {
+                    // withCredentials: true,
+                })
+                setRecentTransactions(response.data)
+            }catch (err){
+                console.log("There was an erro fetching recent tranactions: ", err)
+            }
+        }
+        fetchTransactions()
+    }, [])
 
 
     return (
