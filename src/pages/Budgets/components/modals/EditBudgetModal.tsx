@@ -41,14 +41,14 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ category, budgeted, isR
           }));
         };
       
-        async function sendNewBudget(bucket : BudgetProps){
+        async function sendUpdatedBudget(budget : BudgetProps){
           // Sets buttons to 'waiting', prevent closing
           dispatch(setIsSending(true));
-          console.log("UPDATING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+          console.log("UPDATING BUDGET..."); // <--- This is the bucket to send to the post endpoint
       
-          await timedDelay(1000); //TODO POST REQUEST HERE
+          await timedDelay(1000); //TODO PUT REQUEST HERE
       
-          console.log("BUCKET SENT: ", bucket)
+          console.log("BUDGET SENT: ", budget)
       
           //if good: refreshSavingsBuckets
           //else: return error
@@ -59,7 +59,7 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ category, budgeted, isR
     
         async function handleSubmit(e: React.FormEvent){
           e.preventDefault();
-          await sendNewBudget(formData)
+          await sendUpdatedBudget(formData)
           modalRef.current?.toggleModal();
         }
     

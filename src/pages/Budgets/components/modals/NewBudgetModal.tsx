@@ -33,14 +33,14 @@ const NewCategoryModal: React.FC = () => {
       }));
     };
   
-    async function sendNewBudget(bucket : BudgetProps){
+    async function sendNewBudget(budget : BudgetProps){
       // Sets buttons to 'waiting', prevent closing
       dispatch(setIsSending(true));
-      console.log("UPDATING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+      console.log("SUBMITTING BUDGET..."); // <--- This is the bucket to send to the post endpoint
   
       await timedDelay(1000); //TODO POST REQUEST HERE
   
-      console.log("BUCKET SENT: ", bucket)
+      console.log("BUDGET SENT: ", budget)
   
       //if good: refreshSavingsBuckets
       //else: return error

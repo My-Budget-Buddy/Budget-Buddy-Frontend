@@ -14,9 +14,9 @@ const DeleteBudgetModal: React.FC = () => {
       // Sets buttons to 'waiting', prevent closing
       dispatch(setIsSending(true));
   
-      console.log("DELETING BUDGET..."); // <--- This is the bucket to send to the post endpoint
+      console.log("DELETING BUDGET..."); 
   
-      await timedDelay(1000);
+      await timedDelay(1000); //TODO Delete request here
   
       console.log("BUDGET DELETED: ")
 

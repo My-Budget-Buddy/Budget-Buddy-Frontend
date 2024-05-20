@@ -47,14 +47,9 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({data}, {children})  =>
     // Sets buttons to 'waiting', prevent closing
     dispatch(setIsSending(true));
 
-    //send post to endpoint
-    //on success, refreshSavingsBuckets();
+    console.log("UPDATING BUCKET..."); 
 
-    //POST to endpoint
-    // const repsonse = await fetch(... send bucket)
-    console.log("UPDATING BUCKET..."); // <--- This is the bucket to send to the post endpoint
-
-    await timedDelay(1000);
+    await timedDelay(1000);  //TODO Edit request here
 
     console.log("BUCKET SENT: ", bucket)
 
@@ -73,7 +68,6 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({data}, {children})  =>
     // short Delay with sent message
     // if error:
     // stop and show error message
-
     modalRef.current?.toggleModal();
   }
 
@@ -81,6 +75,7 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({data}, {children})  =>
     <>
       <ModalToggleButton modalRef={modalRef} opener unstyled>
         <Icon.Edit />
+        {children}
         </ModalToggleButton>
         
 

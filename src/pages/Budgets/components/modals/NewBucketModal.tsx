@@ -44,14 +44,9 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
     // Sets buttons to 'waiting', prevent closing
     dispatch(setIsSending(true));
 
-    //send post to endpoint
-    //on success, refreshSavingsBuckets();
-
-    //POST to endpoint
-    // const repsonse = await fetch(... send bucket)
     console.log("SENDING BUCKET..."); // <--- This is the bucket to send to the post endpoint
 
-    await timedDelay(1000);
+    await timedDelay(1000); //TODO post request here
 
     console.log("BUCKET SENT: ", bucket)
 

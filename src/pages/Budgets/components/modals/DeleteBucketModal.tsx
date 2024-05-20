@@ -13,14 +13,9 @@ const DeleteBucketModal: React.FC = () => {
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
     
-        //send post to endpoint
-        //on success, refreshSavingsBuckets();
-    
-        //POST to endpoint
-        // const repsonse = await fetch(... send bucket)
         console.log("DELETING BUCKET..."); // <--- This is the bucket to send to the post endpoint
     
-        await timedDelay(1000);
+        await timedDelay(1000); //TODO Delete request here
     
         console.log("BUCKET DELETED: ")
     
