@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const budgetSlice = createSlice({
+
   name: 'budgetSummary',
   initialState: {
     totalAvailableFunds: 0,
