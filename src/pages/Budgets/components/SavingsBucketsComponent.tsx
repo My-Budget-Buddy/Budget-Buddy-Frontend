@@ -1,4 +1,4 @@
-import SavingsBucketTable from "./SavingsBucketsTable";
+import SavingsBucketTable from "./subComponents/SavingsBucketsTable";
 
 function SavingsBucketComponent() {
 

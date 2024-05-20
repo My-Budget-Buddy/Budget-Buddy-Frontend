@@ -1,7 +1,7 @@
-import { Checkbox, Icon } from "@trussworks/react-uswds";
-import EditBudgetModal from "./EditBudgetModal";
+import { Checkbox } from "@trussworks/react-uswds";
 import DeleteBudgetModal from "./DeleteBudgetModal";
 import BudgetDetailsModal from "./BudgetDetailsModal";
+import EditBudgetModal from "../modals/EditBudgetModal";
 
 interface BudgetsRowProps {
     category: string;
@@ -17,7 +17,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved,
 
     // The amount of money that will be reserved if the box is checked. It will always be greater than or equal to 0
     const reservedValue = remaining >= 0 ? remaining : 0;
-
+    console.log("test")
     return(
         <tr>
             <td>{category}</td>

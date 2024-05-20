@@ -1,6 +1,6 @@
 import { Table, Button, ButtonGroup, Icon } from '@trussworks/react-uswds'
-import BudgetsRow from './BudgetsRow'
-import NewBudgetModal from './NewBudgetModal'
+import BudgetsRow from './subComponents/BudgetsRow'
+import NewBudgetModal from './modals/NewBudgetModal'
 import { useEffect, useState } from 'react';
 
 const BudgetsComponent: React.FC = () => {
