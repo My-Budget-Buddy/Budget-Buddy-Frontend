@@ -1,6 +1,6 @@
 import { Checkbox } from "@trussworks/react-uswds";
-import DeleteBudgetModal from "./DeleteBudgetModal";
-import BudgetDetailsModal from "./BudgetDetailsModal";
+import DeleteBudgetModal from "../modals/DeleteBudgetModal";
+import BudgetDetailsModal from "../modals/BudgetDetailsModal";
 import EditBudgetModal from "../modals/EditBudgetModal";
 
 interface BudgetsRowProps {

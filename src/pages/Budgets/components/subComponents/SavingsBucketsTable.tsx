@@ -1,7 +1,7 @@
 import {  Table } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import SavingsBucketRow from "./SavingsBucketRow";
-import NewBucketModal from "../modals/NewBucketModal";
+import NewBucketModal from "../modals/old_newbucketmodal";
 
 interface SavingsBucketRowProps {
     data: {

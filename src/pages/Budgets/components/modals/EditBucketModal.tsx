@@ -1,13 +1,14 @@
-import { Button } from '@mui/material';
-import { ButtonGroup, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
+import { Button, ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
 import React, { useRef, useState } from 'react';
-import { sendNewBucket } from '../misc/sharedFunctions';
-import { useAppSelector } from '../../../../util/redux/hooks';
+// import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
+
 
 interface EditBucketModalProps {
   data: SavingsBucketRowProps
   children: React.ReactNode;
 }
+
+
 
 interface SavingsBucketRowProps {
   data:{
@@ -18,10 +19,7 @@ interface SavingsBucketRowProps {
   };
 }
 
-const EditBucketModal: React.FC<EditBucketModalProps> = ({data}, {children}) => {
-
-
-  const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
+const EditBucketModal: React.FC<EditBucketModalProps> = ({data}, {children})  => {
 
 
   const [formData, setFormData] = useState<SavingsBucketRowProps>(data);
@@ -42,12 +40,10 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({data}, {children}) => 
     }));
   };
 
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     // action(formData);
-
-
-    await sendNewBucket(formData);
 
     // if successful:
     // short Delay with sent message
@@ -58,37 +54,36 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({data}, {children}) => 
   }
 
   return (
-    <div>
-      <h2>{children}</h2>
-      <ModalToggleButton modalRef={modalRef} opener>
-        Edit bucket
+    <>
+      <ModalToggleButton modalRef={modalRef} opener unstyled>
+        <Icon.Edit />
         </ModalToggleButton>
         
 
         <Modal ref={modalRef} id="example-modal-1" aria-labelledby="modal-1-heading" aria-describedby="modal-1-description">
           <ModalHeading id="modal-1-heading">
-            Edit this savings bucket
+            Add new savings bucket
           </ModalHeading>
             <div>
                 <TextInput  type="text" name="name" value={formData.data.name} onChange={handleChangeInput} placeholder="Name" id={''} />
-                <TextInput  type="number" name="amount_required" value={formData.data.amount_required} onChange={handleChangeInput} placeholder="Amount" id={''} />
+                <TextInput  type="number" name="amount_required" value={formData.data.amount_required} onChange={handleChangeInput} placeholder="Amount required" id={''} />
             </div>
             
           <ModalFooter>
             <ButtonGroup>
-              {/* <ModalToggleButton modalRef={modalRef} >
-              </ModalToggleButton> */}
-
-              <Button onClick={handleSubmit} disabled={isSending}>
+              <Button onClick={handleSubmit} disabled={false} type={'button'}>
                 Submit new
               </Button>
-              <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center" disabled={isSending}>
+              <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
                 Go back
               </ModalToggleButton>
             </ButtonGroup>
           </ModalFooter>
         </Modal>
-    </div>
+
+
+      {/* <Button onClick={action}>Add new savings bucket</Button> */}
+    </>
   );
 };
 

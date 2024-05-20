@@ -1,5 +1,5 @@
 import { Checkbox } from "@trussworks/react-uswds";
-import EditBucketModal from "../modals/EditBucketModal";
+import EditBucketModal from "../modals/old_EditBucketModal";
 import { useEffect, useRef, useState } from "react";
 import ReservedMoniesInput from "./ReservedMoniesInput";
 import { State } from "../../../../util/misc/interfaces";

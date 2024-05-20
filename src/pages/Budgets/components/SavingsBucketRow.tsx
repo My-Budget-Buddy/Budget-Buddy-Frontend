@@ -1,8 +1,8 @@
 import { Checkbox } from "@trussworks/react-uswds";
-import EditBucketModal from "./EditBucketModal";
+import EditBucketModal from "./modals/EditBucketModal";
 import { useState } from "react";
-import ReservedMoniesInput from "./ReservedMoniesInput";
-import DeleteBucketModal from "./DeleteBucketModal";
+import ReservedMoniesInput from "./subComponents/ReservedMoniesInput";
+import DeleteBucketModal from "./modals/DeleteBucketModal";
 
 
 interface SavingsBucketRowProps {
@@ -24,7 +24,9 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
         <td>{data.name}</td>
         {/* TODO Fix css */}
         <td >{data.amount_required}</td>
-        <td ><ReservedMoniesInput amount={data.amount_reserved}/></td>
+        <td ><ReservedMoniesInput amount={data.amount_reserved} onChange={function (n: number): void {
+        throw new Error("Function not implemented.");
+      } }/></td>
         <td>
           <Checkbox id={data.name} name={"is_currently_reserved"} label={"Mark as reserved"} checked={currentlyReserved} onChange={() => {
             setCurrentlyReserved(!currentlyReserved);

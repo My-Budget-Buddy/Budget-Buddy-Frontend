@@ -1,9 +1,9 @@
-import { Button } from '@mui/material';
 import { ButtonGroup, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
 import React, { useRef, useState } from 'react';
-import { timedDelay } from '../../../../util/util';
+// import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
 
 interface NewBucketModalProps {
+  action: () => void;
   children: React.ReactNode;
 }
 
@@ -15,9 +15,7 @@ interface SavingsBucketRowProps {
     is_currently_reserved: boolean;
   };
 }
-
-const NewBucketModal: React.FC<NewBucketModalProps> = ({children }) => {
-  const [isSending, setIsSending] = useState<boolean>(false);
+const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
   const [formData, setFormData] = useState<SavingsBucketRowProps>( {
     data:{
       name: "", 
@@ -27,67 +25,32 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({children }) => {
     }
   });
 
-
-  async function sendNewBucket(bucket : SavingsBucketRowProps){
-    // Sets buttons to 'waiting', prevent closing
-    setIsSending(true);
-
-    //send post to endpoint
-    //on success, refreshSavingsBuckets();
-
-    //POST to endpoint
-    // const repsonse = await fetch(... send bucket)
-    console.log("timer started")
-    console.log("SENDING BUCKET", bucket); // <--- This is the bucket to send to the post endpoint
-
-    await timedDelay(1000);
-
-    console.log("timer done")
-
-    //if good: refreshSavingsBuckets
-    //else: return error
-
-    // Reallow all user input again
-    setIsSending(false);
-
-}
-  
-  const modalRef = useRef<ModalRef>(null);
-
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
     
-    // Nested data interface is useful to keep simple top level component declarations, but leads to this. 
-    setFormData(prevState => ({
-      ...prevState,
-      data: {
-        ...prevState.data,
-        [name]: value,
-      },
-    }));
-  };
+    const modalRef = useRef<ModalRef>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    // action(formData);
+    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        // TODO
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any 
+        setFormData((prevState: any) => ({
+          ...prevState,
+          [name]: value
+        }));
+      };
 
+      const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        console.log(formData)
+        //TODO Post to endpoint with data
 
-    await sendNewBucket(formData);
-
-    // if successful:
-    // short Delay with sent message
-    // if error:
-    // stop and show error message
-
-    modalRef.current?.toggleModal();
-  }
+      };
 
   return (
     <div>
-      <h2>{children}</h2>
       <ModalToggleButton modalRef={modalRef} opener>
-        Add new savings bucket
-        </ModalToggleButton>
+        {children}
+      </ModalToggleButton>
         
 
         <Modal ref={modalRef} id="example-modal-1" aria-labelledby="modal-1-heading" aria-describedby="modal-1-description">
@@ -101,13 +64,10 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({children }) => {
             
           <ModalFooter>
             <ButtonGroup>
-              {/* <ModalToggleButton modalRef={modalRef} >
-              </ModalToggleButton> */}
-
-              <Button onClick={handleSubmit} disabled={isSending}>
-                Submit new
-              </Button>
-              <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center" disabled={isSending}>
+              <ModalToggleButton modalRef={modalRef} onClick={handleSubmit} closer>
+                Continue without saving
+              </ModalToggleButton>
+              <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
                 Go back
               </ModalToggleButton>
             </ButtonGroup>
