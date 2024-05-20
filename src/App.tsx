@@ -13,6 +13,7 @@ import Spending from "./pages/Spending/Spending.tsx";
 import Login from "./pages/AuthenticationPages/Login.tsx";
 import Register from "./pages/AuthenticationPages/Register.tsx";
 import TaxEditView from "./pages/Tax/TaxEditView.tsx";
+import SpendingMonth from "./pages/Spending/SpendingMonth.tsx";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                 <Route path={"accounts"} element={<Accounts/>}/>
                 <Route path={"budgets"} element={<Budgets/>}/>
                 <Route path={"spending"} element={<Spending/>}/>
+                <Route path={"spending/:month"} element={<SpendingMonth/>}/>
 
                 <Route path={"transactions"} element={<Transactions/>}/>
                 <Route path={"transactions/:name"} element={<TransactionHistory/>}/>
