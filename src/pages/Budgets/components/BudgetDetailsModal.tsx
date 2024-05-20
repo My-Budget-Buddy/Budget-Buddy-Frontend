@@ -1,13 +1,16 @@
-import {  Checkbox, Label, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput, Textarea, Icon, Table, Button } from "@trussworks/react-uswds";
+import { Label, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, Textarea, Icon, Table } from "@trussworks/react-uswds";
 import { useRef } from "react";
 
-interface CategoryProps {
+interface BudgetDetailsProps {
     category: string;
     budgeted: number;
+    actual: number;
+    remaining: number;
     isReserved: boolean;
     notes: string;
 }
 
+// mock data
 const transactions = [
     { date: '02/20', name: 'Metro by T-Mobile', category: 'Bills & Utilities', amount: '30.00' },
     { date: '02/20', name: 'Publix', category: 'Groceries', amount: '15.85' },
@@ -27,8 +30,11 @@ const transactions = [
     
 ];
 
-const BudgetDetailsModal: React.FC<CategoryProps> = ({ category, budgeted, isReserved, notes }) => {
+const BudgetDetailsModal: React.FC<BudgetDetailsProps> = ({ category, budgeted, actual, remaining, isReserved, notes }) => {
     const modalRef = useRef<ModalRef>(null);
+
+    const transactionsLength = transactions.length;
+
     return(
         <>
             <ModalToggleButton modalRef={modalRef} opener unstyled>
@@ -41,14 +47,26 @@ const BudgetDetailsModal: React.FC<CategoryProps> = ({ category, budgeted, isRes
                 </ModalHeading>
 
                 <div className="flex">
-                    <div className="w-1/2 mr-4">
-                    <Label htmlFor='category'>Category</Label>
-                <TextInput id='category' name='category' type='text' defaultValue={ category } disabled></TextInput>
+                    <div className="w-1/2">
+                        <div className="flex justify-between mr-10 mt-12">
+                            <div className="text-lg font-bold">Category:</div>
+                            <div className="text-lg">{ category }</div>
+                        </div>
 
-                <Label htmlFor='budgeted'>Monthly Budget</Label>
-                <TextInput id='budgeted' name='budgeted' type='number' defaultValue={ budgeted } disabled></TextInput>
+                        <div className="flex justify-between mr-10 mt-4">
+                            <div className="text-lg font-bold">Monthly Budget:</div>
+                            <div className="text-lg">$ { budgeted }</div>
+                        </div>
 
-                <Checkbox id='is-reserved' name="is-reserved-checkbox" label='Reserve budget from available funds' className="mt-8" defaultChecked={ isReserved } onChange={() => {}} disabled/>
+                        <div className="flex justify-between mr-10 mt-4">
+                            <div className="text-lg font-bold">Actual:</div>
+                            <div className="text-lg">$ { actual }</div>
+                        </div>
+                        <div className="flex justify-between mr-10 mt-4">
+                            <div className="text-lg font-bold">Remaining:</div>
+                            <div className="text-lg">$ { remaining }</div>
+                        </div>
+
                     </div>
 
                     <div className="w-1/2">
@@ -58,40 +76,33 @@ const BudgetDetailsModal: React.FC<CategoryProps> = ({ category, budgeted, isRes
                     
                 </div>
 
-                <h1>Transaction History</h1>
+                <div className="flex items-center justify-between mt-8">
+                    <div className="text-3xl">{ category } Transaction History</div>
+                    <div className="ml-2">{transactionsLength} {'transaction(s)'} total</div>
+                </div>
+
                
                 <div className="overflow-y-auto max-h-96">
-                <Table fullWidth >
-                    <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Amount</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {transactions.map((transaction, index) => (
-                        <tr key={index}>
-                            <td>{transaction.date}</td>
-                            <td>{transaction.name}</td>
-                            <td><Icon.AttachMoney />{transaction.amount}</td>
+                    <Table fullWidth >
+                        <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Amount</th>
                         </tr>
-                    ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                        {transactions.map((transaction, index) => (
+                            <tr key={index}>
+                                <td>{transaction.date}</td>
+                                <td>{transaction.name}</td>
+                                <td><Icon.AttachMoney />{transaction.amount}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
                 </div>
-                {/*
-                <Label htmlFor='category'>Category</Label>
-                <TextInput id='category' name='category' type='text' defaultValue={ category } disabled></TextInput>
-
-                <Label htmlFor='budgeted'>Monthly Budget</Label>
-                <TextInput id='budgeted' name='budgeted' type='number' defaultValue={ budgeted } disabled></TextInput>
-
-                <Checkbox id='is-reserved' name="is-reserved-checkbox" label='Reserve budget from available funds' className="mt-8" defaultChecked={ isReserved } onChange={() => {}} disabled/>
-
-                <Label htmlFor='notes' >Notes:</Label>
-                <Textarea id="notes" name="notes" defaultValue={ notes } disabled/>
-    */}
+                
                 <ModalFooter>
                         <ModalToggleButton modalRef={modalRef} closer>
                             Done
