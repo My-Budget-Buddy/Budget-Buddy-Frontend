@@ -21,6 +21,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMatch } from "react-router-dom";
+import { BarChart } from "@mui/x-charts";
 
 interface Transaction {
     id: number;
@@ -253,6 +254,23 @@ function TransactionHistory() {
                             Total spent: {transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0)}
                             <hr />
                             Total transactions: {transactions.length}
+                            <hr />
+                            <BarChart
+                                series={transactions.map((transaction) => {
+                                    return { data: [transaction.amount] };
+                                })}
+                                // xAxis={[
+                                //     {
+                                //         data: [
+                                //             transactions.filter((value, index, array) => {
+
+                                //             })
+                                //         ],
+                                //         scaleType: "band"
+                                //     }
+                                // ]}
+                                height={200}
+                            />
                         </CardBody>
                     </Card>
                 </CardGroup>
