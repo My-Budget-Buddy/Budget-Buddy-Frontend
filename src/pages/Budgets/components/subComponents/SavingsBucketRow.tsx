@@ -27,7 +27,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
 
   const formState = useAppSelector((state) => state.formStatus.status);
   
-
+//TODO This is likely going to be deprecated in favor of doing fetches within subcomponents rather than global form management.
   useEffect(() => {
     const fetchData = async () => {
       if (formState === State.WAITING) {
@@ -71,7 +71,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
             setCurrentlyReserved(!currentlyReserved);
           }}/>
           </td>
-        <td><EditBucketModal action={function (): void {}} data={{...data}}/></td>
+        <td><EditBucketModal data={{data}}> EDIT BUCKET MODAL </EditBucketModal></td>
       </tr>
     );
   };

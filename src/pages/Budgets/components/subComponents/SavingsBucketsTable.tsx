@@ -19,20 +19,6 @@ function SavingsBucketTable() {
         refreshSavingsBuckets();
     }, []);
 
-    const sendNewBucket = (bucket : SavingsBucketRowProps) => {
-        //send post to endpoint
-        //on success, refreshSavingsBuckets();
-
-        //POST to endpoint
-        // const repsonse = await fetch(... send bucket)
-
-        //if good: refreshSavingsBuckets
-        //else: return error
-
-        console.log(bucket); // <--- This is the bucket to send to the post endpoint
-
-    }
-
     async function refreshSavingsBuckets() {
         //GET request to bucket endpoint
         // .then -> setListOfBuckets(response)
@@ -45,6 +31,8 @@ function SavingsBucketTable() {
             {data: { name: "name", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false}}, 
             {data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: true}}
         ]);
+
+        console.log("refreshed")
     }
     
     return (
@@ -68,7 +56,7 @@ function SavingsBucketTable() {
                 </tbody>
             </Table>
 
-            <NewBucketModal action={sendNewBucket}>
+            <NewBucketModal>
                 Add new savings bucket
             </NewBucketModal>
 

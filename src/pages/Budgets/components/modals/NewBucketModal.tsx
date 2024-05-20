@@ -1,10 +1,9 @@
 import { Button } from '@mui/material';
 import { ButtonGroup, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
 import React, { useRef, useState } from 'react';
-// import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
+import { timedDelay } from '../../../../util/util';
 
 interface NewBucketModalProps {
-  action: (e: SavingsBucketRowProps) => void;
   children: React.ReactNode;
 }
 
@@ -17,36 +16,71 @@ interface SavingsBucketRowProps {
   };
 }
 
-const NewBucketModal: React.FC<NewBucketModalProps> = ({ action, children }) => {
-    const [formData, setFormData] = useState<SavingsBucketRowProps>( {
-      data:{
-        name: "", 
-        amount_required: 0, 
-        amount_reserved: 0, 
-        is_currently_reserved: false, 
-      }
-    });
+const NewBucketModal: React.FC<NewBucketModalProps> = ({children }) => {
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const [formData, setFormData] = useState<SavingsBucketRowProps>( {
+    data:{
+      name: "", 
+      amount_required: 0, 
+      amount_reserved: 0, 
+      is_currently_reserved: false, 
+    }
+  });
+
+
+  async function sendNewBucket(bucket : SavingsBucketRowProps){
+    // Sets buttons to 'waiting', prevent closing
+    setIsSending(true);
+
+    //send post to endpoint
+    //on success, refreshSavingsBuckets();
+
+    //POST to endpoint
+    // const repsonse = await fetch(... send bucket)
+    console.log("timer started")
+    console.log("SENDING BUCKET", bucket); // <--- This is the bucket to send to the post endpoint
+
+    await timedDelay(1000);
+
+    console.log("timer done")
+
+    //if good: refreshSavingsBuckets
+    //else: return error
+
+    // Reallow all user input again
+    setIsSending(false);
+
+}
+  
+  const modalRef = useRef<ModalRef>(null);
+
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     
-    const modalRef = useRef<ModalRef>(null);
+    // Nested data interface is useful to keep simple top level component declarations, but leads to this. 
+    setFormData(prevState => ({
+      ...prevState,
+      data: {
+        ...prevState.data,
+        [name]: value,
+      },
+    }));
+  };
 
-    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      
-      // Nested data interface is useful to keep simple top level component declarations, but leads to this. 
-      setFormData(prevState => ({
-        ...prevState,
-        data: {
-          ...prevState.data,
-          [name]: value,
-        },
-      }));
-    };
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // action(formData);
 
-      const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        action(formData);
-        modalRef.current?.toggleModal();
-      };
+
+    await sendNewBucket(formData);
+
+    // if successful:
+    // short Delay with sent message
+    // if error:
+    // stop and show error message
+
+    modalRef.current?.toggleModal();
+  }
 
   return (
     <div>
@@ -70,10 +104,10 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ action, children }) => 
               {/* <ModalToggleButton modalRef={modalRef} >
               </ModalToggleButton> */}
 
-              <Button onClick={handleSubmit}>
+              <Button onClick={handleSubmit} disabled={isSending}>
                 Submit new
               </Button>
-              <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
+              <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center" disabled={isSending}>
                 Go back
               </ModalToggleButton>
             </ButtonGroup>
