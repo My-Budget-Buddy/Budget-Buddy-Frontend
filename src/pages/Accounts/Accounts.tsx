@@ -12,8 +12,17 @@ const Accounts: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [accounts, setAccounts] = useState<Account[] | null>(null);
 
-    function handleDelete(): void {
-        throw new Error("Function not implemented.");
+    const handleDelete = (accountId: number): void => {
+        fetch(`http://localhost:8080/accounts/1/${accountId}`, {
+            method: 'DELETE',
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Error deleting account");
+                }
+                setAccounts((prevAccounts) => prevAccounts?.filter(acc => acc.id !== accountId) || null);
+            })
+            .catch((err: Error) => setError(err.message));
     }
 
     useEffect(() => {
@@ -41,6 +50,8 @@ const Accounts: React.FC = () => {
 
         return accounts.filter((acc) => acc.type === "CREDIT").reduce((sum, acc) => sum + acc.currentBalance, 0);
     }, [accounts]);
+
+    const netCash = totalBalance - debts;
 
     return (
         <>
@@ -72,26 +83,49 @@ const Accounts: React.FC = () => {
                 </div>
 
                 <div className="flex justify-center pt-6">
-                    <Gauge
-                        width={500}
-                        height={200}
-                        value={totalBalance - debts}
-                        valueMin={0}
-                        valueMax={totalBalance} // max is the total of your assets
-                        startAngle={-60}
-                        endAngle={60}
-                        sx={{
-                            [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: "40px", // Adjust the font size // Change the color to blue
-                                fontWeight: "bold", // Make the text bold
-                                transform: "translate(0px, -50px)" // Adjust position if needed
-                            },
-                            [`& .${gaugeClasses.valueArc}`]: {
-                                fill: "#52b202"
-                            }
-                        }}
-                        text={({ value }) => `${formatCurrency(value!)}`}
-                    />
+                    {netCash >= 0 ? (
+                        <Gauge
+                            width={500}
+                            height={200}
+                            value={netCash}
+                            valueMin={0}
+                            valueMax={totalBalance} // max is the total of your assets
+                            startAngle={-60}
+                            endAngle={60}
+                            sx={{
+                                [`& .${gaugeClasses.valueText}`]: {
+                                    fontSize: "40px", // Adjust the font size // Change the color to blue
+                                    fontWeight: "bold", // Make the text bold
+                                    transform: "translate(0px, -50px)" // Adjust position if needed
+                                },
+                                [`& .${gaugeClasses.valueArc}`]: {
+                                    fill: "#52b202" // green for gain
+                                }
+                            }}
+                            text={({ value }) => `${formatCurrency(value!)}`}
+                        />
+                    ) : (
+                        <Gauge
+                            width={500}
+                            height={200}
+                            value={-netCash}
+                            valueMin={0}
+                            valueMax={totalBalance} // max is the total of your assets
+                            startAngle={60}
+                            endAngle={-60}
+                            sx={{
+                                [`& .${gaugeClasses.valueText}`]: {
+                                    fontSize: "40px", // Adjust the font size // Change the color to blue
+                                    fontWeight: "bold", // Make the text bold
+                                    transform: "translate(0px, -50px)" // Adjust position if needed
+                                },
+                                [`& .${gaugeClasses.valueArc}`]: {
+                                    fill: "#b20202" // red for loss
+                                }
+                            }}
+                            text={({ value }) => `${formatCurrency(value!)}`}
+                        />
+                    )}
                 </div>
                 <div className="flex justify-center">
                     <table className="w-50  divide-gray-200">
@@ -138,7 +172,7 @@ const Accounts: React.FC = () => {
                                     accounts
                                         .filter((acc) => acc.type === "CHECKING")
                                         .map((acc) => (
-                                            <Grid row>
+                                            <Grid row key={acc.id}>
                                                 <Grid className="flex justify-start" tablet={{ col: 2 }}>
                                                     {acc.institution}
                                                 </Grid>
@@ -149,7 +183,7 @@ const Accounts: React.FC = () => {
                                                     {formatCurrency(acc.currentBalance)}
                                                 </Grid>
                                                 <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete()}>
+                                                    <button onClick={() => handleDelete(acc.id)}>
                                                         <Icon.Delete />
                                                     </button>
                                                 </Grid>
@@ -173,7 +207,7 @@ const Accounts: React.FC = () => {
                                     accounts
                                         .filter((acc) => acc.type === "CREDIT")
                                         .map((acc) => (
-                                            <Grid row>
+                                            <Grid row key={acc.id}>
                                                 <Grid className="flex justify-start" tablet={{ col: 2 }}>
                                                     {acc.institution}
                                                 </Grid>
@@ -184,7 +218,7 @@ const Accounts: React.FC = () => {
                                                     {formatCurrency(acc.currentBalance)}
                                                 </Grid>
                                                 <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete()}>
+                                                    <button onClick={() => handleDelete(acc.id)}>
                                                         <Icon.Delete />
                                                     </button>
                                                 </Grid>
@@ -208,7 +242,7 @@ const Accounts: React.FC = () => {
                                     accounts
                                         .filter((acc) => acc.type === "SAVINGS")
                                         .map((acc) => (
-                                            <Grid row>
+                                            <Grid row key={acc.id}>
                                                 <Grid className="flex justify-start" tablet={{ col: 2 }}>
                                                     {acc.institution}
                                                 </Grid>
@@ -219,7 +253,7 @@ const Accounts: React.FC = () => {
                                                     {formatCurrency(acc.currentBalance)}
                                                 </Grid>
                                                 <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete()}>
+                                                    <button onClick={() => handleDelete(acc.id)}>
                                                         <Icon.Delete />
                                                     </button>
                                                 </Grid>
@@ -243,7 +277,7 @@ const Accounts: React.FC = () => {
                                     accounts
                                         .filter((acc) => acc.type === "INVESTMENT")
                                         .map((acc) => (
-                                            <Grid row>
+                                            <Grid row key={acc.id}>
                                                 <Grid className="flex justify-start" tablet={{ col: 2 }}>
                                                     {acc.institution}
                                                 </Grid>
@@ -254,7 +288,7 @@ const Accounts: React.FC = () => {
                                                     {formatCurrency(acc.currentBalance)}
                                                 </Grid>
                                                 <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete()}>
+                                                    <button onClick={() => handleDelete(acc.id)}>
                                                         <Icon.Delete />
                                                     </button>
                                                 </Grid>
