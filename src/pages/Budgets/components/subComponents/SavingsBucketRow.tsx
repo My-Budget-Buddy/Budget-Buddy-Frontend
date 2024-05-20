@@ -2,10 +2,10 @@ import { Checkbox } from "@trussworks/react-uswds";
 import EditBucketModal from "../modals/EditBucketModal";
 import { useEffect, useRef, useState } from "react";
 import ReservedMoniesInput from "./ReservedMoniesInput";
-import { State } from "../../../../util/misc/interfaces";
-import { allowNewFetch, markAsReturned, markAsSending } from "../../../../util/redux/formSubmissionStateSlice";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import DeleteBucketModal from "../modals/DeleteBucketModal";
+import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
+import { timedDelay } from "../../../../util/util";
 
 interface SavingsBucketRowProps {
   // Nested data interface is useful to keep simple top level component declarations
@@ -20,55 +20,75 @@ interface SavingsBucketRowProps {
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
   const [currentlyReserved, setCurrentlyReserved] = useState<boolean>(data.is_currently_reserved);
   const [amountReserved, setAmountReserved] = useState<number>(data.amount_reserved);
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();  
+  const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);    
 
-  //fetchCall can be either a PUT or a DELETE. 
-  const fetchCall = useRef<Promise<Response>>(null);
+  //Buffered submission for PUT requests that change the reserved amount/is_currently_reserved. If no new changes in 5 seconds, then send the PUT.
+  const [lastEditTime, setLastEditTime] = useState<Date | null>(null);
+  const timerRef = useRef<number | null>(null);
+
+  const handleReservedChange = (amount_reserved: number) => {
+    console.log("changed")
+    setAmountReserved(amount_reserved)
+    setLastEditTime(new Date());
+  };
 
 
-  const formState = useAppSelector((state) => state.formStatus.status);
-  
-//TODO This is likely going to be deprecated in favor of doing fetches within subcomponents rather than global form management.
+  async function sendUpdatedBucket(bucket : SavingsBucketRowProps){
+    // Sets buttons to 'waiting', prevent closing
+    dispatch(setIsSending(true));
+
+    //send post to endpoint
+    //on success, refreshSavingsBuckets();
+
+    //POST to endpoint
+    // const repsonse = await fetch(... send bucket)
+    console.log("UPDATING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+
+    await timedDelay(1000);
+
+    console.log("BUCKET SENT: ", bucket)
+
+    //if good: refreshSavingsBuckets
+    //else: return error
+
+    // Reallow all user input again
+    dispatch(setIsSending(false));
+}
+
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      if (formState === State.WAITING) {
-        dispatch(markAsSending());
-  
-        try {
-          // Do the fetch here
-          const response = await fetchCall.current as Response; 
-          const data = await response.json();
-          console.log(data)
+    if (lastEditTime) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = window.setTimeout(() => {
+        // TODO SEND PUT REQUEST 
+        sendUpdatedBucket({data}); //TODO Use updated data fields (this just uses what was passed from the GET )
+      }, 1000);
+    }
 
-          dispatch(markAsReturned());
-          dispatch(allowNewFetch())
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      } else {
-        if(formState !== State.READY){
-          console.error("Attempted to illegally submit form while still waiting on previous form to send");
-        }
-
-        console.log(formState)
+    // Cleanup the timeout when the component unmounts
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
       }
     };
-  
-    fetchData(); // Call the async function immediately inside useEffect
-  
-  }, [dispatch, formState]);
-  
+  }, [lastEditTime]);
+
+
+
+
   return (
       <tr>
         <td>{data.name}</td>
         {/* TODO Fix css */}
         <td style={{ width: '200px' }}>{data.amount_required}</td>
         {/* TODO add the onChange method to ReservedMoniesInput */}
-        <td style={{ width: '200px' }}><ReservedMoniesInput amount={amountReserved} onChange={(amount_reserved: number) => {
-          setAmountReserved(amount_reserved);
-        }}/></td> 
+        <td style={{ width: '200px' }}><ReservedMoniesInput amount={amountReserved} onChange={handleReservedChange} disabled={isSending}/></td> 
         <td>
-          <Checkbox id={data.name} name={"is_currently_reserved"} label={"Mark as reserved"} checked={currentlyReserved} onChange={() => {
+          <Checkbox id={data.name} name={"is_currently_reserved"} label={"Mark as reserved"} checked={currentlyReserved} disabled={isSending} onChange={() => {
             setCurrentlyReserved(!currentlyReserved);
           }}/>
           </td>

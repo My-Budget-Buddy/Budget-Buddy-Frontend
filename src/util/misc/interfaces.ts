@@ -8,3 +8,12 @@ export enum State {
     SENDING = 2, // A fetch request or form has been submitted over the network.
     RETURNED = 3 // A request has returned from the network.
 }
+
+export interface SavingsBucketRowProps {
+    data:{
+      name: string;
+      amount_required: number;
+      amount_reserved: number;
+      is_currently_reserved: boolean;
+    };
+  }
