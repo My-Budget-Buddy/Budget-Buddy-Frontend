@@ -1,4 +1,4 @@
-import {  Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
+import {  ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
 import { useRef } from "react";
 
 const DeleteBucketModal: React.FC = () => {
@@ -18,9 +18,14 @@ const DeleteBucketModal: React.FC = () => {
                 <div>Are you sure you want to delete the NAME bucket?</div>
                 
                 <ModalFooter>
+                    <ButtonGroup>
                         <ModalToggleButton modalRef={modalRef} secondary closer>
                             Delete
                         </ModalToggleButton>
+                        <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
+                            Go back
+                        </ModalToggleButton>
+                    </ButtonGroup>
                 </ModalFooter>
                 </div>
             </Modal>

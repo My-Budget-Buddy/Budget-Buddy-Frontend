@@ -1,4 +1,4 @@
-import {  Checkbox, Label, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput, Textarea, Icon } from "@trussworks/react-uswds";
+import {  Checkbox, Label, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput, Textarea, Icon, ButtonGroup } from "@trussworks/react-uswds";
 import { useRef } from "react";
 
 interface CategoryProps {
@@ -33,9 +33,14 @@ const EditBudgetModal: React.FC<CategoryProps> = ({ category, budgeted, isReserv
                 <Textarea id="notes" name="notes" defaultValue={ notes }/>
                 
                 <ModalFooter>
-                        <ModalToggleButton modalRef={modalRef} closer>
-                            Save
-                        </ModalToggleButton>
+                <ButtonGroup>
+                    <ModalToggleButton modalRef={modalRef} closer>
+                        Save
+                    </ModalToggleButton>
+                    <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
+                        Go back
+                    </ModalToggleButton>
+                </ButtonGroup>
                 </ModalFooter>
             </Modal>
         </>

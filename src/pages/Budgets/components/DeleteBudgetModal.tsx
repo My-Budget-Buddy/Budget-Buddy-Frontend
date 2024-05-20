@@ -1,4 +1,4 @@
-import {  Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
+import {  ButtonGroup, Icon, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton } from "@trussworks/react-uswds";
 import { useRef } from "react";
 
 const DeleteBudgetModal: React.FC = () => {
@@ -18,9 +18,14 @@ const DeleteBudgetModal: React.FC = () => {
                 <div>Are you sure you want to delete the CATEGORY budget?</div>
                 
                 <ModalFooter>
-                        <ModalToggleButton modalRef={modalRef} secondary closer>
-                            Delete
-                        </ModalToggleButton>
+                <ButtonGroup>
+                    <ModalToggleButton modalRef={modalRef} secondary closer>
+                        Delete
+                    </ModalToggleButton>
+                    <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
+                        Go back
+                    </ModalToggleButton>
+                </ButtonGroup>
                 </ModalFooter>
                 </div>
             </Modal>
