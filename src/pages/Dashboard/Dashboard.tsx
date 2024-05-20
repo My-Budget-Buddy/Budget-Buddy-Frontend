@@ -4,14 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-interface AccountTotals {
-    checking?: number;
-    credit?: number;
-    savings?: number;
-    investment?: number
-}
-
-interface AccountType {
+interface InitialAccountType {
     type: string;
     userId: number;
     accountNumber: number;
@@ -20,6 +13,20 @@ interface AccountType {
     investmentRate: number;
     startingBalance: number;
     currentBalance: number
+}
+
+interface AllAccountsType {
+    id: string,
+    type: string;
+    balance: number;
+    accounts: AccountType[];
+}
+
+interface AccountType {
+    accountNumber: number;
+    routingNumber: number;
+    currentBalance: number;
+    institution: string;
 }
 
 interface TransactionType {
@@ -35,22 +42,25 @@ interface TransactionType {
 
 const Dashboard: React.FC = () => {
     const modalRef = useRef<ModalRef>(null)
-    const [accountTotals, setAccountTotals] = useState({
-        checking: 0,
-        credit: 0,
-        savings: 0,
-        investment: 0
-    })
+    const [allAccounts, setAllAccounts] = useState<AllAccountsType[]>([])
     const [netCash, setNetCash] = useState(0)
     const [recentTransactions, setRecentTransactions] = useState<TransactionType[]>([])
     const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null)
     const [monthlyTransactions, setMonthlyTransactions] = useState<TransactionType[]>([])
 
-
+    
     // ---Calculate net cash---
     // useEffect(()=> {
-    //     setNetCash(accountTotals.checking + accountTotals.investment + accountTotals.savings - accountTotals.credit)
-    // }, [accountTotals])
+    //     let total=0
+    //     allAccounts.map((acc)=> {
+    //         if(acc.id === "checking"){
+    //             total += acc.balance
+    //         }else{
+    //             total -= acc.balance
+    //         }
+    //     })
+    //     setNetCash(total)
+    // }, [allAccounts])
 
 
     // ----Get Accounts----
@@ -63,15 +73,45 @@ const Dashboard: React.FC = () => {
     //             })
     //             const accounts = response.data
     //             console.log("accounts: ", accounts)
-    //             let totals= accounts.reduce((prev: AccountTotals, account: AccountType)=> {
-    //                 const accountType = account.type.toLowerCase() as keyof AccountTotals
-    //                 prev[accountType]! += account.currentBalance
-    //                 return prev
-    //             }, {checking: 0,
-    //                 credit: 0,
-    //                 savings: 0,
-    //                 investment: 0})
-    //             setAccountTotals(totals)
+    //             let allAccounts: AllAccountsType[] = accounts.reduce((prev: AllAccountsType[], account: InitialAccountType)=> {
+    //                 const accountId = account.type.toLowerCase()
+
+    //                 let type
+    //                 if (account.type === "CHECKING"){
+    //                     type = "Checkings"
+    //                 }else if (account.type === "SAVINGS"){
+    //                     type = "Savings"
+    //                 }else if (account.type === "CREDIT"){
+    //                     type = "Credit Cards"
+    //                 }else{
+    //                     type = "Investments"
+    //                 }
+
+    //                 const existingAccount = prev.find(acc => acc.id === accountId);
+    //                 if (existingAccount) {
+    //                     existingAccount.balance += account.currentBalance;
+    //                     existingAccount.accounts.push({
+    //                         accountNumber: account.accountNumber,
+    //                         routingNumber: account.routingNumber,
+    //                         currentBalance: account.currentBalance,
+    //                         institution: account.institution
+    //                     })
+    //                 } else {
+    //                     prev.push({ 
+    //                         id: accountId, 
+    //                         type: type, 
+    //                         balance: account.currentBalance, 
+    //                         accounts: [{
+    //                             accountNumber: account.accountNumber,
+    //                             routingNumber: account.routingNumber,
+    //                             currentBalance: account.currentBalance,
+    //                             institution: account.institution
+    //                         }]
+    //                     });
+    //                 }
+    //                 return prev;
+    //                 }, [])
+    //             setAllAccounts(allAccounts)
     //         }catch (err){
     //             console.log("There was an error fetching account data: ", err)
     //         }
@@ -119,69 +159,39 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div id="accounts-container" className="flex-auto w-1/3">
                     <h1>Accounts</h1>
+                    {allAccounts.length ? 
                     <Accordion bordered={false} items={
-                        [{
-                            title: (
-                                <div className="flex justify-between">
-                                    <p><Icon.AccountBalance/> Checkings</p>
-                                    <p>Total: <Icon.AttachMoney/>{accountTotals.checking}</p>
-                                </div>
-                            ),
-                            content: (<p>test</p>),
-                            expanded: false,
-                            id: "Checking",
-                            headingLevel: "h4",
-                        }
-                        ,
-                        {
-                            title: (
-                                <div className="flex justify-between">
-                                    <p><Icon.CreditCard/> Credit Cards</p>
-                                    <p>Total: <Icon.AttachMoney/>{accountTotals.credit}</p>
-                                </div>
-                            ),
-                            content: (<p>test</p>),
-                            expanded: false,
-                            id: "credit-cards",
-                            headingLevel: "h4",
-                        },
-                        {
-                            title: (
-                                <div className="flex justify-between">
-                                    <p><Icon.AccountBalance/> Net Cash</p>
-                                    <p>Total: <Icon.AttachMoney/>{netCash}</p>
-                                </div>
-                            ),
-                            content: (<p>test</p>),
-                            expanded: false,
-                            id: "net-cash",
-                            headingLevel: "h4",
-                        },
-                        {
-                            title: (
-                                <div className="flex justify-between">
-                                    <p><Icon.AccountBalance/> Savings</p>
-                                    <p>Total: <Icon.AttachMoney/>{accountTotals.savings}</p>
-                                </div>
-                            ),
-                            content: (<p>test</p>),
-                            expanded: false,
-                            id: "savings",
-                            headingLevel: "h4",
-                        },
-                        {
-                            title: (
-                                <div className="flex justify-between">
-                                    <p><Icon.AccountBalance/> investments</p>
-                                    <p>Total: <Icon.AttachMoney/>{accountTotals.investment}</p>
-                                </div>
-                            ),
-                            content: (<p>test</p>),
-                            expanded: false,
-                            id: "investments",
-                            headingLevel: "h4",
-                        }]
-                    } />
+                        allAccounts.map((acc)=> {
+                            return {
+                                title: (
+                                    <div className="flex justify-between items-center">
+                                        <p className="flex items-center"><Icon.AccountBalance className="mr-2" />{acc.type}</p>
+                                        <p className="flex items-center"><Icon.AttachMoney/> {acc.balance}</p>
+                                    </div>
+                                ),
+                                content: (acc.accounts.map((account)=> (
+                                    <div className="flex justify-between">
+                                        <div className="flex">
+                                            <p className="mr-2">{account.accountNumber}</p>|
+                                            <p className="ml-2">{account.institution}</p>
+                                        </div>
+                                        <p className="flex items-center"><Icon.AttachMoney/>{account.currentBalance}</p>
+                                    </div>
+                                ))
+                                ),
+                                expanded: false,
+                                id: (`${acc.id}`),
+                                headingLevel: "h4"
+                            }
+                        })
+                    } /> : 
+                    <div className="flex flex-col items-center">
+                        <p className="mb-4">You don't have any accounts set up yet</p>
+                        <Link to="/dashboard/accounts" >
+                            <Button type="submit" >Add an Account</Button>
+                        </Link>
+                    </div>
+                    }
                 </div>
             </div>
             <div id="transactions-container" className="flex flex-col flex-wrap">
@@ -216,11 +226,18 @@ const Dashboard: React.FC = () => {
                             ))}
                         </tbody>
                     </Table>
-                </>
-                : "No Recent Transactions"}
                 <Link to="/dashboard/transactions" className="text-center">
                     <Button type="submit" >View All Transactions</Button>
                 </Link>
+                </>
+                : 
+                    <div className="flex flex-col items-center">
+                            <p className="mb-4">No Recent Transactions</p>
+                            <Link to="/dashboard/transactions" >
+                                <Button type="submit" >Add Transaction</Button>
+                            </Link>
+                        </div>
+                }
             </div>
             <div id="budgets-container">
                 <h1>Budgets</h1>
@@ -245,7 +262,7 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Modal ref={modalRef} id="transaction-info-modal" isLarge>
+            <Modal ref={modalRef} id="transaction-info-modal" aria-labelledby="modal-1-heading" aria-describedby="modal-1-description" isLarge>
                 {currentTransaction && (
                     <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
                         {/* Top Container: Date and View History Button */}
