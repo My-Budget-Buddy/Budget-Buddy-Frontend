@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 interface ReservedMoniesInputProps {
     amount: number,
     disabled: boolean,
-    onChange: (n: number) => void;
+    onChange: (amount_reserved: number) => void;
   }
 
 const ReservedMoniesInput: React.FC<ReservedMoniesInputProps> = ({amount, onChange, disabled}) => {

@@ -26,10 +26,19 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
   //Buffered submission for PUT requests that change the reserved amount/is_currently_reserved. If no new changes in 5 seconds, then send the PUT.
   const [lastEditTime, setLastEditTime] = useState<Date | null>(null);
   const timerRef = useRef<number | null>(null);
+  const [isCurrentlyEditing, setIsCurrentlyEditing] = useState<boolean>(false);
 
   const handleReservedChange = (amount_reserved: number) => {
-    console.log("changed")
-    setAmountReserved(amount_reserved)
+    console.log("changed");
+    setAmountReserved(amount_reserved);
+    setIsCurrentlyEditing(true);
+    setLastEditTime(new Date());
+  };
+
+  const handleCheckboxCheck = () => {
+    console.log("changed");
+    setCurrentlyReserved(!currentlyReserved);    
+    setIsCurrentlyEditing(true);
     setLastEditTime(new Date());
   };
 
@@ -48,6 +57,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     await timedDelay(1000);
 
     console.log("BUCKET SENT: ", bucket)
+    setIsCurrentlyEditing(false)
 
     //if good: refreshSavingsBuckets
     //else: return error
@@ -56,10 +66,16 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     dispatch(setIsSending(false));
 }
 
+const [initialized, setInitialized] = useState(false);
+
+useEffect(() => {
+  // After component mounts, set initialized to true
+  setInitialized(true);
+}, []);
 
 
   useEffect(() => {
-    if (lastEditTime) {
+    if (lastEditTime && isCurrentlyEditing) {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -86,14 +102,19 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
         {/* TODO Fix css */}
         <td style={{ width: '200px' }}>{data.amount_required}</td>
         {/* TODO add the onChange method to ReservedMoniesInput */}
-        <td style={{ width: '200px' }}><ReservedMoniesInput amount={amountReserved} onChange={handleReservedChange} disabled={isSending}/></td> 
+        <td style={{ width: '200px' }}>
+          <ReservedMoniesInput 
+            amount={amountReserved} 
+            onChange={initialized ? handleReservedChange : () => {console.log("Initialized")}} 
+            disabled={isSending}/>
+        </td> 
         <td>
-          <Checkbox id={data.name} name={"is_currently_reserved"} label={"Mark as reserved"} checked={currentlyReserved} disabled={isSending} onChange={() => {
-            setCurrentlyReserved(!currentlyReserved);
-          }}/>
+          <Checkbox id={data.name} name={"is_currently_reserved"} label={"Mark as reserved"} checked={currentlyReserved} disabled={isSending} onChange={handleCheckboxCheck}/>
           </td>
-        <td><EditBucketModal data={{data}}> EDIT BUCKET MODAL </EditBucketModal></td>
-        <DeleteBucketModal />
+        <td>
+          <EditBucketModal data={{data}}> EDIT BUCKET MODAL </EditBucketModal>
+          <DeleteBucketModal />
+        </td>
       </tr>
     );
   };
