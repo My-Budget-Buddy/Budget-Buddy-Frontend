@@ -40,15 +40,19 @@ interface TransactionType {
     vendorName: string;
 }
 
+interface MonthlyTransactionType {
+    date: string;
+    total: number;
+}
+
 const Dashboard: React.FC = () => {
     const modalRef = useRef<ModalRef>(null)
     const [allAccounts, setAllAccounts] = useState<AllAccountsType[]>([])
     const [netCash, setNetCash] = useState(0)
     const [recentTransactions, setRecentTransactions] = useState<TransactionType[]>([])
     const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null)
-    const [monthlyTransactions, setMonthlyTransactions] = useState<TransactionType[]>([])
-
-    
+    const [monthlyTransactions, setMonthlyTransactions] = useState<MonthlyTransactionType[]>([])
+    const [monthlySpend, setMonthlySpend] = useState(0)
     // ---Calculate net cash---
     useEffect(()=> {
         let total=0
@@ -72,7 +76,6 @@ const Dashboard: React.FC = () => {
                     // withCredentials: true,
                 })
                 const accounts = response.data
-                console.log("accounts: ", accounts)
                 let allAccounts: AllAccountsType[] = accounts.reduce((prev: AllAccountsType[], account: InitialAccountType)=> {
                     const accountId = account.type.toLowerCase()
 
@@ -139,6 +142,34 @@ const Dashboard: React.FC = () => {
 
     // --- Monthly Transactions --
     // backend: /transactions/currentMonthTransactions/userId
+    useEffect(() => {
+        const fetchMonthlyTransactions = async () => {
+            try{
+                const response = await axios.get("http://localhost:8083/transactions/currentMonthTransactions/123", {
+                    // withCredentials: true,
+                })
+                const monthlyTransactions= response.data
+                let totalSpent=0
+                const data = monthlyTransactions.reduce((prev: MonthlyTransactionType[], transaction: TransactionType) => {
+                    const existingTransactionDate = prev.find(prevTransactionDate => prevTransactionDate.date === transaction.date);
+                    if (existingTransactionDate){
+                        existingTransactionDate.total += transaction.amount
+                        totalSpent += transaction.amount 
+                    }else{
+                        prev.push({ date: transaction.date, total: transaction.amount})
+                        totalSpent += transaction.amount
+                    }
+                    return prev
+                }, [])
+                data.sort((a: MonthlyTransactionType,b: MonthlyTransactionType)=> parseInt(a.date.toString().slice(8,10)) - parseInt(b.date.toString().slice(8,10)))
+                setMonthlyTransactions(data)
+                setMonthlySpend(totalSpent)
+            }catch (err){
+                console.log("There was an error fetching monthly tranactions: ", err)
+            }
+        }
+        fetchMonthlyTransactions()
+    }, [])
 
 
     return (
@@ -146,14 +177,28 @@ const Dashboard: React.FC = () => {
             <h1>Welcome [add user name]</h1>
             <div className="flex">
                 <div id="chart-container" className="flex-auto w-2/3">
-                    <h1>Chart</h1>
+                    <h1>Current Spend this month:</h1>
+                    <h1 className="flex items-center"><Icon.AttachMoney/>{monthlySpend}</h1>
                     <LineChart
+                        xAxis={[{ 
+                            scaleType: "point",
+                            data: (
+                            monthlyTransactions.map((transaction)=> (
+                                parseInt(transaction.date.toString().slice(8,10))
+                            ))
+                        ) }]}
                         series={[
                             {
-                            data: [2, 5.5, 2, 8.5, 1.5, 5],
+                                data: (
+                                    monthlyTransactions.map((transaction)=> (
+                                        transaction.total
+                                    ))
+                                ),
+                                area: true,
+                                color: '#005ea2',
                             },
                         ]}
-                        // width={500}
+                        
                         height={300}
                     />
                 </div>
@@ -162,16 +207,19 @@ const Dashboard: React.FC = () => {
                     {allAccounts.length ? 
                     <>
                         <Accordion bordered={false} items={
-                            allAccounts.map((acc)=> {
+                            allAccounts.map((acc, idx)=> {
                                 return {
                                     title: (
-                                        <div className="flex justify-between items-center">
-                                            <p className="flex items-center"><Icon.AccountBalance className="mr-2" />{acc.type}</p>
+                                        <div key={acc.id} className="flex justify-between items-center">
+                                            {acc.id === "checking" && <p className="flex items-center"><Icon.AccountBalance className="mr-2" />{acc.type}</p>}
+                                            {acc.id === "credit" && <p className="flex items-center"><Icon.CreditCard className="mr-2" />{acc.type}</p>}
+                                            {acc.id === "savings" && <p className="flex items-center"><Icon.AccountBalance className="mr-2" />{acc.type}</p>}
+                                            {acc.id === "investment" && <p className="flex items-center"><Icon.TrendingUp className="mr-2" />{acc.type}</p>}
                                             <p className="flex items-center"><Icon.AttachMoney/> {acc.balance}</p>
                                         </div>
                                     ),
-                                    content: (acc.accounts.map((account)=> (
-                                        <div className="flex justify-between">
+                                    content: (acc.accounts.map((account, idx)=> (
+                                        <div key={`${account.accountNumber}-${idx}`} className="flex justify-between">
                                             <div className="flex">
                                                 <p className="mr-2">{account.accountNumber}</p>|
                                                 <p className="ml-2">{account.institution}</p>
@@ -221,19 +269,17 @@ const Dashboard: React.FC = () => {
                         </thead>
                         <tbody>
                             {recentTransactions.map((recentTransaction, idx)=> (
-                                <>
-                                    <tr key={idx}>
-                                        <td>{recentTransaction.date}</td>
-                                        <td>{recentTransaction.vendorName}</td>
-                                        <td>{recentTransaction.category}</td>
-                                        <td><Icon.AttachMoney />{recentTransaction.amount}</td>
-                                        <td >
-                                            <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={() => setCurrentTransaction(recentTransactions[idx])}>
-                                                <Icon.NavigateNext />
-                                            </ModalToggleButton>
-                                        </td>
-                                    </tr>
-                                </>
+                                <tr key={`${recentTransaction.accountId}-${idx}`}>
+                                    <td>{recentTransaction.date}</td>
+                                    <td>{recentTransaction.vendorName}</td>
+                                    <td>{recentTransaction.category}</td>
+                                    <td><Icon.AttachMoney />{recentTransaction.amount}</td>
+                                    <td >
+                                        <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={() => setCurrentTransaction(recentTransactions[idx])}>
+                                            <Icon.NavigateNext />
+                                        </ModalToggleButton>
+                                    </td>
+                                </tr>
                             ))}
                         </tbody>
                     </Table>
