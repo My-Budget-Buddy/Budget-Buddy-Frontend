@@ -41,7 +41,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved,
 
             <td>
                 <div className="flex justify-end">
-                    <BudgetDetailsModal category={category} budgeted={ budgeted } isReserved={ isReserved } notes={ notes } />
+                    <BudgetDetailsModal category={category} budgeted={ budgeted } actual={ actual } remaining={ remaining } isReserved={ isReserved } notes={ notes } />
                 </div>
             </td>
         </tr>
