@@ -1,18 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const budgetSlice = createSlice({
-
-  name: 'budgetSummary',
+  name: 'update',
   initialState: {
-    totalAvailableFunds: 0,
-    totalSpendingBudget: 0,
-    totalActuallySpent: 0
+    value: 0
   },
   reducers: {
-    //update total available funds
-    //update spending budget (what you CAN spend)
-    //update total actually spent
-    
+
     update: state => {
         state.value += 1; 
     }

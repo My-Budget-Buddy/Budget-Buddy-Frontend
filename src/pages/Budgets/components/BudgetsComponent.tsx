@@ -1,6 +1,8 @@
+
 import { Table, Button, ButtonGroup, Icon } from '@trussworks/react-uswds'
-import BudgetsRow from './BudgetsRow'
-import NewBudgetModal from './NewBudgetModal'
+import BudgetsRow from './subComponents/BudgetsRow'
+import NewBudgetModal from './modals/NewBudgetModal'
+
 import { useEffect, useState } from 'react';
 
 const BudgetsComponent: React.FC = () => {
@@ -33,6 +35,7 @@ const BudgetsComponent: React.FC = () => {
         */
     }, [])
 
+
     const selectPreviousMonth = () => {
         setSelectedDate(new Date(previousMonthDate));
     }
@@ -58,6 +61,7 @@ const BudgetsComponent: React.FC = () => {
             </div>
 
         
+
             <Table className='w-full'>
                 <thead>
                     <tr>
@@ -65,16 +69,20 @@ const BudgetsComponent: React.FC = () => {
                         <th>Budgeted</th>
                         <th>Actual</th>
                         <th>Remaining</th>
+
                         <th></th>
                         <th>Actions</th>
                         <th></th>
+
                     </tr>
                 </thead>
 
                 <tbody>
                     {/* map table rows using budgets data from backend */}
                     {/* budgets.map((budget) => {
+
                         calculate actual of current row from transactions
+
                         <BudgetsRow />
                     }) */}
                     <BudgetsRow category='Phone Bill' budgeted={55} actual={0} isReserved={true} notes='' />
@@ -82,10 +90,12 @@ const BudgetsComponent: React.FC = () => {
                     <BudgetsRow category='Restaurants' budgeted={155} actual={88} isReserved={false} notes='' />
                 </tbody>
             </Table>
+
             <div className='flex flex-col items-center'>
                 <NewBudgetModal />
             </div>
             
+
         </>
     )
 }
