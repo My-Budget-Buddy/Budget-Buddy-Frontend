@@ -49,7 +49,7 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
 
     //POST to endpoint
     // const repsonse = await fetch(... send bucket)
-    console.log("UPDATING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+    console.log("SENDING BUCKET..."); // <--- This is the bucket to send to the post endpoint
 
     await timedDelay(1000);
 

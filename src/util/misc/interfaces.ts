@@ -11,9 +11,15 @@ export enum State {
 
 export interface SavingsBucketRowProps {
     data:{
-      name: string;
-      amount_required: number;
-      amount_reserved: number;
-      is_currently_reserved: boolean;
+        name: string;
+        amount_required: number;
+        amount_reserved: number;
+        is_currently_reserved: boolean;
     };
-  }
+}
+
+export interface BudgetProps {
+    data:{
+        value: number,
+    };
+}
