@@ -15,6 +15,8 @@
       "to-register": "¿No tienes una cuenta?",
       "to-login": "¿Ya tienes una cuenta?",
       "username": "Nombre de usuario."
-    }
+    },
+    "intlDateTime": "{{val, datetime}}",
+    "dateLocale": "es-MX"
   }
 }
