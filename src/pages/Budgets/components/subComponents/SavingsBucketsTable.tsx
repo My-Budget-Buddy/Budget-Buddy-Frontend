@@ -37,16 +37,14 @@ function SavingsBucketTable() {
     
     return (
         <>
-            <div>Buckets Table</div>
-
-            <Table>
+            <Table className='w-full'>
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">required</th>
-                        <th scope="col">reserved</th>
+                        <th scope="col">Required</th>
+                        <th scope="col">Reserved</th>
                         <th scope="col"> </th>
-                        <th scope="col"></th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,9 +54,11 @@ function SavingsBucketTable() {
                 </tbody>
             </Table>
 
-            <NewBucketModal>
-                Add new savings bucket
-            </NewBucketModal>
+            <div className="flex flex-col items-center">
+                <NewBucketModal>
+                    Add new savings bucket
+                </NewBucketModal>
+            </div>
 
         </>
     );

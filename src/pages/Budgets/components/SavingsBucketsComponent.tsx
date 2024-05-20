@@ -5,7 +5,8 @@ function SavingsBucketComponent() {
    
     return (
         <>
-        <SavingsBucketTable/>
+          <h1 className='font-bold mr-4'>Savings Buckets</h1>
+          <SavingsBucketTable/>
         </>
     );
   }

@@ -1,44 +1,49 @@
-import { Gauge } from '@mui/x-charts/Gauge';
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
 const SummaryComponent: React.FC = () => {
     return (
         <>
-            <div className='flex flex-row justify-around w-6/12 border'>
-                <div className='flex flex-col items-center justify-around'>
-                    <div className='text-xl'>Total Available Funds Across Account</div>
-                    <div className='text-xl text-green-600'>$amount</div>
+            <div className='flex flex-row justify-between w-full'>
+                <div className='flex flex-col items-center justify-around ml-8'>
+                    <div className='text-2xl font-bold'>Total Available Funds Across Account</div>
+                    <div className=' text-6xl text-green-600 font-bold'>$amount</div>
                     <div>{'(accounts + projected earnings - reserved)'}</div>
                 </div>
 
                 <div className='flex flex-col items-center'>
-                    <div className='text-xl'>Left to spend in May 2024</div>
-                    <div className='border-red-500'>
-                        <Gauge
-                            width={150}
-                            height={150}
-                            value={75}
-                            text='$2200/$3000'
-                            startAngle={0}
-                            endAngle={360}
-                            innerRadius="80%"
-                            outerRadius="100%"
-                            // ...
-                        />
-                    </div>
+                    <div className='text-2xl mt-4 font-bold'>Left to spend in May 2024</div>
+                    <Gauge
+                        width={400}
+                        height={200}
+                        value={75}
+                        text='$2200'
+                        startAngle={-90}
+                        endAngle={90}
+                        innerRadius="80%"
+                        outerRadius="100%"
+                        sx={{
+                            [`& .${gaugeClasses.valueText}`]: {
+                              fontSize: 40,
+                              transform: 'translate(0px, -20px)',
+                            },
+                          }}
+                        // ...
+                    />
+                    <div className='bg-slate-200 p-1 px-2 rounded-lg font-bold'>of $3500</div>
                 </div>
                 
-                <div className='flex flex-col justify-around'>
+                <div className='flex flex-col justify-around mr-8'>
                     <div className='flex flex-col items-center'>
-                        <div className='text-lg'>Total Spending Budget</div>
-                        <div>$amount</div>
+                        <div className='text-2xl font-bold'>Total Spending Budget</div>
+                        <div className='text-lg'>$amount</div>
                     </div>
                     <div className='flex flex-col items-center'>
-                        <div className='text-lg'>Allocated</div>
-                        <div>$amount</div>
+                        <div className='text-2xl font-bold'>Allocated</div>
+                        <div className='text-lg'>$amount</div>
                     </div>
                     <div className='flex flex-col items-center'>
-                        <div className='text-lg'>Remaining</div>
-                        <div>$amount</div>
+                        <div className='text-2xl font-bold'>Remaining</div>
+                        <div className='text-lg'>$amount</div>
                     </div>
                 </div>
             </div>
