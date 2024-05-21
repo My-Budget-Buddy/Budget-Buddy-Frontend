@@ -33,6 +33,17 @@ interface Transaction {
     account: string;
 }
 
+interface TransactionDTO {
+    transactionId: number;
+    userId: number;
+    accountId: number;
+    vendorName: string;
+    amount: number;
+    category: string;
+    description: string;
+    date: string;
+}
+
 function TransactionHistory() {
     const Name = useMatch("/:first/:second/:name")?.params.name;
     const { t } = useTranslation();
