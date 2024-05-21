@@ -5,7 +5,7 @@ import AccountModal from "./AccountModal";
 import { useEffect, useMemo, useState } from "react";
 import { formatCurrency } from "../../util/helpers";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
-import { Accordion, Alert, Grid, GridContainer, Icon } from "@trussworks/react-uswds";
+import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 
 const Accounts: React.FC = () => {
     const [showTooltip, setShowTooltip] = useState(false);
@@ -14,16 +14,16 @@ const Accounts: React.FC = () => {
 
     const handleDelete = (accountId: number): void => {
         fetch(`http://localhost:8080/accounts/1/${accountId}`, {
-            method: 'DELETE',
+            method: "DELETE"
         })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error("Error deleting account");
                 }
-                setAccounts((prevAccounts) => prevAccounts?.filter(acc => acc.id !== accountId) || null);
+                setAccounts((prevAccounts) => prevAccounts?.filter((acc) => acc.id !== accountId) || null);
             })
             .catch((err: Error) => setError(err.message));
-    }
+    };
 
     useEffect(() => {
         // TODO: update this to use the users information + the gateway service + headers for Auth
@@ -59,7 +59,7 @@ const Accounts: React.FC = () => {
 
     return (
         <>
-            <h1>Accounts</h1>
+            <Title>Accounts</Title>
 
             {error && (
                 <Alert type="error" headingLevel="h4">
@@ -69,8 +69,8 @@ const Accounts: React.FC = () => {
 
             {/* Net Cash Section */}
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
-                <div className="flex items-center space-x-2">
-                    <h2 className="text-2xl">Net Cash</h2>
+                <div className="flex items-center space-x-2 mb-6">
+                    <h2 className="text-3xl font-semibold">Net Cash</h2>
                     <span
                         onMouseEnter={() => setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
@@ -156,7 +156,7 @@ const Accounts: React.FC = () => {
             </section>
 
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl">View Accounts</h2>
+                <h2 className="text-3xl font-semibold">View Accounts</h2>
                 <AccountModal onAccountAdded={handleAccountAdded} />
             </div>
 
