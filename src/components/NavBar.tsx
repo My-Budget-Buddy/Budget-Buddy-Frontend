@@ -36,7 +36,7 @@ const pages = [
 
 const NavBar = () => {
   return (
-    <div className="nav-container bg-base-lighter px-6">
+    <div className="nav-container bg-base-lighter px-6 h-screen min-w-64">
       <div className="flex flex-col items-center">
         <h1 className="font-semibold">Budget Buddy</h1>
         <div className="flex flex-row items-center gap-4">
