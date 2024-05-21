@@ -14,6 +14,7 @@ function SavingsBucketTable() {
     const storedBuckets = useAppSelector((state) => state.buckets.buckets);
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
+    // TODO Calculate total reserved and push that to the redux store every GET
     // const totalReserved = useAppSelector((state) => state.buckets.totalReserved);
 
     useEffect(() => {
@@ -26,6 +27,7 @@ function SavingsBucketTable() {
 
     useEffect(() => {
         setListOfBuckets(storedBuckets);
+        // TODO Calculated total reserved then Dispatch to totalReserved.
     }, [storedBuckets]);
 
     return (
