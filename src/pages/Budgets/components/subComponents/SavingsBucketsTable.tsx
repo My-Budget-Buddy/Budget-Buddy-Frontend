@@ -2,6 +2,8 @@ import { Table } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import SavingsBucketRow from "./SavingsBucketRow";
 import NewBucketModal from "../modals/NewBucketModal";
+import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
+import { updateBuckets } from "../../../../util/redux/bucketSlice";
 
 interface SavingsBucketRowProps {
     data: {
@@ -24,6 +26,7 @@ interface RawBucket {
     monthYear: string;
 }
 
+// The data from the endpoint needs to be trimmed down to this.
 function transformBuckets(buckets: RawBucket[]): SavingsBucketRowProps[] {
     return buckets.map((bucket) => ({
         data: {
@@ -38,32 +41,41 @@ function transformBuckets(buckets: RawBucket[]): SavingsBucketRowProps[] {
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
 
+    const dispatch = useAppDispatch();
+    const storedBuckets = useAppSelector((state) => state.buckets.buckets);
+    // const totalReserved = useAppSelector((state) => state.buckets.totalReserved);
+
     useEffect(() => {
         refreshSavingsBuckets();
     }, []);
 
+    useEffect(() => {
+        setListOfBuckets(storedBuckets);
+    }, [storedBuckets]);
+
     async function refreshSavingsBuckets() {
-        //GET request to bucket endpoint
-        // .then -> setListOfBuckets(response)
-        const endpoint = `http://localhost:8080/buckets/user/1`;
+        const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/user/1`;
+        console.log(endpoint);
         try {
             const response = await fetch(endpoint, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                credentials: "include" // Use this if your backend requires cookies or authentication
+                credentials: "include"
             });
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
 
-            // Parse the JSON response body
             const buckets: RawBucket[] = await response.json();
             const transformedBuckets = transformBuckets(buckets);
-            // console.log(transformedBuckets);
-            setListOfBuckets(transformedBuckets);
+
+            // Update redux store
+            dispatch(updateBuckets(transformedBuckets));
+
+            // Call from redux store
         } catch (error) {
             console.error("Failed to fetch user data:", error);
             throw error;
