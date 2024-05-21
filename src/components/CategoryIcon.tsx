@@ -1,27 +1,17 @@
 import React from "react";
 import { Icon } from "@trussworks/react-uswds";
-// define type
-export type TransactionCategory =
-    | "GROCERIES"
-    | "ENTERTAINMENT"
-    | "DINING"
-    | "TRANSPORTATION"
-    | "HEALTHCARE"
-    | "LIVING_EXPENSES"
-    | "SHOPPING"
-    | "INCOME"
-    | "MISC";
+import { TransactionCategory } from "../types/models";
 
-const categoryIcons: { [key in TransactionCategory]: React.ElementType } = {
-    GROCERIES: Icon.LocalGroceryStore,
-    ENTERTAINMENT: Icon.Youtube,
-    DINING: Icon.Restaurant,
-    TRANSPORTATION: Icon.DirectionsCar,
-    HEALTHCARE: Icon.MedicalServices,
-    LIVING_EXPENSES: Icon.Home,
-    SHOPPING: Icon.Clothes,
-    INCOME: Icon.TrendingUp,
-    MISC: Icon.MoreHoriz
+export const categoryIcons: { [key in TransactionCategory]: React.ElementType } = {
+    [TransactionCategory.GROCERIES]: Icon.LocalGroceryStore,
+    [TransactionCategory.ENTERTAINMENT]: Icon.Youtube,
+    [TransactionCategory.DINING]: Icon.Restaurant,
+    [TransactionCategory.TRANSPORTATION]: Icon.DirectionsCar,
+    [TransactionCategory.HEALTHCARE]: Icon.MedicalServices,
+    [TransactionCategory.LIVING_EXPENSES]: Icon.Home,
+    [TransactionCategory.SHOPPING]: Icon.Clothes,
+    [TransactionCategory.INCOME]: Icon.TrendingUp,
+    [TransactionCategory.MISC]: Icon.MoreHoriz
 };
 
 interface CategoryIconProps {
