@@ -251,7 +251,7 @@ function TransactionHistory() {
                     <Card gridLayout={{ col: 4 }}>
                         <CardHeader>Summary</CardHeader>
                         <CardBody>
-                            Total spent: {transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0)}
+                            Total spent: ${transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0).toFixed(2)}
                             <hr />
                             Total transactions: {transactions.length}
                             <hr />
@@ -259,17 +259,17 @@ function TransactionHistory() {
                                 series={transactions.map((transaction) => {
                                     return { data: [transaction.amount] };
                                 })}
-                                // xAxis={[
-                                //     {
-                                //         data: [
-                                //             transactions.filter((value, index, array) => {
-
-                                //             })
-                                //         ],
-                                //         scaleType: "band"
-                                //     }
-                                // ]}
-                                height={200}
+                                xAxis={[
+                                    {
+                                        scaleType: "band",
+                                        data: [
+                                            transactions.map((transaction) => {
+                                                return transaction.id;
+                                            })
+                                        ]
+                                    }
+                                ]}
+                                height={300}
                             />
                         </CardBody>
                     </Card>
