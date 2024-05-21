@@ -1,11 +1,13 @@
 import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { AxisConfig, BarItemIdentifier, legendClasses } from "@mui/x-charts";
+import { AxisConfig, BarItemIdentifier, DefaultizedPieValueType, legendClasses, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import CategoryIcon, { TransactionCategory } from "../../components/CategoryIcon";
+import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
+import { TransactionCategory, Transaction } from "../../types/models";
 
 //define the type for months
 type Month =
@@ -22,93 +24,32 @@ type Month =
     | "november"
     | "december";
 
-//define the type for transactions
-type Transaction = {
-    transactionId: number;
-    userId: number;
-    accountId: number;
-    vendorName: string;
-    amount: number;
-    category: TransactionCategory;
-    description: string;
-    date: string;
+// Define the type for spending categories
+type SpendingCategory = {
+    name: TransactionCategory;
+    value: number;
+    color: string;
+    icon: React.ElementType;
 };
 
 const Spending: React.FC = () => {
     const navigate = useNavigate();
     const [showTooltip, setShowTooltip] = useState(false);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [spendingCategories, setSpendingCategories] = useState<
-        { name: TransactionCategory; value: number; color: string }[]
-    >([]);
+    const [spendingCategories, setSpendingCategories] = useState<SpendingCategory[]>([]);
 
     //colors for each category
     const categoryColors: { [key in TransactionCategory]: string } = {
-        GROCERIES: "#90c8f4",
-        ENTERTAINMENT: "#e5d23a",
-        DINING: "#6ed198",
-        TRANSPORTATION: "#af98f9",
-        HEALTHCARE: "#fd6d6d",
-        LIVING_EXPENSES: "#5a7ffa",
-        SHOPPING: "#fe992b",
-        INCOME: "#f7b7e5",
-        MISC: "#dce2e1"
+        [TransactionCategory.GROCERIES]: "#90c8f4",
+        [TransactionCategory.ENTERTAINMENT]: "#e5d23a",
+        [TransactionCategory.DINING]: "#6ed198",
+        [TransactionCategory.TRANSPORTATION]: "#af98f9",
+        [TransactionCategory.HEALTHCARE]: "#fd6d6d",
+        [TransactionCategory.LIVING_EXPENSES]: "#5a7ffa",
+        [TransactionCategory.SHOPPING]: "#fe992b",
+        [TransactionCategory.INCOME]: "#f7b7e5",
+        [TransactionCategory.MISC]: "#dce2e1"
     };
-
-    /*
-    //mock data
-    const mockcategories = [
-        { name: "Groceries", value: 300 },
-        { name: "Entertainment", value: 150 },
-        { name: "Dining", value: 200 },
-        { name: "Transportation", value: 100 },
-        { name: "Healthcare", value: 80 },
-        { name: "Living Expenses", value: 1000 },
-        { name: "Shopping", value: 120 },
-        { name: "Investments", value: 50 },
-        { name: "Miscellaneous", value: 50 }
-    ];
-
-    
-        //mock data
-        useEffect(() => {
-          
-            const fetchData = async () => {
-                const spending = {
-                    january: 4000,
-                    february: 3000,
-                    march: 5000,
-                    april: 2000,
-                    may: 4500,
-                    june: 3000,
-                    july: 5000,
-                    august: 4000,
-                    september: 450,
-                    october: 5000,
-                    november: 4000,
-                    december: 6000,
-                };
-                const earned = {
-                    january: 8000,
-                    february: 7500,
-                    march: 9000,
-                    april: 6500,
-                    may: 8500,
-                    june: 7000,
-                    july: 8000,
-                    august: 8500,
-                    september: 9000,
-                    october: 9500,
-                    november: 8000,
-                    december: 10000,
-                };
-                setSpendingData(spending);
-                setEarnedData(earned);
-            };
-            fetchData();
-        }, []);
-    
-    */
 
     //starting state for spending data. set all months to zero
     const [spendingData, setSpendingData] = useState<Record<Month, number>>({
@@ -178,7 +119,7 @@ const Spending: React.FC = () => {
 
                     //if the category is INCOME, update earned data
                     //else update spending data and the spending categories
-                    if (transaction.category === "INCOME") {
+                    if (transaction.category === "Income") {
                         updatedEarnedData[monthKey] += amount;
                     } else {
                         updatedSpendingData[monthKey] += amount;
@@ -194,7 +135,8 @@ const Spending: React.FC = () => {
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
                     value: categorySpending[category]!,
-                    color: categoryColors[category]
+                    color: categoryColors[category],
+                    icon: categoryIcons[category]
                 }));
 
                 console.log("Updated spending data:", updatedSpendingData);
@@ -259,13 +201,6 @@ const Spending: React.FC = () => {
         </>
     );
 
-    //click on the bar in the bar chart to go to a specific month
-    const handleItemClick = (event: React.MouseEvent<SVGElement>, barItemIdentifier: BarItemIdentifier) => {
-        const { dataIndex } = barItemIdentifier;
-        const month = categories[dataIndex];
-        navigate(`/dashboard/spending/${month}`);
-    };
-
     //top three expense categories table
     const topThreeCategories = [...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 3);
 
@@ -292,6 +227,85 @@ const Spending: React.FC = () => {
             </tbody>
         </>
     );
+
+    //click on the bar in the bar chart to go to a specific month
+    const handleItemClick = (event: React.MouseEvent<SVGElement>, barItemIdentifier: BarItemIdentifier) => {
+        const { dataIndex } = barItemIdentifier;
+        const month = categories[dataIndex];
+        navigate(`/dashboard/spending/${month}`);
+    };
+
+    //for text in the center of the pie chart
+    const StyledText = styled("text")(({ theme }) => ({
+        fill: theme.palette.text.primary,
+        textAnchor: "middle",
+        dominantBaseline: "central"
+    }));
+
+    const Line1 = styled("tspan")(({ theme }) => ({
+        fontSize: 20
+    }));
+
+    const Line2 = styled("tspan")(({ theme }) => ({
+        fontSize: 35,
+        fontWeight: "bold",
+        dy: "1.6em" // controls the spacing between the lines
+    }));
+
+    function PieCenterLabel({ totalSpent }: { totalSpent: number }) {
+        const { width, height, left, top } = useDrawingArea();
+        return (
+            <StyledText x={left + width / 2} y={top + height / 2 - 10}>
+                <Line1 dy="-1.0em">TOTAL SPENT</Line1>
+                <Line2 x={left + width / 2} dy="1.2em">
+                    ${totalSpent.toFixed(2)}
+                </Line2>
+            </StyledText>
+        );
+    }
+
+    //put icons in the pie chart instead of word label
+    //THIS ISN'T WORKING!!!!!! TRY AGAIN LATER.
+    const calculateCentroid = (startAngle: any, endAngle: any, innerRadius: any, outerRadius: any) => {
+        const angle = (startAngle + endAngle) / 2;
+        const radians = (angle * Math.PI) / 180;
+        const x = ((outerRadius + innerRadius) / 2) * Math.cos(radians);
+        const y = ((outerRadius + innerRadius) / 2) * Math.sin(radians);
+        return { x, y };
+    };
+
+    const CustomLabel = ({
+        x,
+        y,
+        icon: IconComponent,
+        label
+    }: {
+        x: number;
+        y: number;
+        icon: React.ElementType;
+        label: string;
+    }) => (
+        <foreignObject x={x} y={y} width="100" height="30">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <IconComponent style={{ marginRight: 4 }} />
+                <span>{label}</span>
+            </div>
+        </foreignObject>
+    );
+
+    const calculateAngles = (data: SpendingCategory[]) => {
+        let startAngle = 0;
+        return data.map((d: { value: any }) => {
+            const value = d.value;
+            const angle = (value / totalSpent) * 360;
+            const endAngle = startAngle + angle;
+            const result = { ...d, startAngle, endAngle }; //this ensures that name, value, color and icon are retained
+            startAngle = endAngle;
+            return result;
+        });
+    };
+
+    const dataWithAngles = calculateAngles(spendingCategories);
 
     return (
         <div className="min-w-screen">
@@ -341,9 +355,9 @@ const Spending: React.FC = () => {
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[35rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
                             <h2></h2>
-                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full">
+                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full lg:-m-5">
                                 <PieChart
                                     series={[
                                         {
@@ -351,7 +365,6 @@ const Spending: React.FC = () => {
                                                 label: d.name,
                                                 id: d.name,
                                                 value: d.value,
-                                                icon: CategoryIcon,
                                                 color: d.color
                                             })),
                                             innerRadius: "48%",
@@ -366,23 +379,37 @@ const Spending: React.FC = () => {
 
                                             arcLabelMinAngle: 20,
 
-                                            valueFormatter: (v, { dataIndex }) => {
-                                                return `$ ${v.value} `;
-                                            }
+                                            valueFormatter: (v) => `$ ${v.value}`
                                         }
                                     ]}
+                                    slotProps={{
+                                        legend: { hidden: true }
+                                    }}
                                     sx={{
                                         width: "100%",
                                         height: "100%",
                                         [`& .${pieArcLabelClasses.root}`]: {
                                             fill: "white",
                                             fontWeight: "bold"
-                                        },
-                                        [`.${legendClasses.root}`]: {
-                                            transform: "translate(2px, 0)"
                                         }
                                     }}
-                                />
+                                >
+                                    <PieCenterLabel totalSpent={totalSpent} />
+                                </PieChart>
+                                {/*
+                                {dataWithAngles.map((d, index) => {
+                                    const { x, y } = calculateCentroid(d.startAngle, d.endAngle, 48, 95);
+                                    return (
+                                        <CustomLabel
+                                            key={index}
+                                            x={x}
+                                            y={y}
+                                    icon={d.icon}   
+                                            label={`${((d.value / totalSpent) * 100).toFixed(0)}%`}
+                                        />
+                                    );
+                                })}
+                                */}
                             </div>
                             <div className="w-full">
                                 <Table bordered={false} className="w-full">
