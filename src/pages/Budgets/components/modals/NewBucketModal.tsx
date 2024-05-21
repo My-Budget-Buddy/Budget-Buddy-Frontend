@@ -11,17 +11,17 @@ import {
 import React, { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { timedDelay } from "../../../../util/util";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+import { postBucket } from "../requests/requests";
 
 interface NewBucketModalProps {
-    action: () => void;
     children: React.ReactNode;
 }
 
 const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
     const [formData, setFormData] = useState<SavingsBucketRowProps>({
         data: {
+            id: 0,
             name: "",
             amount_required: 0,
             amount_reserved: 0,
@@ -47,17 +47,32 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
     };
 
     async function sendNewBucket(bucket: SavingsBucketRowProps) {
+        const newBucket = {
+            // bucketId: 6,
+            userId: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
+            bucketName: formData.data.name,
+            amountAvailable: 0, //TODO rename as amountReserved
+            amountRequired: formData.data.amount_required,
+            // dateCreated: "2024-05-21T08:39:46.726429",
+            isActive: true,
+            isReserved: false
+            // monthYear: "2024-06"
+        };
+
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
 
-        console.log("SENDING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+        console.log("SENDING BUCKET...");
 
-        await timedDelay(1000); //TODO post request here
+        try {
+            await postBucket(newBucket);
+            //TODO Display success
+        } catch {
+            console.error("ERROR!");
+            //TODO display errror
+        }
 
         console.log("BUCKET SENT: ", bucket);
-
-        //if good: refreshSavingsBuckets
-        //else: return error
 
         // Reallow all user input again
         dispatch(setIsSending(false));

@@ -38,6 +38,10 @@ const Accounts: React.FC = () => {
             .catch((err: Error) => setError(err.message));
     }, []);
 
+    const handleAccountAdded = (newAccount: Account) => {
+        setAccounts((prevAccounts) => (prevAccounts ? [...prevAccounts, newAccount] : [newAccount]));
+    };
+
     // do something here? idk useMemo or useCallback?
     const totalBalance = useMemo(() => {
         if (!accounts) return 0;
@@ -153,7 +157,7 @@ const Accounts: React.FC = () => {
 
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl">View Accounts</h2>
-                <AccountModal />
+                <AccountModal onAccountAdded={handleAccountAdded} />
             </div>
 
             <Accordion

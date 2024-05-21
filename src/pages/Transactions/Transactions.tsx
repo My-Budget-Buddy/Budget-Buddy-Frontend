@@ -19,270 +19,97 @@ import {
 } from "@trussworks/react-uswds";
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface Transaction {
-    id: number;
-    date: string;
-    name: string;
-    category: string;
-    amount: number;
-    note: string;
-    account: string;
-}
-
-const transactionsInit: Transaction[] = [
-    {
-        id: 1,
-        date: "2023-10-11",
-        name: "Metro by T-Mobile",
-        category: "Bills & Utilities",
-        amount: 30.0,
-        note: "",
-        account: "***1703"
-    },
-    { id: 2, date: "2023-10-11", name: "Publix", category: "Groceries", amount: 15.85, note: "", account: "***6612" },
-    { id: 3, date: "2023-10-11", name: "McDonalds", category: "Dining Out", amount: 5.0, note: "", account: "***3231" },
-    {
-        id: 4,
-        date: "2023-10-11",
-        name: "Shell",
-        category: "Transportation",
-        amount: 20.0,
-        note: "",
-        account: "***1703"
-    },
-    { id: 5, date: "2023-10-11", name: "Walmart", category: "Groceries", amount: 50.0, note: "", account: "***6612" },
-    {
-        id: 6,
-        date: "2023-10-12",
-        name: "AT&T",
-        category: "Bills & Utilities",
-        amount: 90.0,
-        note: "",
-        account: "***1703"
-    },
-    {
-        id: 7,
-        date: "2023-10-12",
-        name: "Whole Foods",
-        category: "Groceries",
-        amount: 75.85,
-        note: "",
-        account: "***6612"
-    },
-    { id: 8, date: "2023-10-13", name: "Target", category: "Groceries", amount: 55.5, note: "", account: "***3231" },
-    {
-        id: 9,
-        date: "2023-10-14",
-        name: "Chevron",
-        category: "Transportation",
-        amount: 45.0,
-        note: "",
-        account: "***1703"
-    },
-    {
-        id: 10,
-        date: "2023-10-15",
-        name: "Chipotle",
-        category: "Dining Out",
-        amount: 15.0,
-        note: "",
-        account: "***6612"
-    },
-    {
-        id: 11,
-        date: "2023-10-15",
-        name: "Chick-fil-A",
-        category: "Dining Out",
-        amount: 10.0,
-        note: "",
-        account: "***3231"
-    },
-    {
-        id: 12,
-        date: "2023-10-15",
-        name: "Chase",
-        category: "Bills & Utilities",
-        amount: 100.0,
-        note: "",
-        account: "***6612"
-    },
-    { id: 13, date: "2023-10-16", name: "Amazon", category: "Groceries", amount: 70.0, note: "", account: "***3231" },
-    {
-        id: 14,
-        date: "2023-10-17",
-        name: "Speedway",
-        category: "Transportation",
-        amount: 25.0,
-        note: "",
-        account: "***1703"
-    },
-    {
-        id: 15,
-        date: "2023-10-18",
-        name: "Papa Johns",
-        category: "Dining Out",
-        amount: 20.0,
-        note: "",
-        account: "***6612"
-    },
-    { id: 16, date: "2023-10-18", name: "KFC", category: "Dining Out", amount: 15.0, note: "", account: "***3231" },
-    {
-        id: 17,
-        date: "2023-10-19",
-        name: "Verizon",
-        category: "Bills & Utilities",
-        amount: 80.0,
-        note: "",
-        account: "***6612"
-    },
-    {
-        id: 18,
-        date: "2023-10-20",
-        name: "Starbucks",
-        category: "Dining Out",
-        amount: 10.0,
-        note: "",
-        account: "***3231"
-    },
-    { id: 19, date: "2023-10-21", name: "Dunkin", category: "Dining Out", amount: 5.0, note: "", account: "***1703" },
-    {
-        id: 20,
-        date: "2023-10-22",
-        name: "T-Mobile",
-        category: "Bills & Utilities",
-        amount: 40.0,
-        note: "",
-        account: "***6612"
-    }
-];
-
-const categories: Array<string> = [
-    "Bills & Utilities",
-    "Groceries",
-    "Dining Out",
-    "Transportation",
-    "Entertainment",
-    "Health & Fitness",
-    "Personal Care",
-    "Shopping",
-    "Travel",
-    "Education",
-    "Gifts & Donations",
-    "Investments",
-    "Fees & Charges"
-];
-
-const accounts: Array<string> = ["***1703", "***6612", "***3231"];
+import { Transaction, TransactionCategory, Account } from "../../types/models.ts";
+import { deleteTransaction, getTransactionByUserId, getAccountsByUserId } from "../../utils/transactionService.ts";
 
 const Transactions: React.FC = () => {
-    const [transactions, setTransactions] = useState<Transaction[]>(transactionsInit);
-    const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[0]);
-    const [current, setCurrent] = useState<number>(0);
-    const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
 
-    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactionsInit);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [currentTransaction, setCurrentTransaction] = useState<Transaction | null>(null);
+
+    const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
+    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+
     const [selectedCategory, setSelectedCategory] = useState<string>("All Categories");
+    const [selectedAccount, setSelectedAccount] = useState<string>("All Accounts");
 
     const modalRef = useRef<ModalRef>(null);
     const infoRef = useRef<ModalRef>(null);
-
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (selectedCategory === "All Categories") {
-            setFilteredTransactions(transactions);
-        } else {
-            setFilteredTransactions(transactions.filter((transaction) => transaction.category === selectedCategory));
-        }
-    }, [selectedCategory, transactions]);
+        const fetchData = async () => {
+            const transactionsData = await getTransactionByUserId(1);
+            setTransactions(transactionsData);
+
+            const accountsData = await getAccountsByUserId(1);
+            setAccounts(accountsData);
+        };
+        fetchData();
+    }, []);
+
+    console.log(accounts)
+
 
     useEffect(() => {
-        setCurrentTransaction(transactions[current]);
-    }, [transactions, current]);
+        setFilteredTransactions(
+            transactions.filter((transaction) =>
+                (selectedCategory === "All Categories" || transaction.category === selectedCategory) &&
+                (selectedAccount === "All Accounts" || transaction.accountId.toString() === selectedAccount)
+            )
+        );
+    }, [selectedCategory, selectedAccount, transactions]);
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!currentTransaction) return;
+
         const form = event.target as HTMLFormElement;
         const formData = new FormData(form);
-        const Name = formData.get("Name");
-        const Date = formData.get("Date");
-        const Category = formData.get("Category");
-        const Amount = formData.get("Amount");
-        const Note = formData.get("Note");
-        const Account = formData.get("Account");
-        console.log(event);
-        setTransactions(
-            transactions.map((transaction, index) => {
-                if (index === current) {
-                    return {
-                        ...transaction,
-                        Date: Date as string,
-                        Name: Name as string,
-                        Category: Category as string,
-                        Amount: Amount as string,
-                        Note: Note as string,
-                        Account: Account as string
-                    };
-                } else return transaction;
-            })
-        );
-    };
-    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const { name, value } = event.target;
-        setTransactions(
-            transactions.map((transaction, index) => {
-                if (index === current) {
-                    return {
-                        ...transaction,
-                        [name]: value
-                    };
-                } else return transaction;
-            })
-        );
-    }
+        const updatedTransaction: Transaction = {
+            ...currentTransaction,
+            vendorName: formData.get("vendorName") as string,
+            date: formData.get("date") as string,
+            category: formData.get("category") as TransactionCategory,
+            amount: parseFloat(formData.get("amount") as string),
+            description: formData.get("description") as string,
+            accountId: parseInt(formData.get("accountId") as string)
+        };
 
-    function handleAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-        const { name, value } = event.target;
         setTransactions(
-            transactions.map((transaction, index) => {
-                if (index === current) {
-                    return {
-                        ...transaction,
-                        [name]: value
-                    };
-                } else return transaction;
-            })
+            transactions.map((transaction) =>
+                transaction.transactionId === currentTransaction.transactionId ? updatedTransaction : transaction
+            )
         );
-    }
-
-    function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
-        const { name, value } = event.target;
-        setTransactions(
-            transactions.map((transaction, index) => {
-                if (index === current) {
-                    console.log({ ...transaction, [name]: value });
-                    return {
-                        ...transaction,
-                        [name]: value
-                    };
-                } else return transaction;
-            })
-        );
-        console.log(transactions);
-    }
-
-    const handleInfoOpen = (transaction: Transaction) => {
-        setInfoTransaction(transaction);
+        modalRef.current?.toggleModal();
     };
 
-    const handleViewHistory = (infoTransaction: Transaction) => {
-        navigate(`/dashboard/transactions/${encodeURIComponent(infoTransaction.name)}`);
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        setCurrentTransaction((prev) => prev && { ...prev, [name]: value });
     };
+
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = event.target;
+        setCurrentTransaction((prev) => prev && { ...prev, [name]: value });
+    };
+
+    const handleDelete = async (transactionId: number) => {
+        await deleteTransaction(transactionId);
+        setTransactions(transactions.filter((t) => t.transactionId !== transactionId));
+    };
+
+    const handleInfoOpen = (transaction: Transaction) => setInfoTransaction(transaction);
+
+    const handleViewHistory = (infoTransaction: Transaction) =>
+        navigate(`/dashboard/transactions/${encodeURIComponent(infoTransaction.vendorName)}`);
+
+    const getAccountDetails = (accountId: number) => accounts.find(account => account.id === accountId);
 
     return (
         <div className="min-h-screen bg-gray-100 p-4 pr-10 pl-10 flex flex-col gap-6">
-            {/* Top Container: Header & clear filters, add transactions & sorting*/}
             <div className="flex justify-between items-center bg-transparent p-4 ">
                 <h1>Transactions</h1>
                 <div className="flex gap-4">
@@ -299,7 +126,6 @@ const Transactions: React.FC = () => {
                 </div>
             </div>
 
-            {/* Middle Container: Filters */}
             <div className="flex justify-center items-center gap-4 bg-transparent p-4">
                 <select className="p-2 w-40">
                     <option>All dates</option>
@@ -310,16 +136,22 @@ const Transactions: React.FC = () => {
                     onChange={(e) => setSelectedCategory(e.target.value)}
                 >
                     <option>All Categories</option>
-                    {categories.map((category) => (
+                    {Object.values(TransactionCategory).map((category) => (
                         <option key={category} value={category}>
                             {category}
                         </option>
                     ))}
                 </select>
-                <select className="p-2 w-40">
+                <select
+                    className="p-2 w-40"
+                    value={selectedAccount}
+                    onChange={(e) => setSelectedAccount(e.target.value)}
+                >
                     <option>All Accounts</option>
                     {accounts.map((account) => (
-                        <option key={account}>{account}</option>
+                        <option key={account.id} value={account.id.toString()}>
+                            {account.institution}
+                        </option>
                     ))}
                 </select>
                 <select className="p-2 w-40">
@@ -327,7 +159,6 @@ const Transactions: React.FC = () => {
                 </select>
             </div>
 
-            {/* Bottom Container aka Transaction Table */}
             <div className="flex-grow">
                 <CardGroup>
                     <Card gridLayout={{ col: 12 }}>
@@ -337,52 +168,55 @@ const Transactions: React.FC = () => {
                         <CardBody>
                             <Table fullWidth striped>
                                 <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Actions</th>
-                                        <th scope="col">Amount</th>
-                                    </tr>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Actions</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredTransactions.map((transaction, index) => (
-                                        <tr key={index}>
-                                            <td>{transaction.date}</td>
-                                            <td>{transaction.name}</td>
-                                            <td>{transaction.category}</td>
-                                            <td>
-                                                <ModalToggleButton
-                                                    type="button"
-                                                    className="usa-button--unstyled"
-                                                    modalRef={modalRef}
-                                                    onClick={() => {
-                                                        setCurrent(index);
-                                                        setCurrentTransaction(transaction);
-                                                    }}
-                                                >
-                                                    <Icon.Edit />
-                                                </ModalToggleButton>
-                                                <Button type="button" className="usa-button--unstyled">
-                                                    <Icon.Delete />
-                                                </Button>
-                                            </td>
-                                            <td>
-                                                <Icon.AttachMoney />
-                                                {transaction.amount}
-                                            </td>
-                                            <td>
-                                                <ModalToggleButton
-                                                    type="button"
-                                                    className="usa-button--unstyled"
-                                                    modalRef={infoRef}
-                                                    onClick={() => handleInfoOpen(transaction)}
-                                                >
-                                                    <Icon.NavigateNext />
-                                                </ModalToggleButton>
-                                            </td>
-                                        </tr>
-                                    ))}
+
+                                {filteredTransactions.map((transaction) => (
+                                    <tr key={transaction.transactionId}>
+                                        <td>{transaction.date}</td>
+                                        <td>{transaction.vendorName}</td>
+                                        <td>{transaction.category}</td>
+                                        <td>
+                                            <ModalToggleButton
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                modalRef={modalRef}
+                                                onClick={() => setCurrentTransaction(transaction)}
+                                            >
+                                                <Icon.Edit />
+                                            </ModalToggleButton>
+                                            <Button
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                onClick={() => handleDelete(transaction.transactionId)}
+                                            >
+                                                <Icon.Delete />
+                                            </Button>
+                                        </td>
+                                        <td>
+                                            <Icon.AttachMoney />
+                                            {transaction.amount.toFixed(2)}
+                                        </td>
+                                        <td>
+                                            <ModalToggleButton
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                modalRef={infoRef}
+                                                onClick={() => handleInfoOpen(transaction)}
+                                            >
+                                                <Icon.NavigateNext />
+                                            </ModalToggleButton>
+                                        </td>
+                                    </tr>
+                                ))}
+
                                 </tbody>
                             </Table>
                         </CardBody>
@@ -390,100 +224,82 @@ const Transactions: React.FC = () => {
                 </CardGroup>
             </div>
 
-            {/* Edit Transaction Modal */}
             <Modal ref={modalRef} id="transaction-modal" isLarge>
-                <Form onSubmit={handleSubmit} large>
-                    <div className="grid grid-cols-6 gap-5">
-                        <input
-                            id="transaction-date"
-                            name="date"
-                            className="col-span-3 usa-input usa-date-picker_external-input"
-                            type="date"
-                            value={currentTransaction.date}
-                            onChange={handleInputChange}
-                        />
-                        <div className="col-span-3" />
-                        <hr className="col-span-6" />
-                        <div className="col-span-4">
-                            <Label htmlFor="transaction-name">Name</Label>
-                            <TextInput
-                                value={currentTransaction.name}
-                                id="transaction-name"
-                                name="name"
-                                type="text"
+
+                {currentTransaction && (
+                    <Form onSubmit={handleSubmit} large>
+                        <div className="grid grid-cols-6 gap-5">
+                            <input
+                                id="transaction-date"
+                                name="date"
+                                className="col-span-3 usa-input usa-date-picker_external-input"
+                                type="date"
+                                value={currentTransaction.date}
+
                                 onChange={handleInputChange}
                             />
-                            <Label htmlFor="transaction-amount">Amount</Label>
-                            <InputGroup>
-                                <InputPrefix>$</InputPrefix>
+                            <div className="col-span-3" />
+                            <hr className="col-span-6" />
+                            <div className="col-span-4">
+                                <Label htmlFor="transaction-vendorName">Vendor</Label>
                                 <TextInput
-                                    value={currentTransaction.amount}
-                                    id="transaction-amount"
-                                    name="amount"
-                                    type="number"
+
+                                    value={currentTransaction.vendorName}
+                                    id="transaction-vendorName"
+                                    name="vendorName"
+                                    type="text"
                                     onChange={handleInputChange}
                                 />
-                            </InputGroup>
-                            <Label htmlFor="transaction-category">Category</Label>
-                            <div className="grid grid-cols-8">
-                                <Select
-                                    id="transaction-category"
-                                    name="category"
-                                    value={currentTransaction.category}
-                                    onChange={handleSelectChange}
-                                    className="col-span-7"
-                                >
-                                    {categories.map((category) => (
-                                        <option key={category} value={category}>
-                                            {category}
-                                        </option>
-                                    ))}
-                                </Select>
-                                <Button type="button" className="usa-button--unstyled">
-                                    <Icon.Add size={4} />
-                                </Button>
-                            </div>
-                            <Label htmlFor="transaction-note">Notes</Label>
-                            <Textarea
-                                value={currentTransaction.note}
-                                id="transaction-note"
-                                onChange={handleAreaChange}
-                                name="note"
-                            />
-                            <ModalToggleButton modalRef={modalRef} type="submit">
-                                Submit
-                            </ModalToggleButton>
-                        </div>
-                        <div className="col-span-2">
-                            <Label htmlFor="transaction-account">Account</Label>
-                            <div className="grid grid-cols-8">
-                                <Select
-                                    id="transaction-account"
-                                    name="account"
-                                    value={currentTransaction.account}
-                                    onChange={handleSelectChange}
-                                    className="col-span-7"
-                                >
-                                    {accounts.map((account) => (
-                                        <option key={account} value={account}>
-                                            {account}
-                                        </option>
-                                    ))}
-                                </Select>
-                                <Button type="button" className="usa-button--unstyled">
-                                    <Icon.Add size={4} />
-                                </Button>
+                                <Label htmlFor="transaction-amount">Amount</Label>
+                                <InputGroup>
+                                    <InputPrefix>$</InputPrefix>
+                                    <TextInput
+                                        value={currentTransaction.amount}
+                                        id="transaction-amount"
+                                        name="amount"
+                                        type="number"
+                                        onChange={handleInputChange}
+                                    />
+                                </InputGroup>
+                                <Label htmlFor="transaction-category">Category</Label>
+                                <div className="grid grid-cols-8">
+                                    <Select
+                                        id="transaction-category"
+                                        name="category"
+                                        value={currentTransaction.category}
+                                        onChange={handleSelectChange}
+                                        className="col-span-7"
+                                    >
+                                        {Object.values(TransactionCategory).map((category) => (
+                                            <option key={category} value={category}>
+                                                {category}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                    <Button type="button" className="usa-button--unstyled">
+                                        <Icon.Add size={4} />
+                                    </Button>
+                                </div>
+                                <Label htmlFor="transaction-description">Description</Label>
+                                <Textarea
+                                    value={currentTransaction.description || ''}
+                                    id="transaction-description"
+                                    name="description"
+                                    onChange={handleInputChange}
+                                />
+                                <ModalToggleButton modalRef={modalRef} type="submit">
+                                    Submit
+                                </ModalToggleButton>
+
                             </div>
                         </div>
-                    </div>
-                </Form>
+                    </Form>
+                )}
             </Modal>
 
-            {/* Detailed Info Transaction Modal */}
             <Modal ref={infoRef} id="transaction-info-modal" isLarge>
                 {infoTransaction && (
                     <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
-                        {/* Top Container: Date and View History Button */}
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex gap-4 items-center">
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
@@ -494,29 +310,33 @@ const Transactions: React.FC = () => {
                                 </Button>
                             </div>
                         </div>
-
                         <div className="border-t border-black my-4"></div>
-
-                        {/* Bottom Container: Info Details */}
                         <div className="flex gap-6">
-                            {/* Left Container */}
                             <div className="flex flex-col w-2/3">
                                 <div className="mb-6">
-                                    <h3 className="text-2xl font-bold">{infoTransaction.name}</h3>
+                                    <h3 className="text-2xl font-bold">{infoTransaction.vendorName}</h3>
                                     <p className="mt-2 text-xl">${infoTransaction.amount.toFixed(2)}</p>
                                     <p className="mt-4 text-lg">{infoTransaction.category}</p>
                                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
-                                        <p className="text-md">{infoTransaction.note || "No notes available"}</p>
+                                        <p className="text-md">{infoTransaction.description || "No notes available"}</p>
                                     </div>
                                 </div>
                             </div>
-                            {/* Right Container */}
                             <div className="flex flex-col w-1/3">
                                 <div className="border-l border-black pl-6 h-full">
                                     <h4 className="text-xl">Account</h4>
                                     <div className="flex items-center mt-3 text-sm text-gray-500">
-                                        <Icon.AccountBalance className="mr-2" />
-                                        <div>{infoTransaction.account}</div>
+                                        {infoTransaction.accountId && (
+                                            <div className="flex flex-col">
+                                                <div className="flex items-center text-sm text-gray-500">
+                                                    <Icon.AccountBalance className="mr-2" />
+                                                    <div>{getAccountDetails(infoTransaction.accountId)?.institution}</div>
+                                                </div>
+                                                <div className="mt-2 text-sm text-gray-500">
+                                                    Account Number: {getAccountDetails(infoTransaction.accountId)?.accountNumber}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
