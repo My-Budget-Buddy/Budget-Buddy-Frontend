@@ -13,45 +13,10 @@ import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { timedDelay } from "../../../../util/util";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+import { postBucket } from "../requests/requests";
 
 interface NewBucketModalProps {
     children: React.ReactNode;
-}
-
-interface RawBucketToSend {
-    // bucketId: number;
-    userId: number;
-    bucketName: string;
-    amountAvailable: number;
-    amountRequired: number;
-    // dateCreated: string;
-    isActive: boolean;
-    isReserved: boolean;
-    // monthYear: string;
-}
-
-async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/add`;
-
-    try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(bucket)
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data: RawBucketToSend = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to create bucket:", error);
-        throw error;
-    }
 }
 
 const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
@@ -102,8 +67,10 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
 
         try {
             await postBucket(newBucket);
+            //TODO Display success
         } catch {
             console.error("ERROR!");
+            //TODO display errror
         }
 
         console.log("BUCKET SENT: ", bucket);
