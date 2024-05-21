@@ -185,7 +185,9 @@ function TransactionHistory() {
                 <CardGroup>
                     <Card gridLayout={{ col: 8 }}>
                         <CardHeader>
-                            <h1>All transactions</h1>
+                            <h1>
+                                All <i>{`${decodeURI(String(Name))}`}</i> transactions
+                            </h1>
                         </CardHeader>
                         <CardBody>
                             <Table bordered={false} fullWidth={true} striped>
