@@ -4,6 +4,7 @@ import budgetReducer from "./budgetSlice";
 import formSubmissionReducer from "./formSubmissionStateSlice";
 import simpleSubmissionReducer from "./simpleSubmissionSlice";
 import w2Reducer from "../../pages/Tax/W2Slice";
+import taxReturnReducer from "../../pages/Tax/TaxReturnSlice"
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
         budgets: budgetReducer,
         formStatus: formSubmissionReducer,
         simpleFormStatus: simpleSubmissionReducer,
-        w2: w2Reducer
+        w2: w2Reducer,
+        taxReturn: taxReturnReducer
     }
 });
 

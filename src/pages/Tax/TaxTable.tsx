@@ -59,7 +59,7 @@ const DisplayTaxTables: React.FC = () => {
     };
 
     const redirectToEditView = () =>{
-        nav('/dashboard/tax/w2/0')
+        nav('/dashboard/tax/1/w2/0')
     }
     
   
