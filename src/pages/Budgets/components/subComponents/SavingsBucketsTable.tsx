@@ -12,6 +12,29 @@ interface SavingsBucketRowProps {
     };
 }
 
+interface RawBucket {
+    bucketId: number;
+    userId: number;
+    bucketName: string;
+    amountAvailable: number;
+    amountRequired: number;
+    dateCreated: string;
+    isActive: boolean;
+    isReserved: boolean;
+    monthYear: string;
+}
+
+function transformBuckets(buckets: RawBucket[]): SavingsBucketRowProps[] {
+    return buckets.map((bucket) => ({
+        data: {
+            name: bucket.bucketName,
+            amount_required: bucket.amountRequired,
+            amount_reserved: bucket.amountAvailable,
+            is_currently_reserved: bucket.isReserved
+        }
+    }));
+}
+
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
 
@@ -22,15 +45,29 @@ function SavingsBucketTable() {
     async function refreshSavingsBuckets() {
         //GET request to bucket endpoint
         // .then -> setListOfBuckets(response)
+        const endpoint = `http://localhost:8080/buckets/user/1`;
+        try {
+            const response = await fetch(endpoint, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include" // Use this if your backend requires cookies or authentication
+            });
 
-        //const response = await fetch(...);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
 
-        //setListOfBuckets(response);
-
-        setListOfBuckets([
-            { data: { name: "name", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false } },
-            { data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: true } }
-        ]);
+            // Parse the JSON response body
+            const buckets: RawBucket[] = await response.json();
+            const transformedBuckets = transformBuckets(buckets);
+            // console.log(transformedBuckets);
+            setListOfBuckets(transformedBuckets);
+        } catch (error) {
+            console.error("Failed to fetch user data:", error);
+            throw error;
+        }
 
         console.log("refreshed");
     }
