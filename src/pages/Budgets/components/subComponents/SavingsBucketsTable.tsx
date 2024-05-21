@@ -4,85 +4,29 @@ import SavingsBucketRow from "./SavingsBucketRow";
 import NewBucketModal from "../modals/NewBucketModal";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { updateBuckets } from "../../../../util/redux/bucketSlice";
-
-interface SavingsBucketRowProps {
-    data: {
-        name: string;
-        amount_required: number;
-        amount_reserved: number;
-        is_currently_reserved: boolean;
-    };
-}
-
-interface RawBucket {
-    bucketId: number;
-    userId: number;
-    bucketName: string;
-    amountAvailable: number;
-    amountRequired: number;
-    dateCreated: string;
-    isActive: boolean;
-    isReserved: boolean;
-    monthYear: string;
-}
-
-// The data from the endpoint needs to be trimmed down to this.
-function transformBuckets(buckets: RawBucket[]): SavingsBucketRowProps[] {
-    return buckets.map((bucket) => ({
-        data: {
-            name: bucket.bucketName,
-            amount_required: bucket.amountRequired,
-            amount_reserved: bucket.amountAvailable,
-            is_currently_reserved: bucket.isReserved
-        }
-    }));
-}
+import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+import { getBuckets } from "../requests/requests";
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
 
     const dispatch = useAppDispatch();
     const storedBuckets = useAppSelector((state) => state.buckets.buckets);
+    const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
+
     // const totalReserved = useAppSelector((state) => state.buckets.totalReserved);
 
     useEffect(() => {
-        refreshSavingsBuckets();
-    }, []);
+        (async () => {
+            const transformedBuckets = await getBuckets();
+            dispatch(updateBuckets(transformedBuckets));
+            console.log(transformedBuckets);
+        })();
+    }, [isSending]);
 
     useEffect(() => {
         setListOfBuckets(storedBuckets);
     }, [storedBuckets]);
-
-    async function refreshSavingsBuckets() {
-        const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/user/1`;
-        console.log(endpoint);
-        try {
-            const response = await fetch(endpoint, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: "include"
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
-
-            const buckets: RawBucket[] = await response.json();
-            const transformedBuckets = transformBuckets(buckets);
-
-            // Update redux store
-            dispatch(updateBuckets(transformedBuckets));
-
-            // Call from redux store
-        } catch (error) {
-            console.error("Failed to fetch user data:", error);
-            throw error;
-        }
-
-        console.log("refreshed");
-    }
 
     return (
         <>

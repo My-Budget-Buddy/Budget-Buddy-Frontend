@@ -18,9 +18,58 @@ interface NewBucketModalProps {
     children: React.ReactNode;
 }
 
+interface RawBucket {
+    bucketId: number;
+    userId: number;
+    bucketName: string;
+    amountAvailable: number;
+    amountRequired: number;
+    dateCreated: string;
+    isActive: boolean;
+    isReserved: boolean;
+    monthYear: string;
+}
+
+const testBucket = {
+    bucketId: 6,
+    userId: 1,
+    bucketName: "sNadsw Bucket",
+    amountAvailable: 100,
+    amountRequired: 1000,
+    dateCreated: "2024-05-21T08:39:46.726429",
+    isActive: true,
+    isReserved: false,
+    monthYear: "2024-06"
+};
+
+async function postBucket(bucket: RawBucket): Promise<RawBucket> {
+    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/add`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bucket)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: RawBucket = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to create bucket:", error);
+        throw error;
+    }
+}
+
 const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
     const [formData, setFormData] = useState<SavingsBucketRowProps>({
         data: {
+            id: 0,
             name: "",
             amount_required: 0,
             amount_reserved: 0,
@@ -51,7 +100,7 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
 
         console.log("SENDING BUCKET..."); // <--- This is the bucket to send to the post endpoint
 
-        await timedDelay(1000); //TODO post request here
+        await postBucket(testBucket);
 
         console.log("BUCKET SENT: ", bucket);
 

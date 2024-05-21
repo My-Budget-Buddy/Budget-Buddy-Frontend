@@ -10,7 +10,8 @@ export enum State {
 }
 
 export interface SavingsBucketRowProps {
-    data:{
+    data: {
+        id: number;
         name: string;
         amount_required: number;
         amount_reserved: number;
@@ -19,7 +20,7 @@ export interface SavingsBucketRowProps {
 }
 
 export interface BudgetProps {
-    data:{
-        value: number,
+    data: {
+        value: number;
     };
 }
