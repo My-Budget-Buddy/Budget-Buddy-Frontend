@@ -1,16 +1,16 @@
-import {  Table } from "@trussworks/react-uswds";
+import { Table } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import SavingsBucketRow from "./SavingsBucketRow";
 import NewBucketModal from "../modals/NewBucketModal";
 
 interface SavingsBucketRowProps {
     data: {
-      name: string;
-      amount_required: number;
-      amount_reserved: number;
-      is_currently_reserved: boolean;
+        name: string;
+        amount_required: number;
+        amount_reserved: number;
+        is_currently_reserved: boolean;
     };
-  }
+}
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
@@ -28,16 +28,16 @@ function SavingsBucketTable() {
         //setListOfBuckets(response);
 
         setListOfBuckets([
-            {data: { name: "name", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false}}, 
-            {data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: true}}
+            { data: { name: "name", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false } },
+            { data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: true } }
         ]);
 
-        console.log("refreshed")
+        console.log("refreshed");
     }
-    
+
     return (
         <>
-            <Table className='w-full'>
+            <Table className="w-full">
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
@@ -55,11 +55,8 @@ function SavingsBucketTable() {
             </Table>
 
             <div className="flex flex-col items-center">
-                <NewBucketModal>
-                    Add new savings bucket
-                </NewBucketModal>
+                <NewBucketModal>Add new savings bucket</NewBucketModal>
             </div>
-
         </>
     );
 }

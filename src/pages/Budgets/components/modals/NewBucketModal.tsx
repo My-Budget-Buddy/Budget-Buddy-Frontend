@@ -15,7 +15,6 @@ import { timedDelay } from "../../../../util/util";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 
 interface NewBucketModalProps {
-    action: () => void;
     children: React.ReactNode;
 }
 
