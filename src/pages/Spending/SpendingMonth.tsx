@@ -1,404 +1,322 @@
-import { Icon, Table, Title, Button} from "@trussworks/react-uswds";
-import React, { useEffect, useState } from 'react';
-import { BarChart } from '@mui/x-charts/BarChart';
-import { AxisConfig, legendClasses } from "@mui/x-charts";
-import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
-import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
+import React, { useEffect, useState } from "react";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { AxisConfig, BarItemIdentifier, legendClasses } from "@mui/x-charts";
+import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+import axios from "axios";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import CategoryIcon, { TransactionCategory } from "../../components/CategoryIcon";
+
+//define the type for months
+type Month =
+    | "january"
+    | "february"
+    | "march"
+    | "april"
+    | "may"
+    | "june"
+    | "july"
+    | "august"
+    | "september"
+    | "october"
+    | "november"
+    | "december";
+
+//define the type for transactions
+type Transaction = {
+    transactionId: number;
+    userId: number;
+    accountId: number;
+    vendorName: string;
+    amount: number;
+    category: TransactionCategory;
+    description: string;
+    date: string;
+};
 
 const SpendingMonth: React.FC = () => {
+    const { month } = useParams<{ month: Month }>(); //get month parameter from url
+    const lowercaseMonth = month?.toLowerCase() as Month; //need to make the month name lowercase
+    const navigate = useNavigate();
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [weeklyData, setWeeklyData] = useState<{ week: number; spending: number; earning: number }[]>([]);
+    const [spendingCategories, setSpendingCategories] = useState<
+        { name: TransactionCategory; value: number; color: string }[]
+    >([]);
 
-    const categoryIcons: { [key: string]: JSX.Element } = {
-        'Groceries': <Icon.LocalGroceryStore style={{ color: 'green', fontSize: '1.4rem' }} />,
-        'Entertainment': <Icon.Youtube style={{ color: 'black', fontSize: '1.4rem' }} />,
-        'Dining': <Icon.Restaurant style={{ color: 'black', fontSize: '1.4rem' }} />,
-        'Transportation': <Icon.DirectionsCar style={{ color: 'black', fontSize: '1.4rem' }} />,
-        'Healthcare': <Icon.MedicalServices style={{ color: 'blue', fontSize: '1.4rem' }} />,
-        'Living Expenses': <Icon.Home style={{ color: 'green', fontSize: '1.4rem' }} />,
-        'Shopping': <Icon.Clothes style={{ color: 'green', fontSize: '1.4rem' }} />,
-        'Investments': <Icon.TrendingUp style={{ color: 'green', fontSize: '1.4rem' }} />,
-        'Miscellaneous': <Icon.MoreHoriz style={{ color: 'green', fontSize: '1.4rem' }} />,
+    //colors for categories
+    const categoryColors: { [key in TransactionCategory]: string } = {
+        GROCERIES: "#B0C4DE",
+        ENTERTAINMENT: "#ADD8E6",
+        DINING: "#87CEFA",
+        TRANSPORTATION: "#4682B4",
+        HEALTHCARE: "#5F9EA0",
+        LIVING_EXPENSES: "#0A8AD0",
+        SHOPPING: "#AFEEEE",
+        INCOME: "#778899",
+        MISC: "#D3D3D3"
     };
 
-    const categoryColors: { [key: string]: string } = {
-        'Groceries': '#90c8f4', 
-        'Entertainment': '#f7e748', 
-        'Dining': '#6ed198', 
-        'Transportation': '#af98f9', 
-        'Healthcare': '#fd6d6d', 
-        'Living Expenses': '#d7f5a4', 
-        'Shopping': '#fe992b', 
-        'Investments': '#f7b7e5', 
-        'Miscellaneous': '#dce2e1', 
+    //get week number
+    const getWeekNumber = (date: Date) => {
+        const start = new Date(date.getFullYear(), 0, 1);
+        const diff =
+            (date.getTime() - start.getTime() + (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60000) /
+            86400000;
+        return Math.floor(diff / 7) + 1;
     };
 
+    //get the index of a month
+    const getMonthIndex = (month: Month) => {
+        const months: Month[] = [
+            "january",
+            "february",
+            "march",
+            "april",
+            "may",
+            "june",
+            "july",
+            "august",
+            "september",
+            "october",
+            "november",
+            "december"
+        ];
+        return months.indexOf(month);
+    };
 
-    const [spendingCategories, setSpendingCategories] = useState([]);
+    //generate all weeks for a given month
+    const getAllWeeksInMonth = (year: number, monthIndex: number) => {
+        const weeks = new Set<number>();
+        const date = new Date(year, monthIndex, 1);
 
-    const [transactions, setTransactions] = useState([]);
+        while (date.getMonth() === monthIndex) {
+            weeks.add(getWeekNumber(new Date(date)));
+            date.setDate(date.getDate() + 1);
+        }
 
-    const mockcategories = [
-        { name: 'Groceries', value: 300 },
-        { name: 'Entertainment', value: 150 },
-        { name: 'Dining', value: 200 },
-        { name: 'Transportation', value: 100 },
-        { name: 'Healthcare', value: 80 },
-        { name: 'Living Expenses', value: 1000 },
-        { name: 'Shopping', value: 120 },
-        { name: 'Investments', value: 50 },
-        { name: 'Miscellaneous', value: 50 },
-    ];
+        return Array.from(weeks);
+    };
 
-
-    //starting state
-    const [spendingData, setSpendingData] = useState({
-        january: 0,
-        february: 0,
-        march: 0,
-        april: 0,
-      
-    });
-
-
-    const [earnedData, setEarnedData] = useState({
-        january: 0,
-        february: 0,
-        march: 0,
-        april: 0,
-        
-       
-    });
-
+    //axios call for all transactions
     useEffect(() => {
-      
-        const fetchData = async () => {
-            const spending = {
-                january: 4000,
-                february: 3000,
-                march: 5000,
-                april: 2000,
-               
-                
-            };
-            const earned = {
-                january: 8000,
-                february: 7500,
-                march: 9000,
-                april: 6500,
-             
-              
-            };
-            setSpendingData(spending);
-            setEarnedData(earned);
-        };
-        fetchData();
-    }, []);
-
-
-    const handleItemClick = (event: any, params: { data: any; dataIndex: any; }) => {
-        const { data, dataIndex } = params;
-        const month = data[dataIndex].month;
-        console.log(`Clicked on month: ${month}`);
-        // You can add more logic here to display details about the clicked month
-        alert(`Details for ${month}`);
-    };
-
-
-
-/*
-    //fetch from backend here
-    useEffect(() => {
-      
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get('http://localhost:8083/transactions/user/{userId}');
-                const fetchedTransactions = response.data;
-                setTransactions(fetchedTransactions);
+                const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
+                const monthIndex = getMonthIndex(lowercaseMonth);
+                const transactions = response.data.filter(
+                    (transaction) => new Date(transaction.date).getMonth() === monthIndex
+                );
+                setTransactions(transactions);
 
+                const weeklySpending: { [key: number]: number } = {};
+                const weeklyEarning: { [key: number]: number } = {};
 
-                const spending = {
-                    january: 0,
-                    february: 0,
-                    march: 0,
-                    april: 0,
-                    may: 0,
-                    june: 0,
-                    july: 0,
-                    august: 0,
-                    september: 0,
-                    october: 0,
-                    november: 0,
-                    december: 0,
-                };
-
-                const earned = {
-                    january: 0,
-                    february: 0,
-                    march: 0,
-                    april: 0,
-                    may: 0,
-                    june: 0,
-                    july: 0,
-                    august: 0,
-                    september: 0,
-                    october: 0,
-                    november: 0,
-                    december: 0,
-                };
-            
-           fetchedTransactions.forEach(transaction => {                                 //iterate over each transaction
-                    const month = new Date(transaction.transaction_date).getMonth();   //extract month from transaction date
-                    const amount = transaction.transaction_amount;
-                    if (transaction.transaction_category === 'INCOME') {                //if the transaction category is income, add to earned
-                        earned[Object.keys(earned)[month]] += amount;
-                    } else {                                                                //otherwise, add to spending
-                        spending[Object.keys(spending)[month]] += amount;
+                //get weekly earning and spending
+                transactions.forEach((transaction: Transaction) => {
+                    const date = new Date(transaction.date);
+                    const week = getWeekNumber(date);
+                    if (transaction.category === "INCOME") {
+                        if (!weeklyEarning[week]) weeklyEarning[week] = 0;
+                        weeklyEarning[week] += transaction.amount;
+                    } else {
+                        if (!weeklySpending[week]) weeklySpending[week] = 0;
+                        weeklySpending[week] += transaction.amount;
                     }
                 });
-            
 
-            setSpendingData(spending);
-            setEarnedData(earned);
-        } catch (error) {
-            console.error('Error fetching transactions:', error);
-        }
-    };
+                //get all weeks in the current month
+                const year = new Date().getFullYear();
+                const weeksInMonth = getAllWeeksInMonth(year, monthIndex);
 
-    fetchTransactions();
+                //prepare spending and earning data for the bar chart
+                const data = weeksInMonth.map((week) => ({
+                    week,
+                    spending: weeklySpending[week] || 0,
+                    earning: weeklyEarning[week] || 0
+                }));
+
+                setWeeklyData(data);
+
+                //calculate spending by category
+                const categorySpending: { [key in TransactionCategory]?: number } = {};
+                transactions.forEach((transaction: Transaction) => {
+                    if (transaction.category !== "INCOME") {
+                        if (!categorySpending[transaction.category]) {
+                            categorySpending[transaction.category] = 0;
+                        }
+                        categorySpending[transaction.category]! += transaction.amount;
+                    }
+                });
+
+                //prepare category data for pie chart
+                const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
+                    name: category,
+                    value: categorySpending[category]!,
+                    color: categoryColors[category]
+                }));
+
+                setSpendingCategories(spendingCategories);
+            } catch (error) {
+                console.error("Error fetching transactions:", error);
+            }
+        };
+
+        fetchTransactions();
     }, []);
-    */
 
+    //total spending for the month
+    const totalSpending = transactions.reduce(
+        (sum, transaction) => (transaction.category !== "INCOME" ? sum + transaction.amount : sum),
+        0
+    );
 
-    // bar chart
-    const chartData = [
-        { month: 'Week 1', spending: spendingData.january, earned: earnedData.january },
-        { month: 'Week 2', spending: spendingData.february, earned: earnedData.february },
-        { month: 'Week 3', spending: spendingData.march, earned: earnedData.march },
-        { month: 'Week 4', spending: spendingData.april, earned: earnedData.april },
-      
-    ];
-
-    const categories = chartData.map(d => d.month);
-    const spendingValues = chartData.map(d => d.spending);
-    const earnedValues = chartData.map(d => d.earned);
-
-
+    //category expenses table
     const categoryExpenses = (
         <>
             <thead>
                 <tr>
                     <th scope="col">Category</th>
-                    <th scope="col">% Spend</th>
-                    <th scope="col">Change</th>
+                    <th scope="col">% of Monthly Spending</th>
                     <th scope="col">Amount</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row"> <Icon.LocalGroceryStore style={{ color: '#90c8f4', fontSize: '1.4rem', marginRight: '0.8rem' }} />Groceries</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">  <Icon.Youtube style={{ color: '#f7e748', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Entertainment</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">  <Icon.Restaurant style={{ color: '#6ed198', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Dining</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row"> <Icon.DirectionsCar style={{ color: '#af98f9', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Transportation</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">  <Icon.MedicalServices style={{ color: '#fd6d6d', fontSize: '1.4rem', marginRight: '0.8rem' }} />Healthcare</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">  <Icon.Home style={{ color: '#d7f5a4', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Living Expenses</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">  <Icon.Clothes style={{ color: '#fe992b', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Shopping</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row"> <Icon.TrendingUp style={{ color: '#f7b7e5', fontSize: '1.4rem', marginRight: '0.8rem' }} /> Investments</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">  <Icon.MoreHoriz style={{ color: '#dce2e1', fontSize: '1.4rem', marginRight: '0.8rem' }} />  Miscellaneous</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
+                {spendingCategories.map((category) => (
+                    <tr key={category.name}>
+                        <th scope="row">
+                            <CategoryIcon category={category.name} color={category.color} />
+                            {category.name}
+                        </th>
+                        <td>{((category.value / totalSpending) * 100).toFixed(2)}%</td>
+                        <td>${category.value.toFixed(2)}</td>
+                    </tr>
+                ))}
             </tbody>
         </>
-    )
+    );
+
+    //top three expense categories table
+    const topThreeCategories = [...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 3);
 
     const topExpenses = (
         <>
             <thead>
                 <tr>
                     <th scope="col">Category</th>
-                    <th scope="col">% Spend</th>
-                    <th scope="col">Change</th>
+
                     <th scope="col">Amount</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">Groceries</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Entertainment</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Miscellaneous</th>
-                    <td>
-                        test
-                    </td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
+                {topThreeCategories.map((category) => (
+                    <tr key={category.name}>
+                        <th scope="row">
+                            <CategoryIcon category={category.name} color={category.color} />
+                            {category.name}
+                        </th>
+                        <td>${category.value.toFixed(2)}</td>
+                    </tr>
+                ))}
             </tbody>
         </>
-    )
-
-
+    );
 
     return (
         <div className="min-w-screen">
             <div className="flex-1">
                 <section className="h-screen">
-                    <Title className="ml-3"> Month Name Overview</Title>{" "}
-                    <Link to="/dashboard/spending" className="mr-3">
-                    <Button type="button" className="ml-3">Back</Button>
-                    </Link>
                     {/* Title for the page */}
+                    <div className="mb-6">
+                        <Title className="ml-3">
+                            {" "}
+                            {lowercaseMonth.charAt(0).toUpperCase() + lowercaseMonth.slice(1)} Spending
+                        </Title>
+                        <p className="text-6xl font-semibold">${totalSpending.toFixed(2)}</p>
+                    </div>
+
+                    <Link to="/dashboard/spending" className="mr-3">
+                        <Button type="button" className="ml-3">
+                            Back to Annual Spending Overview
+                        </Button>
+                    </Link>
                     {/* Full-width row */}
-                    <div className="bg-gray-100 p-4 m-2 min-h-[10rem] rounded-md flex justify-center items-center">
-
-
+                    <div className=" bg-gray-100 p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center shadow-lg">
                         <BarChart
-                            xAxis={[{ scaleType: 'band', data: categories, categoryGapRatio: 0.5 } as AxisConfig<'band'>,
+                            xAxis={[
+                                {
+                                    scaleType: "band",
+                                    data: weeklyData.map((d) => `Week ${d.week}`),
+                                    categoryGapRatio: 0.5
+                                } as AxisConfig<"band">
                             ]}
                             series={[
-                                { data: earnedValues, color: '#cbd5e8', label: 'Earned' },
-                                { data: spendingValues, color: '#1f78b4', label: 'Spendings' }
-
+                                { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: "Earnings" },
+                                { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: "Spendings" }
                             ]}
                             grid={{ horizontal: true }}
                             width={1400}
                             height={400}
-                          
                         />
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
-
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[55rem] rounded-md border-4 border-gray-200">
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[35rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
                             <h2></h2>
+                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full">
+                                <PieChart
+                                    series={[
+                                        {
+                                            data: spendingCategories.map((d) => ({
+                                                label: d.name,
+                                                id: d.name,
+                                                value: d.value,
+                                                icon: CategoryIcon,
+                                                color: d.color
+                                            })),
+                                            innerRadius: "48%",
+                                            outerRadius: "95%",
+                                            paddingAngle: 1,
+                                            cornerRadius: 3,
+                                            startAngle: -180,
+                                            endAngle: 180,
+                                            cx: "50%",
+                                            cy: "50%",
+                                            arcLabel: (item) => `${item.label}`,
 
+                                            arcLabelMinAngle: 15,
 
-
-                            <PieChart
-                                series={[
-                                    {
-                                        data: mockcategories.map((d) => ({
-                                            label: d.name,
-                                            id: d.name,
-                                            value: d.value,
-                                            icon: categoryIcons[d.name],
-                                            color: categoryColors[d.name], 
-                                        })),
-                                        innerRadius: 95,
-                                        outerRadius: 180,
-                                        paddingAngle: 1,
-                                        cornerRadius: 3,
-                                        startAngle: -180,
-                                        endAngle: 180,
-                                        cx: 200,
-                                        cy: 180,
-                                        arcLabel:
-                                            (item) => `${item.label}: ${item.value}`,
-
-                                        arcLabelMinAngle: 45,
-
-
-                                        valueFormatter: (v, { dataIndex }) => {
-                                            const { name } = mockcategories[dataIndex];
-                                            return `$ ${v.value} `;
-
+                                            valueFormatter: (v, { dataIndex }) => {
+                                                return `$ ${v.value} `;
+                                            }
+                                        }
+                                    ]}
+                                    sx={{
+                                        width: "100%",
+                                        height: "100%",
+                                        [`& .${pieArcLabelClasses.root}`]: {
+                                            fill: "white",
+                                            fontWeight: "bold"
                                         },
-                                    }
-                                ]}
-
-                                sx={{
-                                    [`& .${pieArcLabelClasses.root}`]: {
-                                        fill: 'white',
-                                        fontWeight: 'bold',
-                                    },
-                                    [`.${legendClasses.root}`]: {
-                                        transform: 'translate(2px, 0)',
-                                    },
-                                }}
-                            />
-
-
-
-
+                                        [`.${legendClasses.root}`]: {
+                                            transform: "translate(2px, 0)"
+                                        }
+                                    }}
+                                />
+                            </div>
                             <div className="w-full">
-                                <Table bordered={false} className="w-full">{categoryExpenses}</Table>
+                                <Table bordered={false} className="w-full">
+                                    {categoryExpenses}
+                                </Table>
                             </div>
                         </div>
-                        <div className="flex justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-200">
-                            <h2></h2>
-                            <Table bordered={false} className="w-full">{topExpenses}</Table>
+                        {/* section for more insights -> top expenses..and?? */}
+
+                        <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 bg-white shadow-lg">
+                            <h2 className="text-2xl mb-4">Top Expenses</h2>
+                            <Table bordered={false} className="w-full">
+                                {topExpenses}
+                            </Table>
                         </div>
                     </div>
                 </section>

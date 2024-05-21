@@ -7,6 +7,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CategoryIcon, { TransactionCategory } from "../../components/CategoryIcon";
 
+//define the type for months
 type Month =
     | "january"
     | "february"
@@ -21,6 +22,7 @@ type Month =
     | "november"
     | "december";
 
+//define the type for transactions
 type Transaction = {
     transactionId: number;
     userId: number;
@@ -34,10 +36,16 @@ type Transaction = {
 
 const Spending: React.FC = () => {
     const navigate = useNavigate();
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [spendingCategories, setSpendingCategories] = useState<
+        { name: TransactionCategory; value: number; color: string }[]
+    >([]);
 
+    //colors for each category
     const categoryColors: { [key in TransactionCategory]: string } = {
         GROCERIES: "#90c8f4",
-        ENTERTAINMENT: "#f7e748",
+        ENTERTAINMENT: "#e5d23a",
         DINING: "#6ed198",
         TRANSPORTATION: "#af98f9",
         HEALTHCARE: "#fd6d6d",
@@ -47,6 +55,7 @@ const Spending: React.FC = () => {
         MISC: "#dce2e1"
     };
 
+    /*
     //mock data
     const mockcategories = [
         { name: "Groceries", value: 300 },
@@ -60,7 +69,7 @@ const Spending: React.FC = () => {
         { name: "Miscellaneous", value: 50 }
     ];
 
-    /*
+    
         //mock data
         useEffect(() => {
           
@@ -101,7 +110,7 @@ const Spending: React.FC = () => {
     
     */
 
-    //starting state
+    //starting state for spending data. set all months to zero
     const [spendingData, setSpendingData] = useState<Record<Month, number>>({
         january: 0,
         february: 0,
@@ -117,6 +126,7 @@ const Spending: React.FC = () => {
         december: 0
     });
 
+    //starting state for earned data. set all months to zero
     const [earnedData, setEarnedData] = useState<Record<Month, number>>({
         january: 0,
         february: 0,
@@ -132,14 +142,7 @@ const Spending: React.FC = () => {
         december: 0
     });
 
-    //store spending amounts by category
-    const [spendingCategories, setSpendingCategories] = useState<
-        { name: TransactionCategory; value: number; color: string }[]
-    >([]);
-
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-
-    //fetch from backend here
+    //fetch from backend with axios
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
@@ -153,6 +156,7 @@ const Spending: React.FC = () => {
 
                 const categorySpending: { [key in TransactionCategory]?: number } = {};
 
+                //process each transaction
                 transactions.forEach((transaction: Transaction) => {
                     const monthIndex = new Date(transaction.date).getMonth();
                     const amount = transaction.amount;
@@ -172,6 +176,8 @@ const Spending: React.FC = () => {
                     ];
                     const monthKey = monthKeys[monthIndex];
 
+                    //if the category is INCOME, update earned data
+                    //else update spending data and the spending categories
                     if (transaction.category === "INCOME") {
                         updatedEarnedData[monthKey] += amount;
                     } else {
@@ -183,6 +189,8 @@ const Spending: React.FC = () => {
                         categorySpending[transaction.category]! += amount;
                     }
                 });
+
+                //map category spending to an array with colors
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
                     value: categorySpending[category]!,
@@ -203,7 +211,10 @@ const Spending: React.FC = () => {
         fetchTransactions();
     }, []);
 
-    // bar chart
+    // calculate total spending
+    const totalSpent = Object.values(spendingData).reduce((acc, curr) => acc + curr, 0);
+
+    // prepare data for the bar chart
     const chartData = [
         { month: "January", spending: spendingData.january, earned: earnedData.january },
         { month: "February", spending: spendingData.february, earned: earnedData.february },
@@ -223,6 +234,7 @@ const Spending: React.FC = () => {
     const spendingValues = chartData.map((d) => d.spending);
     const earnedValues = chartData.map((d) => d.earned);
 
+    //category expenses table
     const categoryExpenses = (
         <>
             <thead>
@@ -247,42 +259,36 @@ const Spending: React.FC = () => {
         </>
     );
 
-    //click on the bar to go to a specific month
+    //click on the bar in the bar chart to go to a specific month
     const handleItemClick = (event: React.MouseEvent<SVGElement>, barItemIdentifier: BarItemIdentifier) => {
         const { dataIndex } = barItemIdentifier;
         const month = categories[dataIndex];
         navigate(`/dashboard/spending/${month}`);
     };
 
+    //top three expense categories table
+    const topThreeCategories = [...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 3);
+
     const topExpenses = (
         <>
             <thead>
                 <tr>
                     <th scope="col">Category</th>
-                    <th scope="col">% Spend</th>
-                    <th scope="col">Change</th>
+
                     <th scope="col">Amount</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">Groceries</th>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Entertainment</th>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <th scope="row">Miscellaneous</th>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
+                {topThreeCategories.map((category) => (
+                    <tr key={category.name}>
+                        <th scope="row">
+                            <CategoryIcon category={category.name} color={category.color} />
+                            {category.name}
+                        </th>
+
+                        <td>${category.value.toFixed(2)}</td>
+                    </tr>
+                ))}
             </tbody>
         </>
     );
@@ -291,15 +297,34 @@ const Spending: React.FC = () => {
         <div className="min-w-screen">
             <div className="flex-1">
                 <section className="h-screen">
-                    <Title className="ml-3">Spending Overview</Title>{" "}
-                    <Link to="/dashboard/spending/${month}" className="mr-3">
+                    {/* Title for the page */}
+                    {/* <Title className="ml-3">Spending Overview</Title> */}
+
+                    <div className="mb-6">
+                        <Title className="ml-3">Spending Overview</Title>
+                        <p className="text-6xl font-semibold">${totalSpent.toFixed(2)}</p>
+                    </div>
+
+                    <Link to="/dashboard/spending/May" className="mr-3">
                         <Button type="button" className="ml-3">
                             See Current Month
                         </Button>
                     </Link>
-                    {/* Title for the page */}
+                    <span
+                        onMouseEnter={() => setShowTooltip(true)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                        className="relative"
+                    >
+                        <Icon.Help style={{ color: "#74777A", fontSize: "1.7rem", marginRight: "0.8rem" }} />
+                        {/* render tooltip conditionally */}
+                        {showTooltip && (
+                            <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-60">
+                                Click on any bar in the chart to view detailed spending for that month.
+                            </div>
+                        )}
+                    </span>
                     {/* Full-width row */}
-                    <div className="p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center border-4 border-gray-200">
+                    <div className="p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center border-4 border-gray-100 bg-white shadow-lg">
                         <BarChart
                             xAxis={[
                                 { scaleType: "band", data: categories, categoryGapRatio: 0.5 } as AxisConfig<"band">
@@ -311,61 +336,63 @@ const Spending: React.FC = () => {
                             grid={{ horizontal: true }}
                             width={1400}
                             height={400}
-                            onItemClick={handleItemClick}
+                            onItemClick={handleItemClick} //this lets you click on the bars
                         />
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[35rem] rounded-md border-4 border-gray-200">
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[35rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
                             <h2></h2>
+                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full">
+                                <PieChart
+                                    series={[
+                                        {
+                                            data: spendingCategories.map((d) => ({
+                                                label: d.name,
+                                                id: d.name,
+                                                value: d.value,
+                                                icon: CategoryIcon,
+                                                color: d.color
+                                            })),
+                                            innerRadius: "48%",
+                                            outerRadius: "95%",
+                                            paddingAngle: 1,
+                                            cornerRadius: 3,
+                                            startAngle: -180,
+                                            endAngle: 180,
+                                            cx: "50%",
+                                            cy: "50%",
+                                            arcLabel: (item) => `${item.label}`,
 
-                            <PieChart
-                                series={[
-                                    {
-                                        data: spendingCategories.map((d) => ({
-                                            label: d.name,
-                                            id: d.name,
-                                            value: d.value,
-                                            icon: CategoryIcon,
-                                            color: d.color
-                                        })),
-                                        innerRadius: 95,
-                                        outerRadius: 180,
-                                        paddingAngle: 1,
-                                        cornerRadius: 3,
-                                        startAngle: -180,
-                                        endAngle: 180,
-                                        cx: 200,
-                                        cy: 180,
-                                        arcLabel: (item) => `${item.label}: ${item.value}`,
+                                            arcLabelMinAngle: 20,
 
-                                        arcLabelMinAngle: 45,
-
-                                        valueFormatter: (v, { dataIndex }) => {
-                                            const { name } = mockcategories[dataIndex];
-                                            return `$ ${v.value} `;
+                                            valueFormatter: (v, { dataIndex }) => {
+                                                return `$ ${v.value} `;
+                                            }
                                         }
-                                    }
-                                ]}
-                                sx={{
-                                    [`& .${pieArcLabelClasses.root}`]: {
-                                        fill: "white",
-                                        fontWeight: "bold"
-                                    },
-                                    [`.${legendClasses.root}`]: {
-                                        transform: "translate(2px, 0)"
-                                    }
-                                }}
-                            />
-
+                                    ]}
+                                    sx={{
+                                        width: "100%",
+                                        height: "100%",
+                                        [`& .${pieArcLabelClasses.root}`]: {
+                                            fill: "white",
+                                            fontWeight: "bold"
+                                        },
+                                        [`.${legendClasses.root}`]: {
+                                            transform: "translate(2px, 0)"
+                                        }
+                                    }}
+                                />
+                            </div>
                             <div className="w-full">
                                 <Table bordered={false} className="w-full">
                                     {categoryExpenses}
                                 </Table>
                             </div>
                         </div>
-                        <div className="flex justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-200">
-                            <h2></h2>
+                        {/* section for more insights -> top expenses..and?? */}
+                        <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 bg-white shadow-lg">
+                            <h2 className="text-2xl mb-4">Top Expenses</h2>
                             <Table bordered={false} className="w-full">
                                 {topExpenses}
                             </Table>
