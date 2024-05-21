@@ -18,7 +18,7 @@ import {
     Textarea,
     Title
 } from "@trussworks/react-uswds";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMatch } from "react-router-dom";
 import { BarChart } from "@mui/x-charts";
@@ -98,7 +98,6 @@ function TransactionHistory() {
     const accounts: Array<string> = ["***1703", "***6612", "***3231"];
     const [transactions, setTransactions] = useState<Array<Transaction>>(transactionsInit);
     const [current, setCurrent] = useState<number>(0);
-    const [currentTransaction, setCurrentTransacation] = useState<Transaction>(transactions[current]);
     const modalRef = useRef<ModalRef>(null);
     const infoRef = useRef<ModalRef>(null);
     const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
@@ -179,10 +178,6 @@ function TransactionHistory() {
         setInfoTransaction(transaction);
     };
 
-    useEffect(() => {
-        setCurrentTransacation(transactions[current]);
-    }, [transactions, current]);
-
     return (
         <>
             <div>
@@ -193,7 +188,7 @@ function TransactionHistory() {
                             <h1>All transactions</h1>
                         </CardHeader>
                         <CardBody>
-                            <Table bordered={false} fullWidth={true}>
+                            <Table bordered={false} fullWidth={true} striped>
                                 <thead>
                                     <tr>
                                         <th>Date</th>
@@ -222,15 +217,15 @@ function TransactionHistory() {
                                                         setCurrent(index);
                                                     }}
                                                 >
-                                                    <Icon.Edit size={4} />
+                                                    <Icon.Edit />
                                                 </ModalToggleButton>
                                                 <Button type={"button"} className="usa-button--unstyled">
-                                                    <Icon.Delete size={4} />
+                                                    <Icon.Delete />
                                                 </Button>
                                             </td>
                                             <td>
                                                 <Icon.AttachMoney />
-                                                {transaction.amount}
+                                                {transaction.amount.toFixed(2)}
                                             </td>
                                             <td>
                                                 <ModalToggleButton
@@ -283,7 +278,7 @@ function TransactionHistory() {
                             name={"date"}
                             className="col-span-3 usa-input usa-date-picker_external-inpu"
                             type={"date"}
-                            value={currentTransaction.date}
+                            value={transactions[current].date}
                             onChange={handleInputChange}
                         />
                         <div className="col-span-3" />
@@ -291,7 +286,7 @@ function TransactionHistory() {
                         <div className="col-span-4">
                             <Label htmlFor={"transaction-name"}>Name</Label>
                             <TextInput
-                                value={currentTransaction.name}
+                                value={transactions[current].name}
                                 id={"transaction-name"}
                                 name={"name"}
                                 type={"text"}
@@ -301,7 +296,7 @@ function TransactionHistory() {
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
-                                    value={currentTransaction.amount}
+                                    value={transactions[current].amount}
                                     id={"transaction-amount"}
                                     name={"amount"}
                                     type={"number"}
@@ -313,7 +308,7 @@ function TransactionHistory() {
                                 <Select
                                     id={"transaction-category"}
                                     name={"category"}
-                                    value={currentTransaction.category}
+                                    value={transactions[current].category}
                                     onChange={handleSelectChange}
                                     className="col-span-8"
                                 >
@@ -329,7 +324,7 @@ function TransactionHistory() {
                             </div>
                             <Label htmlFor="transaction-note">Notes</Label>
                             <Textarea
-                                value={currentTransaction.note}
+                                value={transactions[current].note}
                                 id="transaction-note"
                                 onChange={handleAreaChange}
                                 name="note"
@@ -344,7 +339,7 @@ function TransactionHistory() {
                                 <Select
                                     id={"transaction-account"}
                                     name={"account"}
-                                    value={currentTransaction.account}
+                                    value={transactions[current].account}
                                     onChange={handleSelectChange}
                                     className="col-span-8"
                                 >
@@ -368,7 +363,7 @@ function TransactionHistory() {
                         name={"date"}
                         className="col-span-3 usa-input usa-date-picker_external-inpu"
                         type={"date"}
-                        value={currentTransaction.date}
+                        value={transactions[current].date}
                         onChange={handleInputChange}
                         readOnly
                         disabled
@@ -378,7 +373,7 @@ function TransactionHistory() {
                     <div className="col-span-4">
                         <Label htmlFor={"info-name"}>Name</Label>
                         <TextInput
-                            value={currentTransaction.name}
+                            value={transactions[current].name}
                             id={"info-name"}
                             name={"name"}
                             type={"text"}
@@ -390,7 +385,7 @@ function TransactionHistory() {
                         <InputGroup>
                             <InputPrefix>$</InputPrefix>
                             <TextInput
-                                value={currentTransaction.amount}
+                                value={transactions[current].amount}
                                 id={"info-amount"}
                                 name={"amount"}
                                 type={"number"}
@@ -404,7 +399,7 @@ function TransactionHistory() {
                             <Select
                                 id={"info-category"}
                                 name={"category"}
-                                value={currentTransaction.category}
+                                value={transactions[current].category}
                                 onChange={handleSelectChange}
                                 className="col-span-8"
                                 disabled
@@ -420,7 +415,7 @@ function TransactionHistory() {
                         </div>
                         <Label htmlFor="info-note">Notes</Label>
                         <Textarea
-                            value={currentTransaction.note}
+                            value={transactions[current].note}
                             id="info-note"
                             onChange={handleAreaChange}
                             name="note"
@@ -434,7 +429,7 @@ function TransactionHistory() {
                             <Select
                                 id={"info-account"}
                                 name={"account"}
-                                value={currentTransaction.account}
+                                value={transactions[current].account}
                                 onChange={handleSelectChange}
                                 className="col-span-8"
                                 disabled

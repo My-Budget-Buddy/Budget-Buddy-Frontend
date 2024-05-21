@@ -177,7 +177,7 @@ const accounts: Array<string> = ["***1703", "***6612", "***3231"];
 
 const Transactions: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>(transactionsInit);
-    const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[0]);
+    // const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[0]);
     const [current, setCurrent] = useState<number>(0);
     const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
 
@@ -197,9 +197,9 @@ const Transactions: React.FC = () => {
         }
     }, [selectedCategory, transactions]);
 
-    useEffect(() => {
-        setCurrentTransaction(transactions[current]);
-    }, [transactions, current]);
+    // useEffect(() => {
+    //     setCurrentTransaction(transactions[current]);
+    // }, [transactions, current]);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -358,7 +358,6 @@ const Transactions: React.FC = () => {
                                                     modalRef={modalRef}
                                                     onClick={() => {
                                                         setCurrent(index);
-                                                        setCurrentTransaction(transaction);
                                                     }}
                                                 >
                                                     <Icon.Edit />
@@ -369,7 +368,7 @@ const Transactions: React.FC = () => {
                                             </td>
                                             <td>
                                                 <Icon.AttachMoney />
-                                                {transaction.amount}
+                                                {transaction.amount.toFixed(2)}
                                             </td>
                                             <td>
                                                 <ModalToggleButton
@@ -399,7 +398,7 @@ const Transactions: React.FC = () => {
                             name="date"
                             className="col-span-3 usa-input usa-date-picker_external-input"
                             type="date"
-                            value={currentTransaction.date}
+                            value={transactions[current].date}
                             onChange={handleInputChange}
                         />
                         <div className="col-span-3" />
@@ -407,7 +406,7 @@ const Transactions: React.FC = () => {
                         <div className="col-span-4">
                             <Label htmlFor="transaction-name">Name</Label>
                             <TextInput
-                                value={currentTransaction.name}
+                                value={transactions[current].name}
                                 id="transaction-name"
                                 name="name"
                                 type="text"
@@ -417,7 +416,7 @@ const Transactions: React.FC = () => {
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
-                                    value={currentTransaction.amount}
+                                    value={transactions[current].amount}
                                     id="transaction-amount"
                                     name="amount"
                                     type="number"
@@ -429,7 +428,7 @@ const Transactions: React.FC = () => {
                                 <Select
                                     id="transaction-category"
                                     name="category"
-                                    value={currentTransaction.category}
+                                    value={transactions[current].category}
                                     onChange={handleSelectChange}
                                     className="col-span-7"
                                 >
@@ -445,7 +444,7 @@ const Transactions: React.FC = () => {
                             </div>
                             <Label htmlFor="transaction-note">Notes</Label>
                             <Textarea
-                                value={currentTransaction.note}
+                                value={transactions[current].note}
                                 id="transaction-note"
                                 onChange={handleAreaChange}
                                 name="note"
@@ -460,7 +459,7 @@ const Transactions: React.FC = () => {
                                 <Select
                                     id="transaction-account"
                                     name="account"
-                                    value={currentTransaction.account}
+                                    value={transactions[current].account}
                                     onChange={handleSelectChange}
                                     className="col-span-7"
                                 >
