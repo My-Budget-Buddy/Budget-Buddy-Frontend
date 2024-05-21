@@ -63,9 +63,6 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
         // After component mounts, set initialized to true
         // Using initialized prevents the PUT request from firing on page load
         setInitialized(true);
-        return () => {
-            console.log("ASdf");
-        };
     }, []);
 
     useEffect(() => {

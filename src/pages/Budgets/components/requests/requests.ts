@@ -27,8 +27,6 @@ export async function getBuckets() {
         console.error("Failed to fetch user data:", error);
         throw error;
     }
-
-    console.log("Got buckets");
 }
 
 export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
