@@ -18,31 +18,19 @@ interface NewBucketModalProps {
     children: React.ReactNode;
 }
 
-interface RawBucket {
-    bucketId: number;
+interface RawBucketToSend {
+    // bucketId: number;
     userId: number;
     bucketName: string;
     amountAvailable: number;
     amountRequired: number;
-    dateCreated: string;
+    // dateCreated: string;
     isActive: boolean;
     isReserved: boolean;
-    monthYear: string;
+    // monthYear: string;
 }
 
-const testBucket = {
-    bucketId: 6,
-    userId: 1,
-    bucketName: "sNadsw Bucket",
-    amountAvailable: 100,
-    amountRequired: 1000,
-    dateCreated: "2024-05-21T08:39:46.726429",
-    isActive: true,
-    isReserved: false,
-    monthYear: "2024-06"
-};
-
-async function postBucket(bucket: RawBucket): Promise<RawBucket> {
+async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
     const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/add`;
 
     try {
@@ -58,7 +46,7 @@ async function postBucket(bucket: RawBucket): Promise<RawBucket> {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: RawBucket = await response.json();
+        const data: RawBucketToSend = await response.json();
         return data;
     } catch (error) {
         console.error("Failed to create bucket:", error);
@@ -95,17 +83,30 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
     };
 
     async function sendNewBucket(bucket: SavingsBucketRowProps) {
+        const newBucket = {
+            // bucketId: 6,
+            userId: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
+            bucketName: formData.data.name,
+            amountAvailable: 0, //TODO rename as amountReserved
+            amountRequired: formData.data.amount_required,
+            // dateCreated: "2024-05-21T08:39:46.726429",
+            isActive: true,
+            isReserved: false
+            // monthYear: "2024-06"
+        };
+
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
 
-        console.log("SENDING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+        console.log("SENDING BUCKET...");
 
-        await postBucket(testBucket);
+        try {
+            await postBucket(newBucket);
+        } catch {
+            console.error("ERROR!");
+        }
 
         console.log("BUCKET SENT: ", bucket);
-
-        //if good: refreshSavingsBuckets
-        //else: return error
 
         // Reallow all user input again
         dispatch(setIsSending(false));

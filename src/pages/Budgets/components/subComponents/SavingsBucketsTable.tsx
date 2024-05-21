@@ -21,7 +21,6 @@ function SavingsBucketTable() {
         (async () => {
             const transformedBuckets = await getBuckets();
             dispatch(updateBuckets(transformedBuckets));
-            console.log(transformedBuckets);
         })();
     }, [isSending]);
 
