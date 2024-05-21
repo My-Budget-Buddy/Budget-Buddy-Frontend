@@ -42,8 +42,8 @@ function SavingsBucketTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {listOfBuckets.map((rowData: SavingsBucketRowProps, index) => (
-                        <SavingsBucketRow key={index} data={rowData.data} />
+                    {listOfBuckets.map((rowData: SavingsBucketRowProps) => (
+                        <SavingsBucketRow key={rowData.data.id} data={rowData.data} />
                     ))}
                 </tbody>
             </Table>

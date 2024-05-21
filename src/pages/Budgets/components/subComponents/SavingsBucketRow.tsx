@@ -7,8 +7,10 @@ import DeleteBucketModal from "../modals/DeleteBucketModal";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { timedDelay } from "../../../../util/util";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+import { putBucket } from "../requests/requests";
 
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
+    //TODO Reset buffer when ANY rows are changed. Currently, the buffer only applies to the single element and each row has an independent buffer.
     const [currentlyReserved, setCurrentlyReserved] = useState<boolean>(data.is_currently_reserved);
     const [amountReserved, setAmountReserved] = useState<number>(data.amount_reserved);
     const dispatch = useAppDispatch();
@@ -21,45 +23,50 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     const [isCurrentlyEditing, setIsCurrentlyEditing] = useState<boolean>(false);
 
     const handleReservedChange = (amount_reserved: number) => {
-        console.log("changed");
         setAmountReserved(amount_reserved);
         setIsCurrentlyEditing(true);
         setLastEditTime(new Date());
     };
 
     const handleCheckboxCheck = () => {
-        console.log("changed");
         setCurrentlyReserved(!currentlyReserved);
         setIsCurrentlyEditing(true);
         setLastEditTime(new Date());
     };
 
     async function sendUpdatedBucket(bucket: SavingsBucketRowProps) {
+        const newBucket = {
+            // bucketId: 6,
+            userId: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
+            bucketName: data.name,
+            amountAvailable: amountReserved, //TODO rename as amountReserved
+            amountRequired: data.amount_required,
+            // dateCreated: "2024-05-21T08:39:46.726429",
+            isActive: true,
+            isReserved: currentlyReserved
+            // monthYear: "2024-06"
+        };
+
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
 
-        //send post to endpoint
-        //on success, refreshSavingsBuckets();
+        console.log("UPDATING BUCKET...");
 
-        //POST to endpoint
-        // const repsonse = await fetch(... send bucket)
-        console.log("UPDATING BUCKET..."); // <--- This is the bucket to send to the post endpoint
-
-        await timedDelay(1000);
+        await putBucket(newBucket, data.id);
 
         console.log("BUCKET SENT: ", bucket);
         setIsCurrentlyEditing(false);
 
-        //if good: refreshSavingsBuckets
-        //else: return error
-
-        // Reallow all user input again
         dispatch(setIsSending(false));
     }
 
     useEffect(() => {
         // After component mounts, set initialized to true
+        // Using initialized prevents the PUT request from firing on page load
         setInitialized(true);
+        return () => {
+            console.log("ASdf");
+        };
     }, []);
 
     useEffect(() => {
@@ -86,7 +93,6 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
             <td>{data.name}</td>
             {/* TODO Fix css */}
             <td style={{ width: "200px" }}>{data.amount_required}</td>
-            {/* TODO add the onChange method to ReservedMoniesInput */}
             <td style={{ width: "200px" }}>
                 <ReservedMoniesInput
                     amount={amountReserved}
