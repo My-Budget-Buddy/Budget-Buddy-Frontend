@@ -57,10 +57,10 @@ const Dashboard: React.FC = () => {
     useEffect(()=> {
         let total=0
         allAccounts.map((acc)=> {
-            if(acc.id === "checking"){
-                total += acc.balance
-            }else{
+            if(acc.id === "credit"){
                 total -= acc.balance
+            }else{
+                total += acc.balance
             }
         })
         setNetCash(total)
@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchAccounts = async () => {
             try{
-                const response = await axios.get("http://localhost:8080/accounts/123", {
+                const response = await axios.get("http://localhost:8125/accounts/1", {
                     // withCredentials: true,
                 })
                 const accounts = response.data
@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try{
-                const response = await axios.get("http://localhost:8083/transactions/recentTransactions/123", {
+                const response = await axios.get("http://localhost:8125/transactions/recentTransactions/1", {
                     // withCredentials: true,
                 })
                 setRecentTransactions(response.data)
@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchMonthlyTransactions = async () => {
             try{
-                const response = await axios.get("http://localhost:8083/transactions/currentMonthTransactions/123", {
+                const response = await axios.get("http://localhost:8125/transactions/currentMonthTransactions/1", {
                     // withCredentials: true,
                 })
                 const monthlyTransactions= response.data
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
     useEffect(()=> {
         const fetchBudgets = async () => {
             try {
-                const response = await axios.get("http://localhost:8084/budgets/123", {
+                const response = await axios.get("http://localhost:8125/budgets/123", {
                     // withCredentials: true,
                 })
                 console.log('response: ', response.data)
