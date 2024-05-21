@@ -264,17 +264,19 @@ function TransactionHistory() {
                             Total transactions: {transactions.length}
                             <hr />
                             <BarChart
-                                series={transactions.map((transaction) => {
-                                    return { data: [transaction.amount] };
-                                })}
+                                series={[
+                                    {
+                                        data: transactions.map((transaction) => {
+                                            return transaction.amount;
+                                        })
+                                    }
+                                ]}
                                 xAxis={[
                                     {
                                         scaleType: "band",
-                                        data: [
-                                            transactions.map((transaction) => {
-                                                return transaction.id;
-                                            })
-                                        ]
+                                        data: transactions.map((transaction) => {
+                                            return transaction.id;
+                                        })
                                     }
                                 ]}
                                 height={300}
