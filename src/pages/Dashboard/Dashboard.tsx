@@ -3,8 +3,10 @@ import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } fr
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { formatCurrency } from "../../util/helpers";
 
 interface InitialAccountType {
+    id: number;
     type: string;
     userId: number;
     accountNumber: number;
@@ -47,6 +49,7 @@ interface MonthlyTransactionType {
 
 const Dashboard: React.FC = () => {
     const modalRef = useRef<ModalRef>(null)
+    const [accounts, setAccounts] = useState<InitialAccountType[]>([])
     const [allAccounts, setAllAccounts] = useState<AllAccountsType[]>([])
     const [netCash, setNetCash] = useState(0)
     const [recentTransactions, setRecentTransactions] = useState<TransactionType[]>([])
@@ -76,6 +79,8 @@ const Dashboard: React.FC = () => {
                     // withCredentials: true,
                 })
                 const accounts = response.data
+                console.log("accounts: ", accounts)
+                setAccounts(accounts)
                 let allAccounts: AllAccountsType[] = accounts.reduce((prev: AllAccountsType[], account: InitialAccountType)=> {
                     const accountId = account.type.toLowerCase()
 
@@ -121,7 +126,6 @@ const Dashboard: React.FC = () => {
         }
         fetchAccounts()
     }, [])
-
 
     // ----Recent Transactions ---
     // backend: /transactions/recentTransactions/userId
@@ -233,7 +237,7 @@ const Dashboard: React.FC = () => {
                                             {acc.id === "credit" && <p className="flex items-center"><Icon.CreditCard className="mr-2" />{acc.type}</p>}
                                             {acc.id === "savings" && <p className="flex items-center"><Icon.AccountBalance className="mr-2" />{acc.type}</p>}
                                             {acc.id === "investment" && <p className="flex items-center"><Icon.TrendingUp className="mr-2" />{acc.type}</p>}
-                                            <p className="flex items-center"><Icon.AttachMoney/> {acc.balance}</p>
+                                            <p className="flex items-center"><Icon.AttachMoney/> {formatCurrency(acc.balance)}</p>
                                         </div>
                                     ),
                                     content: (acc.accounts.map((account, idx)=> (
@@ -242,7 +246,7 @@ const Dashboard: React.FC = () => {
                                                 <p className="mr-2">{account.accountNumber}</p>|
                                                 <p className="ml-2">{account.institution}</p>
                                             </div>
-                                            <p className="flex items-center"><Icon.AttachMoney/>{account.currentBalance}</p>
+                                            <p className="flex items-center"><Icon.AttachMoney/>{formatCurrency(account.currentBalance)}</p>
                                         </div>
                                     ))
                                     ),
@@ -291,7 +295,7 @@ const Dashboard: React.FC = () => {
                                     <td>{recentTransaction.date}</td>
                                     <td>{recentTransaction.vendorName}</td>
                                     <td>{recentTransaction.category}</td>
-                                    <td><Icon.AttachMoney />{recentTransaction.amount}</td>
+                                    <td><Icon.AttachMoney />{formatCurrency(recentTransaction.amount)}</td>
                                     <td >
                                         <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={() => setCurrentTransaction(recentTransactions[idx])}>
                                             <Icon.NavigateNext />
@@ -372,8 +376,21 @@ const Dashboard: React.FC = () => {
                                 <div className="border-l border-black pl-6 h-full">
                                     <h4 className="text-xl">Account</h4>
                                     <div className="flex items-center mt-3 text-sm text-gray-500">
-                                        <Icon.AccountBalance className="mr-2" />
-                                        <div>{currentTransaction.accountId}</div>
+                                        {currentTransaction.accountId && (
+                                            <div className="flex flex-col">
+                                                    {accounts.map(account => (account.id === currentTransaction.accountId) && 
+                                                        <>
+                                                            <div className="flex items-center text-sm text-gray-500">
+                                                                <Icon.AccountBalance className="mr-2" />
+                                                                <div>{account.institution}</div>
+                                                            </div>
+                                                            <div className="mt-2 text-sm text-gray-500">
+                                                                Account Number: {account.accountNumber}
+                                                            </div>
+                                                        </>
+                                                    )}    
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
