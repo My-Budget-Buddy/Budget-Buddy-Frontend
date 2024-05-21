@@ -51,7 +51,7 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
             // bucketId: 6,
             userId: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
             bucketName: formData.data.name,
-            amountAvailable: 0, //TODO rename as amountReserved
+            amountReserved: 0,
             amountRequired: formData.data.amount_required,
             // dateCreated: "2024-05-21T08:39:46.726429",
             isActive: true,
