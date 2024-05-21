@@ -1,20 +1,15 @@
-import { ButtonGroup, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
+import { Button, ButtonGroup, Modal, ModalFooter, ModalHeading, ModalRef, ModalToggleButton, TextInput } from '@trussworks/react-uswds';
 import React, { useRef, useState } from 'react';
-// import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
+import { useAppDispatch, useAppSelector } from '../../../../util/redux/hooks';
+import { setIsSending } from '../../../../util/redux/simpleSubmissionSlice';
+import { timedDelay } from '../../../../util/util';
+import { SavingsBucketRowProps } from '../../../../util/misc/interfaces';
 
 interface NewBucketModalProps {
   action: () => void;
   children: React.ReactNode;
 }
 
-interface SavingsBucketRowProps {
-  data:{
-    name: string;
-    amount_required: number;
-    amount_reserved: number;
-    is_currently_reserved: boolean;
-  };
-}
 const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
   const [formData, setFormData] = useState<SavingsBucketRowProps>( {
     data:{
@@ -25,26 +20,50 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
     }
   });
 
+  const dispatch = useAppDispatch();  
+  const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);    
+  const modalRef = useRef<ModalRef>(null);
+
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     
-    const modalRef = useRef<ModalRef>(null);
+    // Nested data interface is useful to keep simple top level component declarations, but leads to this. 
+    setFormData(prevState => ({
+      ...prevState,
+      data: {
+        ...prevState.data,
+        [name]: value,
+      },
+    }));
+  };
 
-    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        // TODO
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-        setFormData((prevState: any) => ({
-          ...prevState,
-          [name]: value
-        }));
-      };
 
-      const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        console.log(formData)
-        //TODO Post to endpoint with data
+  
 
-      };
+  async function sendNewBucket(bucket : SavingsBucketRowProps){
+    // Sets buttons to 'waiting', prevent closing
+    dispatch(setIsSending(true));
+
+    console.log("SENDING BUCKET..."); // <--- This is the bucket to send to the post endpoint
+
+    await timedDelay(1000); //TODO post request here
+
+    console.log("BUCKET SENT: ", bucket)
+
+    //if good: refreshSavingsBuckets
+    //else: return error
+
+    // Reallow all user input again
+    dispatch(setIsSending(false));
+}
+
+
+
+  async function handleSubmit(e: React.FormEvent){
+    e.preventDefault();
+    await sendNewBucket(formData)
+    modalRef.current?.toggleModal();
+  }
 
   return (
     <div>
@@ -64,9 +83,9 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
             
           <ModalFooter>
             <ButtonGroup>
-              <ModalToggleButton modalRef={modalRef} onClick={handleSubmit} closer>
-                Continue without saving
-              </ModalToggleButton>
+              <Button onClick={handleSubmit} disabled={isSending} type={'button'}>
+                Save new bucket
+              </Button>
               <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
                 Go back
               </ModalToggleButton>
