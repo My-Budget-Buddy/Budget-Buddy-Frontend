@@ -1,43 +1,39 @@
-import {  Table } from "@trussworks/react-uswds";
+import { Table } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import SavingsBucketRow from "./SavingsBucketRow";
 import NewBucketModal from "../modals/NewBucketModal";
-
-interface SavingsBucketRowProps {
-    data: {
-      name: string;
-      amount_required: number;
-      amount_reserved: number;
-      is_currently_reserved: boolean;
-    };
-  }
+import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
+import { updateBuckets } from "../../../../util/redux/bucketSlice";
+import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+import { getBuckets } from "../requests/requests";
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
 
+    const dispatch = useAppDispatch();
+    const storedBuckets = useAppSelector((state) => state.buckets.buckets);
+    const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
+
+    // TODO Calculate total reserved and push that to the redux store every GET
+    // const totalReserved = useAppSelector((state) => state.buckets.totalReserved);
+
+    // Updates the redux store with fresh buckets from the database
     useEffect(() => {
-        refreshSavingsBuckets();
-    }, []);
+        (async () => {
+            const transformedBuckets = await getBuckets();
+            dispatch(updateBuckets(transformedBuckets));
+        })();
+    }, [isSending]);
 
-    async function refreshSavingsBuckets() {
-        //GET request to bucket endpoint
-        // .then -> setListOfBuckets(response)
+    // Anytime the buckets in the redux changes, this updates the pages' state to reflect the new buckets.
+    useEffect(() => {
+        setListOfBuckets(storedBuckets);
+        // TODO Calculated total reserved then Dispatch to totalReserved.
+    }, [storedBuckets]);
 
-        //const response = await fetch(...);
-
-        //setListOfBuckets(response);
-
-        setListOfBuckets([
-            {data: { name: "name", amount_required: 1000, amount_reserved: 5, is_currently_reserved: false}}, 
-            {data: { name: "name2", amount_required: 1000, amount_reserved: 5, is_currently_reserved: true}}
-        ]);
-
-        console.log("refreshed")
-    }
-    
     return (
         <>
-            <Table className='w-full'>
+            <Table className="w-full">
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
@@ -48,18 +44,15 @@ function SavingsBucketTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {listOfBuckets.map((rowData: SavingsBucketRowProps, index) => (
-                        <SavingsBucketRow key={index} data={rowData.data} />
+                    {listOfBuckets.map((rowData: SavingsBucketRowProps) => (
+                        <SavingsBucketRow key={rowData.data.id} data={rowData.data} />
                     ))}
                 </tbody>
             </Table>
 
             <div className="flex flex-col items-center">
-                <NewBucketModal>
-                    Add new savings bucket
-                </NewBucketModal>
+                <NewBucketModal>Add new savings bucket</NewBucketModal>
             </div>
-
         </>
     );
 }
