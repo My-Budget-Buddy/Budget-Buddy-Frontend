@@ -23,9 +23,11 @@ import { Transaction, TransactionCategory, Account } from "../../types/models.ts
 import { deleteTransaction, getTransactionByUserId, getAccountsByUserId } from "../../utils/transactionService.ts";
 
 const Transactions: React.FC = () => {
+
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [currentTransaction, setCurrentTransaction] = useState<Transaction | null>(null);
+
     const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
 
@@ -49,6 +51,7 @@ const Transactions: React.FC = () => {
 
     console.log(accounts)
 
+
     useEffect(() => {
         setFilteredTransactions(
             transactions.filter((transaction) =>
@@ -57,6 +60,7 @@ const Transactions: React.FC = () => {
             )
         );
     }, [selectedCategory, selectedAccount, transactions]);
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -173,6 +177,7 @@ const Transactions: React.FC = () => {
                                 </tr>
                                 </thead>
                                 <tbody>
+
                                 {filteredTransactions.map((transaction) => (
                                     <tr key={transaction.transactionId}>
                                         <td>{transaction.date}</td>
@@ -211,6 +216,7 @@ const Transactions: React.FC = () => {
                                         </td>
                                     </tr>
                                 ))}
+
                                 </tbody>
                             </Table>
                         </CardBody>
@@ -219,6 +225,7 @@ const Transactions: React.FC = () => {
             </div>
 
             <Modal ref={modalRef} id="transaction-modal" isLarge>
+
                 {currentTransaction && (
                     <Form onSubmit={handleSubmit} large>
                         <div className="grid grid-cols-6 gap-5">
@@ -228,6 +235,7 @@ const Transactions: React.FC = () => {
                                 className="col-span-3 usa-input usa-date-picker_external-input"
                                 type="date"
                                 value={currentTransaction.date}
+
                                 onChange={handleInputChange}
                             />
                             <div className="col-span-3" />
@@ -235,6 +243,7 @@ const Transactions: React.FC = () => {
                             <div className="col-span-4">
                                 <Label htmlFor="transaction-vendorName">Vendor</Label>
                                 <TextInput
+
                                     value={currentTransaction.vendorName}
                                     id="transaction-vendorName"
                                     name="vendorName"
@@ -281,6 +290,7 @@ const Transactions: React.FC = () => {
                                 <ModalToggleButton modalRef={modalRef} type="submit">
                                     Submit
                                 </ModalToggleButton>
+
                             </div>
                         </div>
                     </Form>

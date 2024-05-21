@@ -2,20 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.main-content {
-  width: 100%;
-  height: 100vh;
-  overflow-y: scroll;
-}
-.nav-container {
-  min-width: 250px;
-  height: 100vh;
-}
-
-#net-cash:hover{
-  cursor: default;
-  background-color: #f0f0f0;
-}
 #net-cash:focus{
   outline: none;
 }
