@@ -55,6 +55,30 @@ export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSe
     }
 }
 
+export async function putBucket(bucket: RawBucketToSend, id: number): Promise<RawBucketToSend> {
+    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/update/${id}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bucket)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: RawBucketToSend = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to create bucket:", error);
+        throw error;
+    }
+}
+
 export async function deleteBucket(id: number) {
     //TODO Wait for backend team to update on final endpoint
     const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/delete/${id}`;
