@@ -3,7 +3,7 @@ import type { Account } from "../../types/models";
 import AccountModal from "./AccountModal";
 
 import { useEffect, useMemo, useState } from "react";
-import { formatCurrency } from "../../utils/helpers";
+import { formatCurrency } from "../../util/helpers";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { Accordion, Alert, Grid, GridContainer, Icon } from "@trussworks/react-uswds";
 
@@ -37,6 +37,10 @@ const Accounts: React.FC = () => {
             .then((data: Account[]) => setAccounts(data))
             .catch((err: Error) => setError(err.message));
     }, []);
+
+    const handleAccountAdded = (newAccount: Account) => {
+        setAccounts((prevAccounts) => (prevAccounts ? [...prevAccounts, newAccount] : [newAccount]));
+    };
 
     // do something here? idk useMemo or useCallback?
     const totalBalance = useMemo(() => {
@@ -153,7 +157,7 @@ const Accounts: React.FC = () => {
 
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl">View Accounts</h2>
-                <AccountModal />
+                <AccountModal onAccountAdded={handleAccountAdded} />
             </div>
 
             <Accordion

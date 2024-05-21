@@ -1,9 +1,14 @@
+import BudgetsComponent from "./components/BudgetsComponent.tsx"
+import SummaryComponent from "./components/SummaryComponent.tsx"
+import SavingsBucketComponent from "./components/SavingsBucketsComponent"
+
 const Budgets: React.FC = () => {
     return (
-        <section>
-            <h1>Budgets</h1>
-            <p>Welcome to the Budgets Page!</p>
-        </section>
+        <>
+            <SummaryComponent />
+            <BudgetsComponent />
+            <SavingsBucketComponent/>
+        </>
     )
 }
 

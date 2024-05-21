@@ -10,15 +10,20 @@ import {
     ModalToggleButton,
     Form,
     Button,
+    Alert,
 } from "@trussworks/react-uswds";
+import type { Account } from "../../types/models";
 import React, { FormEvent, useState } from "react";
 import { useRef } from "react";
 
+interface AccountModalProps {
+    onAccountAdded: (account: Account) => void;
+}
 
-
-const AccountModal: React.FC = () => {
+const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     const modalRef = useRef<ModalRef>(null);
     const [showRoutingNumberInput, setShowRoutingNumberInput] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -39,11 +44,26 @@ const AccountModal: React.FC = () => {
             balance: e.currentTarget.elements["account-balance"].value,
         };
 
-        console.log(fields);
-
-        // close the modal
-        modalRef.current?.toggleModal();
-        return;
+        fetch(`http://localhost:8080/accounts/1`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(fields),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Error adding account");
+                }
+                return response.json();
+            })
+            .then((newAccount) => {
+                onAccountAdded(newAccount);
+                modalRef.current?.toggleModal();
+            })
+            .catch((error) => {
+                setError(error.message);
+            });
     };
 
     const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -65,6 +85,11 @@ const AccountModal: React.FC = () => {
                     <ModalHeading id="account-modal-heading">
                         Enter the Account Details
                     </ModalHeading>
+                    {error && (
+                        <Alert type="error" headingLevel="h4">
+                            {error}
+                        </Alert>
+                    )}
                     <Form onSubmit={handleSubmit} className="usa-prose">
                         <Label
                             id="label-account-type"

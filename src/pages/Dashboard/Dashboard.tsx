@@ -253,10 +253,10 @@ const Dashboard: React.FC = () => {
                             })
                         } /> 
                         <div className="usa-accordion" >
-                            <button type="button" className="usa-accordion__button " id="net-cash">
+                            <button type="button" className="bg-[#f0f0f0] py-4 pr-14 pl-5 w-full font-bold hover:cursor-auto" id="net-cash">
                                 <div className="flex justify-between items-center">
                                     <p className="flex items-center"><Icon.AccountBalance className="mr-2" />Net Cash</p>
-                                    <p className="flex items-center"><Icon.AttachMoney/> {netCash}</p> 
+                                    <p className={`flex items-center ${netCash >0 ? "text-[#00a91c]" : "text-[#b50909]"}` }><Icon.AttachMoney/> {Math.abs(netCash)}</p> 
                                 </div>
                             </button>
                         </div>
