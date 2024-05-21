@@ -17,25 +17,24 @@ import ErrorPage from "../pages/Misc/ErrorPage.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route path="/" element={<LandingLayout />} errorElement={<ErrorPage />}>
-            <Route errorElement={<ErrorPage />}>
+        <Route errorElement={<ErrorPage />}>
+            <Route path="/" element={<LandingLayout />} errorElement={<ErrorPage />}>
                 <Route index element={<LandingPage />} />
                 <Route path={"login"} element={<Login />} />
                 <Route path={"register"} element={<Register />} />
-
                 {/*Private Routes*/}
-                <Route path={"/dashboard"} element={<AppLayout />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path={"accounts"} element={<Accounts />} />
-                    <Route path={"budgets"} element={<Budgets />} />
-                    <Route path={"spending"} element={<Spending />} />
-                    <Route path={"spending/:month"} element={<SpendingMonth />} />
+            </Route>
+            <Route path={"/dashboard"} element={<AppLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path={"accounts"} element={<Accounts />} />
+                <Route path={"budgets"} element={<Budgets />} />
+                <Route path={"spending"} element={<Spending />} />
+                <Route path={"spending/:month"} element={<SpendingMonth />} />
 
-                    <Route path={"transactions"} element={<Transactions />} />
-                    <Route path={"transactions/:id"} element={<TransactionHistory />} />
+                <Route path={"transactions"} element={<Transactions />} />
+                <Route path={"transactions/:id"} element={<TransactionHistory />} />
 
-                    <Route path={"tax"} element={<Tax />} />
-                </Route>
+                <Route path={"tax"} element={<Tax />} />
             </Route>
         </Route>
     )
