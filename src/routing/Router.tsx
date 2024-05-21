@@ -14,6 +14,7 @@ import SpendingMonth from "../pages/Spending/SpendingMonth.tsx";
 import Login from "../pages/AuthenticationPages/Login.tsx";
 import Register from "../pages/AuthenticationPages/Register.tsx";
 import ErrorPage from "../pages/Misc/ErrorPage.tsx";
+import TaxEditView from "../pages/Tax/TaxEditView.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -35,6 +36,8 @@ export const router = createBrowserRouter(
                 <Route path={"transactions/:id"} element={<TransactionHistory />} />
 
                 <Route path={"tax"} element={<Tax />} />
+                <Route path={"tax/:returnId"} element={<Tax />} />
+                <Route path={"tax/:returnId/:formType/:formId"} element={<TaxEditView />} />
             </Route>
         </Route>
     )
