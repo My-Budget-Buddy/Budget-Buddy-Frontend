@@ -17,6 +17,7 @@ function SavingsBucketTable() {
     // TODO Calculate total reserved and push that to the redux store every GET
     // const totalReserved = useAppSelector((state) => state.buckets.totalReserved);
 
+    // Updates the redux store with fresh buckets from the database
     useEffect(() => {
         (async () => {
             const transformedBuckets = await getBuckets();
@@ -24,6 +25,7 @@ function SavingsBucketTable() {
         })();
     }, [isSending]);
 
+    // Anytime the buckets in the redux changes, this updates the pages' state to reflect the new buckets.
     useEffect(() => {
         setListOfBuckets(storedBuckets);
         // TODO Calculated total reserved then Dispatch to totalReserved.
