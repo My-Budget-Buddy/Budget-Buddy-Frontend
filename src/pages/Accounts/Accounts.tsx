@@ -3,7 +3,7 @@ import type { Account } from "../../types/models";
 import AccountModal from "./AccountModal";
 
 import { useEffect, useMemo, useState } from "react";
-import { formatCurrency } from "../../utils/helpers";
+import { formatCurrency } from "../../util/helpers";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { Accordion, Alert, Grid, GridContainer, Icon } from "@trussworks/react-uswds";
 
