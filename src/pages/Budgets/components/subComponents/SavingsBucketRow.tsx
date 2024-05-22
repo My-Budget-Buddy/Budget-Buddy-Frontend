@@ -5,9 +5,8 @@ import ReservedMoniesInput from "./ReservedMoniesInput";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import DeleteBucketModal from "../modals/DeleteBucketModal";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { timedDelay } from "../../../../util/util";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { putBucket } from "../requests/requests";
+import { putBucket } from "../requests/bucketRequests";
 
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     //TODO Reset buffer when ANY rows are changed. Currently, the buffer only applies to the single element and each row has an independent buffer.
@@ -39,7 +38,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
             // bucketId: 6,
             userId: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
             bucketName: data.name,
-            amountAvailable: amountReserved, //TODO rename as amountReserved
+            amountReserved: amountReserved, //TODO rename as amountReserved
             amountRequired: data.amount_required,
             // dateCreated: "2024-05-21T08:39:46.726429",
             isActive: true,
@@ -64,9 +63,6 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
         // After component mounts, set initialized to true
         // Using initialized prevents the PUT request from firing on page load
         setInitialized(true);
-        return () => {
-            console.log("ASdf");
-        };
     }, []);
 
     useEffect(() => {
