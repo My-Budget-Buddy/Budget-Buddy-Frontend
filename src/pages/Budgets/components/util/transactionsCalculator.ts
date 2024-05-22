@@ -8,7 +8,6 @@ export async function getCompleteBudgets(transformedBudgets: BudgetRowProps[]) {
 
     //This is a map where keys are CATEGORIES and the values are the corresponding TRANSACTIONS
     const categoriesMap = await getCategoriesTransactionsMap(date);
-
     return transformedBudgets.map((budget) => {
         const rawSpentAmount = getSumForCategory(categoriesMap, budget.category);
         return { ...budget, spentAmount: Math.round(rawSpentAmount * 100) / 100 }; //Round to nearest hundreth
@@ -59,7 +58,7 @@ async function getTransactions(userid: number, date: string) {
         }
 
         const data = await response.json();
-        console.log(data);
+        console.log("data:", data);
         return data;
     } catch (error) {
         console.error("Failed to fetch user data:", error);
