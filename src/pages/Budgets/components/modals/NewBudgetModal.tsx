@@ -130,7 +130,7 @@ const NewCategoryModal: React.FC = () => {
                     name="isReserved"
                     label="Reserve budget from available funds"
                     checked={formData.isReserved}
-                    onClick={toggleIsReserved}
+                    onChange={toggleIsReserved}
                     className="mt-8"
                 />
 
