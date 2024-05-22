@@ -34,49 +34,61 @@ export interface taxReturn{
     
 };
 
-const initialState : taxReturn = {
-    "filingStatus": "SINGLE",
-    "id": 1,
-    "year": 2024,
-    "userId": 1,
-    "firstName": null,
-    "lastName": null,
-    "email": null,
-    "phoneNumber": null,
-    "address": null,
-    "city": null,
-    "state": null,
-    "zip": null,
-    "dateOfBirth": null,
-    "ssn": null,
-    "w2s": [],
-    "otherIncome": null,
-    "taxCredit": null,
-    "totalIncome": 0.00,
-    "adjustedGrossIncome": 0.00,
-    "taxableIncome": 0.00,
-    "fedTaxWithheld": 0.00,
-    "stateTaxWithheld": 0.00,
-    "socialSecurityTaxWithheld": 0.00,
-    "medicareTaxWithheld": 0.00,
-    "totalDeductions": 0.00,
-    "totalCredits": 0.00,
-    "federalRefund": 0.00,
-    "stateRefund": 0.00
-};
+
+
+export interface TaxReturnState {
+    taxReturn: Partial<taxReturn>;
+    taxReturns: taxReturn[];
+  }
+  
+  const initialState: TaxReturnState = {
+    taxReturn: {
+        "filingStatus": "SINGLE",
+        "id": 1,
+        "year": 2024,
+        "userId": 1,
+        "firstName": null,
+        "lastName": null,
+        "email": null,
+        "phoneNumber": null,
+        "address": null,
+        "city": null,
+        "state": null,
+        "zip": null,
+        "dateOfBirth": null,
+        "ssn": null,
+        "w2s": [],
+        "otherIncome": null,
+        "taxCredit": null,
+        "totalIncome": 0.00,
+        "adjustedGrossIncome": 0.00,
+        "taxableIncome": 0.00,
+        "fedTaxWithheld": 0.00,
+        "stateTaxWithheld": 0.00,
+        "socialSecurityTaxWithheld": 0.00,
+        "medicareTaxWithheld": 0.00,
+        "totalDeductions": 0.00,
+        "totalCredits": 0.00,
+        "federalRefund": 0.00,
+        "stateRefund": 0.00
+    },
+    taxReturns: [],
+  };
 
 export const taxReturnSlice = createSlice({
     name: 'taxReturn',
     initialState,
     reducers: {
         setTaxReturnInfo: (state, action: PayloadAction<Partial<taxReturn>>) => {
-            return { ...state, ...action.payload };
+          state.taxReturn = { ...state.taxReturn, ...action.payload };
+        },
+        setAllTaxReturns: (state, action: PayloadAction<taxReturn[]>) => {
+          state.taxReturns = action.payload;
         },
         resetTaxReturnInfo: () => initialState,
-        
-    }
+      },
 });
 
-export const { setTaxReturnInfo, resetTaxReturnInfo } = taxReturnSlice.actions;
+export const { setTaxReturnInfo, setAllTaxReturns, resetTaxReturnInfo } = taxReturnSlice.actions;
 
 export default taxReturnSlice.reducer;

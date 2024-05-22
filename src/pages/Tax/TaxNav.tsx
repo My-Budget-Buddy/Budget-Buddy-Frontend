@@ -9,7 +9,7 @@ const TaxNav: React.FC = () => {
 
     interface initReturn {
       year : number,
-      userID : number
+      userId : number
       };
     const taxReturnInfo = useSelector((state:RootState) => state.taxReturn);
     const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const TaxNav: React.FC = () => {
 
     const starterblock : initReturn = {
       year : 2024,
-      userID : 1
+      userId : 1
     }
     
     const containerStyle: React.CSSProperties = {

@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/Store";
+import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
 import { Fieldset, Form, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
 
