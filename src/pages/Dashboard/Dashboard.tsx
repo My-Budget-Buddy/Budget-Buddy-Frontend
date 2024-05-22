@@ -58,6 +58,7 @@ const Dashboard: React.FC = () => {
     const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null);
     const [monthlyTransactions, setMonthlyTransactions] = useState<MonthlyTransactionType[]>([]);
     const [monthlySpend, setMonthlySpend] = useState(0);
+    
     // ---Calculate net cash---
     useEffect(() => {
         let total = 0;
@@ -208,10 +209,7 @@ const Dashboard: React.FC = () => {
         <div className="flex flex-col flex-wrap ">
             <h1>{t("dashboard.welcome")} [add user name]</h1>
             <div className="flex">
-                <div
-                    id="chart-container"
-                    className="flex flex-col flex-auto w-2/3 bg-accent-cool-lighter p-8 mr-12 rounded-lg"
-                >
+                <div id="chart-container" className="flex flex-col flex-auto w-2/3 bg-accent-cool-lighter p-8 mr-12 rounded-lg">
                     <h1 className="flex items-center text-2xl font-bold ">
                         {t("dashboard.chart")} <Icon.AttachMoney />
                         {monthlySpend}
@@ -272,7 +270,7 @@ const Dashboard: React.FC = () => {
                                                     </p>
                                                 )}
                                                 <p className="flex items-center">
-                                                    <Icon.AttachMoney /> {formatCurrency(acc.balance)}
+                                                    <Icon.AttachMoney /> {formatCurrency(acc.balance, false)}
                                                 </p>
                                             </div>
                                         ),
@@ -287,7 +285,7 @@ const Dashboard: React.FC = () => {
                                                 </div>
                                                 <p className="flex items-center">
                                                     <Icon.AttachMoney />
-                                                    {formatCurrency(account.currentBalance)}
+                                                    {formatCurrency(account.currentBalance, false)}
                                                 </p>
                                             </div>
                                         )),
@@ -351,7 +349,7 @@ const Dashboard: React.FC = () => {
                                         <td>{recentTransaction.category}</td>
                                         <td>
                                             <Icon.AttachMoney />
-                                            {formatCurrency(recentTransaction.amount)}
+                                            {formatCurrency(recentTransaction.amount, false)}
                                         </td>
                                         <td>
                                             <ModalToggleButton
