@@ -42,7 +42,6 @@ const BudgetsComponent: React.FC = () => {
             ) as readonly (readonly [string, Transaction[]])[];
             const map = new Map<string, Transaction[]>(mapEntries);
             setTransactionsMap(map);
-            console.log("map", map); // Log the new map directly
         })();
     }, [budgetsStore.monthYear]);
 
@@ -56,7 +55,19 @@ const BudgetsComponent: React.FC = () => {
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
             dispatch(updateBudgets(completeBudgets));
         })();
-    }, [isSending, budgetsStore.monthYear]);
+    }, [isSending]);
+
+    // resets the redux budgets then updates it whenever a new month is selected.
+    // the reset is necessary so that the previously selected month's budgets are not display on screen if there are no existing budgets on the new month
+    useEffect(() => {
+        dispatch(updateBudgets([]));
+        (async () => {
+            const transformedBudgets = await getBudgetsByMonthYear(budgetsStore.monthYear);
+            //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
+            const completeBudgets = await getCompleteBudgets(transformedBudgets);
+            dispatch(updateBudgets(completeBudgets));
+        })();
+    }, [budgetsStore.monthYear]);
 
     const selectPreviousMonth = () => {
         const selectedMonthYear = {
