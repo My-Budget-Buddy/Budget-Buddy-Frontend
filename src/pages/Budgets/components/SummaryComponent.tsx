@@ -1,22 +1,25 @@
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
+import { useAppSelector } from "../../../util/redux/hooks";
 
 const SummaryComponent: React.FC = () => {
-    const budgetsStore = useSelector((store: any) => store.budgets);
-    const bucketsStore = useSelector((store: any) => store.buckets);
+    const budgets = useAppSelector((store) => store.budgets);
+    const buckets = useAppSelector((store) => store.buckets);
 
-    const selectedMonthString = budgetsStore.selectedMonthString;
-    const selectedYear = budgetsStore.selectedYear;
+    const selectedMonthString = budgets.selectedMonthString;
+    const selectedYear = budgets.selectedYear;
 
     const remainingBudget = (
-        budgetsStore.spendingBudget -
-        budgetsStore.totalReserved -
-        bucketsStore.totalReserved -
-        budgetsStore.totalActuallySpent
+        budgets.spendingBudget -
+        budgets.totalReserved -
+        buckets.totalReserved -
+        budgets.totalActuallySpent
     ).toString();
-    const percentageRemaining = (Number(remainingBudget) / budgetsStore.spendingBudget) * 100;
+    const percentageRemaining = (Number(remainingBudget) / budgets.spendingBudget) * 100;
+
+    //TODO onload, do an initial GET request to populate the redux store.
+    // This may have to be done with the reactrouter useLoaderData hook.
 
     useEffect(
         () => {
@@ -31,7 +34,7 @@ const SummaryComponent: React.FC = () => {
             <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-col items-center justify-around ml-8">
                     <div className="text-2xl font-bold">Total Available Funds Across Account</div>
-                    <div className=" text-6xl text-green-600 font-bold">${budgetsStore.totalFundsAvailable}</div>
+                    <div className=" text-6xl text-green-600 font-bold">${budgets.totalFundsAvailable}</div>
                     <div>{"(accounts + projected earnings - reserved)"}</div>
                 </div>
 
@@ -56,7 +59,7 @@ const SummaryComponent: React.FC = () => {
                         }}
                         // ...
                     />
-                    <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">of ${budgetsStore.spendingBudget}</div>
+                    <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">of ${budgets.spendingBudget}</div>
                 </div>
 
                 <div className="flex flex-col justify-around mr-8">
@@ -64,11 +67,11 @@ const SummaryComponent: React.FC = () => {
                         <div className="text-2xl font-bold">
                             {selectedMonthString} {selectedYear} Spending Budget <EditSpendingBudgetModal />
                         </div>
-                        <div className="text-lg">${budgetsStore.spendingBudget}</div>
+                        <div className="text-lg">${budgets.spendingBudget}</div>
                     </div>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">Allocated</div>
-                        <div className="text-lg">${budgetsStore.totalReserved}</div>
+                        <div className="text-lg">${budgets.totalReserved}</div>
                     </div>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">Remaining</div>

@@ -3,12 +3,16 @@ import BudgetsRow from "./subComponents/BudgetsRow";
 import NewBudgetModal from "./modals/NewBudgetModal";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateSelectedDate } from "../../../util/redux/budgetSlice";
+import { updateBudgets, updateSelectedDate } from "../../../util/redux/budgetSlice";
+import { getBudgetsByMonthYear } from "./requests/budgetRequests";
+import { BudgetRowProps } from "../../../types/budgetInterfaces";
+import { getCompleteBudgets } from "./util/transactionsCalculator";
 
 const BudgetsComponent: React.FC = () => {
-    const [budgets, setBudgets] = useState([]);
+    const isSending = useSelector((store: any) => store.simpleFormStatus.isSending);
 
     const budgetsStore = useSelector((store: any) => store.budgets);
+
     const dispatch = useDispatch();
 
     const currentDate = new Date();
@@ -25,12 +29,18 @@ const BudgetsComponent: React.FC = () => {
     nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
 
     useEffect(() => {
-        /* GET budgets
-            .then(response => {
-                setBudgets(response)
-            })
-        */
-    }, []);
+        console.log("budget store budgets", budgetsStore.budgets);
+    }, [budgetsStore]);
+
+    // Updates the redux store with fresh budgets from the database
+    useEffect(() => {
+        (async () => {
+            const transformedBudgets = await getBudgetsByMonthYear(budgetsStore.monthYear);
+            //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
+            const completeBudgets = await getCompleteBudgets(transformedBudgets);
+            dispatch(updateBudgets(completeBudgets));
+        })();
+    }, [isSending, budgetsStore.monthYear]);
 
     const selectPreviousMonth = () => {
         const selectedMonthYear = {
@@ -95,15 +105,19 @@ const BudgetsComponent: React.FC = () => {
                         calculate actual of current row from transactions
                         <BudgetsRow />
                     }) */}
-                    <BudgetsRow category="Phone Bill" budgeted={55} actual={0} isReserved={true} notes="" />
-                    <BudgetsRow
-                        category="Gasoline"
-                        budgeted={80}
-                        actual={95}
-                        isReserved={false}
-                        notes="Road trip coming up!"
-                    />
-                    <BudgetsRow category="Restaurants" budgeted={155} actual={88} isReserved={false} notes="" />
+                    {budgetsStore.budgets.map((budget: BudgetRowProps) => {
+                        return (
+                            <BudgetsRow
+                                key={budget.id}
+                                id={budget.id}
+                                category={budget.category}
+                                totalAmount={budget.totalAmount}
+                                isReserved={budget.isReserved}
+                                actual={budget.spentAmount}
+                                notes={budget.notes}
+                            />
+                        );
+                    })}
                 </tbody>
             </Table>
             <div className="flex flex-col items-center">
