@@ -77,7 +77,7 @@ const NavBar = () => {
                 <h1 className="font-semibold text-center">{t("app-name")}</h1>
                 <div className="flex flex-row items-center gap-4">
                     <h3>{t("nav.greeting")}, [Name]</h3>
-                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={() => {}}>
+                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" id="no-focus" >
                         <Icon.Settings style={{ fontSize: "1.4rem" }} />
                     </ModalToggleButton>
                     <Modal
@@ -95,7 +95,7 @@ const NavBar = () => {
                                         <>
                                             <li className={`usa-sidenav__item px-4 py-2 w-40 flex items-center ${sideNav === `${option.title}` ? 'usa-current' : ''}`}>
                                                 <option.icon className="mr-2"/>
-                                                <button onClick={() => setSideNav(`${option.title}`)}>
+                                                <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
                                                     {option.title}
                                                 </button>
                                             </li>
