@@ -18,27 +18,28 @@ import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { timedDelay } from "../../../../util/util";
 import { useSelector } from "react-redux";
 import { createBudget } from "../requests/budgetRequests";
 import { TransactionCategory } from "../../../../types/models";
 
 const NewCategoryModal: React.FC = () => {
+    const budgetsStore = useSelector((store: any) => store.budgets);
+
     //TODO Update Budget data schema
     const [formData, setFormData] = useState<BudgetRowProps>({
         id: 0,
         category: "",
         totalAmount: 0,
         isReserved: false,
-        notes: ""
+        notes: "",
+        spentAmount: 0,
+        monthYear: budgetsStore.monthYear
     });
 
     const modalRef = useRef<ModalRef>(null);
 
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
-
-    const budgetsStore = useSelector((store: any) => store.budgets);
 
     // Input validation
     const hasTotalAmountError = !(formData.totalAmount >= 0) || formData.totalAmount.toString() === "";
@@ -102,6 +103,15 @@ const NewCategoryModal: React.FC = () => {
         e.preventDefault();
         await sendNewBudget(formData);
         modalRef.current?.toggleModal();
+        setFormData({
+            id: 0,
+            category: "",
+            totalAmount: 0,
+            isReserved: false,
+            notes: "",
+            spentAmount: 0,
+            monthYear: budgetsStore.monthYear
+        });
     }
 
     return (
