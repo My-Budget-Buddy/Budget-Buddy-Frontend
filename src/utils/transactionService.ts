@@ -18,3 +18,7 @@ export const getAccountsByUserId = async (userId: number): Promise<Account[]> =>
     return response.data;
 };
 
+export const createTransaction = async (transaction: Omit<Transaction, "transactionId">): Promise<Transaction> => {
+    const response = await axios.post<Transaction>(`${TRANSACTIONS_API_URL}/createTransaction`, transaction);
+    return response.data;
+};
