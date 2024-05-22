@@ -36,14 +36,6 @@ const NewCategoryModal: React.FC = () => {
 
     const budgetsStore = useSelector((store: any) => store.budgets);
 
-    // Create monthYear string from selectedMonth and selectedYear in the budgets store
-    const month =
-        (budgetsStore.selectedMonth + 1).toString().length === 2
-            ? (budgetsStore.selectedMonth + 1).toString()
-            : "0" + (budgetsStore.selectedMonth + 1).toString();
-    const year = budgetsStore.selectedYear.toString();
-    const monthYear = year + "-" + month;
-
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
     const handleChangeInput = (e: any) => {
         const { name, value } = e.target;
@@ -70,7 +62,7 @@ const NewCategoryModal: React.FC = () => {
             totalAmount: formData.totalAmount,
             isReserved: formData.isReserved,
             notes: formData.notes,
-            monthYear: monthYear
+            monthYear: budgetsStore.monthYear
         };
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));

@@ -37,41 +37,11 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReser
 
     const budgetsStore = useSelector((store: any) => store.budgets);
 
-    // Create monthYear string from selectedMonth and selectedYear in the budgets store
-    const month =
-        (budgetsStore.selectedMonth + 1).toString().length === 2
-            ? (budgetsStore.selectedMonth + 1).toString()
-            : "0" + (budgetsStore.selectedMonth + 1).toString();
-    const year = budgetsStore.selectedYear.toString();
-    const monthYear = year + "-" + month;
-
     const handleCheckboxCheck = () => {
         setCurrentlyReserved(!currentlyReserved);
         setIsCurrentlyEditing(true);
         setLastEditTime(new Date());
     };
-    /*
-    async function sendDeleteRequest() {
-        // Sets buttons to 'waiting', prevent closing
-        dispatch(setIsSending(true));
-
-        //send post to endpoint
-        //on success, refreshSavingsBuckets();
-
-        //POST to endpoint
-        // const repsonse = await fetch(... send bucket)
-        console.log("DELETING BUCKET..."); // <--- This is the bucket to send to the post endpoint
-
-        await timedDelay(1000);
-
-        console.log("BUCKET DELETED: ");
-
-        //if good: refreshSavingsBuckets
-        //else: return error
-
-        // Reallow all user input again
-        dispatch(setIsSending(false));
-    }*/
 
     async function sendUpdatedBudget(bucket: BudgetRowProps) {
         const newBudget = {
@@ -82,7 +52,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReser
             actual: actual,
             notes: notes,
             isReserved: currentlyReserved,
-            monthYear: monthYear
+            monthYear: budgetsStore.monthYear
         };
 
         // Sets buttons to 'waiting', prevent closing

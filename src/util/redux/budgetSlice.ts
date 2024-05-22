@@ -7,10 +7,17 @@ const selectedMonth = currentDate.getMonth();
 const selectedMonthString = months[currentDate.getMonth()];
 const selectedYear = currentDate.getFullYear();
 
+// Create monthYear string from selectedMonth and selectedYear
+const month =
+    (selectedMonth + 1).toString().length === 2 ? (selectedMonth + 1).toString() : "0" + (selectedMonth + 1).toString();
+const year = selectedYear.toString();
+const monthYear = year + "-" + month;
+console.log("default monthyear", monthYear);
+
 export const budgetSlice = createSlice({
     name: "budgets",
     initialState: {
-        budgets: [],
+        budgets: [], // stores the budgets for the currently selected month
         totalFundsAvailable: 0,
         spendingBudget: 0,
         totalReserved: 0,
@@ -18,7 +25,8 @@ export const budgetSlice = createSlice({
         months: months,
         selectedMonth: selectedMonth,
         selectedMonthString: selectedMonthString,
-        selectedYear: selectedYear
+        selectedYear: selectedYear,
+        monthYear: monthYear
     },
     reducers: {
         updateSpendingBudget(state, action) {
@@ -49,9 +57,20 @@ export const budgetSlice = createSlice({
             const selectedMonthString = months[selectedMonth];
             const selectedYear = selectedDate.selectedYear;
 
+            // Create monthYear string from selectedMonth and selectedYear
+            const month =
+                (selectedMonth + 1).toString().length === 2
+                    ? (selectedMonth + 1).toString()
+                    : "0" + (selectedMonth + 1).toString();
+            const year = selectedYear.toString();
+            const monthYear = year + "-" + month;
+
+            console.log("updated monthYear", monthYear);
+
             state.selectedMonth = selectedMonth;
             state.selectedMonthString = selectedMonthString;
             state.selectedYear = selectedYear;
+            state.monthYear = monthYear;
         }
     }
 });
