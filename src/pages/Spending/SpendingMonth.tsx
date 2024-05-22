@@ -33,6 +33,8 @@ const SpendingMonth: React.FC = () => {
     const [spendingCategories, setSpendingCategories] = useState<
         { name: TransactionCategory; value: number; color: string }[]
     >([]);
+    const [mostPopularVendors, setMostPopularVendors] = useState<{ vendorName: string; amount: number }[]>([]);
+    const [topThreePurchases, setTopThreePurchases] = useState<Transaction[]>([]);
 
     //colors for categories
     const categoryColors: { [key in TransactionCategory]: string } = {
@@ -159,12 +161,19 @@ const SpendingMonth: React.FC = () => {
 
                 //calculate spending by category
                 const categorySpending: { [key in TransactionCategory]?: number } = {};
+                const vendorSpending: { [vendorName: string]: number } = {};
+
                 transactions.forEach((transaction: Transaction) => {
                     if (transaction.category !== "Income") {
                         if (!categorySpending[transaction.category]) {
                             categorySpending[transaction.category] = 0;
                         }
                         categorySpending[transaction.category]! += transaction.amount;
+
+                        if (!vendorSpending[transaction.vendorName]) {
+                            vendorSpending[transaction.vendorName] = 0;
+                        }
+                        vendorSpending[transaction.vendorName] += transaction.amount;
                     }
                 });
 
@@ -175,7 +184,21 @@ const SpendingMonth: React.FC = () => {
                     color: categoryColors[category]
                 }));
 
+                //prepare top three purchases data
+                const topPurchases = [...transactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
+
+                //prepare top vendors data
+                const popularVendors = Object.keys(vendorSpending)
+                    .map((vendorName) => ({
+                        vendorName,
+                        amount: vendorSpending[vendorName]
+                    }))
+                    .sort((a, b) => b.amount - a.amount)
+                    .slice(0, 3);
+
                 setSpendingCategories(spendingCategories);
+                setTopThreePurchases(topPurchases);
+                setMostPopularVendors(popularVendors);
             } catch (error) {
                 console.error("Error fetching transactions:", error);
             }
@@ -235,6 +258,46 @@ const SpendingMonth: React.FC = () => {
                             {category.name}
                         </th>
                         <td>${category.value.toFixed(2)}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </>
+    );
+
+    const topPurchases = (
+        <>
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {topThreePurchases.map((purchase) => (
+                    <tr>
+                        <td>{new Date(purchase.date).toLocaleDateString()}</td>
+                        <td>{purchase.vendorName}</td>
+                        <td>${purchase.amount.toFixed(2)}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </>
+    );
+
+    const popularVendorsTable = (
+        <>
+            <thead>
+                <tr>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {mostPopularVendors.map((vendor) => (
+                    <tr key={vendor.vendorName}>
+                        <th scope="row">{vendor.vendorName}</th>
+                        <td>${vendor.amount.toFixed(2)}</td>
                     </tr>
                 ))}
             </tbody>
@@ -378,10 +441,28 @@ const SpendingMonth: React.FC = () => {
                         {/* section for more insights -> top expenses..and?? */}
 
                         <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 bg-white shadow-lg">
-                            <h2 className="text-2xl mb-4">Top Expenses</h2>
-                            <Table bordered={false} className="w-full">
-                                {topExpenses}
-                            </Table>
+                            <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <Table bordered={false} className="w-full">
+                                    {topPurchases}
+                                </Table>
+                            </div>
+
+                            {/* Top Categories Table */}
+                            <h2 className="text-2xl mb-4 mt-4">Top Spending Categories</h2>
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <Table bordered={false} className="w-full">
+                                    {topExpenses}
+                                </Table>
+                            </div>
+
+                            {/* Most Popular Vendors Table */}
+                            <h2 className="text-2xl mb-4 mt-4">Top Spending Locations</h2>
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <Table bordered={false} className="w-full">
+                                    {popularVendorsTable}
+                                </Table>
+                            </div>
                         </div>
                     </div>
                 </section>
