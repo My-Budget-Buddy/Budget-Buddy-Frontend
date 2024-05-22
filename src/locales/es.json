@@ -64,7 +64,7 @@
       "history": "Todas las {{val}} transacciones",
       "spent": "Total gastado",
       "amount": "Transacciones totales",
-      "summary": "Sesumen"
+      "summary": "Resumen"
     },
     "tax": {
       "title": "Impuestos"
