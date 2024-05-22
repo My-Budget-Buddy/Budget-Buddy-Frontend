@@ -15,7 +15,8 @@ import {
     Select,
     Table,
     TextInput,
-    Textarea
+    Textarea,
+    Title
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -202,11 +203,12 @@ function TransactionHistory() {
     return (
         <>
             <div>
+                <Title>
+                    <h1>{t("transactions.history", { val: Name })}</h1>
+                </Title>
                 <CardGroup>
                     <Card gridLayout={{ col: 8 }}>
-                        <CardHeader>
-                            <h1>{t("transactions.history", { val: Name })}</h1>
-                        </CardHeader>
+                        <CardHeader></CardHeader>
                         <CardBody>
                             <Table bordered={false} fullWidth={true} striped>
                                 <thead>

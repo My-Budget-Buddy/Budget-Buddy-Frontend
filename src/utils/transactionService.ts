@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Account, Transaction} from '../types/models.ts';
+import { Account, Transaction } from "../types/models.ts";
 
 const TRANSACTIONS_API_URL = "http://localhost:8083/transactions";
 const ACCOUNTS_API_URL = "http://localhost:8080/accounts";
