@@ -11,7 +11,7 @@ import {
 import { useRef } from "react";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { deleteBucket } from "../requests/requests";
+import { deleteBucket } from "../requests/bucketRequests";
 
 interface TODO_CategoryProps {
     id: number;
