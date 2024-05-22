@@ -129,6 +129,35 @@ export async function deleteBudget(id: number) {
     }
 }
 
+export async function getTransactionsByMonthYear(monthyear: string) {
+    //TODO Wait for backend team to update on final endpoint
+    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/transactions/${monthyear}/user/1`;
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const budgets: RawBudget[] = await response.json();
+        const transformedBudgets = transformBudgets(budgets);
+
+        // Update redux store
+        return transformedBudgets;
+
+        // Call from redux store
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
+}
+
 // The data from the endpoint needs to be trimmed down to this.
 function transformBudgets(budgets: RawBudget[]): BudgetRowProps[] {
     return budgets.map((budget) => ({
