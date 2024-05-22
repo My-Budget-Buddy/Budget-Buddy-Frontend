@@ -12,7 +12,7 @@ import React, { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { postBucket } from "../requests/requests";
+import { postBucket } from "../requests/bucketRequests";
 
 interface NewBucketModalProps {
     children: React.ReactNode;

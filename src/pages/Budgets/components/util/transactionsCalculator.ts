@@ -1,3 +1,5 @@
+import { BudgetRowProps } from "../../../../types/budgetInterfaces";
+
 // TODO Given a list of transactions, return budget totals
 const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
 
@@ -26,6 +28,20 @@ export async function getMapOfBudgetSpentAmountsFor(userid: number, date: string
         console.error("Failed to fetch user data:", error);
         throw error;
     }
+}
 
-    console.log("Got buckets");
+export async function getCompleteBudgets(transformedBudgets: BudgetRowProps[]) {
+    return transformedBudgets.map((budget) => addSpentAmount(budget));
+}
+
+function addSpentAmount(transformedBudget: BudgetRowProps) {
+    const spentAmount = getSpentAmountFor(transformedBudget.category, transformedBudget.monthYear);
+    return {
+        ...transformedBudget,
+        spentAmount: spentAmount
+    };
+}
+
+function getSpentAmountFor(category: string, monthYear: string) {
+    console.log(category, " --- ", monthYear);
 }

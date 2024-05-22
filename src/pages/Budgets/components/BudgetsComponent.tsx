@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateBudgets, updateSelectedDate } from "../../../util/redux/budgetSlice";
 import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { BudgetRowProps } from "../../../types/budgetInterfaces";
+import { getCompleteBudgets } from "./util/transactionsCalculator";
 
 const BudgetsComponent: React.FC = () => {
     const isSending = useSelector((store: any) => store.simpleFormStatus.isSending);
@@ -35,8 +36,9 @@ const BudgetsComponent: React.FC = () => {
     useEffect(() => {
         (async () => {
             const transformedBudgets = await getBudgetsByMonthYear(budgetsStore.monthYear);
-            console.log("transformed budgets", transformedBudgets);
-            dispatch(updateBudgets(transformedBudgets));
+            //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
+            const completeBudgets = await getCompleteBudgets(transformedBudgets);
+            dispatch(updateBudgets(completeBudgets));
         })();
     }, [isSending, budgetsStore.monthYear]);
 
@@ -111,7 +113,7 @@ const BudgetsComponent: React.FC = () => {
                                 category={budget.category}
                                 budgeted={budget.totalAmount}
                                 isReserved={budget.isReserved}
-                                actual={0}
+                                actual={budget.spentAmount}
                                 notes={budget.notes}
                             />
                         );

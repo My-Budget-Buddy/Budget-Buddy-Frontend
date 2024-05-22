@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import DeleteBucketModal from "../modals/DeleteBucketModal";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { putBucket } from "../requests/requests";
+import { putBucket } from "../requests/bucketRequests";
 
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     //TODO Reset buffer when ANY rows are changed. Currently, the buffer only applies to the single element and each row has an independent buffer.

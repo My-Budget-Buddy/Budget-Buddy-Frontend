@@ -135,6 +135,7 @@ function transformBudgets(budgets: RawBudget[]): BudgetRowProps[] {
         id: budget.budgetId,
         category: budget.category,
         totalAmount: budget.totalAmount,
+        spentAmount: 0,
         isReserved: budget.isReserved,
         notes: budget.notes,
         monthYear: budget.monthYear

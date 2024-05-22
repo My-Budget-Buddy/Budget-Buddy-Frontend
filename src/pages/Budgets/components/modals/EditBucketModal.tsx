@@ -13,7 +13,7 @@ import React, { useRef, useState } from "react";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { putBucket } from "../requests/requests";
+import { putBucket } from "../requests/bucketRequests";
 // import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
 
 interface EditBucketModalProps {

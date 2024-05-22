@@ -5,7 +5,7 @@ import NewBucketModal from "../modals/NewBucketModal";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { updateBuckets } from "../../../../util/redux/bucketSlice";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { getBuckets } from "../requests/requests";
+import { getBuckets } from "../requests/bucketRequests";
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
