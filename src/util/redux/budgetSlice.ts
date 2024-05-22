@@ -84,12 +84,6 @@ export const budgetSlice = createSlice({
     }
 });
 
-export const {
-    updateSpendingBudget,
-    updateBudgets,
-    updateTotalReserved,
-    updateTotalActuallySpent,
-    updateSelectedDate
-} = budgetSlice.actions;
+export const { updateSpendingBudget, updateBudgets, updateTotalReserved, updateSelectedDate } = budgetSlice.actions;
 
 export default budgetSlice.reducer;

@@ -2,10 +2,13 @@ import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useEffect } from "react";
 import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
 import { useAppSelector } from "../../../util/redux/hooks";
+import { updateSpendingBudget } from "../../../util/redux/budgetSlice";
+import { useDispatch } from "react-redux";
 
 const SummaryComponent: React.FC = () => {
     const budgets = useAppSelector((store) => store.budgets);
     const buckets = useAppSelector((store) => store.buckets);
+    const dispatch = useDispatch();
 
     const selectedMonthString = budgets.selectedMonthString;
     const selectedYear = budgets.selectedYear;
@@ -21,14 +24,13 @@ const SummaryComponent: React.FC = () => {
     //TODO onload, do an initial GET request to populate the redux store.
     // This may have to be done with the reactrouter useLoaderData hook.
 
-    useEffect(
-        () => {
-            /**/
-        },
-        [
-            /*budgets, buckets*/
-        ]
-    );
+    useEffect(() => {
+        (async () => {
+            const spendingBudget = await getSpendingBudget();
+            //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
+            dispatch(updateSpendingBudget(spendingBudget));
+        })();
+    }, []);
     return (
         <>
             <div className="flex flex-row justify-between w-full">
