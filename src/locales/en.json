@@ -20,7 +20,15 @@
     "intlDateTime": "{{val, datetime}}",
     "dateLocale": "en-US",
     "nav" : {
-      "greeting": "Hi"
+      "greeting": "Hi",
+      "settings": "Settings",
+      "profile": "Profile",
+      "languages": "Languages",
+      "first-name": "First Name",
+      "last-name": "Last Name",
+      "new-password": "New Password",
+      "confirm-password": "Confirm Password",
+      "save": "Save"
     },
     "dashboard": {
       "title": "Dashboard",

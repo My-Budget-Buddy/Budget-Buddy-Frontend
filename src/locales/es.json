@@ -19,8 +19,16 @@
     },
     "intlDateTime": "{{val, datetime}}",
     "dateLocale": "es-MX",
-    "nav" : {
-      "greeting": "Hola"
+    "nav": {
+      "greeting": "Hola",
+      "settings": "Configuración",
+      "profile": "Perfil",
+      "languages": "Idiomas",
+      "first-name": "Nombre",
+      "last-name": "Apellido",
+      "new-password": "Nueva Contraseña",
+      "confirm-password": "Confirmar Contraseña",
+      "save": "Guardar"
     },
     "dashboard": {
       "title": "Tablero",
