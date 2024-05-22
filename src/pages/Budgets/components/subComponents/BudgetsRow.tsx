@@ -5,9 +5,13 @@ import EditBudgetModal from "../modals/EditBudgetModal";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { timedDelay } from "../../../../util/util";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BudgetRowProps } from "../../../../types/budgetInterfaces";
+import { putBudget } from "../requests/budgetRequests";
+import { useSelector } from "react-redux";
 
 interface BudgetsRowProps {
+    id: number;
     category: string;
     budgeted: number;
     isReserved: boolean;
@@ -16,17 +20,37 @@ interface BudgetsRowProps {
 }
 
 // TODO use stateful variables
-const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved, actual, notes }) => {
+const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReserved, actual, notes }) => {
     const remaining = budgeted - actual;
-
     // The amount of money that will be reserved if the box is checked. It will always be greater than or equal to 0
     const reservedValue = remaining >= 0 ? remaining : 0;
 
-    const [initialized, setInitialized] = useState(false);
-
+    const [currentlyReserved, setCurrentlyReserved] = useState<boolean>(isReserved);
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
+    const [initialized, setInitialized] = useState(false);
 
+    //Buffered submission for PUT requests that change the reserved amount/is_currently_reserved. If no new changes in 5 seconds, then send the PUT.
+    const [lastEditTime, setLastEditTime] = useState<Date | null>(null);
+    const timerRef = useRef<number | null>(null);
+    const [isCurrentlyEditing, setIsCurrentlyEditing] = useState<boolean>(false);
+
+    const budgetsStore = useSelector((store: any) => store.budgets);
+
+    // Create monthYear string from selectedMonth and selectedYear in the budgets store
+    const month =
+        (budgetsStore.selectedMonth + 1).toString().length === 2
+            ? (budgetsStore.selectedMonth + 1).toString()
+            : "0" + (budgetsStore.selectedMonth + 1).toString();
+    const year = budgetsStore.selectedYear.toString();
+    const monthYear = year + "-" + month;
+
+    const handleCheckboxCheck = () => {
+        setCurrentlyReserved(!currentlyReserved);
+        setIsCurrentlyEditing(true);
+        setLastEditTime(new Date());
+    };
+    /*
     async function sendDeleteRequest() {
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
@@ -47,12 +71,41 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved,
 
         // Reallow all user input again
         dispatch(setIsSending(false));
+    }*/
+
+    async function sendUpdatedBudget(bucket: BudgetRowProps) {
+        const newBudget = {
+            // bucketId: 6,
+            userId: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
+            category: category,
+            totalAmount: budgeted,
+            actual: actual,
+            notes: notes,
+            isReserved: currentlyReserved,
+            monthYear: monthYear
+        };
+
+        // Sets buttons to 'waiting', prevent closing
+        dispatch(setIsSending(true));
+
+        console.log("UPDATING BUDGET...");
+
+        await putBudget(newBudget, id);
+
+        console.log("BUDGET SENT: ", bucket);
+        setIsCurrentlyEditing(false);
+
+        dispatch(setIsSending(false));
     }
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        await sendDeleteRequest();
-    }
+    useEffect(() => {
+        // After component mounts, set initialized to true
+        // Using initialized prevents the PUT request from firing on page load
+        setInitialized(true);
+        return () => {
+            console.log("ASdf");
+        };
+    }, []);
 
     useEffect(() => {
         // After component mounts, set initialized to true
@@ -80,21 +133,21 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved,
                     name="is-reserved-checkbox"
                     label="Mark as reserved"
                     className="ml-6 pb-3"
-                    checked={isReserved}
-                    onChange={
-                        initialized
-                            ? handleSubmit
-                            : () => {
-                                  console.log("Initialized");
-                              }
-                    }
+                    checked={currentlyReserved}
+                    onChange={handleCheckboxCheck}
                     disabled={isSending}
                 />
             </td>
 
             <td>
-                <EditBudgetModal category={category} budgeted={budgeted} isReserved={isReserved} notes={notes} />
-                <DeleteBudgetModal />
+                <EditBudgetModal
+                    id={id}
+                    category={category}
+                    budgeted={budgeted}
+                    isReserved={currentlyReserved}
+                    notes={notes}
+                />
+                <DeleteBudgetModal id={id} />
             </td>
 
             <td>
@@ -104,7 +157,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ category, budgeted, isReserved,
                         budgeted={budgeted}
                         actual={actual}
                         remaining={remaining}
-                        isReserved={isReserved}
+                        isReserved={currentlyReserved}
                         notes={notes}
                     />
                 </div>

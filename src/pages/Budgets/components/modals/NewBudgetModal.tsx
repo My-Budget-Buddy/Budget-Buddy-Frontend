@@ -13,16 +13,20 @@ import {
 } from "@trussworks/react-uswds";
 import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { BudgetProps } from "../../../../types/budgetInterfaces";
+import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { timedDelay } from "../../../../util/util";
+import { useSelector } from "react-redux";
+import { createBudget } from "../requests/budgetRequests";
 
 const NewCategoryModal: React.FC = () => {
     //TODO Update Budget data schema
-    const [formData, setFormData] = useState<BudgetProps>({
-        data: {
-            value: 0
-        }
+    const [formData, setFormData] = useState<BudgetRowProps>({
+        id: 0,
+        category: "",
+        totalAmount: 0,
+        isReserved: false,
+        notes: ""
     });
 
     const modalRef = useRef<ModalRef>(null);
@@ -30,31 +34,57 @@ const NewCategoryModal: React.FC = () => {
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
+    const budgetsStore = useSelector((store: any) => store.budgets);
+
+    // Create monthYear string from selectedMonth and selectedYear in the budgets store
+    const month =
+        (budgetsStore.selectedMonth + 1).toString().length === 2
+            ? (budgetsStore.selectedMonth + 1).toString()
+            : "0" + (budgetsStore.selectedMonth + 1).toString();
+    const year = budgetsStore.selectedYear.toString();
+    const monthYear = year + "-" + month;
+
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
-    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeInput = (e: any) => {
         const { name, value } = e.target;
 
         // Nested data interface is useful to keep simple top level component declarations, but leads to this.
         setFormData((prevState) => ({
             ...prevState,
-            data: {
-                ...prevState.data,
-                [name]: value
-            }
+            [name]: value
         }));
     };
 
-    async function sendNewBudget(budget: BudgetProps) {
+    const toggleIsReserved = (e: any) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            isReserved: !prevState.isReserved
+        }));
+    };
+
+    async function sendNewBudget(budget: BudgetRowProps) {
+        const newBudget = {
+            //id: formData.id,
+            userId: 1,
+            category: formData.category,
+            totalAmount: formData.totalAmount,
+            isReserved: formData.isReserved,
+            notes: formData.notes,
+            monthYear: monthYear
+        };
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
         console.log("SUBMITTING BUDGET..."); // <--- This is the bucket to send to the post endpoint
 
-        await timedDelay(1000); //TODO POST REQUEST HERE
+        try {
+            await createBudget(newBudget);
+            //TODO Display success
+        } catch {
+            console.error("ERROR!");
+            //TODO display errror
+        }
 
         console.log("BUDGET SENT: ", budget);
-
-        //if good: refreshSavingsBuckets
-        //else: return error
 
         // Reallow all user input again
         dispatch(setIsSending(false));
@@ -81,8 +111,8 @@ const NewCategoryModal: React.FC = () => {
                 <ModalHeading id="modal-3-heading">Add a new Budget</ModalHeading>
 
                 {/* TODO Populate with data from higher level, and use the stateful information in these input fields */}
-                <Label htmlFor="input-select">Category</Label>
-                <Select id="input-select" name="input-select">
+                <Label htmlFor="category">Category</Label>
+                <Select id="category" name="category" onChange={handleChangeInput}>
                     <option>- Select -</option>
                     {/* GET category list from transactions service
                         categories.map((category)=>{
@@ -94,18 +124,26 @@ const NewCategoryModal: React.FC = () => {
                     <option value="category 3">category 3</option>
                 </Select>
 
-                <Label htmlFor="budgeted">Monthly Budget</Label>
-                <TextInput id="budgeted" name="budgeted" type="number"></TextInput>
+                <Label htmlFor="totalAmount">Monthly Budget</Label>
+                <TextInput
+                    id="totalAmount"
+                    name="totalAmount"
+                    type="number"
+                    value={formData.totalAmount}
+                    onChange={handleChangeInput}
+                ></TextInput>
 
                 <Checkbox
-                    id="reserve"
-                    name="reserve-checkbox"
+                    id="isReserve"
+                    name="isReserved"
                     label="Reserve budget from available funds"
+                    checked={formData.isReserved}
+                    onClick={toggleIsReserved}
                     className="mt-8"
                 />
 
                 <Label htmlFor="notes">Notes:</Label>
-                <Textarea id="notes" name="notes" />
+                <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChangeInput} />
 
                 <ModalFooter>
                     <Button onClick={handleSubmit} disabled={isSending} type={"button"}>

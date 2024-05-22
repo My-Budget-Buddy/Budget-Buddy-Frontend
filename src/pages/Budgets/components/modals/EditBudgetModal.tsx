@@ -13,24 +13,28 @@ import {
     Button
 } from "@trussworks/react-uswds";
 import { useRef, useState } from "react";
-import { BudgetProps } from "../../../../types/budgetInterfaces";
+import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { timedDelay } from "../../../../util/util";
+import { putBudget } from "../requests/budgetRequests";
+import { useSelector } from "react-redux";
 
 interface TODO_CategoryProps {
+    id: number;
     category: string;
     budgeted: number;
     isReserved: boolean;
     notes: string;
 }
 
-const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ category, budgeted, isReserved, notes }) => {
+const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted, isReserved, notes }) => {
     //TODO Update Budget data schema
-    const [formData, setFormData] = useState<BudgetProps>({
-        data: {
-            value: 0
-        }
+    const [formData, setFormData] = useState<BudgetRowProps>({
+        id: id,
+        category: category,
+        totalAmount: budgeted,
+        isReserved: isReserved,
+        notes: notes
     });
 
     const modalRef = useRef<ModalRef>(null);
@@ -38,26 +42,51 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ category, budgeted, isR
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
+    const budgetsStore = useSelector((store: any) => store.budgets);
+
+    // Create monthYear string from selectedMonth and selectedYear in the budgets store
+    const month =
+        (budgetsStore.selectedMonth + 1).toString().length === 2
+            ? (budgetsStore.selectedMonth + 1).toString()
+            : "0" + (budgetsStore.selectedMonth + 1).toString();
+    const year = budgetsStore.selectedYear.toString();
+    const monthYear = year + "-" + month;
+
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
-    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeInput = (e: any) => {
         const { name, value } = e.target;
 
         // Nested data interface is useful to keep simple top level component declarations, but leads to this.
         setFormData((prevState) => ({
             ...prevState,
-            data: {
-                ...prevState.data,
-                [name]: value
-            }
+            [name]: value
         }));
     };
 
-    async function sendUpdatedBudget(budget: BudgetProps) {
+    const toggleIsReserved = (e: any) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            isReserved: !prevState.isReserved
+        }));
+    };
+
+    async function sendUpdatedBudget(budget: BudgetRowProps) {
+        const newBudget = {
+            //id: formData.id,
+            userId: 1,
+            category: formData.category,
+            totalAmount: formData.totalAmount,
+            isReserved: formData.isReserved,
+            notes: formData.notes,
+            monthYear: monthYear
+        };
+
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
         console.log("UPDATING BUDGET..."); // <--- This is the bucket to send to the post endpoint
 
-        await timedDelay(1000); //TODO PUT REQUEST HERE
+        // TODO The type definitions are getting out of hand
+        await putBudget(newBudget, id);
 
         console.log("BUDGET SENT: ", budget);
 
@@ -89,22 +118,28 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ category, budgeted, isR
                 <ModalHeading id="modal-3-heading">Edit Budget</ModalHeading>
 
                 <Label htmlFor="category">Category</Label>
-                <TextInput id="category" name="category" type="text" defaultValue={category} disabled></TextInput>
+                <TextInput id="category" name="category" type="text" value={formData.category} disabled></TextInput>
 
-                <Label htmlFor="budgeted">Monthly Budget</Label>
-                <TextInput id="budgeted" name="budgeted" type="number" defaultValue={budgeted}></TextInput>
+                <Label htmlFor="totalAmount">Monthly Budget</Label>
+                <TextInput
+                    id="totalAmount"
+                    name="totalAmount"
+                    type="number"
+                    value={formData.totalAmount}
+                    onChange={handleChangeInput}
+                ></TextInput>
 
                 <Checkbox
-                    id="is-reserved"
-                    name="is-reserved-checkbox"
+                    id={id.toString()}
+                    name="isReserved"
                     label="Reserve budget from available funds"
+                    checked={formData.isReserved}
+                    onClick={toggleIsReserved}
                     className="mt-8"
-                    defaultChecked={isReserved}
-                    onChange={() => {}}
                 />
 
                 <Label htmlFor="notes">Notes:</Label>
-                <Textarea id="notes" name="notes" defaultValue={notes} />
+                <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChangeInput} />
 
                 <ModalFooter>
                     <ButtonGroup>

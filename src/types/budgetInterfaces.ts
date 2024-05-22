@@ -19,6 +19,14 @@ export interface SavingsBucketRowProps {
     };
 }
 
+export interface BudgetRowProps {
+    id: number;
+    category: string;
+    totalAmount: number;
+    isReserved: boolean;
+    notes: string;
+}
+
 export interface BudgetProps {
     data: {
         value: number;
