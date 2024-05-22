@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { Icon } from "@trussworks/react-uswds";
+import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading, SideNav, Form, Fieldset, Label, TextInput, Button } from "@trussworks/react-uswds";
 import { useTranslation } from "react-i18next";
+import { useRef } from "react";
 
 const NavBar = () => {
     const { t } = useTranslation();
+    const modalRef = useRef<ModalRef>(null)
 
     const pages = [
         {
@@ -36,7 +38,15 @@ const NavBar = () => {
             title: t("tax.title"),
             icon: Icon.Assessment
         }
-    ];
+    ]; 
+    const sideNavItems= [
+        <a href="#one" className="usa-current" key="one">
+            Account
+        </a>,
+        <a href="#two" key="two">
+            General
+        </a>
+      ]
 
     return (
         <div className="nav-container bg-base-lighter px-6 h-screen min-w-64">
@@ -44,7 +54,80 @@ const NavBar = () => {
                 <h1 className="font-semibold">{t("app-name")}</h1>
                 <div className="flex flex-row items-center gap-4">
                     <h3>{t("nav.greeting")}, [Name]</h3>
-                    <Icon.Settings />
+                    <ModalToggleButton
+                        modalRef={modalRef}
+                        opener
+                        className="usa-button--unstyled"
+                        onClick={() => {}}
+                    >
+                        <Icon.Settings style={{fontSize: "1.4rem"}}/>
+                    </ModalToggleButton>
+                    <Modal
+                        ref={modalRef}
+                        id="settings-modal"
+                        aria-labelledby="modal-1-heading"
+                        aria-describedby="modal-1-description"
+                        isLarge
+                    >
+                        <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
+                            <ModalHeading>Settings</ModalHeading>
+                            <div className="flex mt-2">
+                                <SideNav items={sideNavItems}/>
+                                <div className="flex w-full justify-center">
+                                    <Form onSubmit={()=> {}} className="w-9/12">
+                                        {/* <Fieldset legend={t("auth.login-desc")} legendStyle="default"> */}
+                                            <Label htmlFor="first-name">First Name</Label>
+                                            <TextInput
+                                                id="first-name"
+                                                name="first-name"
+                                                type="text"
+                                                autoComplete="first-name"
+                                            />
+                                            <Label htmlFor="last-name">Last Name</Label>
+                                            <TextInput
+                                                id="last-name"
+                                                name="last-name"
+                                                type="text"
+                                                autoComplete="last-name"
+                                            />
+                                            <Label htmlFor="email">{t("auth.email")}</Label>
+                                            <TextInput
+                                                id="email"
+                                                name="email"
+                                                type="text"
+                                                autoComplete="email"
+                                                disabled
+                                            />
+
+                                            <Label htmlFor="new-password">{t("auth.password")}</Label>
+                                            <TextInput
+                                                id="new-password"
+                                                name="new-password"
+                                                type={'text'}
+                                            />
+                                            <Label htmlFor="confirm-password">Confirm Password</Label>
+                                            <TextInput
+                                                id="confirm-password"
+                                                name="confirm-password"
+                                                type={'text'}
+                                            />
+                                            <button
+                                                type="button"
+                                                title="Toggle Password Visibility"
+                                                className="usa-show-password"
+                                                aria-controls="password"
+                                                onClick={() => {}}
+                                            >
+                                                {t("auth.show")}
+                                            </button>
+
+                                            <Button type="submit">Save</Button>
+                                        {/* </Fieldset> */}
+                                    </Form>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
                 </div>
             </div>
             <div className="flex flex-col items-center gap-6 mt-14">
