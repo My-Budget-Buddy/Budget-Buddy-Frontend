@@ -42,6 +42,15 @@ const NewCategoryModal: React.FC = () => {
 
     // Input validation
     const hasTotalAmountError = !(formData.totalAmount >= 0) || formData.totalAmount.toString() === "";
+    const hasSelectedCategory = formData.category !== "" && formData.category !== "default";
+    let isDuplicateBudgetError = false;
+
+    // Checks if there is a budget in the budgets array where the category matches the currently selected category
+    if (budgetsStore.budgets.some((budget: any) => budget.category === formData.category)) {
+        isDuplicateBudgetError = true;
+    } else {
+        isDuplicateBudgetError = false;
+    }
 
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
     const handleChangeInput = (e: any) => {
@@ -110,20 +119,18 @@ const NewCategoryModal: React.FC = () => {
                 <ModalHeading id="modal-3-heading">Add a new Budget</ModalHeading>
 
                 {/* TODO Populate with data from higher level, and use the stateful information in these input fields */}
-                <Label htmlFor="category">Category</Label>
-                <Select id="category" name="category" onChange={handleChangeInput}>
-                    <option>- Select -</option>
-                    {/* GET category list from transactions service
-                        categories.map((category)=>{
-                            <option value={category.name}>{category.name}</option>
-                        })
-                    */}
-                    {Object.values(TransactionCategory).map((category) => (
-                        <option key={category} value={category}>
-                            {category}
-                        </option>
-                    ))}
-                </Select>
+                <FormGroup error={isDuplicateBudgetError}>
+                    <Label htmlFor="category">Category</Label>
+                    {isDuplicateBudgetError ? <ErrorMessage>This budget category already exists</ErrorMessage> : null}
+                    <Select id="category" name="category" onChange={handleChangeInput}>
+                        <option value="default">- Select -</option>
+                        {Object.values(TransactionCategory).map((category) => (
+                            <option key={category} value={category} disabled={false}>
+                                {category}
+                            </option>
+                        ))}
+                    </Select>
+                </FormGroup>
 
                 <FormGroup error={hasTotalAmountError}>
                     <Label htmlFor="totalAmount">Monthly Budget</Label>
@@ -152,7 +159,13 @@ const NewCategoryModal: React.FC = () => {
 
                 <ModalFooter>
                     <ButtonGroup>
-                        <Button onClick={handleSubmit} disabled={isSending || hasTotalAmountError} type={"button"}>
+                        <Button
+                            onClick={handleSubmit}
+                            disabled={
+                                isSending || hasTotalAmountError || !hasSelectedCategory || isDuplicateBudgetError
+                            }
+                            type={"button"}
+                        >
                             Submit new
                         </Button>
                         <ModalToggleButton
