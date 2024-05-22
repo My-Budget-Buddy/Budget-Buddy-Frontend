@@ -1,6 +1,5 @@
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
 import { useAppSelector } from "../../../util/redux/hooks";
 
