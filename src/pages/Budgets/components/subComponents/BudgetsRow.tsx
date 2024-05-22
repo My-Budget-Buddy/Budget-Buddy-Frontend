@@ -13,15 +13,15 @@ import { useSelector } from "react-redux";
 interface BudgetsRowProps {
     id: number;
     category: string;
-    budgeted: number;
+    totalAmount: number;
     isReserved: boolean;
     actual: number;
     notes: string;
 }
 
 // TODO use stateful variables
-const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReserved, actual, notes }) => {
-    const remaining = budgeted - actual;
+const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, totalAmount, isReserved, actual, notes }) => {
+    const remaining = totalAmount - actual;
     // The amount of money that will be reserved if the box is checked. It will always be greater than or equal to 0
     const reservedValue = remaining >= 0 ? remaining : 0;
 
@@ -48,7 +48,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReser
             // bucketId: 6,
             userId: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
             category: category,
-            totalAmount: budgeted,
+            totalAmount: totalAmount,
             actual: actual,
             notes: notes,
             isReserved: currentlyReserved,
@@ -72,20 +72,37 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReser
         // After component mounts, set initialized to true
         // Using initialized prevents the PUT request from firing on page load
         setInitialized(true);
-        return () => {
-            console.log("ASdf");
-        };
     }, []);
 
     useEffect(() => {
-        // After component mounts, set initialized to true
-        setInitialized(true);
-    }, []);
+        if (lastEditTime && isCurrentlyEditing) {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+            timerRef.current = window.setTimeout(() => {
+                // TODO SEND PUT REQUEST
+                sendUpdatedBudget({
+                    id: 1, //TODO Try to have backend team use credentials for this field instead of passing it in body
+                    category: category,
+                    totalAmount: totalAmount,
+                    notes: notes,
+                    isReserved: currentlyReserved
+                }); //TODO Use updated data fields (this just uses what was passed from the GET )
+            }, 1000);
+        }
+
+        // Cleanup the timeout when the component unmounts
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [lastEditTime]);
 
     return (
         <tr>
             <td>{category}</td>
-            <td>$ {budgeted}</td>
+            <td>$ {totalAmount}</td>
             <td>$ {actual}</td>
             <td>
                 <div className="flex flex-row items-center">
@@ -113,7 +130,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReser
                 <EditBudgetModal
                     id={id}
                     category={category}
-                    budgeted={budgeted}
+                    budgeted={totalAmount}
                     isReserved={currentlyReserved}
                     notes={notes}
                 />
@@ -124,7 +141,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, budgeted, isReser
                 <div className="flex justify-end">
                     <BudgetDetailsModal
                         category={category}
-                        budgeted={budgeted}
+                        budgeted={totalAmount}
                         actual={actual}
                         remaining={remaining}
                         isReserved={currentlyReserved}
