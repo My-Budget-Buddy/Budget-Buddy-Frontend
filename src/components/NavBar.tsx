@@ -85,7 +85,7 @@ const NavBar = () => {
                         aria-labelledby="modal-1-heading"
                         aria-describedby="modal-1-description"
                         isLarge
-                        className="min-h-[90vh]"
+                        className="h-[90vh]"
                     >
                         <div className="flex justify-center bg-white w-full max-w-2xl rounded-2xl">
                             <div className="flex flex-col">
