@@ -44,7 +44,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             balance: e.currentTarget.elements["account-balance"].value,
         };
 
-        fetch(`http://localhost:8080/accounts/1`, {
+        fetch(`http://localhost:8125/accounts/1`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
