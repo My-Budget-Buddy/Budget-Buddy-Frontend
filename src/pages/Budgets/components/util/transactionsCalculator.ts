@@ -24,7 +24,9 @@ function getSumForCategory(categorizedTransactions: { [key: string]: Transaction
     return transactionsForCategory.reduce((sum, transaction) => sum + transaction.amount, 0);
 }
 
-async function getCategoriesTransactionsMap(monthYear: string) {
+// Returns a map of categories and their transactions.
+// e.g. "{GROCERIES: [{Transaction1}, {Transaction2}], "SHOPPING": [...]}
+export async function getCategoriesTransactionsMap(monthYear: string) {
     // TODO We currently have no way of querying userID
     const transactions = await getTransactions(1, monthYear);
     const mapOfTransactionsByCategory = mapTransactionsToCategories(transactions);
