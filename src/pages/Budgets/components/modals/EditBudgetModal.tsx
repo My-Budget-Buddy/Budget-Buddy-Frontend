@@ -30,21 +30,23 @@ interface TODO_CategoryProps {
 }
 
 const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted, isReserved, notes }) => {
-    //TODO Update Budget data schema
-    const [formData, setFormData] = useState<BudgetRowProps>({
-        id: id,
-        category: category,
-        totalAmount: budgeted,
-        isReserved: isReserved,
-        notes: notes
-    });
-
     const modalRef = useRef<ModalRef>(null);
 
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
     const budgetsStore = useSelector((store: any) => store.budgets);
+
+    //TODO Update Budget data schema
+    const [formData, setFormData] = useState<BudgetRowProps>({
+        id: id,
+        category: category,
+        totalAmount: budgeted,
+        isReserved: isReserved,
+        spentAmount: 0,
+        notes: notes,
+        monthYear: budgetsStore.monthYear
+    });
 
     // Input validation
     const hasTotalAmountError = !(formData.totalAmount >= 0) || formData.totalAmount.toString() === "";

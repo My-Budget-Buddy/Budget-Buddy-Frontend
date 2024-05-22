@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { putBudget } from "../requests/budgetRequests";
 import { useSelector } from "react-redux";
+import { Transaction } from "../../../../types/models";
 
 interface BudgetsRowProps {
     id: number;
@@ -17,10 +18,19 @@ interface BudgetsRowProps {
     isReserved: boolean;
     actual: number;
     notes: string;
+    transactions: Transaction[] | undefined;
 }
 
 // TODO use stateful variables
-const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, totalAmount, isReserved, actual, notes }) => {
+const BudgetsRow: React.FC<BudgetsRowProps> = ({
+    id,
+    category,
+    totalAmount,
+    isReserved,
+    actual,
+    notes,
+    transactions
+}) => {
     const remaining = totalAmount - actual;
     // The amount of money that will be reserved if the box is checked. It will always be greater than or equal to 0
     const reservedValue = remaining >= 0 ? remaining : 0;
@@ -86,7 +96,9 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, totalAmount, isRe
                     category: category,
                     totalAmount: totalAmount,
                     notes: notes,
-                    isReserved: currentlyReserved
+                    isReserved: currentlyReserved,
+                    spentAmount: actual,
+                    monthYear: budgetsStore.monthYear
                 }); //TODO Use updated data fields (this just uses what was passed from the GET )
             }, 1000);
         }
@@ -146,6 +158,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({ id, category, totalAmount, isRe
                         remaining={remaining}
                         isReserved={currentlyReserved}
                         notes={notes}
+                        transactions={transactions}
                     />
                 </div>
             </td>
