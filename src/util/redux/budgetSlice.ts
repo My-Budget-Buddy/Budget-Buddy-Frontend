@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
 
 // default date values
 const currentDate = new Date();
@@ -37,17 +38,25 @@ export const budgetSlice = createSlice({
         updateBudgets(state, action) {
             const budgets = action.payload;
             state.budgets = budgets;
+
+            //Each time budgets changes, refresh the total actually spent and reserved state
+            const totalSpent = budgets.reduce((total: number, row: BudgetRowProps) => total + row.spentAmount, 0);
+            state.totalActuallySpent = totalSpent;
+            const totalReserved = budgets.reduce((total: number, row: BudgetRowProps) => {
+                if (row.isReserved) {
+                    const sum = total + (row.totalAmount - row.spentAmount);
+                    return sum;
+                } else {
+                    return 0;
+                }
+            }, 0);
+            state.totalReserved = totalReserved;
         },
 
         // pass in the amount to be reserved (or a negative amount for unreserving)
         updateTotalReserved(state, action) {
             const reservedAmount = action.payload;
             state.totalReserved += reservedAmount;
-        },
-
-        updateTotalActuallySpent(state, action) {
-            const totalSpent = action.payload;
-            state.totalActuallySpent += totalSpent;
         },
 
         // pass in the selectedDate date object
