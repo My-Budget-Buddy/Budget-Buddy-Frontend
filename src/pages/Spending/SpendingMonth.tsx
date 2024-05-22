@@ -47,6 +47,7 @@ const SpendingMonth: React.FC = () => {
         [TransactionCategory.MISC]: "#D3D3D3"
     };
 
+    //-----MONTH ROUTING---
     const monthNames: Month[] = [
         "january",
         "february",
@@ -181,7 +182,7 @@ const SpendingMonth: React.FC = () => {
         };
 
         fetchTransactions();
-    }, []);
+    }, [month]);
 
     //total spending for the month
     const totalSpending = transactions.reduce(
@@ -288,6 +289,16 @@ const SpendingMonth: React.FC = () => {
                             <Link to="/dashboard/spending" className="mr-3">
                                 <Button type="button" className="ml-3">
                                     Back to Annual Spending Overview
+                                </Button>
+                            </Link>
+                            <Link to={`/dashboard/spending/${previousMonth}`} className="mr-3">
+                                <Button type="button" className="ml-3">
+                                    Previous Month
+                                </Button>
+                            </Link>
+                            <Link to={`/dashboard/spending/${nextMonth}`} className="mr-3">
+                                <Button type="button" className="ml-3">
+                                    Next Month
                                 </Button>
                             </Link>
                         </div>
