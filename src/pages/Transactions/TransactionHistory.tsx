@@ -15,8 +15,7 @@ import {
     Select,
     Table,
     TextInput,
-    Textarea,
-    Title
+    Textarea
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -203,23 +202,20 @@ function TransactionHistory() {
     return (
         <>
             <div>
-                <Title>{`${decodeURI(String(Name))} transaction history`}</Title>
                 <CardGroup>
                     <Card gridLayout={{ col: 8 }}>
                         <CardHeader>
-                            <h1>
-                                All <i>{`${decodeURI(String(Name))}`}</i> transactions
-                            </h1>
+                            <h1>{t("transactions.history", { val: Name })}</h1>
                         </CardHeader>
                         <CardBody>
                             <Table bordered={false} fullWidth={true} striped>
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Name</th>
-                                        <th>Category</th>
-                                        <th>Actions</th>
-                                        <th>Amount</th>
+                                        <th>{t("transactions-table.date")}</th>
+                                        <th>{t("transactions-table.name")}</th>
+                                        <th>{t("transactions-table.category")}</th>
+                                        <th>{t("transactions-table.actions")}</th>
+                                        <th>{t("transactions-table.amount")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -272,11 +268,12 @@ function TransactionHistory() {
                         </CardBody>
                     </Card>
                     <Card gridLayout={{ col: 4 }}>
-                        <CardHeader>Summary</CardHeader>
+                        <CardHeader>{t("transactions.summary")}</CardHeader>
                         <CardBody>
-                            Total spent: ${transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0).toFixed(2)}
+                            {t("transactions.spent")}: $
+                            {transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0).toFixed(2)}
                             <hr />
-                            Total transactions: {transactions.length}
+                            {t("transactions.amount")}: {transactions.length}
                             <hr />
                             <BarChart
                                 series={[

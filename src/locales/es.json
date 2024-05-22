@@ -32,25 +32,26 @@
     },
     "dashboard": {
       "title": "Tablero",
-      "welcome" : "Bienvenido",
-      "chart" : "Gasto actual este mes:",
-      "no-accounts" : "Todavía no tienes ninguna cuenta configurada",
-      "add-account" : "Agregar una Cuenta",
-      "recent-transactions" : "Transacciones Recientes",
+      "welcome": "Bienvenido",
+      "chart": "Gasto actual este mes:",
+      "no-accounts": "Todavía no tienes ninguna cuenta configurada",
+      "add-account": "Agregar una Cuenta",
+      "recent-transactions": "Transacciones Recientes",
       "all-transactions": "Ver Todas las Transacciones",
-      "no-transactions" : "No hay transacciones recientes",
-      "add-transaction" : "Agregar Transacción",
+      "no-transactions": "No hay transacciones recientes",
+      "add-transaction": "Agregar Transacción",
       "view-budgets": "Ver Presupuestos Completos"
     },
     "accounts": {
-      "title" : "Cuentas",
-      "net-cash" : "Dinero Neto"
+      "title": "Cuentas",
+      "net-cash": "Dinero Neto"
     },
-    "transactions-table" : {
-      "date" : "Fecha",
-      "name" : "Nombre",
-      "category" : "Categoría",
-      "amount" : "Cantidad"
+    "transactions-table": {
+      "date": "Fecha",
+      "name": "Nombre",
+      "category": "Categoría",
+      "amount": "Cantidad",
+      "actions": "Acciones"
     },
     "budgets": {
       "title": "Presupuestos"
@@ -59,7 +60,11 @@
       "title": "Gastos"
     },
     "transactions": {
-      "title": "Transacciones"
+      "title": "Transacciones",
+      "history": "Todas las {{val}} transacciones",
+      "spent": "Total gastado",
+      "amount": "Transacciones totales",
+      "summary": "Resumen"
     },
     "tax": {
       "title": "Impuestos"
