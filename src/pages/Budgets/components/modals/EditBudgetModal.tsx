@@ -10,7 +10,9 @@ import {
     Textarea,
     Icon,
     ButtonGroup,
-    Button
+    Button,
+    FormGroup,
+    ErrorMessage
 } from "@trussworks/react-uswds";
 import { useRef, useState } from "react";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
@@ -43,6 +45,9 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
     const budgetsStore = useSelector((store: any) => store.budgets);
+
+    // Input validation
+    const hasTotalAmountError = !(formData.totalAmount >= 0) || formData.totalAmount.toString() === "";
 
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
     const handleChangeInput = (e: any) => {
@@ -112,14 +117,17 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                 <Label htmlFor="category">Category</Label>
                 <TextInput id="category" name="category" type="text" value={formData.category} disabled></TextInput>
 
-                <Label htmlFor="totalAmount">Monthly Budget</Label>
-                <TextInput
-                    id="totalAmount"
-                    name="totalAmount"
-                    type="number"
-                    value={formData.totalAmount}
-                    onChange={handleChangeInput}
-                ></TextInput>
+                <FormGroup error={hasTotalAmountError}>
+                    <Label htmlFor="totalAmount">Monthly Budget</Label>
+                    {hasTotalAmountError ? <ErrorMessage>Must be greater than or equal to 0</ErrorMessage> : null}
+                    <TextInput
+                        id="totalAmount"
+                        name="totalAmount"
+                        type="number"
+                        value={formData.totalAmount}
+                        onChange={handleChangeInput}
+                    />
+                </FormGroup>
 
                 <Checkbox
                     id={id.toString()}
@@ -135,7 +143,7 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
 
                 <ModalFooter>
                     <ButtonGroup>
-                        <Button onClick={handleSubmit} disabled={isSending} type={"button"}>
+                        <Button onClick={handleSubmit} disabled={isSending || hasTotalAmountError} type={"button"}>
                             Submit edit
                         </Button>
                         <ModalToggleButton

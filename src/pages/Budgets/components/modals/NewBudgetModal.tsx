@@ -1,6 +1,9 @@
 import {
     Button,
+    ButtonGroup,
     Checkbox,
+    ErrorMessage,
+    FormGroup,
     Label,
     Modal,
     ModalFooter,
@@ -18,6 +21,7 @@ import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { timedDelay } from "../../../../util/util";
 import { useSelector } from "react-redux";
 import { createBudget } from "../requests/budgetRequests";
+import { TransactionCategory } from "../../../../types/models";
 
 const NewCategoryModal: React.FC = () => {
     //TODO Update Budget data schema
@@ -35,6 +39,9 @@ const NewCategoryModal: React.FC = () => {
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
     const budgetsStore = useSelector((store: any) => store.budgets);
+
+    // Input validation
+    const hasTotalAmountError = !(formData.totalAmount >= 0) || formData.totalAmount.toString() === "";
 
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
     const handleChangeInput = (e: any) => {
@@ -111,19 +118,25 @@ const NewCategoryModal: React.FC = () => {
                             <option value={category.name}>{category.name}</option>
                         })
                     */}
-                    <option value="category 1">category 1</option>
-                    <option value="category 2">category 2</option>
-                    <option value="category 3">category 3</option>
+                    {Object.values(TransactionCategory).map((category) => (
+                        <option key={category} value={category}>
+                            {category}
+                        </option>
+                    ))}
                 </Select>
 
-                <Label htmlFor="totalAmount">Monthly Budget</Label>
-                <TextInput
-                    id="totalAmount"
-                    name="totalAmount"
-                    type="number"
-                    value={formData.totalAmount}
-                    onChange={handleChangeInput}
-                ></TextInput>
+                <FormGroup error={hasTotalAmountError}>
+                    <Label htmlFor="totalAmount">Monthly Budget</Label>
+                    {hasTotalAmountError ? <ErrorMessage>Must be greater than or equal to 0</ErrorMessage> : null}
+                    <TextInput
+                        id="totalAmount"
+                        name="totalAmount"
+                        type="number"
+                        value={formData.totalAmount}
+                        onChange={handleChangeInput}
+                        /*validationStatus={ hasTotalAmountError ? "" : "error"}  TODO Figure out what other strings are allowed in validationStatus, if any*/
+                    />
+                </FormGroup>
 
                 <Checkbox
                     id="isReserve"
@@ -138,9 +151,20 @@ const NewCategoryModal: React.FC = () => {
                 <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChangeInput} />
 
                 <ModalFooter>
-                    <Button onClick={handleSubmit} disabled={isSending} type={"button"}>
-                        Submit new
-                    </Button>
+                    <ButtonGroup>
+                        <Button onClick={handleSubmit} disabled={isSending || hasTotalAmountError} type={"button"}>
+                            Submit new
+                        </Button>
+                        <ModalToggleButton
+                            modalRef={modalRef}
+                            disabled={isSending}
+                            closer
+                            unstyled
+                            className="padding-105 text-center"
+                        >
+                            Go back
+                        </ModalToggleButton>
+                    </ButtonGroup>
                 </ModalFooter>
             </Modal>
         </>
