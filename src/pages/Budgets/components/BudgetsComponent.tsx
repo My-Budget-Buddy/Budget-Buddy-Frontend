@@ -4,7 +4,7 @@ import NewBudgetModal from "./modals/NewBudgetModal";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBudgets, updateSelectedDate } from "../../../util/redux/budgetSlice";
-import { getBudgetsById } from "./requests/budgetRequests";
+import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { BudgetRowProps } from "../../../types/budgetInterfaces";
 
 const BudgetsComponent: React.FC = () => {
@@ -31,14 +31,14 @@ const BudgetsComponent: React.FC = () => {
         console.log("budget store budgets", budgetsStore.budgets);
     }, [budgetsStore]);
 
-    // Updates the redux store with fresh buckets from the database
+    // Updates the redux store with fresh budgets from the database
     useEffect(() => {
         (async () => {
-            const transformedBudgets = await getBudgetsById();
+            const transformedBudgets = await getBudgetsByMonthYear(budgetsStore.monthYear);
             console.log("transformed budgets", transformedBudgets);
             dispatch(updateBudgets(transformedBudgets));
         })();
-    }, [isSending]);
+    }, [isSending, budgetsStore.monthYear]);
 
     const selectPreviousMonth = () => {
         const selectedMonthYear = {
