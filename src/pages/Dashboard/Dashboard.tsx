@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
     const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null);
     const [monthlyTransactions, setMonthlyTransactions] = useState<MonthlyTransactionType[]>([]);
     const [monthlySpend, setMonthlySpend] = useState(0);
-    
+
     // ---Calculate net cash---
     useEffect(() => {
         let total = 0;
@@ -299,7 +299,7 @@ const Dashboard: React.FC = () => {
                                 <button
                                     type="button"
                                     className="bg-[#f0f0f0] py-4 pr-14 pl-5 w-full font-bold hover:cursor-auto"
-                                    id="net-cash"
+                                    id="no-focus"
                                 >
                                     <div className="flex justify-between items-center">
                                         <p className="flex items-center">
