@@ -1,6 +1,25 @@
+import { useDispatch, useSelector } from 'react-redux';
 import taxImage from './tax-report-icon-free-vector.jpg'
+import { createTaxReturn } from './taxesAPI';
+import { RootState } from '../../util/redux/store';
+import { setTaxReturnInfo } from './TaxReturnSlice';
+import { useNavigate } from 'react-router-dom';
 
 const TaxNav: React.FC = () => {
+
+    interface initReturn {
+      year : number,
+      userID : number
+      };
+    const taxReturnInfo = useSelector((state:RootState) => state.taxReturn);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const starterblock : initReturn = {
+      year : 2024,
+      userID : 1
+    }
+    
     const containerStyle: React.CSSProperties = {
         textAlign: 'center',
         margin: '20px',
@@ -42,6 +61,17 @@ const TaxNav: React.FC = () => {
     
       const handleIconClick = (action: string) => {
         console.log(action);
+        if (action === "File Taxes"){
+          createTaxReturn(starterblock)
+          .then(res => {
+            console.log(res);
+            dispatch(setTaxReturnInfo(res.data));
+            navigate(`/dashboard/tax/${res.data.id}`)
+          })
+          .catch(err => {
+            console.log("Error: Could not create new tax return");
+          })
+        }
         // Implement the action you want on click here
         // For example, navigate to a different page, show a modal, etc.
       };

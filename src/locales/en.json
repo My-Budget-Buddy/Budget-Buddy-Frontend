@@ -1,5 +1,6 @@
 {
   "translation": {
+    "app-name": "Budget Buddy",
     "auth": {
       "login": "Log in",
       "login-desc": "Access your account and view your dashboard.",
@@ -17,6 +18,43 @@
       "username": "Username"
     },
     "intlDateTime": "{{val, datetime}}",
-    "dateLocale": "en-US"
+    "dateLocale": "en-US",
+    "nav" : {
+      "greeting": "Hi"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome" : "Welcome",
+      "chart" : "Current spend this month:",
+      "no-accounts" : "You don't have any accounts set up yet",
+      "add-account" : "Add an Account",
+      "recent-transactions" : "Recent Transactions",
+      "all-transactions": "View All Transactions",
+      "no-transactions" : "No Recent Transactions",
+      "add-transaction" : "Add Transaction",
+      "view-budgets": "View Full Budget"
+    },
+    "accounts": {
+      "title" : "Accounts",
+      "net-cash" : "Net Cash"
+    },
+    "transactions-table" : {
+      "date" : "Date",
+      "name" : "Name",
+      "category" : "Category",
+      "amount" : "Amount"
+    },
+    "budgets": {
+      "title": "Budgets"
+    },
+    "spending": {
+      "title": "Spending"
+    },
+    "transactions": {
+      "title": "Transactions"
+    },
+    "tax": {
+      "title": "Tax"
+    }
   }
 }

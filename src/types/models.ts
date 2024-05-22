@@ -1,13 +1,13 @@
 export enum TransactionCategory {
-    GROCERIES = "GROCERIES",
-    ENTERTAINMENT = "ENTERTAINMENT",
-    DINING = "DINING",
-    TRANSPORTATION = "TRANSPORTATION",
-    HEALTHCARE = "HEALTHCARE",
-    LIVING_EXPENSES = "LIVING EXPENSES",
-    SHOPPING = "SHOPPING",
-    INCOME = "INCOME",
-    MISC = "MISC"
+    GROCERIES = "Groceries",
+    ENTERTAINMENT = "Entertainment",
+    DINING = "Dining",
+    TRANSPORTATION = "Transportation",
+    HEALTHCARE = "Healthcare",
+    LIVING_EXPENSES = "Living Expenses",
+    SHOPPING = "Shopping",
+    INCOME = "Income",
+    MISC = "Misc"
 }
 
 export interface Account {

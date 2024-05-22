@@ -1,5 +1,6 @@
 {
   "translation": {
+    "app-name": "Compañero de Presupuesto",
     "auth": {
       "login": "Iniciar sesión",
       "login-desc": "Accede a tu cuenta y consulta el panel de control.",
@@ -17,6 +18,43 @@
       "username": "Nombre de usuario."
     },
     "intlDateTime": "{{val, datetime}}",
-    "dateLocale": "es-MX"
+    "dateLocale": "es-MX",
+    "nav" : {
+      "greeting": "Hola"
+    },
+    "dashboard": {
+      "title": "Tablero",
+      "welcome" : "Bienvenido",
+      "chart" : "Gasto actual este mes:",
+      "no-accounts" : "Todavía no tienes ninguna cuenta configurada",
+      "add-account" : "Agregar una Cuenta",
+      "recent-transactions" : "Transacciones Recientes",
+      "all-transactions": "Ver Todas las Transacciones",
+      "no-transactions" : "No hay transacciones recientes",
+      "add-transaction" : "Agregar Transacción",
+      "view-budgets": "Ver Presupuestos Completos"
+    },
+    "accounts": {
+      "title" : "Cuentas",
+      "net-cash" : "Dinero Neto"
+    },
+    "transactions-table" : {
+      "date" : "Fecha",
+      "name" : "Nombre",
+      "category" : "Categoría",
+      "amount" : "Cantidad"
+    },
+    "budgets": {
+      "title": "Presupuestos"
+    },
+    "spending": {
+      "title": "Gastos"
+    },
+    "transactions": {
+      "title": "Transacciones"
+    },
+    "tax": {
+      "title": "Impuestos"
+    }
   }
 }
