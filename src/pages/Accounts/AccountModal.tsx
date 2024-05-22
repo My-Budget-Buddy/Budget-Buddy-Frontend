@@ -132,10 +132,11 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             name="input-account-num"
                             type="text"
                             required
+                            maxLength={17}
                         />
                         {showRoutingNumberInput && (
                             <>
-                                <Label id="label-routing-num" htmlFor="routing-num" requiredMarker>
+                                <Label id="label-routing-num" htmlFor="input-routing-num" requiredMarker>
                                     Routing Number
                                 </Label>
                                 <TextInput
@@ -143,6 +144,8 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                                     name="input-routing-num"
                                     type="text"
                                     required
+                                    pattern="\d{9}"
+                                    title="Routing number must be exactly 9 digits"
                                 />
                             </>
                         )}
