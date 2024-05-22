@@ -5,7 +5,6 @@ import {
     ModalToggleButton,
     ModalRef,
     ModalHeading,
-    Fieldset,
     Radio,
     Form,
     Label,
@@ -86,26 +85,30 @@ const NavBar = () => {
                         aria-labelledby="modal-1-heading"
                         aria-describedby="modal-1-description"
                         isLarge
+                        className="min-h-full"
                     >
-                        <div className="flex flex-col justify-center bg-white w-full max-w-2xl rounded-2xl">
-                            <ModalHeading>{t("nav.settings")}</ModalHeading>
-                            <div className="flex mt-2">
-                                <ul className="usa-sidenav">
-                                    {settingOptions.map((option)=> (
-                                        <>
-                                            <li className={`usa-sidenav__item px-4 py-2 w-40 flex items-center ${sideNav === `${option.title}` ? 'usa-current' : ''}`}>
-                                                <option.icon className="mr-2"/>
-                                                <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
-                                                    {option.title}
-                                                </button>
-                                            </li>
-                                        </>
-                                    ))}
-                                </ul>
+                        <div className="flex justify-center bg-white w-full max-w-2xl rounded-2xl">
+                            <div className="flex flex-col">
+                                <ModalHeading className="mb-6">{t("nav.settings")}</ModalHeading>
+                                <div className="flex">
+                                    <ul className="usa-sidenav">
+                                        {settingOptions.map((option)=> (
+                                            <>
+                                                <li className={`usa-sidenav__item px-4 py-3 w-40 flex items-center ${sideNav === `${option.title}` ? 'usa-current' : ''}`}>
+                                                    <option.icon className="mr-2"/>
+                                                    <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
+                                                        {option.title}
+                                                    </button>
+                                                </li>
+                                            </>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
                                 {sideNav === t("nav.profile") && 
                                 <div className="flex w-full justify-center">
                                     <Form onSubmit={() => {}} className="w-9/12">
-                                        <Fieldset legend={t("nav.profile")} legendStyle="large">
+                                        <ModalHeading> {t("nav.profile")}
                                             <Label htmlFor="first-name" >{t("nav.first-name")}</Label>
                                             <TextInput
                                                 id="first-name"
@@ -138,37 +141,42 @@ const NavBar = () => {
                                                 </InputSuffix>
                                             </InputGroup>
                                             <Button type="submit">{t("nav.save")}</Button>
-                                        </Fieldset>
+                                        
+                                        </ModalHeading>
                                     </Form>
                                 </div>}
                                 {sideNav === t("nav.languages") && 
                                 <div className="flex w-full justify-center">
-                                    <Fieldset legend={t("nav.languages")} legendStyle="large" className="w-9/12">
-                                        <Radio 
-                                            id="english" 
-                                            name="language" 
-                                            label="English" 
-                                            checked={currLang === "en"}
-                                            onChange={() => {
-                                                i18n.changeLanguage("en")
-                                                setCurrLang('en')
-                                                setSideNav(t('nav.languages'))
-                                            }}
-                                        />
-                                        <Radio 
-                                            id="spanish" 
-                                            name="language" 
-                                            label="Español" 
-                                            checked={currLang === "es"}
-                                            onChange={() => {
-                                                i18n.changeLanguage("es")
-                                                setCurrLang('es')
-                                                setSideNav(t('nav.languages'))
-                                            }}
-                                        />
-                                    </Fieldset>
+                                    {/* <Fieldset legend={t("nav.languages")} legendStyle="large" className="w-9/12"> */}
+                                        <ModalHeading className="w-9/12">
+                                        {t("nav.languages")}
+                                            <Radio 
+                                                className="mt-8"
+                                                id="english" 
+                                                name="language" 
+                                                label="English" 
+                                                checked={currLang === "en"}
+                                                onChange={() => {
+                                                    i18n.changeLanguage("en")
+                                                    setCurrLang('en')
+                                                    setSideNav(t('nav.languages'))
+                                                }}
+                                            />
+                                            <Radio 
+                                                id="spanish" 
+                                                name="language" 
+                                                label="Español" 
+                                                checked={currLang === "es"}
+                                                onChange={() => {
+                                                    i18n.changeLanguage("es")
+                                                    setCurrLang('es')
+                                                    setSideNav(t('nav.languages'))
+                                                }}
+                                            />
+                                        </ModalHeading>
+                                    {/* </Fieldset> */}
                                 </div>}
-                            </div>
+                            
                         </div>
                     </Modal>
                 </div>
