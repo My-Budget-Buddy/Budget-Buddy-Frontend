@@ -4,6 +4,7 @@ export async function getBuckets() {
     //TODO Wait for backend team to update on final endpoint
     const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/user/1`;
     try {
+        console.log("getting... ");
         const response = await fetch(endpoint, {
             method: "GET",
             headers: {
@@ -17,6 +18,8 @@ export async function getBuckets() {
         }
 
         const buckets: RawBucket[] = await response.json();
+        console.log(buckets);
+
         const transformedBuckets = transformBuckets(buckets);
 
         // Update redux store
