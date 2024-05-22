@@ -109,7 +109,7 @@ const BudgetsComponent: React.FC = () => {
                                 key={budget.id}
                                 id={budget.id}
                                 category={budget.category}
-                                budgeted={budget.totalAmount}
+                                totalAmount={budget.totalAmount}
                                 isReserved={budget.isReserved}
                                 actual={0}
                                 notes={budget.notes}
