@@ -33,18 +33,18 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             //@ts-expect-error elements aren't typed
             type: e.currentTarget.elements["account-type"].value,
             //@ts-expect-error elements aren't typed
-            name: e.currentTarget.elements["input-account-name"].value,
+            institution: e.currentTarget.elements["input-account-name"].value,
             //@ts-expect-error elements aren't typed
             accountNumber: e.currentTarget.elements["input-account-num"].value,
             //@ts-expect-error elements aren't typed
-            routingNumber: e.currentTarget.elements["input-routing-num"].value,
+            routingNumber: e.currentTarget.elements["input-routing-num"]?.value ?? null,
             //@ts-expect-error elements aren't typed
-            interestRate: e.currentTarget.elements["input-interest-rate"].value,
+            investmentRate: e.currentTarget.elements["input-interest-rate"].value,
             //@ts-expect-error elements aren't typed
-            balance: e.currentTarget.elements["account-balance"].value,
+            startingBalance: e.currentTarget.elements["account-balance"].value,
         };
 
-        fetch(`http://localhost:8125/accounts/1`, {
+        fetch(`http://localhost:8080/accounts/1`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     };
 
     const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setShowRoutingNumberInput(e.target.value !== "credit");
+        setShowRoutingNumberInput(e.target.value !== "CREDIT");
     };
 
     return (
@@ -107,10 +107,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         >
                             <React.Fragment key=".0">
                                 <option>- Select - </option>
-                                <option value="checking">Checking</option>
-                                <option value="savings">Savings</option>
-                                <option value="credit">Credit</option>
-                                <option value="investments">Investments</option>
+                                <option value="CHECKING">Checking</option>
+                                <option value="SAVINGS">Savings</option>
+                                <option value="CREDIT">Credit</option>
+                                <option value="INVESTMENT">Investments</option>
                             </React.Fragment>
                         </Select>
 
@@ -147,7 +147,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             </>
                         )}
 
-                        <Label id="label-interest-rate" htmlFor="interest-rate" requiredMarker>
+                        <Label id="label-interest-rate" htmlFor="input-interest-rate" requiredMarker>
                             Interest Rate
                         </Label>
                         <TextInput
