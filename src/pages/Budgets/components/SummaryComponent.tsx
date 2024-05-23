@@ -4,6 +4,7 @@ import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
 import { useAppSelector } from "../../../util/redux/hooks";
 import { updateSpendingBudget } from "../../../util/redux/budgetSlice";
 import { useDispatch } from "react-redux";
+import { getSpendingBudget } from "./requests/summaryRequests";
 
 const SummaryComponent: React.FC = () => {
     const budgets = useAppSelector((store) => store.budgets);
@@ -26,7 +27,9 @@ const SummaryComponent: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            const spendingBudget = await getSpendingBudget();
+            //TODO use budgets.monthYear instead. Ensure it's populated correctly
+            const spendingBudget = await getSpendingBudget("2024-05");
+            console.log("spending budget:", spendingBudget);
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             dispatch(updateSpendingBudget(spendingBudget));
         })();
@@ -37,7 +40,7 @@ const SummaryComponent: React.FC = () => {
                 <div className="flex flex-col items-center justify-around ml-8">
                     <div className="text-2xl font-bold">Total Available Funds Across Account</div>
                     <div className=" text-6xl text-green-600 font-bold">${budgets.totalFundsAvailable}</div>
-                    <div>{"(accounts + projected earnings - reserved)"}</div>
+                    <div>{"(accounts - reserved)"}</div>
                 </div>
 
                 <div className="flex flex-col items-center">
