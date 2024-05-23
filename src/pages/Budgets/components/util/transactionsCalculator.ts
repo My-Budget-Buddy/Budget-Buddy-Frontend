@@ -1,4 +1,5 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
+import { getTransactionsThing } from "../../../Tax/taxesAPI";
 
 // TODO Given a list of transactions, return budget totals
 const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
@@ -42,28 +43,42 @@ function mapTransactionsToCategories(transactions: Transaction[]) {
     }, {});
 }
 
-async function getTransactions(userid: number, date: string) {
+// async function getTransactions(userid: number, date: string) {
+//     //TODO Wait for backend team to update on final endpoint
+//     try {
+//         const response = await fetch(`${endpoint}/transactions/${date}/user/${userid}`, {
+//             method: "GET",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             credentials: "include"
+//         });
+
+//         if (!response.ok) {
+//             throw new Error(`Error: ${response.status} ${response.statusText}`);
+//         }
+
+//         const data = await response.json();
+//         console.log("data:", data);
+//         return data;
+//     } catch (error) {
+//         console.error("Failed to fetch user data:", error);
+//         throw error;
+//     }
+// }
+
+async function getTransactions(userid: number, date: string): Promise<Transaction[]> {
     //TODO Wait for backend team to update on final endpoint
-    try {
-        const response = await fetch(`${endpoint}/transactions/${date}/user/${userid}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log("data:", data);
-        return data;
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        throw error;
-    }
+    
+       return( getTransactionsThing(date, userid)
+        .then((res) => {
+            const data =  res.data;
+            console.log("data:", data);
+            return data;
+        })
+    )
+            
+    
 }
 
 interface Transaction {
