@@ -1,10 +1,13 @@
-import { LineChart, Gauge } from "@mui/x-charts";
+import { LineChart } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { formatCurrency } from "../../util/helpers";
 import { useTranslation } from "react-i18next";
+import SummaryComponent from "../Budgets/components/SummaryComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
 
 interface InitialAccountType {
     id: number;
@@ -58,7 +61,10 @@ const Dashboard: React.FC = () => {
     const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null);
     const [monthlyTransactions, setMonthlyTransactions] = useState<MonthlyTransactionType[]>([]);
     const [monthlySpend, setMonthlySpend] = useState(0);
+    const budgetsStore = useSelector((store: any) => store.budgets);
+    const dispatch = useDispatch();
 
+    console.log('budgets Store: ', budgetsStore)
     // ---Calculate net cash---
     useEffect(() => {
         let total = 0;
@@ -216,12 +222,12 @@ const Dashboard: React.FC = () => {
                         xAxis={[
                             {
                                 scaleType: "point",
-                                data: monthlyTransactions.map((transaction) => transaction.date.toString().slice(5, 10))
+                                data: monthlyTransactions.map((transaction) => transaction.total && transaction.date.toString().slice(5, 10))
                             }
                         ]}
                         series={[
                             {
-                                data: monthlyTransactions.map((transaction) => transaction.total),
+                                data: (monthlyTransactions.map((transaction) => transaction.total)),
                                 yAxisKey: "rightAxisId",
                                 // area: true,
                                 color: "#005ea2"
@@ -376,32 +382,22 @@ const Dashboard: React.FC = () => {
                     </div>
                 )}
             </div>
-            <div id="budgets-container">
+            <div>
                 <h1>{t("budgets.title")}</h1>
-                <div className="flex items-center">
-                    <Gauge width={150} height={150} value={60} />
+                <div id="budgets-container" className="flex items-center mb-14">
+                    <div className="w-2/5">
+                        <SummaryComponent hideAdditionalInfo/>
+                    </div>
                     <div className="w-3/5 flex flex-col items-center border-l border-black pl-6 h-full">
-                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
-                            <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
-                        </div>
-                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
-                            <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
-                        </div>
-                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
-                            <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
-                        </div>
+                        {budgetsStore.budgets.map((budget: BudgetRowProps, idx: number)=> (
+                            <div key={idx} id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
+                                <p>{budget.category}</p>
+                                <p>
+                                    <Icon.AttachMoney />
+                                    {budget.spentAmount}/{budget.totalAmount}
+                                </p>
+                            </div>
+                        ))}
                         <Link to="/dashboard/budgets">
                             <Button className="mt-10" type="submit">
                                 {t("dashboard.view-budgets")}
