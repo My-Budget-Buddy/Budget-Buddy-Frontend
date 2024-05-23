@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { putBudget } from "../requests/budgetRequests";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 interface TODO_CategoryProps {
     id: number;
@@ -31,7 +32,7 @@ interface TODO_CategoryProps {
 
 const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted, isReserved, notes }) => {
     const modalRef = useRef<ModalRef>(null);
-
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
@@ -127,9 +128,9 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                 aria-describedby="modal-3-description"
                 id="example-modal-3"
             >
-                <ModalHeading id="modal-3-heading">Edit Budget</ModalHeading>
+                <ModalHeading id="modal-3-heading">{t("budgets.edit-budget")}</ModalHeading>
 
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">{t("budgets.category")}</Label>
                 <TextInput
                     id={id.toString()}
                     name="category"
@@ -139,8 +140,8 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                 ></TextInput>
 
                 <FormGroup error={hasTotalAmountError}>
-                    <Label htmlFor="totalAmount">Monthly Budget</Label>
-                    {hasTotalAmountError ? <ErrorMessage>Must be greater than or equal to 0</ErrorMessage> : null}
+                    <Label htmlFor="totalAmount">{t("budgets.budgeted")}</Label>
+                    {hasTotalAmountError ? <ErrorMessage>{t("budgets.greater-than-0")}</ErrorMessage> : null}
                     <TextInput
                         id="totalAmount"
                         name="totalAmount"
@@ -153,19 +154,19 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                 <Checkbox
                     id={id.toString()}
                     name="isReserved"
-                    label="Reserve budget from available funds"
+                    label={t("budgets.reserve-from-funds")}
                     checked={formData.isReserved}
                     onChange={toggleIsReserved}
                     className="mt-8"
                 />
 
-                <Label htmlFor="notes">Notes:</Label>
+                <Label htmlFor="notes">{t("budgets.notes")}:</Label>
                 <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChangeInput} />
 
                 <ModalFooter>
                     <ButtonGroup>
                         <Button onClick={handleSubmit} disabled={isSending || hasTotalAmountError} type={"button"}>
-                            Submit edit
+                            {t("budgets.buttons.save")}
                         </Button>
                         <ModalToggleButton
                             modalRef={modalRef}
@@ -174,7 +175,7 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                             unstyled
                             className="padding-105 text-center"
                         >
-                            Go back
+                            {t("budgets.buttons.go-back")}
                         </ModalToggleButton>
                     </ButtonGroup>
                 </ModalFooter>

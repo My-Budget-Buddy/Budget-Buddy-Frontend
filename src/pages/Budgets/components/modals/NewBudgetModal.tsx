@@ -21,9 +21,11 @@ import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { useSelector } from "react-redux";
 import { createBudget } from "../requests/budgetRequests";
 import { TransactionCategory } from "../../../../types/models";
+import { useTranslation } from "react-i18next";
 
 const NewCategoryModal: React.FC = () => {
     const budgetsStore = useSelector((store: any) => store.budgets);
+    const { t } = useTranslation();
 
     //TODO Update Budget data schema
     const [formData, setFormData] = useState<BudgetRowProps>({
@@ -37,7 +39,6 @@ const NewCategoryModal: React.FC = () => {
     });
 
     const modalRef = useRef<ModalRef>(null);
-
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
@@ -64,7 +65,7 @@ const NewCategoryModal: React.FC = () => {
         }));
     };
 
-    const toggleIsReserved = (e: any) => {
+    const toggleIsReserved = () => {
         setFormData((prevState) => ({
             ...prevState,
             isReserved: !prevState.isReserved
@@ -121,7 +122,7 @@ const NewCategoryModal: React.FC = () => {
     return (
         <>
             <ModalToggleButton modalRef={modalRef} opener className="mx-2" onClick={handleModalOpen}>
-                Add New Budget
+                {t("budgets.add-new-budget")}
             </ModalToggleButton>
 
             <Modal
@@ -130,12 +131,12 @@ const NewCategoryModal: React.FC = () => {
                 aria-describedby="modal-3-description"
                 id="example-modal-3"
             >
-                <ModalHeading id="modal-3-heading">Add a new Budget</ModalHeading>
+                <ModalHeading id="modal-3-heading">{t("budgets.add-new-budget")}</ModalHeading>
 
                 {/* TODO Populate with data from higher level, and use the stateful information in these input fields */}
                 <FormGroup error={isDuplicateBudgetError}>
-                    <Label htmlFor="category">Category</Label>
-                    {isDuplicateBudgetError ? <ErrorMessage>This budget category already exists</ErrorMessage> : null}
+                    <Label htmlFor="category">{t("budgets.category")}</Label>
+                    {isDuplicateBudgetError ? <ErrorMessage>{t("budgets.budget-already-exists")}</ErrorMessage> : null}
                     <Select id="category" name="category" value={formData.category} onChange={handleChangeInput}>
                         <option value="default">- Select -</option>
                         {Object.values(TransactionCategory).map((category) =>
@@ -149,8 +150,8 @@ const NewCategoryModal: React.FC = () => {
                 </FormGroup>
 
                 <FormGroup error={hasTotalAmountError}>
-                    <Label htmlFor="totalAmount">Monthly Budget</Label>
-                    {hasTotalAmountError ? <ErrorMessage>Must be greater than or equal to 0</ErrorMessage> : null}
+                    <Label htmlFor="totalAmount">{t("budgets.budgeted")}</Label>
+                    {hasTotalAmountError ? <ErrorMessage>{t("budgets.greater-than-0")}</ErrorMessage> : null}
                     <TextInput
                         id="totalAmount"
                         name="totalAmount"
@@ -164,13 +165,13 @@ const NewCategoryModal: React.FC = () => {
                 <Checkbox
                     id="isReserve"
                     name="isReserved"
-                    label="Reserve budget from available funds"
+                    label={t("budgets.reserve-from-funds")}
                     checked={formData.isReserved}
                     onChange={toggleIsReserved}
                     className="mt-8"
                 />
 
-                <Label htmlFor="notes">Notes:</Label>
+                <Label htmlFor="notes">{t("budgets.notes")}:</Label>
                 <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChangeInput} />
 
                 <ModalFooter>
@@ -182,7 +183,7 @@ const NewCategoryModal: React.FC = () => {
                             }
                             type={"button"}
                         >
-                            Submit new
+                            {t("budgets.buttons.submit")}
                         </Button>
                         <ModalToggleButton
                             modalRef={modalRef}
@@ -191,7 +192,7 @@ const NewCategoryModal: React.FC = () => {
                             unstyled
                             className="padding-105 text-center"
                         >
-                            Go back
+                            {t("budgets.buttons.go-back")}
                         </ModalToggleButton>
                     </ButtonGroup>
                 </ModalFooter>

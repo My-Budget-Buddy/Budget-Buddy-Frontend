@@ -8,14 +8,13 @@ import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { BudgetRowProps } from "../../../types/budgetInterfaces";
 import { getCategoriesTransactionsMap, getCompleteBudgets } from "./util/transactionsCalculator";
 import { Transaction } from "../../../types/models";
+import { useTranslation } from "react-i18next";
 
 const BudgetsComponent: React.FC = () => {
     const isSending = useSelector((store: any) => store.simpleFormStatus.isSending);
-
     const budgetsStore = useSelector((store: any) => store.budgets);
-
     const dispatch = useDispatch();
-
+    const { t } = useTranslation();
     const currentDate = new Date();
 
     // the month and year that the user has selected
@@ -91,7 +90,7 @@ const BudgetsComponent: React.FC = () => {
         <>
             <div className="flex w-full">
                 <h1 className="font-bold mr-4">
-                    {budgetsStore.selectedMonthString} {budgetsStore.selectedYear} Budget
+                    {budgetsStore.selectedMonthString} {budgetsStore.selectedYear} {t("budgets.budget")}
                 </h1>
                 <ButtonGroup>
                     <Button type="button" onClick={selectPreviousMonth}>
@@ -116,12 +115,14 @@ const BudgetsComponent: React.FC = () => {
             <Table className="w-full">
                 <thead>
                     <tr>
-                        <th>Budget Category</th>
-                        <th>Budgeted</th>
-                        <th>Actual</th>
-                        <th>Remaining</th>
+                        <th>
+                            {t("budgets.budget")} {t("budgets.category")}
+                        </th>
+                        <th>{t("budgets.budgeted")}</th>
+                        <th>{t("budgets.actual")}</th>
+                        <th>{t("budgets.remaining")}</th>
                         <th></th>
-                        <th>Actions</th>
+                        <th>{t("budgets.actions")}</th>
                         <th></th>
                     </tr>
                 </thead>

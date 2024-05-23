@@ -7,6 +7,7 @@ import DeleteBucketModal from "../modals/DeleteBucketModal";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 import { putBucket } from "../requests/bucketRequests";
+import { useTranslation } from "react-i18next";
 
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     //TODO Reset buffer when ANY rows are changed. Currently, the buffer only applies to the single element and each row has an independent buffer.
@@ -15,6 +16,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
     const [initialized, setInitialized] = useState(false);
+    const { t } = useTranslation();
 
     //Buffered submission for PUT requests that change the reserved amount/is_currently_reserved. If no new changes in 5 seconds, then send the PUT.
     const [lastEditTime, setLastEditTime] = useState<Date | null>(null);
@@ -106,7 +108,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
                 <Checkbox
                     id={data.name}
                     name={"is_currently_reserved"}
-                    label={"Mark as reserved"}
+                    label={t("budgets.budget-already-exists")}
                     checked={currentlyReserved}
                     disabled={isSending}
                     onChange={handleCheckboxCheck}
@@ -114,7 +116,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
             </td>
             <td>
                 <EditBucketModal data={{ data }}> EDIT BUCKET MODAL </EditBucketModal>
-                <DeleteBucketModal id={data.id} />
+                <DeleteBucketModal id={data.id} bucketName={data.name} />
             </td>
         </tr>
     );

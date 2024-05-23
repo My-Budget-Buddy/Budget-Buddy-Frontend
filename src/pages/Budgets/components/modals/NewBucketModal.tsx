@@ -13,12 +13,14 @@ import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 import { postBucket } from "../requests/bucketRequests";
+import { useTranslation } from "react-i18next";
 
 interface NewBucketModalProps {
     children: React.ReactNode;
 }
 
 const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState<SavingsBucketRowProps>({
         data: {
             id: 0,
@@ -109,7 +111,7 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
                 aria-labelledby="modal-1-heading"
                 aria-describedby="modal-1-description"
             >
-                <ModalHeading id="modal-1-heading">Add new savings bucket</ModalHeading>
+                <ModalHeading id="modal-1-heading">{t("budgets.add-new-budget")}</ModalHeading>
                 <div>
                     <TextInput
                         type="text"
@@ -132,10 +134,10 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
                 <ModalFooter>
                     <ButtonGroup>
                         <Button onClick={handleSubmit} disabled={isSending} type={"button"}>
-                            Save new bucket
+                            {t("budgets.buttons.submit")}
                         </Button>
                         <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
-                            Go back
+                            {t("budgets.buttons.go-back")}
                         </ModalToggleButton>
                     </ButtonGroup>
                 </ModalFooter>

@@ -54,7 +54,42 @@
       "actions": "Actions"
     },
     "budgets": {
-      "title": "Budgets"
+      "title": "Budgets",
+      "budget": "Budget",
+      "category": "Category",
+      "savings-bucket": "Savings Bucket",
+      "budget-details": "Budget Details",
+      "budgeted": "Budgeted",
+      "actual": "Actual",
+      "remaining": "Remaining",
+      "actions": "Actions",
+      "mark-as-reserved": "Mark as reserved",
+      "notes": "Notes",
+      "transaction-history": "Transaction History",
+      "transaction-total": "Transactions(s) total",
+      "name": "Name",
+      "required": "Required",
+      "reserved": "Reserved",
+      "add-new-bucket": "Add New Savings Bucket",
+      "add-new-budget": "Add New Budget",
+      "total-funds": "Total Available Funds Across Account",
+      "left-to-spend": "Left to spend in",
+      "spending-budget": "Spending Budget",
+      "allocated": "Allocated",
+      "edit-budget": "Edit Budget",
+      "budget-already-exists": "This budget category already exists",
+      "greater-than-0": "Value must be greater than or equal to 0",
+      "delete-budget": "Delete this budget?",
+      "delete-bucket": "Delete this bucket?",
+      "edit": "Edit",
+      "reserve-from-funds": "Reserve budget from available funds",
+      "buttons": {
+        "delete": "Delete",
+        "done": "Done",
+        "go-back": "Go Back",
+        "save": "Save",
+        "submit": "Submit"
+      }
     },
     "spending": {
       "title": "Spending"

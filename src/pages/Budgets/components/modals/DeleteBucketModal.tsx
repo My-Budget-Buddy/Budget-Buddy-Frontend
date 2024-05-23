@@ -12,12 +12,15 @@ import { useRef } from "react";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { deleteBucket } from "../requests/bucketRequests";
+import { useTranslation } from "react-i18next";
 
 interface TODO_CategoryProps {
     id: number;
+    bucketName: string;
 }
 
-const DeleteBucketModal: React.FC<TODO_CategoryProps> = (id) => {
+const DeleteBucketModal: React.FC<TODO_CategoryProps> = ({ id, bucketName }) => {
+    const { t } = useTranslation();
     const modalRef = useRef<ModalRef>(null);
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
@@ -28,7 +31,7 @@ const DeleteBucketModal: React.FC<TODO_CategoryProps> = (id) => {
 
         console.log("DELETING BUCKET..."); // <--- This is the bucket to send to the post endpoint
         try {
-            await deleteBucket(id.id);
+            await deleteBucket(id);
         } catch (e) {
             console.error(e);
         }
@@ -64,14 +67,14 @@ const DeleteBucketModal: React.FC<TODO_CategoryProps> = (id) => {
                 id="example-modal-3"
             >
                 <div className="flex flex-col items-center">
-                    <ModalHeading id="modal-3-heading">Delete this bucket?</ModalHeading>
+                    <ModalHeading id="modal-3-heading">{t("budgets.delete-bucket")}</ModalHeading>
 
-                    <div>Are you sure you want to delete the NAME bucket?</div>
+                    <div>Are you sure you want to delete the {bucketName} bucket?</div>
 
                     <ModalFooter>
                         <ButtonGroup>
                             <Button onClick={handleSubmit} disabled={isSending} type={"button"} secondary>
-                                Delete
+                                {t("budgets.buttons.delete")}
                             </Button>
                             <ModalToggleButton
                                 modalRef={modalRef}
@@ -80,7 +83,7 @@ const DeleteBucketModal: React.FC<TODO_CategoryProps> = (id) => {
                                 unstyled
                                 className="padding-105 text-center"
                             >
-                                Go back
+                                {t("budgets.buttons.go-back")}
                             </ModalToggleButton>
                         </ButtonGroup>
                     </ModalFooter>

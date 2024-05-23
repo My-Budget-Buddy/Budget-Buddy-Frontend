@@ -6,10 +6,11 @@ import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { updateBuckets } from "../../../../util/redux/bucketSlice";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 import { getBuckets } from "../requests/bucketRequests";
+import { useTranslation } from "react-i18next";
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
-
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const storedBuckets = useAppSelector((state) => state.buckets.buckets);
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
@@ -36,11 +37,11 @@ function SavingsBucketTable() {
             <Table className="w-full">
                 <thead>
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Required</th>
-                        <th scope="col">Reserved</th>
+                        <th scope="col">{t("budgets.name")}</th>
+                        <th scope="col">{t("budgets.required")}</th>
+                        <th scope="col">{t("budgets.reserved")}</th>
                         <th scope="col"> </th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">{t("budgets.actions")}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,7 +52,7 @@ function SavingsBucketTable() {
             </Table>
 
             <div className="flex flex-col items-center">
-                <NewBucketModal>Add new savings bucket</NewBucketModal>
+                <NewBucketModal>{t("budgets.add-new-bucket")}</NewBucketModal>
             </div>
         </>
     );

@@ -12,12 +12,15 @@ import { useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { deleteBudget } from "../requests/budgetRequests";
+import { useTranslation } from "react-i18next";
 
 interface DeleteBudgetModalProps {
     id: number;
+    category: string;
 }
 
-const DeleteBudgetModal: React.FC<DeleteBudgetModalProps> = ({ id }) => {
+const DeleteBudgetModal: React.FC<DeleteBudgetModalProps> = ({ id, category }) => {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
@@ -65,14 +68,14 @@ const DeleteBudgetModal: React.FC<DeleteBudgetModalProps> = ({ id }) => {
                 id="example-modal-3"
             >
                 <div className="flex flex-col items-center">
-                    <ModalHeading id="modal-3-heading">Delete this budget?</ModalHeading>
+                    <ModalHeading id="modal-3-heading">{t("budgets.delete-budget")}</ModalHeading>
 
-                    <div>Are you sure you want to delete the CATEGORY budget?</div>
+                    <div>Are you sure you want to delete the {category} budget?</div>
 
                     <ModalFooter>
                         <ButtonGroup>
                             <Button onClick={handleSubmit} disabled={isSending} type={"button"} secondary>
-                                Delete
+                                {t("budgets.buttons.delete")}
                             </Button>
                             <ModalToggleButton
                                 modalRef={modalRef}
@@ -81,7 +84,7 @@ const DeleteBudgetModal: React.FC<DeleteBudgetModalProps> = ({ id }) => {
                                 unstyled
                                 className="padding-105 text-center"
                             >
-                                Go back
+                                {t("budgets.buttons.go-back")}
                             </ModalToggleButton>
                         </ButtonGroup>
                     </ModalFooter>
