@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Account, Transaction } from "../types/models.ts";
-import { getAccountsByUserIdAPI, getTransactionByUserIdAPI } from "../pages/Tax/taxesAPI.ts";
+import { createTransactionAPI, deleteTransactionAPI, getAccountsByUserIdAPI, getTransactionByUserIdAPI, getTransactionByVendorAPI } from "../pages/Tax/taxesAPI.ts";
 
 const TRANSACTIONS_API_URL = "http://localhost:8083/transactions";
 const ACCOUNTS_API_URL = "http://localhost:8080/accounts";
@@ -15,7 +15,7 @@ export const getTransactionByUserId = async (userId: number): Promise<Transactio
 };
 
 export const deleteTransaction = async (transactionId: number): Promise<void> => {
-    await axios.delete(`${TRANSACTIONS_API_URL}/deleteTransaction/${transactionId}`);
+    deleteTransactionAPI(transactionId);
 };
 
 export const getAccountsByUserId = async (userId: number): Promise<Account[]> => {
@@ -23,16 +23,24 @@ export const getAccountsByUserId = async (userId: number): Promise<Account[]> =>
     return(getAccountsByUserIdAPI(userId)
     .then((res) => {
         return res.data;
+    })
+)
+};
+
+export const createTransaction = async (transaction: Omit<Transaction, "transactionId">): Promise<Transaction> => {
+    //const response = await axios.post<Transaction>(`${TRANSACTIONS_API_URL}/createTransaction`, transaction);
+    return(createTransactionAPI(transaction)
+    .then((res) =>{
+        return res.data;
     }))
     
 };
 
-export const createTransaction = async (transaction: Omit<Transaction, "transactionId">): Promise<Transaction> => {
-    const response = await axios.post<Transaction>(`${TRANSACTIONS_API_URL}/createTransaction`, transaction);
-    return response.data;
-};
-
 export const getTransactionByVendor = async (userId: number, vendorName: string): Promise<Transaction[]> => {
-    const response = await axios.get<Transaction[]>(`${TRANSACTIONS_API_URL}/user/${userId}/vendor/${vendorName}`);
-    return response.data;
+    //const response = await axios.get<Transaction[]>(`${TRANSACTIONS_API_URL}/user/${userId}/vendor/${vendorName}`);
+    return(getTransactionByVendorAPI(userId, vendorName)
+    .then((res) => {
+        return res.data;
+    }))
+    
 };

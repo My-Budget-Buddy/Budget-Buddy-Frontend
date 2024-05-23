@@ -1,5 +1,5 @@
 import apiClient from './index';
-
+import { Transaction } from '../../types/models';
 interface initReturn {
     year : number,
     userId : number
@@ -80,4 +80,16 @@ export const getTransactionByUserIdAPI = (userId: number) => {
 
 export const getAccountsByUserIdAPI = (userId:number) => {
     return apiClient.get(`/accounts/${userId}`);
+}
+
+export const deleteTransactionAPI = (transactionId:number) => {
+    return apiClient.delete(`/transactions/deleteTransaction/${transactionId}`);
+}
+
+export const createTransactionAPI = (transaction: Omit<Transaction, "transactionId">) => {
+    return apiClient.post(`/transactions/createTransaction`, transaction);
+}
+
+export const getTransactionByVendorAPI = (userId:number, vendorName:string) => {
+    return apiClient.get(`/transactions/user/${userId}/vendor/${vendorName}`);
 }
