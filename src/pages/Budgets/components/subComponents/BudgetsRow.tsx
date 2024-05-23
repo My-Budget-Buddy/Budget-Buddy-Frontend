@@ -4,7 +4,6 @@ import BudgetDetailsModal from "../modals/BudgetDetailsModal";
 import EditBudgetModal from "../modals/EditBudgetModal";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { timedDelay } from "../../../../util/util";
 import { useEffect, useRef, useState } from "react";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { putBudget } from "../requests/budgetRequests";
@@ -83,6 +82,10 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
         // Using initialized prevents the PUT request from firing on page load
         setInitialized(true);
     }, []);
+
+    useEffect(() => {
+        setCurrentlyReserved(isReserved);
+    }, [budgetsStore.budgets]);
 
     useEffect(() => {
         if (lastEditTime && isCurrentlyEditing) {
