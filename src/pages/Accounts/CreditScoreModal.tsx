@@ -8,6 +8,7 @@ import {
     ModalToggleButton,
     Alert,
 } from "@trussworks/react-uswds";
+import { t } from "i18next";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 
@@ -48,15 +49,16 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
             .catch((err: Error) => setError(err.message));
     }, []);
 
-    let score = 300;
-    if (totalDebt > 50000) {
-        score -= (totalDebt - 50000) / 1000;
-    }
-    score = Math.max(score, 0);
+    useEffect(() => {
+        let score = 300;
+        if (totalDebt > 50000) {
+            score -= (totalDebt - 50000) / 1000;
+        }
+        score = Math.max(score, 0);
 
-    // Increase creditScore by score
-    setCreditScore(prevCreditScore => prevCreditScore + score);
-
+        // Increase creditScore by score
+        setCreditScore(prevCreditScore => prevCreditScore + score);
+    }, [totalDebt]);
     // sets the color of the gauge based on the credit score
     useEffect(() => {
         setCreditColor(getCreditColor(creditScore));
