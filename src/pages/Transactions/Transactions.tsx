@@ -281,7 +281,7 @@ const Transactions: React.FC = () => {
                                 value={minDate}
                                 id="min-date"
                                 name="minDate"
-                                type="date"
+                                type="number"
                                 placeholder="Min Date"
                                 onChange={(e) => setMinDate(e.target.value)}
                             />
@@ -291,7 +291,7 @@ const Transactions: React.FC = () => {
                                 value={maxDate}
                                 id="max-date"
                                 name="maxDate"
-                                type="date"
+                                type="number"
                                 placeholder="Max Date"
                                 onChange={(e) => setMaxDate(e.target.value)}
                             />
