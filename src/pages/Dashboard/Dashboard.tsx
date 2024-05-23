@@ -159,29 +159,27 @@ const Dashboard: React.FC = () => {
                     // withCredentials: true,
                 });
                 const monthlyTransactions = response.data;
-                let totalSpent = 0;
-                const data = monthlyTransactions.reduce(
-                    (prev: MonthlyTransactionType[], transaction: TransactionType) => {
-                        const existingTransactionDate = prev.find(
-                            (prevTransactionDate) => prevTransactionDate.date === transaction.date
-                        );
-                        if (existingTransactionDate) {
-                            existingTransactionDate.total += transaction.amount;
-                            totalSpent += transaction.amount;
-                        } else {
-                            prev.push({ date: transaction.date, total: transaction.amount });
-                            totalSpent += transaction.amount;
-                        }
-                        return prev;
-                    },
-                    []
-                );
-                data.sort(
-                    (a: MonthlyTransactionType, b: MonthlyTransactionType) =>
-                        parseInt(a.date.toString().slice(8, 10)) - parseInt(b.date.toString().slice(8, 10))
-                );
-                setMonthlyTransactions(data);
-                setMonthlySpend(totalSpent);
+                const today = new Date
+                const totalSpentPerDay: MonthlyTransactionType[] = [];
+                let runningTotal = 0;
+                for (let i=0; i<= today.getDate(); i++){
+                    const dateString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                    totalSpentPerDay.push({ date: dateString, total: 0})
+                }
+                monthlyTransactions.forEach((transaction: TransactionType) => {
+                    const transactionDate = transaction.date
+                    const idx = totalSpentPerDay.findIndex((day) => day.date === transactionDate);
+                    if (idx !== -1){
+                        totalSpentPerDay[idx].total += transaction.amount;
+                        runningTotal += transaction.amount
+                    }
+                });
+                for (let i = 1; i < totalSpentPerDay.length; i++) {
+                    totalSpentPerDay[i].total += totalSpentPerDay[i - 1].total;
+                }
+                setMonthlyTransactions(totalSpentPerDay);
+                console.log(typeof runningTotal)
+                setMonthlySpend(runningTotal);
             } catch (err) {
                 console.log("There was an error fetching monthly tranactions: ", err);
             }
@@ -191,19 +189,19 @@ const Dashboard: React.FC = () => {
 
     // --- Budgets --
     // backend: /budgets/userId
-    useEffect(() => {
-        const fetchBudgets = async () => {
-            try {
-                const response = await axios.get("http://localhost:8125/budgets/123", {
-                    // withCredentials: true,
-                });
-                console.log("response: ", response.data);
-            } catch (err) {
-                console.log("There was an error fetching budgets: ", err);
-            }
-        };
-        fetchBudgets();
-    }, []);
+    // useEffect(() => {
+    //     const fetchBudgets = async () => {
+    //         try {
+    //             const response = await axios.get("http://localhost:8125/budgets/123", {
+    //                 // withCredentials: true,
+    //             });
+    //             console.log("response: ", response.data);
+    //         } catch (err) {
+    //             console.log("There was an error fetching budgets: ", err);
+    //         }
+    //     };
+    //     fetchBudgets();
+    // }, []);
 
     return (
         <div className="flex flex-col flex-wrap ">
@@ -212,7 +210,7 @@ const Dashboard: React.FC = () => {
                 <div id="chart-container" className="flex flex-col flex-auto w-2/3 bg-accent-cool-lighter p-8 mr-12 rounded-lg">
                     <h1 className="flex items-center text-2xl font-bold ">
                         {t("dashboard.chart")} <Icon.AttachMoney />
-                        {monthlySpend}
+                        {formatCurrency(monthlySpend, false)}
                     </h1>
                     <LineChart
                         xAxis={[
@@ -225,7 +223,7 @@ const Dashboard: React.FC = () => {
                             {
                                 data: monthlyTransactions.map((transaction) => transaction.total),
                                 yAxisKey: "rightAxisId",
-                                area: true,
+                                // area: true,
                                 color: "#005ea2"
                             }
                         ]}
@@ -458,9 +456,9 @@ const Dashboard: React.FC = () => {
                                         {currentTransaction.accountId && (
                                             <div className="flex flex-col">
                                                 {accounts.map(
-                                                    (account) =>
+                                                    (account, idx) =>
                                                         account.id === currentTransaction.accountId && (
-                                                            <>
+                                                            <div key={idx} >
                                                                 <div className="flex items-center text-sm text-gray-500">
                                                                     <Icon.AccountBalance className="mr-2" />
                                                                     <div>{account.institution}</div>
@@ -468,7 +466,7 @@ const Dashboard: React.FC = () => {
                                                                 <div className="mt-2 text-sm text-gray-500">
                                                                     Account Number: {account.accountNumber}
                                                                 </div>
-                                                            </>
+                                                            </div>
                                                         )
                                                 )}
                                             </div>
