@@ -73,3 +73,11 @@ export const deleteBudgetAPI = (id : number) => {
 export const updateBudgetAPI = (id : number, budget : RawBudgetToSend) => {
     return apiClient.put(`/budgets/${id}`, budget);
 }
+
+export const getTransactionByUserIdAPI = (userId: number) => {
+    return apiClient.get(`/transactions/user/${userId}`);
+}
+
+export const getAccountsByUserIdAPI = (userId:number) => {
+    return apiClient.get(`/accounts/${userId}`);
+}
