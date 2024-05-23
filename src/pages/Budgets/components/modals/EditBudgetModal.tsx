@@ -142,13 +142,24 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                 <FormGroup error={hasTotalAmountError}>
                     <Label htmlFor="totalAmount">{t("budgets.budgeted")}</Label>
                     {hasTotalAmountError ? <ErrorMessage>{t("budgets.greater-than-0")}</ErrorMessage> : null}
-                    <TextInput
-                        id="totalAmount"
-                        name="totalAmount"
-                        type="number"
-                        value={formData.totalAmount}
-                        onChange={handleChangeInput}
-                    />
+                    {hasTotalAmountError ? (
+                        <TextInput
+                            id="totalAmount"
+                            name="totalAmount"
+                            type="number"
+                            value={formData.totalAmount}
+                            onChange={handleChangeInput}
+                            validationStatus={hasTotalAmountError ? "error" : undefined}
+                        />
+                    ) : (
+                        <TextInput
+                            id="totalAmount"
+                            name="totalAmount"
+                            type="number"
+                            value={formData.totalAmount}
+                            onChange={handleChangeInput}
+                        />
+                    )}
                 </FormGroup>
 
                 <Checkbox

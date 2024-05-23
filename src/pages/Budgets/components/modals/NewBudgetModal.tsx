@@ -158,7 +158,7 @@ const NewCategoryModal: React.FC = () => {
                         type="number"
                         value={formData.totalAmount}
                         onChange={handleChangeInput}
-                        /*validationStatus={ hasTotalAmountError ? "" : "error"}  TODO Figure out what other strings are allowed in validationStatus, if any*/
+                        validationStatus={hasTotalAmountError ? "error" : undefined}
                     />
                 </FormGroup>
 
