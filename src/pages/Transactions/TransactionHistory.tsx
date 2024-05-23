@@ -25,17 +25,6 @@ import { BarChart } from "@mui/x-charts";
 import { Account, Transaction, TransactionCategory } from "../../types/models";
 import { deleteTransaction, getAccountsByUserId, getTransactionByVendor } from "../../utils/transactionService";
 
-// interface TransactionDTO {
-//     transactionId: number;
-//     userId: number;
-//     accountId: number;
-//     vendorName: string;
-//     amount: number;
-//     category: string;
-//     description: string;
-//     date: string;
-// }
-
 function TransactionHistory() {
     const Name = useMatch("/:first/:second/:name")?.params.name;
     const { t } = useTranslation();
@@ -205,7 +194,7 @@ function TransactionHistory() {
         <>
             <div>
                 <Title>
-                    <h1>{t("transactions.history", { val: Name })}</h1>
+                    <h1>{t("transactions.history", { val: decodeURI(Name as string) })}</h1>
                 </Title>
                 <CardGroup>
                     <Card gridLayout={{ col: 8 }}>
