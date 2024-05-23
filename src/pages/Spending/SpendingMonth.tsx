@@ -47,6 +47,35 @@ const SpendingMonth: React.FC = () => {
         [TransactionCategory.MISC]: "#D3D3D3"
     };
 
+    //-----MONTH ROUTING---
+    const monthNames: Month[] = [
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december"
+    ];
+
+    const getPreviousMonth = (month: Month) => {
+        const index = monthNames.indexOf(month);
+        return index === 0 ? monthNames[11] : monthNames[index - 1];
+    };
+
+    const getNextMonth = (month: Month) => {
+        const index = monthNames.indexOf(month);
+        return index === 11 ? monthNames[0] : monthNames[index + 1];
+    };
+
+    const previousMonth = getPreviousMonth(lowercaseMonth);
+    const nextMonth = getNextMonth(lowercaseMonth);
+
     //get week number
     const getWeekNumber = (date: Date) => {
         const start = new Date(date.getFullYear(), 0, 1);
@@ -153,7 +182,7 @@ const SpendingMonth: React.FC = () => {
         };
 
         fetchTransactions();
-    }, []);
+    }, [month]);
 
     //total spending for the month
     const totalSpending = transactions.reduce(
@@ -173,13 +202,13 @@ const SpendingMonth: React.FC = () => {
             </thead>
             <tbody>
                 {spendingCategories.map((category) => (
-                    <tr key={category.name}>
-                        <th scope="row">
+                    <tr key={category.name} style={{ padding: "20px" }}>
+                        <th scope="row" style={{ padding: "20px" }}>
                             <CategoryIcon category={category.name} color={category.color} />
                             {category.name}
                         </th>
-                        <td>{((category.value / totalSpending) * 100).toFixed(2)}%</td>
-                        <td>${category.value.toFixed(2)}</td>
+                        <td style={{ padding: "20px" }}>{((category.value / totalSpending) * 100).toFixed(2)}%</td>
+                        <td style={{ padding: "20px" }}>${category.value.toFixed(2)}</td>
                     </tr>
                 ))}
             </tbody>
@@ -254,13 +283,25 @@ const SpendingMonth: React.FC = () => {
                         <p className="text-6xl font-semibold">${totalSpending.toFixed(2)}</p>
                     </div>
 
-                    <Link to="/dashboard/spending" className="mr-3">
-                        <Button type="button" className="ml-3">
-                            Back to Annual Spending Overview
-                        </Button>
-                    </Link>
                     {/* Full-width row */}
-                    <div className=" bg-gray-100 p-4 m-2 min-h-[30rem] rounded-md flex justify-center items-center shadow-lg">
+                    <div className=" bg-gray-100 p-4 m-2 min-h-[30rem] rounded-md flex flex-col justify-center items-center shadow-lg">
+                        <div className="flex items-center mb-4 justify-start w-full">
+                            <Link to="/dashboard/spending" className="mr-3">
+                                <Button type="button" className="ml-3">
+                                    Back to Annual Spending Overview
+                                </Button>
+                            </Link>
+                            <Link to={`/dashboard/spending/${previousMonth}`} className="mr-3">
+                                <Button type="button" className="ml-3">
+                                    Previous Month
+                                </Button>
+                            </Link>
+                            <Link to={`/dashboard/spending/${nextMonth}`} className="mr-3">
+                                <Button type="button" className="ml-3">
+                                    Next Month
+                                </Button>
+                            </Link>
+                        </div>
                         <BarChart
                             xAxis={[
                                 {

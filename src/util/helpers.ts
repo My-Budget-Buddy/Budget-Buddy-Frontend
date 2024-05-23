@@ -9,8 +9,8 @@
  * @return {*}  {string} Example: `12,000.00`
  */
 export function formatCurrency(value: string | number, includeSymbol: boolean = true): string {
-    const valueNum = typeof value === "string" ? parseFloat(value) : value;
-
+    let valueNum = typeof value === "string" ? parseFloat(value) : value;
+    if (!value) valueNum = 0;
     if (isNaN(valueNum))
         throw new Error("Invalid Value. Please provide a valid number or string that can be correctly converted.");
 

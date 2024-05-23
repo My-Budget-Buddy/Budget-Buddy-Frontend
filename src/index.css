@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-#net-cash:focus{
+#no-focus:focus{
   outline: none;
+}
+#settings-modal> .usa-modal-overlay{
+  overflow-y: hidden;
 }

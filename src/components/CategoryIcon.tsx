@@ -21,7 +21,7 @@ interface CategoryIconProps {
 
 const CategoryIcon: React.FC<CategoryIconProps> = ({ category, color }) => {
     const IconComponent = categoryIcons[category];
-    return <IconComponent style={{ color, fontSize: "1.4rem", marginRight: "0.8rem" }} />;
+    return <IconComponent style={{ color, fontSize: "1.3rem", marginRight: "0.8rem" }} />;
 };
 
 export default CategoryIcon;

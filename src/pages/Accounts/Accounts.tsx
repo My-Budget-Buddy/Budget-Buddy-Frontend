@@ -5,8 +5,8 @@ import AccountModal from "./AccountModal";
 import { useEffect, useMemo, useState } from "react";
 import { formatCurrency } from "../../util/helpers";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
-import { Accordion, Alert, Grid, GridContainer, Icon } from "@trussworks/react-uswds";
-import { getAccountByID } from "../Tax/taxesAPI";
+import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
+import CreditScoreModal from "./CreditScoreModal";
 
 const Accounts: React.FC = () => {
     const [showTooltip, setShowTooltip] = useState(false);
@@ -15,20 +15,20 @@ const Accounts: React.FC = () => {
 
     const handleDelete = (accountId: number): void => {
         fetch(`http://localhost:8080/accounts/1/${accountId}`, {
-            method: 'DELETE',
+            method: "DELETE"
         })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error("Error deleting account");
                 }
-                setAccounts((prevAccounts) => prevAccounts?.filter(acc => acc.id !== accountId) || null);
+                setAccounts((prevAccounts) => prevAccounts?.filter((acc) => acc.id !== accountId) || null);
             })
             .catch((err: Error) => setError(err.message));
-    }
+    };
 
     useEffect(() => {
         // TODO: update this to use the users information + the gateway service + headers for Auth
-        getAccountByID()
+        fetch(`http://localhost:8125/accounts/1`)
             .then((res) => {
                 // if (!res.ok) {
                 //     throw new Error("Error fetching account information");
@@ -61,18 +61,17 @@ const Accounts: React.FC = () => {
 
     return (
         <>
-            <h1>Accounts</h1>
+            <Title>Accounts</Title>
 
             {error && (
                 <Alert type="error" headingLevel="h4">
                     {error}
                 </Alert>
             )}
-
             {/* Net Cash Section */}
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
-                <div className="flex items-center space-x-2">
-                    <h2 className="text-2xl">Net Cash</h2>
+                <div className="flex items-center space-x-2 mb-6">
+                    <h2 className="text-3xl font-semibold">Net Cash</h2>
                     <span
                         onMouseEnter={() => setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
@@ -133,6 +132,7 @@ const Accounts: React.FC = () => {
                         />
                     )}
                 </div>
+
                 <div className="flex justify-center">
                     <table className="w-50  divide-gray-200">
                         <thead>
@@ -158,156 +158,161 @@ const Accounts: React.FC = () => {
             </section>
 
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl">View Accounts</h2>
+                <h2 className="text-3xl font-semibold">View Accounts</h2>
                 <AccountModal onAccountAdded={handleAccountAdded} />
             </div>
-
-            <Accordion
-                bordered={false}
-                multiselectable={true}
-                items={[
-                    {
-                        title: (
-                            <div className="flex space-x-2">
-                                <Icon.AccountBalance /> <p>Checking</p>
-                            </div>
-                        ),
-                        content: (
-                            <GridContainer className="w-full min-w-full">
-                                {accounts &&
-                                    accounts
-                                        .filter((acc) => acc.type === "CHECKING")
-                                        .map((acc) => (
-                                            <Grid row key={acc.id}>
-                                                <Grid className="flex justify-start" tablet={{ col: 2 }}>
-                                                    {acc.institution}
+            <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
+                <Accordion
+                    bordered={false}
+                    multiselectable={true}
+                    items={[
+                        {
+                            title: (
+                                <div className="flex space-x-2">
+                                    <Icon.AccountBalance /> <p>Checking</p>
+                                </div>
+                            ),
+                            content: (
+                                <GridContainer className="w-full min-w-full">
+                                    {accounts &&
+                                        accounts
+                                            .filter((acc) => acc.type === "CHECKING")
+                                            .map((acc) => (
+                                                <Grid row key={acc.id}>
+                                                    <Grid className="flex justify-start" tablet={{ col: 2 }}>
+                                                        {acc.institution}
+                                                    </Grid>
+                                                    <Grid className="flex justify-start" tablet={{ col: 4 }}>
+                                                        {acc.accountNumber}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 4 }}>
+                                                        {formatCurrency(acc.currentBalance)}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 2 }}>
+                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                            <Icon.Delete />
+                                                        </button>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid className="flex justify-start" tablet={{ col: 4 }}>
-                                                    {acc.accountNumber}
+                                            ))}
+                                </GridContainer>
+                            ),
+                            expanded: false,
+                            id: "Checking",
+                            headingLevel: "h4"
+                        },
+                        {
+                            title: (
+                                <div className="flex space-x-2">
+                                    <Icon.CreditCard /> <p>Credit Cards</p>
+                                </div>
+                            ),
+                            content: (
+                                <GridContainer className="w-full min-w-full">
+                                    {accounts &&
+                                        accounts
+                                            .filter((acc) => acc.type === "CREDIT")
+                                            .map((acc) => (
+                                                <Grid row key={acc.id}>
+                                                    <Grid className="flex justify-start" tablet={{ col: 2 }}>
+                                                        {acc.institution}
+                                                    </Grid>
+                                                    <Grid className="flex justify-start" tablet={{ col: 4 }}>
+                                                        {acc.accountNumber}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 4 }}>
+                                                        {formatCurrency(acc.currentBalance)}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 2 }}>
+                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                            <Icon.Delete />
+                                                        </button>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 4 }}>
-                                                    {formatCurrency(acc.currentBalance)}
+                                            ))}
+                                </GridContainer>
+                            ),
+                            expanded: false,
+                            id: "credit-cards",
+                            headingLevel: "h4"
+                        },
+                        {
+                            title: (
+                                <div className="flex space-x-2">
+                                    <Icon.AccountBalance /> <p>Savings</p>
+                                </div>
+                            ),
+                            content: (
+                                <GridContainer className="min-w-full w-full">
+                                    {accounts &&
+                                        accounts
+                                            .filter((acc) => acc.type === "SAVINGS")
+                                            .map((acc) => (
+                                                <Grid row key={acc.id}>
+                                                    <Grid className="flex justify-start" tablet={{ col: 2 }}>
+                                                        {acc.institution}
+                                                    </Grid>
+                                                    <Grid className="flex justify-start" tablet={{ col: 4 }}>
+                                                        {acc.accountNumber}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 4 }}>
+                                                        {formatCurrency(acc.currentBalance)}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 2 }}>
+                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                            <Icon.Delete />
+                                                        </button>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete(acc.id)}>
-                                                        <Icon.Delete />
-                                                    </button>
+                                            ))}
+                                </GridContainer>
+                            ),
+                            expanded: false,
+                            id: "savings",
+                            headingLevel: "h4"
+                        },
+                        {
+                            title: (
+                                <div className="flex space-x-2">
+                                    <Icon.AccountBalance /> <p>Investments</p>
+                                </div>
+                            ),
+                            content: (
+                                <GridContainer className="min-w-full w-full">
+                                    {accounts &&
+                                        accounts
+                                            .filter((acc) => acc.type === "INVESTMENT")
+                                            .map((acc) => (
+                                                <Grid row key={acc.id}>
+                                                    <Grid className="flex justify-start" tablet={{ col: 2 }}>
+                                                        {acc.institution}
+                                                    </Grid>
+                                                    <Grid className="flex justify-start" tablet={{ col: 4 }}>
+                                                        {acc.accountNumber}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 4 }}>
+                                                        {formatCurrency(acc.currentBalance)}
+                                                    </Grid>
+                                                    <Grid className="flex justify-end" tablet={{ col: 2 }}>
+                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                            <Icon.Delete />
+                                                        </button>
+                                                    </Grid>
                                                 </Grid>
-                                            </Grid>
-                                        ))}
-                            </GridContainer>
-                        ),
-                        expanded: false,
-                        id: "Checking",
-                        headingLevel: "h4"
-                    },
-                    {
-                        title: (
-                            <div className="flex space-x-2">
-                                <Icon.CreditCard /> <p>Credit Cards</p>
-                            </div>
-                        ),
-                        content: (
-                            <GridContainer className="w-full min-w-full">
-                                {accounts &&
-                                    accounts
-                                        .filter((acc) => acc.type === "CREDIT")
-                                        .map((acc) => (
-                                            <Grid row key={acc.id}>
-                                                <Grid className="flex justify-start" tablet={{ col: 2 }}>
-                                                    {acc.institution}
-                                                </Grid>
-                                                <Grid className="flex justify-start" tablet={{ col: 4 }}>
-                                                    {acc.accountNumber}
-                                                </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 4 }}>
-                                                    {formatCurrency(acc.currentBalance)}
-                                                </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete(acc.id)}>
-                                                        <Icon.Delete />
-                                                    </button>
-                                                </Grid>
-                                            </Grid>
-                                        ))}
-                            </GridContainer>
-                        ),
-                        expanded: false,
-                        id: "credit-cards",
-                        headingLevel: "h4"
-                    },
-                    {
-                        title: (
-                            <div className="flex space-x-2">
-                                <Icon.AccountBalance /> <p>Savings</p>
-                            </div>
-                        ),
-                        content: (
-                            <GridContainer className="min-w-full w-full">
-                                {accounts &&
-                                    accounts
-                                        .filter((acc) => acc.type === "SAVINGS")
-                                        .map((acc) => (
-                                            <Grid row key={acc.id}>
-                                                <Grid className="flex justify-start" tablet={{ col: 2 }}>
-                                                    {acc.institution}
-                                                </Grid>
-                                                <Grid className="flex justify-start" tablet={{ col: 4 }}>
-                                                    {acc.accountNumber}
-                                                </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 4 }}>
-                                                    {formatCurrency(acc.currentBalance)}
-                                                </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete(acc.id)}>
-                                                        <Icon.Delete />
-                                                    </button>
-                                                </Grid>
-                                            </Grid>
-                                        ))}
-                            </GridContainer>
-                        ),
-                        expanded: false,
-                        id: "savings",
-                        headingLevel: "h4"
-                    },
-                    {
-                        title: (
-                            <div className="flex space-x-2">
-                                <Icon.AccountBalance /> <p>Investments</p>
-                            </div>
-                        ),
-                        content: (
-                            <GridContainer className="min-w-full w-full">
-                                {accounts &&
-                                    accounts
-                                        .filter((acc) => acc.type === "INVESTMENT")
-                                        .map((acc) => (
-                                            <Grid row key={acc.id}>
-                                                <Grid className="flex justify-start" tablet={{ col: 2 }}>
-                                                    {acc.institution}
-                                                </Grid>
-                                                <Grid className="flex justify-start" tablet={{ col: 4 }}>
-                                                    {acc.accountNumber}
-                                                </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 4 }}>
-                                                    {formatCurrency(acc.currentBalance)}
-                                                </Grid>
-                                                <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                    <button onClick={() => handleDelete(acc.id)}>
-                                                        <Icon.Delete />
-                                                    </button>
-                                                </Grid>
-                                            </Grid>
-                                        ))}
-                            </GridContainer>
-                        ),
-                        expanded: false,
-                        id: "investments",
-                        headingLevel: "h4"
-                    }
-                ]}
-            />
+                                            ))}
+                                </GridContainer>
+                            ),
+                            expanded: false,
+                            id: "investments",
+                            headingLevel: "h4"
+                        }
+                    ]}
+                />
+            </section>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-3xl font-semibold">View Credit Score Report</h2>
+                <CreditScoreModal />
+            </div>
         </>
     );
 };

@@ -4,6 +4,7 @@ export async function getBuckets() {
     //TODO Wait for backend team to update on final endpoint
     const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/user/1`;
     try {
+        console.log("getting... ");
         const response = await fetch(endpoint, {
             method: "GET",
             headers: {
@@ -17,6 +18,8 @@ export async function getBuckets() {
         }
 
         const buckets: RawBucket[] = await response.json();
+        console.log(buckets);
+
         const transformedBuckets = transformBuckets(buckets);
 
         // Update redux store
@@ -27,8 +30,6 @@ export async function getBuckets() {
         console.error("Failed to fetch user data:", error);
         throw error;
     }
-
-    console.log("Got buckets");
 }
 
 export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
@@ -109,7 +110,7 @@ function transformBuckets(buckets: RawBucket[]): SavingsBucketRowProps[] {
             id: bucket.bucketId,
             name: bucket.bucketName,
             amount_required: bucket.amountRequired,
-            amount_reserved: bucket.amountAvailable,
+            amount_reserved: bucket.amountReserved,
             is_currently_reserved: bucket.isReserved
         }
     }));
@@ -119,7 +120,7 @@ interface RawBucket {
     bucketId: number;
     userId: number;
     bucketName: string;
-    amountAvailable: number;
+    amountReserved: number;
     amountRequired: number;
     dateCreated: string;
     isActive: boolean;
@@ -131,7 +132,7 @@ interface RawBucketToSend {
     // bucketId: number;
     userId: number;
     bucketName: string;
-    amountAvailable: number;
+    amountReserved: number;
     amountRequired: number;
     // dateCreated: string;
     isActive: boolean;

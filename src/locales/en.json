@@ -19,30 +19,39 @@
     },
     "intlDateTime": "{{val, datetime}}",
     "dateLocale": "en-US",
-    "nav" : {
-      "greeting": "Hi"
+    "nav": {
+      "greeting": "Hi",
+      "settings": "Settings",
+      "profile": "Profile",
+      "languages": "Languages",
+      "first-name": "First Name",
+      "last-name": "Last Name",
+      "new-password": "New Password",
+      "confirm-password": "Confirm Password",
+      "save": "Save"
     },
     "dashboard": {
       "title": "Dashboard",
-      "welcome" : "Welcome",
-      "chart" : "Current spend this month:",
-      "no-accounts" : "You don't have any accounts set up yet",
-      "add-account" : "Add an Account",
-      "recent-transactions" : "Recent Transactions",
+      "welcome": "Welcome",
+      "chart": "Current spend this month:",
+      "no-accounts": "You don't have any accounts set up yet",
+      "add-account": "Add an Account",
+      "recent-transactions": "Recent Transactions",
       "all-transactions": "View All Transactions",
-      "no-transactions" : "No Recent Transactions",
-      "add-transaction" : "Add Transaction",
+      "no-transactions": "No Recent Transactions",
+      "add-transaction": "Add Transaction",
       "view-budgets": "View Full Budget"
     },
     "accounts": {
-      "title" : "Accounts",
-      "net-cash" : "Net Cash"
+      "title": "Accounts",
+      "net-cash": "Net Cash"
     },
-    "transactions-table" : {
-      "date" : "Date",
-      "name" : "Name",
-      "category" : "Category",
-      "amount" : "Amount"
+    "transactions-table": {
+      "date": "Date",
+      "name": "Name",
+      "category": "Category",
+      "amount": "Amount",
+      "actions": "Actions"
     },
     "budgets": {
       "title": "Budgets"
@@ -51,7 +60,11 @@
       "title": "Spending"
     },
     "transactions": {
-      "title": "Transactions"
+      "title": "Transactions",
+      "history": "All {{val}} transactions",
+      "spent": "Total spent",
+      "amount": "Total transactions",
+      "summary": "Summary"
     },
     "tax": {
       "title": "Tax"

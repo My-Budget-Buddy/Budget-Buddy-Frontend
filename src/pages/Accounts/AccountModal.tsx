@@ -38,11 +38,11 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             //@ts-expect-error elements aren't typed
             accountNumber: e.currentTarget.elements["input-account-num"].value,
             //@ts-expect-error elements aren't typed
-            routingNumber: e.currentTarget.elements["input-routing-num"]?.value?? null,
+            routingNumber: e.currentTarget.elements["input-routing-num"]?.value ?? null,
             //@ts-expect-error elements aren't typed
             investmentRate: e.currentTarget.elements["input-interest-rate"].value,
             //@ts-expect-error elements aren't typed
-            balance: e.currentTarget.elements["account-balance"].value,
+            startingBalance: e.currentTarget.elements["account-balance"].value,
         };
 
         postAccountData(fields)
@@ -64,7 +64,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     };
 
     const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setShowRoutingNumberInput(e.target.value !== "credit");
+        setShowRoutingNumberInput(e.target.value !== "CREDIT");
     };
 
     return (
@@ -104,10 +104,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         >
                             <React.Fragment key=".0">
                                 <option>- Select - </option>
-                                <option value="checking">Checking</option>
-                                <option value="savings">Savings</option>
-                                <option value="credit">Credit</option>
-                                <option value="investments">Investments</option>
+                                <option value="CHECKING">Checking</option>
+                                <option value="SAVINGS">Savings</option>
+                                <option value="CREDIT">Credit</option>
+                                <option value="INVESTMENT">Investments</option>
                             </React.Fragment>
                         </Select>
 
@@ -129,10 +129,11 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             name="input-account-num"
                             type="text"
                             required
+                            maxLength={17}
                         />
                         {showRoutingNumberInput && (
                             <>
-                                <Label id="label-routing-num" htmlFor="routing-num" requiredMarker>
+                                <Label id="label-routing-num" htmlFor="input-routing-num" requiredMarker>
                                     Routing Number
                                 </Label>
                                 <TextInput
@@ -140,11 +141,13 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                                     name="input-routing-num"
                                     type="text"
                                     required
+                                    pattern="\d{9}"
+                                    title="Routing number must be exactly 9 digits"
                                 />
                             </>
                         )}
 
-                        <Label id="label-interest-rate" htmlFor="interest-rate" requiredMarker>
+                        <Label id="label-interest-rate" htmlFor="input-interest-rate" requiredMarker>
                             Interest Rate
                         </Label>
                         <TextInput
