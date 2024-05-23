@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { formatCurrency } from "../../util/helpers";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { Accordion, Alert, Grid, GridContainer, Icon } from "@trussworks/react-uswds";
+import { getAccountByID } from "../Tax/taxesAPI";
 
 const Accounts: React.FC = () => {
     const [showTooltip, setShowTooltip] = useState(false);
@@ -27,12 +28,13 @@ const Accounts: React.FC = () => {
 
     useEffect(() => {
         // TODO: update this to use the users information + the gateway service + headers for Auth
-        fetch(`http://localhost:8080/accounts/1`)
+        getAccountByID()
             .then((res) => {
-                if (!res.ok) {
-                    throw new Error("Error fetching account information");
-                }
-                return res.json();
+                // if (!res.ok) {
+                //     throw new Error("Error fetching account information");
+                // }
+                console.log((res.data));
+                return res.data;
             })
             .then((data: Account[]) => setAccounts(data))
             .catch((err: Error) => setError(err.message));

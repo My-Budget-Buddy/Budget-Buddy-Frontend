@@ -1,17 +1,33 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface W2State{
-    taxFormId : number,
-    userId: number,
-    status : string,
-    formType : string,
+    "state": string,
+    "id": number,
+    "taxReturnId": number,
+    "year": number,
+    "userId": number,
+    "employer": string,
+    "wages": number,
+    "federalIncomeTaxWithheld": number,
+    "stateIncomeTaxWithheld": number,
+    "socialSecurityTaxWithheld": number,
+    "medicareTaxWithheld": number,
+    "imageKey": any
 }
 
 const initialState: W2State = {
-    taxFormId : 0,
-    userId : 0,
-    status : "pending",
-    formType : "w2"
+    "state": "FLORIDA",
+    "id": 1,
+    "taxReturnId": 1,
+    "year": 2024,
+    "userId": 0,
+    "employer": "Skillstorm",
+    "wages": 0,
+    "federalIncomeTaxWithheld": 0,
+    "stateIncomeTaxWithheld": 0,
+    "socialSecurityTaxWithheld": 0,
+    "medicareTaxWithheld": 0,
+    "imageKey": null
 }
 
 

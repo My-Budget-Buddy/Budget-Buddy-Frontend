@@ -15,6 +15,7 @@ import {
 import type { Account } from "../../types/models";
 import React, { FormEvent, useState } from "react";
 import { useRef } from "react";
+import { postAccountData } from "../Tax/taxesAPI";
 
 interface AccountModalProps {
     onAccountAdded: (account: Account) => void;
@@ -33,29 +34,25 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             //@ts-expect-error elements aren't typed
             type: e.currentTarget.elements["account-type"].value,
             //@ts-expect-error elements aren't typed
-            name: e.currentTarget.elements["input-account-name"].value,
+            institution: e.currentTarget.elements["input-account-name"].value,
             //@ts-expect-error elements aren't typed
             accountNumber: e.currentTarget.elements["input-account-num"].value,
             //@ts-expect-error elements aren't typed
-            routingNumber: e.currentTarget.elements["input-routing-num"].value,
+            routingNumber: e.currentTarget.elements["input-routing-num"]?.value?? null,
             //@ts-expect-error elements aren't typed
-            interestRate: e.currentTarget.elements["input-interest-rate"].value,
+            investmentRate: e.currentTarget.elements["input-interest-rate"].value,
             //@ts-expect-error elements aren't typed
             balance: e.currentTarget.elements["account-balance"].value,
         };
 
-        fetch(`http://localhost:8080/accounts/1`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(fields),
-        })
+        postAccountData(fields)
+
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Error adding account");
-                }
-                return response.json();
+                // if (!response.ok) {
+                //     throw new Error("Error adding account");
+                // }
+                console.log(JSON.stringify(response.data));
+                return response.data;
             })
             .then((newAccount) => {
                 onAccountAdded(newAccount);
