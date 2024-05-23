@@ -1,161 +1,135 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
+import { createBudgetAPI, deleteBudgetAPI, getBudgetsByIdAPI, getBudgetsMonthyear, getBudgetsTransactionsMonthyear, updateBudgetAPI } from "../../../Tax/taxesAPI";
 
-export async function getBudgetsById() {
+export async function getBudgetsById(): Promise<BudgetRowProps[]> {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/1`;
-    try {
-        const response = await fetch(endpoint, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const budgets: RawBudget[] = await response.json();
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/1`;
+    
+    return(getBudgetsByIdAPI()
+    .then((res) => {
+        const budgets: RawBudget[] =  res.data;
         const transformedBudgets = transformBudgets(budgets);
 
         // Update redux store
         return transformedBudgets;
+    })
+)
+
+        
 
         // Call from redux store
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        throw error;
-    }
+    
 }
 
-export async function getBudgetsByMonthYear(monthyear: string) {
+// export async function getBudgetsByMonthYear(monthyear: string) {
+//     //TODO Wait for backend team to update on final endpoint
+//     const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/monthyear/${monthyear}/user/1`;
+//     try {
+//         const response = await fetch(endpoint, {
+//             method: "GET",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             credentials: "include"
+//         });
+
+//         if (!response.ok) {
+//             throw new Error(`Error: ${response.status} ${response.statusText}`);
+//         }
+
+//         const budgets: RawBudget[] = await response.json();
+//         const transformedBudgets = transformBudgets(budgets);
+
+//         // Update redux store
+//         return transformedBudgets;
+
+//         // Call from redux store
+//     } catch (error) {
+//         console.error("Failed to fetch user data:", error);
+//         throw error;
+//     }
+// }
+
+export async function getBudgetsByMonthYear(monthyear: string): Promise<BudgetRowProps[]> {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/monthyear/${monthyear}/user/1`;
-    try {
-        const response = await fetch(endpoint, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/monthyear/${monthyear}/user/1`;
+    
+        return(getBudgetsMonthyear(monthyear)
+        .then((res) => {
+            console.log(res.data);
+            const budgets: RawBudget[] =  res.data;
+            const transformedBudgets = transformBudgets(budgets);
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
+            // Update redux store
+            return transformedBudgets;
+        }))
 
-        const budgets: RawBudget[] = await response.json();
-        const transformedBudgets = transformBudgets(budgets);
+        // if (!response.ok) {
+        //     throw new Error(`Error: ${response.status} ${response.statusText}`);
+        // }
 
-        // Update redux store
-        return transformedBudgets;
 
         // Call from redux store
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        throw error;
-    }
+    
 }
 
 export async function createBudget(budget: RawBudgetToSend): Promise<RawBudgetToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
 
-    try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(budget)
-        });
+    
+        return(createBudgetAPI(budget)
+        .then((res) => {
+            const data: RawBudgetToSend =  res.data;
+            return data;
+        })
+    )
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data: RawBudgetToSend = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to create budget:", error);
-        throw error;
-    }
+        
+    
 }
 
 export async function putBudget(budget: RawBudgetToSend, id: number): Promise<RawBudgetToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
 
-    try {
-        const response = await fetch(endpoint, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(budget)
-        });
+    
+        return(updateBudgetAPI(id, budget)
+        .then((res) => {
+            const data: RawBudgetToSend =  res.data;
+            return data;
+        }))
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data: RawBudgetToSend = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to create budget:", error);
-        throw error;
-    }
+       
+        
+    
 }
 
 export async function deleteBudget(id: number) {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
-    try {
-        const response = await fetch(endpoint, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
+    
+        deleteBudgetAPI(id);
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
 
         // Call from redux store
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        throw error;
-    }
+    
 }
 
-export async function getTransactionsByMonthYear(monthyear: string) {
+export async function getTransactionsByMonthYear(monthyear: string): Promise<BudgetRowProps[]> {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/transactions/${monthyear}/user/1`;
-    try {
-        const response = await fetch(endpoint, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const budgets: RawBudget[] = await response.json();
-        const transformedBudgets = transformBudgets(budgets);
-
-        // Update redux store
-        return transformedBudgets;
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/transactions/${monthyear}/user/1`;
+    
+        return(getBudgetsTransactionsMonthyear(monthyear)
+        .then((res) => {
+            const budgets: RawBudget[] =  res.data;
+            const transformedBudgets = transformBudgets(budgets);
+    
+            // Update redux store
+            return transformedBudgets;
+        })
+    )
 
         // Call from redux store
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        throw error;
-    }
+    
 }
 
 // The data from the endpoint needs to be trimmed down to this.
