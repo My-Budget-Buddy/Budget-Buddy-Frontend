@@ -13,7 +13,6 @@ const month =
     (selectedMonth + 1).toString().length === 2 ? (selectedMonth + 1).toString() : "0" + (selectedMonth + 1).toString();
 const year = selectedYear.toString();
 const monthYear = year + "-" + month;
-console.log("default monthyear", monthYear);
 
 export const budgetSlice = createSlice({
     name: "budgets",
