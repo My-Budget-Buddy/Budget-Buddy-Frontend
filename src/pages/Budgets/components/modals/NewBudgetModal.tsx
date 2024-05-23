@@ -28,7 +28,7 @@ const NewCategoryModal: React.FC = () => {
     //TODO Update Budget data schema
     const [formData, setFormData] = useState<BudgetRowProps>({
         id: 0,
-        category: "",
+        category: "default",
         totalAmount: 0,
         isReserved: false,
         notes: "",
@@ -103,20 +103,24 @@ const NewCategoryModal: React.FC = () => {
         e.preventDefault();
         await sendNewBudget(formData);
         modalRef.current?.toggleModal();
+    }
+
+    // resets form data
+    const handleModalOpen = () => {
         setFormData({
             id: 0,
-            category: "",
+            category: "default",
             totalAmount: 0,
             isReserved: false,
             notes: "",
             spentAmount: 0,
             monthYear: budgetsStore.monthYear
         });
-    }
+    };
 
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener className="mx-2">
+            <ModalToggleButton modalRef={modalRef} opener className="mx-2" onClick={handleModalOpen}>
                 Add New Budget
             </ModalToggleButton>
 
@@ -132,13 +136,15 @@ const NewCategoryModal: React.FC = () => {
                 <FormGroup error={isDuplicateBudgetError}>
                     <Label htmlFor="category">Category</Label>
                     {isDuplicateBudgetError ? <ErrorMessage>This budget category already exists</ErrorMessage> : null}
-                    <Select id="category" name="category" onChange={handleChangeInput}>
+                    <Select id="category" name="category" value={formData.category} onChange={handleChangeInput}>
                         <option value="default">- Select -</option>
-                        {Object.values(TransactionCategory).map((category) => (
-                            <option key={category} value={category} disabled={false}>
-                                {category}
-                            </option>
-                        ))}
+                        {Object.values(TransactionCategory).map((category) =>
+                            category === "Income" ? null : (
+                                <option key={category} value={category} disabled={false}>
+                                    {category}
+                                </option>
+                            )
+                        )}
                     </Select>
                 </FormGroup>
 

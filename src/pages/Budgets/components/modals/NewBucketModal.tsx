@@ -84,9 +84,22 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
         modalRef.current?.toggleModal();
     }
 
+    // resets form data
+    const handleModalOpen = () => {
+        setFormData({
+            data: {
+                id: 0,
+                name: "",
+                amount_required: 0,
+                amount_reserved: 0,
+                is_currently_reserved: false
+            }
+        });
+    };
+
     return (
         <div>
-            <ModalToggleButton modalRef={modalRef} opener>
+            <ModalToggleButton modalRef={modalRef} opener onClick={handleModalOpen}>
                 {children}
             </ModalToggleButton>
 

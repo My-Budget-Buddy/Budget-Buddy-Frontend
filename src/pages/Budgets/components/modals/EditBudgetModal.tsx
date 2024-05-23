@@ -102,9 +102,22 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
         modalRef.current?.toggleModal();
     }
 
+    // resets form data
+    const handleModalOpen = () => {
+        setFormData({
+            id: id,
+            category: category,
+            totalAmount: budgeted,
+            isReserved: isReserved,
+            spentAmount: 0,
+            notes: notes,
+            monthYear: budgetsStore.monthYear
+        });
+    };
+
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled>
+            <ModalToggleButton modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
                 <Icon.Edit />
             </ModalToggleButton>
 

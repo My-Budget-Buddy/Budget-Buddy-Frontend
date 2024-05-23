@@ -82,9 +82,14 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
         modalRef.current?.toggleModal();
     }
 
+    // resets form data
+    const handleModalOpen = () => {
+        setFormData(data);
+    };
+
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled>
+            <ModalToggleButton modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
                 <Icon.Edit />
                 {children}
             </ModalToggleButton>
