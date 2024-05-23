@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 // import Cookies from 'universal-cookie';
 // const cookies = new Cookies();
 
@@ -6,8 +6,8 @@ const apiClient = axios.create({
     // hiding the URL in the .env file
     baseURL: `/api`,
     headers: {
-        'Content-Type': 'application/json',
-      }
+        "Content-Type": "application/json"
+    }
 });
 
 apiClient.defaults.withCredentials = true;
@@ -20,6 +20,5 @@ apiClient.defaults.withCredentials = true;
 //     // }
 //     return config;
 // });
-
 
 export default apiClient;
