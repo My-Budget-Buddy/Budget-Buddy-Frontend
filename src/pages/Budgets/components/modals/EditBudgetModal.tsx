@@ -62,7 +62,7 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
         }));
     };
 
-    const toggleIsReserved = (e: any) => {
+    const toggleIsReserved = () => {
         setFormData((prevState) => ({
             ...prevState,
             isReserved: !prevState.isReserved
@@ -130,7 +130,13 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                 <ModalHeading id="modal-3-heading">Edit Budget</ModalHeading>
 
                 <Label htmlFor="category">Category</Label>
-                <TextInput id="category" name="category" type="text" value={formData.category} disabled></TextInput>
+                <TextInput
+                    id={id.toString()}
+                    name="category"
+                    type="text"
+                    value={formData.category}
+                    disabled
+                ></TextInput>
 
                 <FormGroup error={hasTotalAmountError}>
                     <Label htmlFor="totalAmount">Monthly Budget</Label>

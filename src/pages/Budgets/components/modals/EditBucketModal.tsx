@@ -108,7 +108,7 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
                         value={formData.data.name}
                         onChange={handleChangeInput}
                         placeholder="Name"
-                        id={""}
+                        id={formData.data.id.toString()}
                     />
                     <TextInput
                         type="number"
