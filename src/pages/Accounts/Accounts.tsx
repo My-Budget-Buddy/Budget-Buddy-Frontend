@@ -30,10 +30,11 @@ const Accounts: React.FC = () => {
         // TODO: update this to use the users information + the gateway service + headers for Auth
         fetch(`http://localhost:8125/accounts/1`)
             .then((res) => {
-                if (!res.ok) {
-                    throw new Error("Error fetching account information");
-                }
-                return res.json();
+                // if (!res.ok) {
+                //     throw new Error("Error fetching account information");
+                // }
+                console.log((res.data));
+                return res.data;
             })
             .then((data: Account[]) => setAccounts(data))
             .catch((err: Error) => setError(err.message));

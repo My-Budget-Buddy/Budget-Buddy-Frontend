@@ -15,6 +15,7 @@ import {
 import type { Account } from "../../types/models";
 import React, { FormEvent, useState } from "react";
 import { useRef } from "react";
+import { postAccountData } from "../Tax/taxesAPI";
 
 interface AccountModalProps {
     onAccountAdded: (account: Account) => void;
@@ -44,18 +45,14 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             startingBalance: e.currentTarget.elements["account-balance"].value,
         };
 
-        fetch(`http://localhost:8080/accounts/1`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(fields),
-        })
+        postAccountData(fields)
+
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Error adding account");
-                }
-                return response.json();
+                // if (!response.ok) {
+                //     throw new Error("Error adding account");
+                // }
+                console.log(JSON.stringify(response.data));
+                return response.data;
             })
             .then((newAccount) => {
                 onAccountAdded(newAccount);
