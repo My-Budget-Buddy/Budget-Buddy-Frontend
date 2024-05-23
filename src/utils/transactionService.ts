@@ -22,3 +22,8 @@ export const createTransaction = async (transaction: Omit<Transaction, "transact
     const response = await axios.post<Transaction>(`${TRANSACTIONS_API_URL}/createTransaction`, transaction);
     return response.data;
 };
+
+export const getTransactionByVendor = async (userId: number, vendorName: string): Promise<Transaction[]> => {
+    const response = await axios.get<Transaction[]>(`${TRANSACTIONS_API_URL}/user/${userId}/vendor/${vendorName}`);
+    return response.data;
+};

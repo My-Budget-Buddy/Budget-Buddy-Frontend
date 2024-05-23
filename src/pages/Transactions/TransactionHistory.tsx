@@ -23,7 +23,7 @@ import { useTranslation } from "react-i18next";
 import { useMatch } from "react-router-dom";
 import { BarChart } from "@mui/x-charts";
 import { Account, Transaction, TransactionCategory } from "../../types/models";
-import { deleteTransaction, getAccountsByUserId, getTransactionByUserId } from "../../utils/transactionService";
+import { deleteTransaction, getAccountsByUserId, getTransactionByVendor } from "../../utils/transactionService";
 
 // interface TransactionDTO {
 //     transactionId: number;
@@ -141,10 +141,11 @@ function TransactionHistory() {
     };
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const { name, value } = event.target;
+        const { name, value, type } = event.target;
+        console.log(type);
         setTransactions(
             transactions.map((transaction, index) => {
-                if (index === current) {
+                if (index === current && (type !== "number" || (type === "number" && Number(value)))) {
                     return {
                         ...transaction,
                         [name]: value
@@ -189,14 +190,14 @@ function TransactionHistory() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const transactionsData = await getTransactionByUserId(1);
+            const transactionsData = await getTransactionByVendor(1, Name as string);
             setTransactions(transactionsData);
 
             const accountsData = await getAccountsByUserId(1);
             setAccounts(accountsData);
         };
         fetchData();
-    }, []);
+    }, [Name]);
 
     const getAccountDetails = (accountId: number) => accounts.find((account) => account.id === accountId);
 
