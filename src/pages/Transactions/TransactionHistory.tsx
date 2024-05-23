@@ -296,7 +296,7 @@ function TransactionHistory() {
                         <input
                             id={"transaction-date"}
                             name={"date"}
-                            className="col-span-3 usa-input usa-date-picker_external-inpu"
+                            className="col-span-3 usa-input usa-date-picker_external-input"
                             type={"date"}
                             value={transactions[current].date}
                             onChange={handleInputChange}
@@ -308,7 +308,7 @@ function TransactionHistory() {
                             <TextInput
                                 value={transactions[current].vendorName}
                                 id={"transaction-name"}
-                                name={"name"}
+                                name={"vendorName"}
                                 type={"text"}
                                 onChange={handleInputChange}
                             />
@@ -334,7 +334,7 @@ function TransactionHistory() {
                                 >
                                     {Object.values(TransactionCategory).map((category) => (
                                         <option key={category} value={category}>
-                                            {category}
+                                            {t(`${category}`)}
                                         </option>
                                     ))}
                                 </Select>
@@ -379,7 +379,7 @@ function TransactionHistory() {
                 <div className="grid grid-cols-6 gap-5">
                     <input
                         name={"date"}
-                        className="col-span-3 usa-input usa-date-picker_external-inpu"
+                        className="col-span-3 usa-input usa-date-picker_external-input"
                         type={"date"}
                         value={transactions[current].date}
                         onChange={handleInputChange}
@@ -393,7 +393,7 @@ function TransactionHistory() {
                         <TextInput
                             value={transactions[current].vendorName}
                             id={"info-name"}
-                            name={"name"}
+                            name={"vendorName"}
                             type={"text"}
                             onChange={handleInputChange}
                             readOnly
@@ -425,7 +425,7 @@ function TransactionHistory() {
                                 {categories.map((category: string) => {
                                     return (
                                         <React.Fragment key={category}>
-                                            <option value={category}>{category}</option>
+                                            <option value={category}>{t(`${category}`)}</option>
                                         </React.Fragment>
                                     );
                                 })}
