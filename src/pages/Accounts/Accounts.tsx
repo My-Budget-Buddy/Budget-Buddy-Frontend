@@ -310,7 +310,7 @@ const Accounts: React.FC = () => {
             </section>
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-3xl font-semibold">View Credit Score Report</h2>
-                <CreditScoreModal />
+                <CreditScoreModal totalDebt={debts} />
             </div>
         </>
     );
