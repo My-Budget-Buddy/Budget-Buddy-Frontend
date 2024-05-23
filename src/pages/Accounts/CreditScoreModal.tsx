@@ -11,8 +11,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 
+interface CreditScoreModalProps {
+    totalDebt: number;
+}
 
-const CreditScoreModal: React.FC = () => {
+const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const modalRef = useRef<ModalRef>(null);
     const [error, setError] = useState<string | null>(null);
     const [creditColor, setCreditColor] = useState<string | null>(null);
@@ -44,6 +47,15 @@ const CreditScoreModal: React.FC = () => {
             .then((data: { creditScore: number }) => setCreditScore(data.creditScore))
             .catch((err: Error) => setError(err.message));
     }, []);
+
+    let score = 300;
+    if (totalDebt > 50000) {
+        score -= (totalDebt - 50000) / 1000;
+    }
+    score = Math.max(score, 0);
+
+    // Increase creditScore by score
+    setCreditScore(prevCreditScore => prevCreditScore + score);
 
     // sets the color of the gauge based on the credit score
     useEffect(() => {
