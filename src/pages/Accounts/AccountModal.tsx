@@ -32,17 +32,17 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
         // TODO: update the keys to match the schema that the backend expects
         const fields = {
             //@ts-expect-error elements aren't typed
-            type: e.currentTarget.elements["account-type"].value,
+            type: e.currentTarget.elements["account-type"].value as string,
             //@ts-expect-error elements aren't typed
-            institution: e.currentTarget.elements["input-account-name"].value,
+            institution: e.currentTarget.elements["input-account-name"].value as string,
             //@ts-expect-error elements aren't typed
-            accountNumber: e.currentTarget.elements["input-account-num"].value,
+            accountNumber: e.currentTarget.elements["input-account-num"].value as number,
             //@ts-expect-error elements aren't typed
-            routingNumber: e.currentTarget.elements["input-routing-num"]?.value ?? null,
+            routingNumber: e.currentTarget.elements["input-routing-num"].value as number,
             //@ts-expect-error elements aren't typed
-            investmentRate: e.currentTarget.elements["input-interest-rate"].value,
+            investmentRate: e.currentTarget.elements["input-interest-rate"].value as number,
             //@ts-expect-error elements aren't typed
-            startingBalance: e.currentTarget.elements["account-balance"].value,
+            startingBalance: e.currentTarget.elements["account-balance"].value as number,
         };
 
         postAccountData(fields)

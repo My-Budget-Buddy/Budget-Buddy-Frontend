@@ -11,7 +11,7 @@ interface fields {
     accountNumber: number,
     routingNumber: number,
     investmentRate: number,
-    balance: number
+    startingBalance: number
 };
 
 export const createTaxReturn = (initTaxReturn : initReturn) => {
