@@ -308,10 +308,49 @@ const Accounts: React.FC = () => {
                     ]}
                 />
             </section>
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-semibold">View Credit Score Report</h2>
-                <CreditScoreModal totalDebt={debts} />
-            </div>
+            <section className="pb-5 mb-5">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-3xl font-semibold">View Credit Score Report</h2>
+                    <CreditScoreModal totalDebt={debts} />
+
+                </div>
+                <div className="flex justify-center py-5">
+                    <table className="table-auto w-full divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th className="px-6 py-3 text-left text-m font-bold uppercase tracking-wider border-r border-gray-600 text-red-500">
+                                    Bad:
+                                </th>
+                                <th className="px-6 py-3 text-left text-m font-bold  uppercase tracking-wider border-r border-gray-600 text-yellow-500">
+                                    Fair:
+                                </th>
+                                <th className="px-6 py-3 text-left text-m font-bold  uppercase tracking-wider border-r border-gray-600 text-green-500">
+                                    Good:
+                                </th>
+                                <th className="px-6 py-3 text-left text-m font-bold  uppercase tracking-wider border-gray-600 text-green-900">
+                                    Excellent:
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td className="px-6 py-4 border-r border-gray-600">
+                                    <p>High interest rates, difficulty in approval, limited credit options, may require security deposits.</p>
+                                </td>
+                                <td className="px-6 py-4 border-r border-gray-600">
+                                    <p>Moderate interest rates, higher fees, limited options compared to higher scores.</p>
+                                </td>
+                                <td className="px-6 py-4 border-r border-gray-600">
+                                    <p>Lower interest rates, easier approval, wide range of credit products, better terms.</p>
+                                </td>
+                                <td className="px-6 py-4 border-gray-600">
+                                    <p>Lowest interest rates, highest approval likelihood, access to premium products, favorable terms.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </>
     );
 };

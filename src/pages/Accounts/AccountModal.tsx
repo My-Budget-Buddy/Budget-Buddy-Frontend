@@ -13,7 +13,7 @@ import {
     Alert,
 } from "@trussworks/react-uswds";
 import type { Account } from "../../types/models";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRef } from "react";
 import { postAccountData } from "../Tax/taxesAPI";
 
@@ -23,8 +23,10 @@ interface AccountModalProps {
 
 const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     const modalRef = useRef<ModalRef>(null);
+    const formRef = useRef<HTMLFormElement>(null);
     const [showRoutingNumberInput, setShowRoutingNumberInput] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -57,11 +59,19 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             .then((newAccount) => {
                 onAccountAdded(newAccount);
                 modalRef.current?.toggleModal();
+                setIsModalOpen(prevState => !prevState); // Toggle isModalOpen
             })
             .catch((error) => {
                 setError(error.message);
             });
     };
+
+    // will reset the form when the modal is opened
+    useEffect(() => {
+        if (isModalOpen && formRef.current) {
+            formRef.current.reset();
+        }
+    }, [isModalOpen, modalRef]);
 
     const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setShowRoutingNumberInput(e.target.value !== "CREDIT");
@@ -87,7 +97,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             {error}
                         </Alert>
                     )}
-                    <Form onSubmit={handleSubmit} className="usa-prose">
+                    <Form ref={formRef} onSubmit={handleSubmit} className="usa-prose">
                         <Label
                             id="label-account-type"
                             htmlFor="account-type"
