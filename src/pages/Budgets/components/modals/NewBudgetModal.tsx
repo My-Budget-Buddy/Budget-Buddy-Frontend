@@ -139,9 +139,18 @@ const NewCategoryModal: React.FC = () => {
                     {isDuplicateBudgetError ? <ErrorMessage>{t("budgets.budget-already-exists")}</ErrorMessage> : null}
                     <Select id="category" name="category" value={formData.category} onChange={handleChangeInput}>
                         <option value="default">- Select -</option>
+                        {/* map through all of the transaction categories. skip income. render the option as disabled if the budget already exists in the store*/}
                         {Object.values(TransactionCategory).map((category) =>
                             category === "Income" ? null : (
-                                <option key={category} value={category} disabled={false}>
+                                <option
+                                    key={category}
+                                    value={category}
+                                    disabled={
+                                        budgetsStore.budgets.some((budget: any) => budget.category === category)
+                                            ? true
+                                            : false
+                                    }
+                                >
                                     {category}
                                 </option>
                             )
