@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { timedDelay } from "../../../../util/util";
 import { useSelector } from "react-redux";
+import { postNewSummary, updateSpendingBudgetFor } from "../requests/summaryRequests";
 
 const EditSpendingBudgetModal: React.FC = () => {
     const budgetsStore = useSelector((store: any) => store.budgets);
@@ -23,6 +24,7 @@ const EditSpendingBudgetModal: React.FC = () => {
     const selectedMonth = budgetsStore.selectedMonth;
     const selectedYear = budgetsStore.selectedYear;
     const spendingBudget = budgetsStore.spendingBudget;
+    const curMonthYear = budgetsStore.monthYear;
 
     //TODO Update Budget data schema
     const [formData, setFormData] = useState<BudgetProps>({
@@ -50,12 +52,14 @@ const EditSpendingBudgetModal: React.FC = () => {
         }));
     };
 
+    const userId = useAppSelector((state) => state.user.userId);
+
     async function sendUpdatedBudget(budget: BudgetProps) {
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
         console.log("UPDATING BUDGET..."); // <--- This is the bucket to send to the post endpoint
 
-        await timedDelay(1000); //TODO PUT REQUEST HERE
+        await updateSpendingBudgetFor(userId, curMonthYear, formData.data.value);
 
         console.log("BUDGET SENT: ", budget);
 

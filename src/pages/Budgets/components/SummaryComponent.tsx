@@ -11,6 +11,7 @@ import { getBuckets } from "./requests/bucketRequests";
 import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { getCompleteBudgets } from "./util/transactionsCalculator";
 import { getCurrentMonthYear } from "../../../util/util";
+import { updateUserId } from "../../../util/redux/userSlice";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
@@ -20,6 +21,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     const budgets = useAppSelector((store) => store.budgets);
     const buckets = useAppSelector((store) => store.buckets);
     const dispatch = useDispatch();
+    const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
     const selectedMonthString = budgets.selectedMonthString;
     const selectedYear = budgets.selectedYear;
@@ -39,8 +41,13 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
             dispatch(updateBuckets(transformedBuckets));
             const transformedBudgets: BudgetRowProps[] = await getBudgetsByMonthYear(getCurrentMonthYear());
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
-            const completeBudgets = getCompleteBudgets(transformedBudgets);
+            const completeBudgets = await getCompleteBudgets(transformedBudgets);
             dispatch(updateBudgets(completeBudgets));
+
+            //Also, dispatch userId.
+            // TODO Move this to a more sensible location.
+            // TODO See if backend is able to provide the required data. Scrap if not.
+            dispatch(updateUserId(1));
         })();
     }, []);
 
@@ -51,7 +58,8 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             dispatch(updateSpendingBudget(spendingBudget));
         })();
-    }, []);
+    }, [isSending]);
+
     return (
         <>
             <div className="flex flex-row justify-between w-full" id="summary-component-container">
