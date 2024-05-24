@@ -7,7 +7,6 @@ import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { useEffect, useRef, useState } from "react";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { putBudget } from "../requests/budgetRequests";
-import { useSelector } from "react-redux";
 import { Transaction } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
 import { categoryIconsMap } from "../util/categoryIconsMap";
@@ -35,19 +34,17 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
     const { t } = useTranslation();
     const remaining = totalAmount - actual;
     // The amount of money that will be reserved if the box is checked. It will always be greater than or equal to 0
-    const reservedValue = remaining >= 0 ? remaining : 0;
 
     const [currentlyReserved, setCurrentlyReserved] = useState<boolean>(isReserved);
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
-    const [initialized, setInitialized] = useState(false);
 
     //Buffered submission for PUT requests that change the reserved amount/is_currently_reserved. If no new changes in 5 seconds, then send the PUT.
     const [lastEditTime, setLastEditTime] = useState<Date | null>(null);
     const timerRef = useRef<number | null>(null);
     const [isCurrentlyEditing, setIsCurrentlyEditing] = useState<boolean>(false);
 
-    const budgetsStore = useSelector((store: any) => store.budgets);
+    const budgetsStore = useAppSelector((store) => store.budgets);
 
     const handleCheckboxCheck = () => {
         setCurrentlyReserved(!currentlyReserved);
@@ -79,12 +76,6 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
 
         dispatch(setIsSending(false));
     }
-
-    useEffect(() => {
-        // After component mounts, set initialized to true
-        // Using initialized prevents the PUT request from firing on page load
-        setInitialized(true);
-    }, []);
 
     useEffect(() => {
         setCurrentlyReserved(isReserved);

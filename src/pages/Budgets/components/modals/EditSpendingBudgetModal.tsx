@@ -14,20 +14,17 @@ import { useRef, useState } from "react";
 import { BudgetProps } from "../../../../types/budgetInterfaces";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { timedDelay } from "../../../../util/util";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { updateSpendingBudgetFor } from "../requests/summaryRequests";
 
 const EditSpendingBudgetModal: React.FC = () => {
     const { t } = useTranslation();
-    const budgetsStore = useSelector((store: any) => store.budgets);
+    const budgetsStore = useAppSelector((store) => store.budgets);
     const selectedMonth = budgetsStore.selectedMonth;
     const selectedYear = budgetsStore.selectedYear;
     const spendingBudget = budgetsStore.spendingBudget;
     const curMonthYear = budgetsStore.monthYear;
 
-    //TODO Update Budget data schema
     const [formData, setFormData] = useState<BudgetProps>({
         data: {
             value: 0
@@ -39,35 +36,14 @@ const EditSpendingBudgetModal: React.FC = () => {
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
-    //TODO Use something to handle form state in the formData state object. This is just a starting point.
-    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-
-        // Nested data interface is useful to keep simple top level component declarations, but leads to this.
-        setFormData((prevState) => ({
-            ...prevState,
-            data: {
-                ...prevState.data,
-                [name]: value
-            }
-        }));
-    };
-
     const userId = useAppSelector((state) => state.user.userId);
 
     async function sendUpdatedBudget(budget: BudgetProps) {
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
         console.log("UPDATING BUDGET..."); // <--- This is the bucket to send to the post endpoint
-
         await updateSpendingBudgetFor(userId, curMonthYear, formData.data.value);
-
         console.log("BUDGET SENT: ", budget);
-
-        //if good: refreshSavingsBuckets
-        //else: return error
-
-        // Reallow all user input again
         dispatch(setIsSending(false));
     }
 
@@ -99,6 +75,11 @@ const EditSpendingBudgetModal: React.FC = () => {
                     name="monthly-budget"
                     type="number"
                     defaultValue={spendingBudget}
+                    value={formData.data.value}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+                        //TODO Enforce form validation.
+                        setFormData({ data: { value: e.target.value as unknown as number } });
+                    }}
                 ></TextInput>
 
                 <ModalFooter>
