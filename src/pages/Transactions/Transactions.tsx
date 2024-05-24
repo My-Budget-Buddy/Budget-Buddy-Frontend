@@ -151,7 +151,7 @@ const Transactions: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-4 pr-10 pl-10 flex flex-col gap-6">
+        <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
             <div className="flex justify-between items-center bg-transparent p-4 ">
                 <h1>Transactions</h1>
                 <div className="flex gap-4">
@@ -281,7 +281,7 @@ const Transactions: React.FC = () => {
                                 value={minDate}
                                 id="min-date"
                                 name="minDate"
-                                type="number"
+                                type="date"
                                 placeholder="Min Date"
                                 onChange={(e) => setMinDate(e.target.value)}
                             />
@@ -291,7 +291,7 @@ const Transactions: React.FC = () => {
                                 value={maxDate}
                                 id="max-date"
                                 name="maxDate"
-                                type="number"
+                                type="date"
                                 placeholder="Max Date"
                                 onChange={(e) => setMaxDate(e.target.value)}
                             />
@@ -307,8 +307,16 @@ const Transactions: React.FC = () => {
                             <h1>List of Transactions</h1>
                         </CardHeader>
                         <CardBody>
-                            <Table fullWidth striped>
-                                <thead>
+                            {filteredTransactions.length === 0 ? (
+                                <div className="text-center">
+                                    <p className="text-lg">
+                                        No transactions found<br/>
+                                        Click <span className="font-bold text-blue-600">Add Transaction</span> to start making transactions
+                                    </p>
+                                </div>
+                            ) : (
+                                <Table fullWidth striped>
+                                    <thead>
                                     <tr>
                                         <th scope="col">Date</th>
                                         <th scope="col">Name</th>
@@ -316,8 +324,8 @@ const Transactions: React.FC = () => {
                                         <th scope="col">Actions</th>
                                         <th scope="col">Amount</th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                    </thead>
+                                    <tbody>
                                     {filteredTransactions.map((transaction) => (
                                         <tr key={transaction.transactionId}>
                                             <td>{transaction.date}</td>
@@ -348,8 +356,9 @@ const Transactions: React.FC = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                </tbody>
-                            </Table>
+                                    </tbody>
+                                </Table>
+                            )}
                         </CardBody>
                     </Card>
                 </CardGroup>
