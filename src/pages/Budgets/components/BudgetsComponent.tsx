@@ -16,6 +16,10 @@ const BudgetsComponent: React.FC = () => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const currentDate = new Date();
+    const [sortingOrder, setSortingOrder] = useState<{ key: string | null; direction: string }>({
+        key: "category",
+        direction: "asc"
+    });
 
     // the month and year that the user has selected
     const [selectedDate, setSelectedDate] = useState<Date>(new Date(currentDate.setDate(1)));
@@ -52,7 +56,9 @@ const BudgetsComponent: React.FC = () => {
             const transformedBudgets = await getBudgetsByMonthYear(budgetsStore.monthYear);
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
-            dispatch(updateBudgets(completeBudgets));
+            // Sort the budgets before updating the store
+            const sortedBudgets = sortBudgets(completeBudgets, sortingOrder.key ?? "category", sortingOrder.direction);
+            dispatch(updateBudgets(sortedBudgets));
         })();
     }, [isSending]);
 
@@ -64,7 +70,10 @@ const BudgetsComponent: React.FC = () => {
             const transformedBudgets = await getBudgetsByMonthYear(budgetsStore.monthYear);
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
-            dispatch(updateBudgets(completeBudgets));
+
+            // Sort the budgets before updating the store
+            const sortedBudgets = sortBudgets(completeBudgets, sortingOrder.key ?? "category", sortingOrder.direction);
+            dispatch(updateBudgets(sortedBudgets));
         })();
     }, [budgetsStore.monthYear]);
 
@@ -84,6 +93,37 @@ const BudgetsComponent: React.FC = () => {
         };
         dispatch(updateSelectedDate(selectedMonthYear));
         setSelectedDate(new Date(nextMonthDate));
+    };
+
+    const sortBudgets = (budgets: any[], key: string, direction: string) => {
+        // using the spread operator so that the state of budgets isn't modified directly
+        return [...budgets].sort((a, b) => {
+            if (a[key] < b[key]) {
+                return direction === "asc" ? -1 : 1;
+            }
+            if (a[key] > b[key]) {
+                return direction === "asc" ? 1 : -1;
+            }
+            return 0;
+        });
+    };
+
+    const sortStoreBudgets = (key: string) => {
+        let direction = "asc";
+        if (sortingOrder.key === key && sortingOrder.direction === "asc") {
+            direction = "desc";
+        }
+        setSortingOrder({ key, direction });
+        const sortedBudgets = sortBudgets(budgetsStore.budgets, key, direction);
+        dispatch(updateBudgets(sortedBudgets));
+    };
+
+    // render an up or down arrow depending on if the sorted category is ascending or descending
+    const renderSortArrow = (key: string) => {
+        if (sortingOrder.key === key) {
+            return sortingOrder.direction === "asc" ? <Icon.ArrowDropUp /> : <Icon.ArrowDropDown />;
+        }
+        return null;
     };
 
     return (
@@ -115,11 +155,18 @@ const BudgetsComponent: React.FC = () => {
             <Table className="w-full">
                 <thead>
                     <tr>
-                        <th>
+                        <th onClick={() => sortStoreBudgets("category")}>
                             {t("budgets.budget")} {t("budgets.category")}
+                            {renderSortArrow("category")}
                         </th>
-                        <th>{t("budgets.budgeted")}</th>
-                        <th>{t("budgets.actual")}</th>
+                        <th onClick={() => sortStoreBudgets("totalAmount")}>
+                            {t("budgets.budgeted")}
+                            {renderSortArrow("totalAmount")}
+                        </th>
+                        <th onClick={() => sortStoreBudgets("spentAmount")}>
+                            {t("budgets.actual")}
+                            {renderSortArrow("spentAmount")}
+                        </th>
                         <th>{t("budgets.remaining")}</th>
                         <th></th>
                         <th>{t("budgets.actions")}</th>
