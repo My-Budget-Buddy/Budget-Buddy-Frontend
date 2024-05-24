@@ -153,8 +153,10 @@ const SpendingMonth: React.FC = () => {
                 const weeklySpending: { [key: number]: number } = {};
                 const weeklyEarning: { [key: number]: number } = {};
 
+                setTransactions(currentMonthTransactions);
+
                 //get weekly earning and spending
-                transactions.forEach((transaction: Transaction) => {
+                currentMonthTransactions.forEach((transaction: Transaction) => {
                     const date = new Date(transaction.date);
                     const week = getWeekNumber(date);
                     if (transaction.category === "Income") {
@@ -183,7 +185,7 @@ const SpendingMonth: React.FC = () => {
                 const categorySpending: { [key in TransactionCategory]?: number } = {};
                 const vendorSpending: { [vendorName: string]: number } = {};
 
-                transactions.forEach((transaction: Transaction) => {
+                currentMonthTransactions.forEach((transaction: Transaction) => {
                     if (transaction.category !== "Income") {
                         if (!categorySpending[transaction.category]) {
                             categorySpending[transaction.category] = 0;
@@ -196,7 +198,6 @@ const SpendingMonth: React.FC = () => {
                         vendorSpending[transaction.vendorName] += transaction.amount;
                     }
                 });
-
                 //prepare category data for pie chart
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
@@ -205,7 +206,7 @@ const SpendingMonth: React.FC = () => {
                 }));
 
                 //prepare top three purchases data
-                const topPurchases = [...transactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
+                const topPurchases = [...currentMonthTransactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
 
                 //prepare top vendors data
                 const popularVendors = Object.keys(vendorSpending)
@@ -216,7 +217,6 @@ const SpendingMonth: React.FC = () => {
                     .sort((a, b) => b.amount - a.amount)
                     .slice(0, 3);
 
-                setTransactions(transactions);
                 setSpendingCategories(spendingCategories);
                 setTopThreePurchases(topPurchases);
                 setMostPopularVendors(popularVendors);
