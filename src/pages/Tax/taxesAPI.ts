@@ -1,5 +1,7 @@
 import apiClient from './index';
 import { Transaction } from '../../types/models';
+import { W2State } from './W2Slice';
+import { taxReturn } from './TaxReturnSlice';
 interface initReturn {
     year : number,
     userId : number
@@ -92,4 +94,24 @@ export const createTransactionAPI = (transaction: Omit<Transaction, "transaction
 
 export const getTransactionByVendorAPI = (userId:number, vendorName:string) => {
     return apiClient.get(`/transactions/user/${userId}/vendor/${vendorName}`);
+}
+
+export const getRecentTransactionsAPI = () => {
+    return apiClient.get(`/transactions/recentTransactions/1`);
+}
+
+export const getCurrentMonthTransactionsAPI = () => {
+    return apiClient.get(`/transactions/currentMonthTransactions/1`);
+}
+
+export const deleteAccountAPI = (accountId: number) => {
+    return apiClient.delete(`/accounts/1/${accountId}`);
+}
+
+export const createW2API = (w2payload: W2State) => {
+    return apiClient.post(`/taxes/w2s?taxReturnId=1`, w2payload);
+}
+
+export const createTaxReturnAPI = (taxPayload: taxReturn) => {
+    return apiClient.post(`/taxes/taxreturns/1`, taxPayload);
 }

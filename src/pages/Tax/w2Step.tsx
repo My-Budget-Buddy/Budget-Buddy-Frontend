@@ -4,11 +4,8 @@ import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
 import { Fieldset, Form, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
 import { setTaxReturnInfo } from "./TaxReturnSlice";
-const FinancialInformationStepW2: React.FC = () => {
 
-
-    
-    
+const WwStep: React.FC = () => {
     const W2info = useSelector((state: RootState) => state.w2); 
     const taxReturnInfo = useSelector((state:RootState) => state.taxReturn.taxReturn)
     const dispatch = useDispatch();
@@ -36,98 +33,111 @@ const FinancialInformationStepW2: React.FC = () => {
         }
       };
 
-    return (
-        <>
+    return (<>
+        
             <div>
                 
                     <FormGroup >
-                        <label htmlFor="otherIncome">Other Income</label>
+                        <label htmlFor="state">State</label>
                             <TextInput
-                                id="otherIncome"
-                                name="otherIncome"
+                                id="state"
+                                name="state"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.otherIncome}
+                                value={W2info.state}
                                 onChange={handleChange}
-                                validationStatus={errors2.otherIncome ? "error" : undefined}
+                                validationStatus={errors.state ? "error" : undefined}
                             />
-                            {errors2.otherIncome && <span style={{ color: 'red' }}>{errors2.otherIncome}</span>}
+                            {errors.state && <span style={{ color: 'red' }}>{errors.state}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="taxCredit">Tax Credit</label>
+                        <label htmlFor="employer">Employer</label>
                             <TextInput
-                                id="taxCredit"
-                                name="taxCredit"
+                                id="employer"
+                                name="employer"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.taxCredit}
+                                value={W2info.employer}
                                 onChange={handleChange}
-                                validationStatus={errors2.taxCredit ? "error" : undefined}
+                                validationStatus={errors.employer ? "error" : undefined}
                             />
-                            {errors2.taxCredit && <span style={{ color: 'red' }}>{errors2.taxCredit}</span>}
+                            {errors.employer && <span style={{ color: 'red' }}>{errors.employer}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="fedTaxWithheld">Additional Federal Tax Withheld</label>
+                        <label htmlFor="wages">wages</label>
                             <TextInput
-                                id="fedTaxWithheld"
-                                name="taxReturnInfo.fedTaxWithheld"
+                                id="wages"
+                                name="wages"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.fedTaxWithheld}
+                                value={W2info.wages}
                                 onChange={handleChange}
-                                validationStatus={errors2.fedTaxWithheld ? "error" : undefined}
+                                validationStatus={errors.wages ? "error" : undefined}
                             />
-                            {errors2.fedTaxWithheld && <span style={{ color: 'red' }}>{errors2.fedTaxWithheld}</span>}
+                            {errors.wages && <span style={{ color: 'red' }}>{errors.wages}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="stateTaxWithheld">Additional State Tax Withheld</label>
+                        <label htmlFor="federalIncomeTaxWithheld">Federal Income Tax Withheld</label>
                             <TextInput
-                                id="stateTaxWithheld"
-                                name="stateTaxWithheld"
+                                id="federalIncomeTaxWithheld"
+                                name="federalIncomeTaxWithheld"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.stateTaxWithheld}
+                                value={W2info.federalIncomeTaxWithheld}
                                 onChange={handleChange}
-                                validationStatus={errors2.stateTaxWithheld ? "error" : undefined}
+                                validationStatus={errors.federalIncomeTaxWithheld ? "error" : undefined}
                             />
-                            {errors2.stateTaxWithheld && <span style={{ color: 'red' }}>{errors2.stateTaxWithheld}</span>}
+                            {errors.federalIncomeTaxWithheld && <span style={{ color: 'red' }}>{errors.federalIncomeTaxWithheld}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="socialSecurityTaxWithheld">Additional Social Security Tax Withheld</label>
+                        <label htmlFor="stateIncomeTaxWithheld">State Income Tax Withheld</label>
+                            <TextInput
+                                id="stateIncomeTaxWithheld"
+                                name="stateIncomeTaxWithheld"
+                                type="text"
+                                //defaultValue="test"
+                                value={W2info.stateIncomeTaxWithheld}
+                                onChange={handleChange}
+                                validationStatus={errors.stateIncomeTaxWithheld ? "error" : undefined}
+                            />
+                            {errors.stateIncomeTaxWithheld && <span style={{ color: 'red' }}>{errors.stateIncomeTaxWithheld}</span>}
+                    </FormGroup>
+
+                    <FormGroup >
+                        <label htmlFor="socialSecurityTaxWithheld">Social Security Tax Withheld</label>
                             <TextInput
                                 id="socialSecurityTaxWithheld"
                                 name="socialSecurityTaxWithheld"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.socialSecurityTaxWithheld}
+                                value={W2info.socialSecurityTaxWithheld}
                                 onChange={handleChange}
-                                validationStatus={errors2.socialSecurityTaxWithheld ? "error" : undefined}
+                                validationStatus={errors.socialSecurityTaxWithheld ? "error" : undefined}
                             />
-                            {errors2.socialSecurityTaxWithheld && <span style={{ color: 'red' }}>{errors2.socialSecurityTaxWithheld}</span>}
+                            {errors.socialSecurityTaxWithheld && <span style={{ color: 'red' }}>{errors.socialSecurityTaxWithheld}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="medicareTaxWithheld">Additional Medicare Tax Withheld</label>
+                        <label htmlFor="medicareTaxWithheld">Medicare Tax Withheld</label>
                             <TextInput
                                 id="medicareTaxWithheld"
                                 name="medicareTaxWithheld"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.medicareTaxWithheld}
+                                value={W2info.medicareTaxWithheld}
                                 onChange={handleChange}
-                                validationStatus={errors2.medicareTaxWithheld ? "error" : undefined}
+                                validationStatus={errors.medicareTaxWithheld ? "error" : undefined}
                             />
-                            {errors2.medicareTaxWithheld && <span style={{ color: 'red' }}>{errors2.medicareTaxWithheld}</span>}
+                            {errors.medicareTaxWithheld && <span style={{ color: 'red' }}>{errors.medicareTaxWithheld}</span>}
                     </FormGroup>
-               
+                
             </div>
         </>
     );
 };
-      
 
-export default FinancialInformationStepW2;
+export default WwStep;

@@ -7,7 +7,7 @@ import { formatCurrency } from "../../util/helpers";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 import CreditScoreModal from "./CreditScoreModal";
-import { getAccountByID } from "../Tax/taxesAPI";
+import { deleteAccountAPI, getAccountByID } from "../Tax/taxesAPI";
 
 const Accounts: React.FC = () => {
     const [showTooltip, setShowTooltip] = useState(false);
@@ -15,13 +15,11 @@ const Accounts: React.FC = () => {
     const [accounts, setAccounts] = useState<Account[] | null>(null);
 
     const handleDelete = (accountId: number): void => {
-        fetch(`http://localhost:8080/accounts/1/${accountId}`, {
-            method: "DELETE"
-        })
+        deleteAccountAPI(accountId)
             .then((res) => {
-                if (!res.ok) {
-                    throw new Error("Error deleting account");
-                }
+                // if (!res.ok) {
+                //     throw new Error("Error deleting account");
+                // }
                 setAccounts((prevAccounts) => prevAccounts?.filter((acc) => acc.id !== accountId) || null);
             })
             .catch((err: Error) => setError(err.message));
