@@ -26,6 +26,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [showRoutingNumberInput, setShowRoutingNumberInput] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -58,6 +59,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             .then((newAccount) => {
                 onAccountAdded(newAccount);
                 modalRef.current?.toggleModal();
+                setIsModalOpen(prevState => !prevState); // Toggle isModalOpen
             })
             .catch((error) => {
                 setError(error.message);
@@ -66,10 +68,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
     // will reset the form when the modal is opened
     useEffect(() => {
-        if (formRef.current?.isOpen()) {
-            formRef.current?.reset();
+        if (isModalOpen && formRef.current) {
+            formRef.current.reset();
         }
-    }, [modalRef]);
+    }, [isModalOpen, modalRef]);
 
     const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setShowRoutingNumberInput(e.target.value !== "CREDIT");
