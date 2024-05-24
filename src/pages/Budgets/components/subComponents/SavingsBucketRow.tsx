@@ -108,7 +108,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
                 <Checkbox
                     id={data.name}
                     name={"is_currently_reserved"}
-                    label={t("budgets.budget-already-exists")}
+                    label={t("budgets.mark-as-reserved")}
                     checked={currentlyReserved}
                     disabled={isSending}
                     onChange={handleCheckboxCheck}
