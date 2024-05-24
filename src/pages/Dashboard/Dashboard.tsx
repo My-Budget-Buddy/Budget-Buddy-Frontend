@@ -22,7 +22,6 @@ interface InitialAccountType {
 }
 
 interface AllAccountsType {
-    id: string;
     type: string;
     balance: number;
     accounts: AccountType[];
@@ -67,7 +66,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         let total = 0;
         allAccounts.map((acc) => {
-            if (acc.id === "credit") {
+            if (acc.type === "credit") {
                 total -= acc.balance;
             } else {
                 total += acc.balance;
@@ -89,19 +88,7 @@ const Dashboard: React.FC = () => {
                 let allAccounts: AllAccountsType[] = accounts.reduce(
                     (prev: AllAccountsType[], account: InitialAccountType) => {
                         const accountId = account.type.toLowerCase();
-
-                        let type;
-                        if (account.type === "CHECKING") {
-                            type = "Checkings";
-                        } else if (account.type === "SAVINGS") {
-                            type = "Savings";
-                        } else if (account.type === "CREDIT") {
-                            type = "Credit Cards";
-                        } else {
-                            type = "Investments";
-                        }
-
-                        const existingAccount = prev.find((acc) => acc.id === accountId);
+                        const existingAccount = prev.find((acc) => acc.type === accountId);
                         if (existingAccount) {
                             existingAccount.balance += account.currentBalance;
                             existingAccount.accounts.push({
@@ -112,8 +99,7 @@ const Dashboard: React.FC = () => {
                             });
                         } else {
                             prev.push({
-                                id: accountId,
-                                type: type,
+                                type: accountId,
                                 balance: account.currentBalance,
                                 accounts: [
                                     {
@@ -229,29 +215,29 @@ const Dashboard: React.FC = () => {
                                 items={allAccounts.map((acc) => {
                                     return {
                                         title: (
-                                            <div key={acc.id} className="flex justify-between items-center">
-                                                {acc.id === "checking" && (
+                                            <div key={acc.type} className="flex justify-between items-center">
+                                                {acc.type === "checking" && (
                                                     <p className="flex items-center">
                                                         <Icon.AccountBalance className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                {acc.id === "credit" && (
+                                                {acc.type === "credit" && (
                                                     <p className="flex items-center">
                                                         <Icon.CreditCard className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                {acc.id === "savings" && (
+                                                {acc.type === "savings" && (
                                                     <p className="flex items-center">
                                                         <Icon.AccountBalance className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                {acc.id === "investment" && (
+                                                {acc.type === "investment" && (
                                                     <p className="flex items-center">
                                                         <Icon.TrendingUp className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
                                                 <p className="flex items-center">
@@ -275,7 +261,7 @@ const Dashboard: React.FC = () => {
                                             </div>
                                         )),
                                         expanded: false,
-                                        id: `${acc.id}`,
+                                        id: `${acc.type}`,
                                         headingLevel: "h4"
                                     };
                                 })}
@@ -331,7 +317,7 @@ const Dashboard: React.FC = () => {
                                     <tr key={`${recentTransaction.accountId}-${idx}`}>
                                         <td>{recentTransaction.date}</td>
                                         <td>{recentTransaction.vendorName}</td>
-                                        <td>{recentTransaction.category}</td>
+                                        <td>{t(`${recentTransaction.category}`)}</td>
                                         <td>
                                             <Icon.AttachMoney />
                                             {formatCurrency(recentTransaction.amount, false)}

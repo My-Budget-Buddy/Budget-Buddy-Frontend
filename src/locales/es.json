@@ -103,6 +103,19 @@
     },
     "tax": {
       "title": "Impuestos"
-    }
+    },
+    "checking" : "Cuentas Corrientes",
+    "savings" : "Ahorros",
+    "credit" : "Tarjetas de Crédito",
+    "investment" : "Inversiones",
+    "Groceries" : "Comestibles",
+    "Entertainment" : "Entretenimiento",
+    "Dining" : "Comida",
+    "Transportation" : "Transporte",
+    "Healthcare" : "Cuidado de la Salud",
+    "Living Expenses" : "Gastos de Vida",
+    "Shopping" : "Compras",
+    "Income" : "Ingresos",
+    "Misc" : "Misceláneo"
   }
 }
