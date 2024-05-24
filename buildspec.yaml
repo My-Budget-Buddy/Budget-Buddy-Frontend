@@ -22,4 +22,4 @@ phases:
       - echo Finished the build phase.
   post_build:
     commands:
-      - aws s3 cp --recursive dist s3://deloitte-project3-bucket
+      - aws s3 cp --recursive dist s3://$BUCKET_NAME
