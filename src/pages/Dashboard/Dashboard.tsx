@@ -198,6 +198,8 @@ const Dashboard: React.FC = () => {
         };
         fetchMonthlyTransactions();
     }, []);
+    console.log("===============================");
+    console.log("this is a test", monthlyTransactions);
 
     // --- Budgets --
     // backend: /budgets/userId

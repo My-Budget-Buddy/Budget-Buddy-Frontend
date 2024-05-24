@@ -40,7 +40,7 @@ const FinancialInformationStepW2: React.FC = () => {
         <>
             <div>
                 
-                    <FormGroup >
+                    {/* <FormGroup >
                         <label htmlFor="otherIncome">Other Income</label>
                             <TextInput
                                 id="otherIncome"
@@ -122,7 +122,7 @@ const FinancialInformationStepW2: React.FC = () => {
                                 validationStatus={errors2.medicareTaxWithheld ? "error" : undefined}
                             />
                             {errors2.medicareTaxWithheld && <span style={{ color: 'red' }}>{errors2.medicareTaxWithheld}</span>}
-                    </FormGroup>
+                    </FormGroup> */}
                
             </div>
         </>

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface W2State{
     "state": string,
-    "id": number,
+    "id"?: number,
     "taxReturnId": number,
     "year": number,
     "userId": number,
@@ -17,10 +17,9 @@ export interface W2State{
 
 const initialState: W2State = {
     "state": "FLORIDA",
-    "id": 1,
     "taxReturnId": 1,
     "year": 2024,
-    "userId": 0,
+    "userId": 1,
     "employer": "Skillstorm",
     "wages": 0,
     "federalIncomeTaxWithheld": 0,

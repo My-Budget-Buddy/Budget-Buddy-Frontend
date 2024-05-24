@@ -108,10 +108,10 @@ export const deleteAccountAPI = (accountId: number) => {
     return apiClient.delete(`/accounts/1/${accountId}`);
 }
 
-export const createW2API = (w2payload: W2State) => {
+export const createW2API = (w2payload: Omit<W2State, "id">[]) => {
     return apiClient.post(`/taxes/w2s?taxReturnId=1`, w2payload);
 }
 
 export const createTaxReturnAPI = (taxPayload: taxReturn) => {
-    return apiClient.post(`/taxes/taxreturns/1`, taxPayload);
+    return apiClient.put(`/taxes/taxreturns/1`, taxPayload);
 }

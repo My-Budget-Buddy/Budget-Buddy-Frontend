@@ -29,20 +29,7 @@ const ReviewAndSubmitStepW2: React.FC = () => {
             zip: taxReturnInfo.zip || "",
             dateOfBirth: taxReturnInfo.dateOfBirth || "",
             ssn: taxReturnInfo.ssn || "",
-            w2s: [...(taxReturnInfo.w2s || []), W2info],
-            otherIncome: taxReturnInfo.otherIncome || 0,
-            taxCredit: taxReturnInfo.taxCredit || 0,
-            totalIncome: taxReturnInfo.totalIncome || 0,
-            adjustedGrossIncome: taxReturnInfo.adjustedGrossIncome || 0,
-            taxableIncome: taxReturnInfo.taxableIncome || 0,
-            fedTaxWithheld: taxReturnInfo.fedTaxWithheld || 0,
-            stateTaxWithheld: taxReturnInfo.stateTaxWithheld || 0,
-            socialSecurityTaxWithheld: taxReturnInfo.socialSecurityTaxWithheld || 0,
-            medicareTaxWithheld: taxReturnInfo.medicareTaxWithheld || 0,
-            totalDeductions: taxReturnInfo.totalDeductions || 0,
-            totalCredits: taxReturnInfo.totalCredits || 0,
-            federalRefund: taxReturnInfo.federalRefund || 0,
-            stateRefund: taxReturnInfo.stateRefund || 0,
+            
         };
         const w2Payload = {
             ...W2info,
@@ -50,7 +37,7 @@ const ReviewAndSubmitStepW2: React.FC = () => {
         }
         console.log(taxReturnPayload);
         console.log(w2Payload);
-        createW2API(w2Payload)
+        createW2API([w2Payload])
         .then((res) => {
             dispatch(setW2Info(w2Payload))
         });
