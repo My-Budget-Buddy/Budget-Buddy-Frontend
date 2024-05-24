@@ -48,7 +48,7 @@ const LandingLayout: React.FC = () => {
       </Header>
 
       <main className="min-h-full w-full">
-        <div className="relative isolate px-6 pt-14 lg:px-8">
+        <div className="relative isolate padding-0 lg:px-8">
           <Outlet />
         </div>
       </main>
