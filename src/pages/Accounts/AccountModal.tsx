@@ -13,7 +13,7 @@ import {
     Alert,
 } from "@trussworks/react-uswds";
 import type { Account } from "../../types/models";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRef } from "react";
 import { postAccountData } from "../Tax/taxesAPI";
 
@@ -23,6 +23,7 @@ interface AccountModalProps {
 
 const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     const modalRef = useRef<ModalRef>(null);
+    const formRef = useRef<HTMLFormElement>(null);
     const [showRoutingNumberInput, setShowRoutingNumberInput] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +64,13 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             });
     };
 
+    // will reset the form when the modal is opened
+    useEffect(() => {
+        if (formRef.current?.isOpen()) {
+            formRef.current?.reset();
+        }
+    }, [modalRef]);
+
     const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setShowRoutingNumberInput(e.target.value !== "CREDIT");
     };
@@ -87,7 +95,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             {error}
                         </Alert>
                     )}
-                    <Form onSubmit={handleSubmit} className="usa-prose">
+                    <Form ref={formRef} onSubmit={handleSubmit} className="usa-prose">
                         <Label
                             id="label-account-type"
                             htmlFor="account-type"
