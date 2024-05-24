@@ -14,6 +14,7 @@ import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 import { putBucket } from "../requests/bucketRequests";
+import { useTranslation } from "react-i18next";
 // import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
 
 interface EditBucketModalProps {
@@ -22,6 +23,7 @@ interface EditBucketModalProps {
 }
 
 const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children }) => {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
@@ -82,9 +84,14 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
         modalRef.current?.toggleModal();
     }
 
+    // resets form data
+    const handleModalOpen = () => {
+        setFormData(data);
+    };
+
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled>
+            <ModalToggleButton modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
                 <Icon.Edit />
                 {children}
             </ModalToggleButton>
@@ -95,7 +102,7 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
                 aria-labelledby="modal-1-heading"
                 aria-describedby="modal-1-description"
             >
-                <ModalHeading id="modal-1-heading">Add new savings bucket</ModalHeading>
+                <ModalHeading id="modal-1-heading">{t("budgets.add-new-bucket")}</ModalHeading>
                 <div>
                     <TextInput
                         type="text"
@@ -103,7 +110,7 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
                         value={formData.data.name}
                         onChange={handleChangeInput}
                         placeholder="Name"
-                        id={""}
+                        id={formData.data.id.toString()}
                     />
                     <TextInput
                         type="number"
@@ -118,7 +125,7 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
                 <ModalFooter>
                     <ButtonGroup>
                         <Button onClick={handleSubmit} disabled={isSending} type={"button"}>
-                            Submit new
+                            {t("budgets.buttons.save")}
                         </Button>
                         <ModalToggleButton
                             modalRef={modalRef}
@@ -127,7 +134,7 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
                             unstyled
                             className="padding-105 text-center"
                         >
-                            Go back
+                            {t("budgets.buttons.go-back")}
                         </ModalToggleButton>
                     </ButtonGroup>
                 </ModalFooter>

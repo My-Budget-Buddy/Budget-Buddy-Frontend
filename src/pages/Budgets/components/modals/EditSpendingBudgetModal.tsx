@@ -16,11 +16,12 @@ import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { timedDelay } from "../../../../util/util";
 import { useSelector } from "react-redux";
-import { postNewSummary, updateSpendingBudgetFor } from "../requests/summaryRequests";
+import { useTranslation } from "react-i18next";
+import { updateSpendingBudgetFor } from "../requests/summaryRequests";
 
 const EditSpendingBudgetModal: React.FC = () => {
+    const { t } = useTranslation();
     const budgetsStore = useSelector((store: any) => store.budgets);
-
     const selectedMonth = budgetsStore.selectedMonth;
     const selectedYear = budgetsStore.selectedYear;
     const spendingBudget = budgetsStore.spendingBudget;
@@ -89,16 +90,21 @@ const EditSpendingBudgetModal: React.FC = () => {
                 id="example-modal-3"
             >
                 <ModalHeading id="modal-3-heading">
-                    Edit {selectedMonth} {selectedYear} Spending Budget
+                    {t("budgets.edit")} {selectedMonth} {selectedYear} {t("budgets.spending-budget")}
                 </ModalHeading>
 
-                <Label htmlFor="budgeted">Monthly Budget</Label>
-                <TextInput id="budgeted" name="budgeted" type="number" defaultValue={spendingBudget}></TextInput>
+                <Label htmlFor="monthly-budget">{t("budgets.spending-budget")}t</Label>
+                <TextInput
+                    id="monthly-budget"
+                    name="monthly-budget"
+                    type="number"
+                    defaultValue={spendingBudget}
+                ></TextInput>
 
                 <ModalFooter>
                     <ButtonGroup>
                         <Button onClick={handleSubmit} disabled={isSending} type={"button"}>
-                            Submit edit
+                            {t("budgets.buttons.submit")}
                         </Button>
                         <ModalToggleButton
                             modalRef={modalRef}
@@ -107,7 +113,7 @@ const EditSpendingBudgetModal: React.FC = () => {
                             unstyled
                             className="padding-105 text-center"
                         >
-                            Go back
+                            {t("budgets.buttons.go-back")}
                         </ModalToggleButton>
                     </ButtonGroup>
                 </ModalFooter>
