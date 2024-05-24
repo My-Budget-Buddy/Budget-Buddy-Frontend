@@ -201,7 +201,7 @@ function TransactionHistory() {
                                         <tr key={index}>
                                             <td>{formatDate(transaction.date)}</td>
                                             <td>{transaction.vendorName}</td>
-                                            <td>{transaction.category}</td>
+                                            <td>{t(transaction.category)}</td>
                                             <td>
                                                 <ModalToggleButton
                                                     type={"button"}
@@ -368,7 +368,7 @@ function TransactionHistory() {
                                 <div className="mb-6">
                                     <h3 className="text-2xl font-bold">{transactions[current].vendorName}</h3>
                                     <p className="mt-2 text-xl">{formatCurrency(transactions[current].amount)}</p>
-                                    <p className="mt-4 text-lg">{transactions[current].category}</p>
+                                    <p className="mt-4 text-lg">{t(transactions[current].category)}</p>
                                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
                                         <p className="text-md">
                                             {transactions[current].description || "No notes available"}
