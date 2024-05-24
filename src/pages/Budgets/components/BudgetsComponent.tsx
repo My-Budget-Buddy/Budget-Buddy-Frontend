@@ -98,10 +98,19 @@ const BudgetsComponent: React.FC = () => {
     const sortBudgets = (budgets: any[], key: string, direction: string) => {
         // using the spread operator so that the state of budgets isn't modified directly
         return [...budgets].sort((a, b) => {
-            if (a[key] < b[key]) {
+            let aValue = a[key];
+            let bValue = b[key];
+
+            // the remaining value is not stored in the store like the other values so we handle that exception here
+            if (key === "remaining") {
+                aValue = a.totalAmount - a.spentAmount;
+                bValue = b.totalAmount - b.spentAmount;
+            }
+
+            if (aValue < bValue) {
                 return direction === "asc" ? -1 : 1;
             }
-            if (a[key] > b[key]) {
+            if (aValue > bValue) {
                 return direction === "asc" ? 1 : -1;
             }
             return 0;
@@ -167,7 +176,10 @@ const BudgetsComponent: React.FC = () => {
                             {t("budgets.actual")}
                             {renderSortArrow("spentAmount")}
                         </th>
-                        <th>{t("budgets.remaining")}</th>
+                        <th onClick={() => sortStoreBudgets("remaining")}>
+                            {t("budgets.remaining")}
+                            {renderSortArrow("remaining")}
+                        </th>
                         <th></th>
                         <th>{t("budgets.actions")}</th>
                         <th></th>
