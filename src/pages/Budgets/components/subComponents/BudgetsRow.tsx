@@ -4,12 +4,13 @@ import BudgetDetailsModal from "../modals/BudgetDetailsModal";
 import EditBudgetModal from "../modals/EditBudgetModal";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { timedDelay } from "../../../../util/util";
 import { useEffect, useRef, useState } from "react";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { putBudget } from "../requests/budgetRequests";
 import { useSelector } from "react-redux";
 import { Transaction } from "../../../../types/models";
+import { useTranslation } from "react-i18next";
+import { categoryIconsMap } from "../util/categoryIconsMap";
 
 interface BudgetsRowProps {
     id: number;
@@ -31,6 +32,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
     notes,
     transactions
 }) => {
+    const { t } = useTranslation();
     const remaining = totalAmount - actual;
     // The amount of money that will be reserved if the box is checked. It will always be greater than or equal to 0
     const reservedValue = remaining >= 0 ? remaining : 0;
@@ -85,6 +87,10 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
     }, []);
 
     useEffect(() => {
+        setCurrentlyReserved(isReserved);
+    }, [budgetsStore.budgets]);
+
+    useEffect(() => {
         if (lastEditTime && isCurrentlyEditing) {
             if (timerRef.current) {
                 clearTimeout(timerRef.current);
@@ -113,7 +119,10 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
 
     return (
         <tr>
-            <td>{category}</td>
+            <td>
+                {categoryIconsMap.get(category)}
+                {category}
+            </td>
             <td>$ {totalAmount}</td>
             <td>$ {actual}</td>
             <td>
@@ -130,7 +139,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
                 <Checkbox
                     id={category}
                     name="is-reserved-checkbox"
-                    label="Mark as reserved"
+                    label={t("budgets.mark-as-reserved")}
                     className="ml-6 pb-3"
                     checked={currentlyReserved}
                     onChange={handleCheckboxCheck}
@@ -146,7 +155,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
                     isReserved={currentlyReserved}
                     notes={notes}
                 />
-                <DeleteBudgetModal id={id} />
+                <DeleteBudgetModal id={id} category={category} />
             </td>
 
             <td>

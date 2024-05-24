@@ -54,7 +54,42 @@
       "actions": "Acciones"
     },
     "budgets": {
-      "title": "Presupuestos"
+      "title": "Presupuestos",
+      "budget": "Presupuesto",
+      "category": "Categoría",
+      "savings-bucket": "Cubo de ahorro",
+      "budget-details": "Detalles del presupuesto",
+      "budgeted": "Presupuestada",
+      "actual": "Actual",
+      "remaining": "Restante",
+      "actions": "Acciones",
+      "mark-as-reserved": "Marcar como reservada",
+      "notes": "Notas",
+      "transaction-history": "Historial de transacciones",
+      "transaction-total": "Transacciones totales",
+      "name": "Nombre",
+      "required": "Requerida",
+      "reserved": "Reservada",
+      "add-new-bucket": "Agregar nuevo grupo de ahorros",
+      "add-new-budget": "Agregar nuevo presupuesto",
+      "total-funds": "Fondos totales disponibles en toda la cuenta",
+      "left-to-spend": "Queda para gastar en",
+      "spending-budget": "Presupuesto de gastos",
+      "allocated": "Asignado",
+      "edit-budget": "Editar presupuesto",
+      "budget-already-exists": "Esta categoría de presupuesto ya existe",
+      "greater-than-0": "El valor debe ser mayor o igual a 0.",
+      "delete-budget": "Eliminar este presupuesto?",
+      "delete-bucket": "Eliminar este depósito?",
+      "edit": "Editar",
+      "reserve-from-funds": "Presupuesto de reserva con fondos disponibles",
+      "buttons": {
+        "delete": "Borrar",
+        "done": "Hecho",
+        "go-back": "Regresa",
+        "save": "Ahorrar",
+        "submit": "Entregar"
+      }
     },
     "spending": {
       "title": "Gastos"
