@@ -8,6 +8,6 @@
 #settings-modal> .usa-modal-overlay{
   overflow-y: hidden;
 }
-#budgets-container > #summary-component-container{
+#budgets-container > div > #summary-component-container{
   justify-content: center;
 }
