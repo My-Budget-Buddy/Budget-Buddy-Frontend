@@ -8,7 +8,7 @@ phases:
       java: corretto17
   pre_build:
     commands:
-      - apt update
+      - yum update -y
       - npm install -g npm@8.19.4
       - npm install -g typescript
       - npm i react react-dom react-router-dom
