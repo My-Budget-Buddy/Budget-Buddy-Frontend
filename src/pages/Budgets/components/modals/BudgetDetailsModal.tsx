@@ -12,6 +12,7 @@ import {
 import { useRef } from "react";
 import { Transaction } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
+import { categoryIconsMap } from "../util/categoryIconsMap";
 
 interface BudgetDetailsProps {
     category: string;
@@ -59,7 +60,10 @@ const BudgetDetailsModal: React.FC<BudgetDetailsProps> = ({
                     <div className="w-1/2">
                         <div className="flex justify-between mr-10 mt-12">
                             <div className="text-lg font-bold">{t("budgets.category")}:</div>
-                            <div className="text-lg">{category}</div>
+                            <div className="text-lg">
+                                {categoryIconsMap.get(category)}
+                                {category}
+                            </div>
                         </div>
 
                         <div className="flex justify-between mr-10 mt-4">

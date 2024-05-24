@@ -10,6 +10,7 @@ import { putBudget } from "../requests/budgetRequests";
 import { useSelector } from "react-redux";
 import { Transaction } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
+import { categoryIconsMap } from "../util/categoryIconsMap";
 
 interface BudgetsRowProps {
     id: number;
@@ -118,7 +119,10 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
 
     return (
         <tr>
-            <td>{category}</td>
+            <td>
+                {categoryIconsMap.get(category)}
+                {category}
+            </td>
             <td>$ {totalAmount}</td>
             <td>$ {actual}</td>
             <td>
