@@ -8,3 +8,20 @@ export const mockFetch = (mockData: any): Promise<any> => {
         }, 1000); // Wait for 1 second
     });
 };
+
+export function getCurrentMonthYear(): string {
+    const currentDate = new Date();
+    const selectedMonth = currentDate.getMonth();
+    const selectedYear = currentDate.getFullYear();
+
+    // Create monthYear string from selectedMonth and selectedYear
+    const month =
+        (selectedMonth + 1).toString().length === 2
+            ? (selectedMonth + 1).toString()
+            : "0" + (selectedMonth + 1).toString();
+    const year = selectedYear.toString();
+    const monthYear = year + "-" + month;
+    console.log("default monthyear", monthYear);
+
+    return monthYear;
+}

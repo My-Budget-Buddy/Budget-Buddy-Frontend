@@ -2,9 +2,15 @@ import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useEffect } from "react";
 import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
 import { useAppSelector } from "../../../util/redux/hooks";
-import { updateSpendingBudget } from "../../../util/redux/budgetSlice";
+import { updateBudgets, updateSpendingBudget } from "../../../util/redux/budgetSlice";
 import { useDispatch } from "react-redux";
 import { getSpendingBudget } from "./requests/summaryRequests";
+import { BudgetRowProps } from "../../../types/budgetInterfaces";
+import { updateBuckets } from "../../../util/redux/bucketSlice";
+import { getBuckets } from "./requests/bucketRequests";
+import { getBudgetsByMonthYear } from "./requests/budgetRequests";
+import { getCompleteBudgets } from "./util/transactionsCalculator";
+import { getCurrentMonthYear } from "../../../util/util";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
@@ -26,13 +32,21 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     ).toString();
     const percentageRemaining = (Number(remainingBudget) / budgets.spendingBudget) * 100;
 
-    //TODO onload, do an initial GET request to populate the redux store.
-    // This may have to be done with the reactrouter useLoaderData hook.
+    //Make a fetch request for budget and buckets on load. Results in duplicate fetch requests as each component also does that, but simple for now. Consider skipping the initial calls from budgets and buckets.
+    useEffect(() => {
+        (async () => {
+            const transformedBuckets = await getBuckets();
+            dispatch(updateBuckets(transformedBuckets));
+            const transformedBudgets: BudgetRowProps[] = await getBudgetsByMonthYear(getCurrentMonthYear());
+            //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
+            const completeBudgets = getCompleteBudgets(transformedBudgets);
+            dispatch(updateBudgets(completeBudgets));
+        })();
+    }, []);
 
     useEffect(() => {
         (async () => {
-            //TODO use budgets.monthYear instead. Ensure it's populated correctly
-            const spendingBudget = await getSpendingBudget("2024-05");
+            const spendingBudget = await getSpendingBudget(getCurrentMonthYear());
             console.log("spending budget:", spendingBudget);
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             dispatch(updateSpendingBudget(spendingBudget));
