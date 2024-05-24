@@ -4,6 +4,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { AxisConfig, BarItemIdentifier, DefaultizedPieValueType, legendClasses, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { styled } from "@mui/material/styles";
+import { LineChart } from "@mui/x-charts/LineChart";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
@@ -418,12 +419,9 @@ const Spending: React.FC = () => {
                                 )}
                             </span>
                         </div>
-                        <div className="text-center mb-4">
-                            <p>Click on any bar in the chart to view detailed spending for that month.</p>
-                        </div>
 
                         <div className="flex items-center mb-2 justify-start w-full">
-                            <BarChart
+                            <LineChart
                                 xAxis={[
                                     { scaleType: "band", data: categories, categoryGapRatio: 0.5 } as AxisConfig<"band">
                                 ]}
@@ -434,7 +432,7 @@ const Spending: React.FC = () => {
                                 grid={{ horizontal: true }}
                                 width={1300}
                                 height={400}
-                                onItemClick={handleItemClick} //this lets you click on the bars
+                                //onItemClick={handleItemClick} //this lets you click on the bars
                             />
                         </div>
                     </div>
@@ -506,8 +504,9 @@ const Spending: React.FC = () => {
 
                         <div className="flex flex-col justify-center items-center flex-1 m-4 rounded-md w-10/12 min-h-[30rem] ">
                             {/* Top Purchases Table */}
-                            <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
+
                             <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
                                 <h2 className="mb-3 text-4x1  text-center">
                                     Your top 3 purchases accounted for
                                     <span className="text-3xl font-bold text-blue-600">
@@ -522,8 +521,9 @@ const Spending: React.FC = () => {
                             </div>
 
                             {/* Top Categories Table */}
-                            <h2 className="text-2xl mb- mt-1">Top Spending Categories</h2>
+
                             <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb- mt-1">Top Spending Categories</h2>
                                 <h2 className="mb-3 text-4x1  text-center">
                                     Your top 3 spending categories accounted for
                                     <span className="text-3xl font-bold text-blue-600"> {topThreePercentage}% </span> of
@@ -536,8 +536,9 @@ const Spending: React.FC = () => {
                             </div>
 
                             {/* Most Popular Vendors Table */}
-                            <h2 className="text-2xl mb-2 mt-1">Top Spending Locations</h2>
+
                             <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-2 mt-1">Top Spending Locations</h2>
                                 <Table bordered={false} className="w-full">
                                     {popularVendorsTable}
                                 </Table>

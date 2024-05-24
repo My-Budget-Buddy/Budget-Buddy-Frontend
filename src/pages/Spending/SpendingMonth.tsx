@@ -365,22 +365,24 @@ const SpendingMonth: React.FC = () => {
                                 </Button>
                             </Link>
                         </div>
-                        <BarChart
-                            xAxis={[
-                                {
-                                    scaleType: "band",
-                                    data: weeklyData.map((d) => `Week ${d.week}`),
-                                    categoryGapRatio: 0.5
-                                } as AxisConfig<"band">
-                            ]}
-                            series={[
-                                { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: "Earnings" },
-                                { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: "Spendings" }
-                            ]}
-                            grid={{ horizontal: true }}
-                            width={1400}
-                            height={400}
-                        />
+                        <div className="flex items-center mb-2 justify-start w-full">
+                            <BarChart
+                                xAxis={[
+                                    {
+                                        scaleType: "band",
+                                        data: weeklyData.map((d) => `Week ${d.week}`),
+                                        categoryGapRatio: 0.5
+                                    } as AxisConfig<"band">
+                                ]}
+                                series={[
+                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: "Earnings" },
+                                    { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: "Spendings" }
+                                ]}
+                                grid={{ horizontal: true }}
+                                width={1400}
+                                height={400}
+                            />
+                        </div>
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
@@ -440,25 +442,27 @@ const SpendingMonth: React.FC = () => {
                         </div>
                         {/* section for more insights -> top expenses..and?? */}
 
-                        <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 bg-white shadow-lg">
-                            <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
+                        <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md">
                             <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
                                 <Table bordered={false} className="w-full">
                                     {topPurchases}
                                 </Table>
                             </div>
 
                             {/* Top Categories Table */}
-                            <h2 className="text-2xl mb-4 mt-4">Top Spending Categories</h2>
+
                             <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-4 mt-1">Top Spending Categories</h2>
                                 <Table bordered={false} className="w-full">
                                     {topExpenses}
                                 </Table>
                             </div>
 
                             {/* Most Popular Vendors Table */}
-                            <h2 className="text-2xl mb-4 mt-4">Top Spending Locations</h2>
+
                             <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-4 mt-1">Top Spending Locations</h2>
                                 <Table bordered={false} className="w-full">
                                     {popularVendorsTable}
                                 </Table>
