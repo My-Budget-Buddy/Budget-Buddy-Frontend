@@ -92,21 +92,19 @@ const NavBar = () => {
                                 <ModalHeading className="mb-6">{t("nav.settings")}</ModalHeading>
                                 <div className="flex">
                                     <ul className="usa-sidenav">
-                                        {settingOptions.map((option)=> (
-                                            <>
-                                                <li className={`usa-sidenav__item px-4 py-3 w-40 flex items-center ${sideNav === `${option.title}` ? 'usa-current' : ''}`}>
-                                                    <option.icon className="mr-2"/>
-                                                    <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
-                                                        {option.title}
-                                                    </button>
-                                                </li>
-                                            </>
+                                        {settingOptions.map((option, idx)=> (
+                                            <li key={idx} className={`usa-sidenav__item px-4 py-3 w-40 flex items-center ${sideNav === `${option.title}` ? 'usa-current' : ''}`}>
+                                                <option.icon className="mr-2"/>
+                                                <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
+                                                    {option.title}
+                                                </button>
+                                            </li>
                                         ))}
                                     </ul>
                                 </div>
                             </div>
                                 {sideNav === t("nav.profile") && 
-                                <div className="flex w-full justify-center">
+                                <div className="flex w-full justify-center h-[80vh] overflow-y-auto">
                                     <Form onSubmit={() => {}} className="w-9/12">
                                         <ModalHeading> {t("nav.profile")}
                                             <Label htmlFor="first-name" >{t("nav.first-name")}</Label>

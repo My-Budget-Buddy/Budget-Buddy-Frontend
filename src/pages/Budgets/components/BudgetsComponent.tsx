@@ -53,7 +53,7 @@ const BudgetsComponent: React.FC = () => {
     // Updates the redux store with fresh budgets from the database
     useEffect(() => {
         (async () => {
-            const transformedBudgets = await getBudgetsByMonthYear(budgetsStore.monthYear);
+            const transformedBudgets: BudgetRowProps[] = await getBudgetsByMonthYear(budgetsStore.monthYear);
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
             // Sort the budgets before updating the store

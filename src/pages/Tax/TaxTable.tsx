@@ -1,70 +1,86 @@
-import { Button, Form, TextInput, FormGroup, Label, Textarea, Fieldset, DatePicker, Select, RequiredMarker, StepIndicator, StepIndicatorStep, CardGroup, CardHeader, CardBody, CardFooter, Card, GridContainer, Grid, Accordion, Table   } from '@trussworks/react-uswds';
-import React from 'react';
-import { ChangeEvent, FormEvent, useState, useEffect, FocusEvent} from 'react';
+import {
+  Button, Table
+} from '@trussworks/react-uswds';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TaxNav from './TaxNav';
-
+import { getTaxReturnByUserId } from './taxesAPI';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAllTaxReturns } from './TaxReturnSlice';
+import { RootState } from '../../util/redux/store';
+import { taxReturn } from './TaxReturnSlice';
 
 const DisplayTaxTables: React.FC = () => {
-    const nav = useNavigate();
-    interface TableData {
-      formType: string;
-      organization: string;
-      year: number;
-    }
-    
-    const initialData: TableData[] = [
-      { formType: 'Form A', organization: 'Org 1', year: 2021 },
-      { formType: 'Form B', organization: 'Org 2', year: 2022 },
-      { formType: 'Form C', organization: 'Org 3', year: 2023 },
-    ];
-  
-    const [mockData] = useState<TableData[]>(initialData);
-    const [sortedData, setSortedData] = useState<TableData[]>(initialData);
-    const [sortConfig, setSortConfig] = useState<{ key: keyof TableData | null, direction: 'ascending' | 'descending' | null }>({ key: null, direction: null });
-  
-    const handleSort = (key: keyof TableData) => {
-      let direction: 'ascending' | 'descending' | null = 'ascending';
-      if (sortConfig.key === key) {
-        if (sortConfig.direction === 'ascending') {
-          direction = 'descending';
-        } else if (sortConfig.direction === 'descending') {
-          direction = null;
-        }
-      }
-  
-      if (direction === null) {
-        setSortedData([...mockData]); // Reset to initial unsorted data
-        setSortConfig({ key: null, direction: null });
-      } else {
-        const sortedArray = [...sortedData].sort((a, b) => {
-          if (a[key] < b[key]) {
-            return direction === 'ascending' ? -1 : 1;
-          }
-          if (a[key] > b[key]) {
-            return direction === 'ascending' ? 1 : -1;
-          }
-          return 0;
-        });
-        setSortedData(sortedArray);
-        setSortConfig({ key, direction });
-      }
-    };
-  
-    const getSortIndicator = (key: keyof TableData) => {
-      if (!sortConfig || sortConfig.key !== key) {
-        return null;
-      }
-      return sortConfig.direction === 'ascending' ? '▲' : '▼';
-    };
+  const nav = useNavigate();
+  const dispatch = useDispatch();
 
-    const redirectToEditView = () =>{
-        nav('/dashboard/tax/1/w2/0')
-    }
-    
   
-    return (
-      <>
+
+  useEffect(() => {
+    getTaxReturnByUserId(1)
+      .then((res) => {
+        dispatch(setAllTaxReturns(res.data)); // Assuming res.data is an array of tax return items
+      })
+      .catch((err) => console.error(err));
+  }, [dispatch]);
+
+  const allTaxReturns = useSelector((state: RootState) => state.taxReturn.taxReturns);
+
+  const [sortedData, setSortedData] = useState<taxReturn[]>([]);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof taxReturn | null, direction: 'ascending' | 'descending' | null }>({ key: null, direction: null });
+
+  useEffect(() => {
+    setSortedData(allTaxReturns);
+  }, [allTaxReturns]);
+
+  const handleSort = (key: keyof taxReturn) => {
+    let direction: 'ascending' | 'descending' | null = 'ascending';
+    if (sortConfig.key === key) {
+      if (sortConfig.direction === 'ascending') {
+        direction = 'descending';
+      } else if (sortConfig.direction === 'descending') {
+        direction = null;
+      }
+    }
+
+    if (direction === null) {
+      setSortedData([...allTaxReturns]); // Reset to initial unsorted data
+      setSortConfig({ key: null, direction: null });
+    } else {
+      const sortedArray = [...sortedData].sort((a, b) => {
+        const aValue = a[key] as any;
+        const bValue = b[key] as any;
+        
+        if (aValue === undefined || bValue === undefined) {
+          return 0;
+        }
+
+        if (aValue < bValue) {
+          return direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+      setSortedData(sortedArray);
+      setSortConfig({ key, direction });
+    }
+  };
+
+  const getSortIndicator = (key: keyof taxReturn) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return null;
+    }
+    return sortConfig.direction === 'ascending' ? '▲' : '▼';
+  };
+
+  const redirectToEditView = () => {
+    nav('/dashboard/tax/1/w2/0');
+  };
+
+  return (
+    <>
       <div className="flex flex-col flex-wrap content-center">
         <div>
           <TaxNav />
@@ -74,17 +90,19 @@ const DisplayTaxTables: React.FC = () => {
           <Table fullWidth fixed striped>
             <thead>
               <tr>
-                <th>Form Type</th>
-                <th>Organization</th>
+                <th>Filing Status</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Year</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {mockData.map((data, index) => (
+              {sortedData.map((data, index) => (
                 <tr key={index}>
-                  <td>{data.formType}</td>
-                  <td>{data.organization}</td>
+                  <td>{data.filingStatus}</td>
+                  <td>{data.firstName}</td>
+                  <td>{data.lastName}</td>
                   <td>{data.year}</td>
                   <td>
                     <div className="action-buttons">
@@ -96,14 +114,14 @@ const DisplayTaxTables: React.FC = () => {
               ))}
             </tbody>
           </Table>
-  
+
           <h2>Tax Form Archives</h2>
           <Table fullWidth fixed striped>
             <thead>
               <tr>
-                <th>Form Type</th>
-                <th onClick={() => handleSort('organization')} style={{ cursor: 'pointer' }}>
-                  Organization {getSortIndicator('organization')}
+                <th>Filing Status</th>
+                <th onClick={() => handleSort('phoneNumber')} style={{ cursor: 'pointer' }}>
+                  Organization {getSortIndicator('phoneNumber')}
                 </th>
                 <th onClick={() => handleSort('year')} style={{ cursor: 'pointer' }}>
                   Year {getSortIndicator('year')}
@@ -114,8 +132,8 @@ const DisplayTaxTables: React.FC = () => {
             <tbody>
               {sortedData.map((data, index) => (
                 <tr key={index}>
-                  <td>{data.formType}</td>
-                  <td>{data.organization}</td>
+                  <td>{data.filingStatus}</td>
+                  <td>{data.phoneNumber}</td>
                   <td>{data.year}</td>
                   <td>
                     <div className="action-buttons">
@@ -127,10 +145,9 @@ const DisplayTaxTables: React.FC = () => {
             </tbody>
           </Table>
         </div>
-        </div>
-      </>
-    );
-  };
+      </div>
+    </>
+  );
+};
 
-
-    export default DisplayTaxTables;
+export default DisplayTaxTables;

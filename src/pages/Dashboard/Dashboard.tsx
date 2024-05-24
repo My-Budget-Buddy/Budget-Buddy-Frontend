@@ -1,10 +1,13 @@
-import { LineChart, Gauge } from "@mui/x-charts";
+import { LineChart } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { formatCurrency } from "../../util/helpers";
 import { useTranslation } from "react-i18next";
+import SummaryComponent from "../Budgets/components/SummaryComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
 
 interface InitialAccountType {
     id: number;
@@ -58,7 +61,10 @@ const Dashboard: React.FC = () => {
     const [currentTransaction, setCurrentTransaction] = useState<TransactionType | null>(null);
     const [monthlyTransactions, setMonthlyTransactions] = useState<MonthlyTransactionType[]>([]);
     const [monthlySpend, setMonthlySpend] = useState(0);
+    const budgetsStore = useSelector((store: any) => store.budgets);
+    const dispatch = useDispatch();
 
+    console.log('budgets Store: ', budgetsStore)
     // ---Calculate net cash---
     useEffect(() => {
         let total = 0;
@@ -159,29 +165,27 @@ const Dashboard: React.FC = () => {
                     // withCredentials: true,
                 });
                 const monthlyTransactions = response.data;
-                let totalSpent = 0;
-                const data = monthlyTransactions.reduce(
-                    (prev: MonthlyTransactionType[], transaction: TransactionType) => {
-                        const existingTransactionDate = prev.find(
-                            (prevTransactionDate) => prevTransactionDate.date === transaction.date
-                        );
-                        if (existingTransactionDate) {
-                            existingTransactionDate.total += transaction.amount;
-                            totalSpent += transaction.amount;
-                        } else {
-                            prev.push({ date: transaction.date, total: transaction.amount });
-                            totalSpent += transaction.amount;
-                        }
-                        return prev;
-                    },
-                    []
-                );
-                data.sort(
-                    (a: MonthlyTransactionType, b: MonthlyTransactionType) =>
-                        parseInt(a.date.toString().slice(8, 10)) - parseInt(b.date.toString().slice(8, 10))
-                );
-                setMonthlyTransactions(data);
-                setMonthlySpend(totalSpent);
+                const today = new Date
+                const totalSpentPerDay: MonthlyTransactionType[] = [];
+                let runningTotal = 0;
+                for (let i=0; i<= today.getDate(); i++){
+                    const dateString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                    totalSpentPerDay.push({ date: dateString, total: 0})
+                }
+                monthlyTransactions.forEach((transaction: TransactionType) => {
+                    const transactionDate = transaction.date
+                    const idx = totalSpentPerDay.findIndex((day) => day.date === transactionDate);
+                    if (idx !== -1){
+                        totalSpentPerDay[idx].total += transaction.amount;
+                        runningTotal += transaction.amount
+                    }
+                });
+                for (let i = 1; i < totalSpentPerDay.length; i++) {
+                    totalSpentPerDay[i].total += totalSpentPerDay[i - 1].total;
+                }
+                setMonthlyTransactions(totalSpentPerDay);
+                console.log(typeof runningTotal)
+                setMonthlySpend(runningTotal);
             } catch (err) {
                 console.log("There was an error fetching monthly tranactions: ", err);
             }
@@ -191,19 +195,19 @@ const Dashboard: React.FC = () => {
 
     // --- Budgets --
     // backend: /budgets/userId
-    useEffect(() => {
-        const fetchBudgets = async () => {
-            try {
-                const response = await axios.get("http://localhost:8125/budgets/123", {
-                    // withCredentials: true,
-                });
-                console.log("response: ", response.data);
-            } catch (err) {
-                console.log("There was an error fetching budgets: ", err);
-            }
-        };
-        fetchBudgets();
-    }, []);
+    // useEffect(() => {
+    //     const fetchBudgets = async () => {
+    //         try {
+    //             const response = await axios.get("http://localhost:8125/budgets/123", {
+    //                 // withCredentials: true,
+    //             });
+    //             console.log("response: ", response.data);
+    //         } catch (err) {
+    //             console.log("There was an error fetching budgets: ", err);
+    //         }
+    //     };
+    //     fetchBudgets();
+    // }, []);
 
     return (
         <div className="flex flex-col flex-wrap ">
@@ -212,20 +216,20 @@ const Dashboard: React.FC = () => {
                 <div id="chart-container" className="flex flex-col flex-auto w-2/3 bg-accent-cool-lighter p-8 mr-12 rounded-lg">
                     <h1 className="flex items-center text-2xl font-bold ">
                         {t("dashboard.chart")} <Icon.AttachMoney />
-                        {monthlySpend}
+                        {formatCurrency(monthlySpend, false)}
                     </h1>
                     <LineChart
                         xAxis={[
                             {
                                 scaleType: "point",
-                                data: monthlyTransactions.map((transaction) => transaction.date.toString().slice(5, 10))
+                                data: monthlyTransactions.map((transaction) => transaction.total && transaction.date.toString().slice(5, 10))
                             }
                         ]}
                         series={[
                             {
-                                data: monthlyTransactions.map((transaction) => transaction.total),
+                                data: (monthlyTransactions.map((transaction) => transaction.total)),
                                 yAxisKey: "rightAxisId",
-                                area: true,
+                                // area: true,
                                 color: "#005ea2"
                             }
                         ]}
@@ -378,32 +382,22 @@ const Dashboard: React.FC = () => {
                     </div>
                 )}
             </div>
-            <div id="budgets-container">
+            <div>
                 <h1>{t("budgets.title")}</h1>
-                <div className="flex items-center">
-                    <Gauge width={150} height={150} value={60} />
+                <div id="budgets-container" className="flex items-center mb-14">
+                    <div className="w-2/5">
+                        <SummaryComponent hideAdditionalInfo/>
+                    </div>
                     <div className="w-3/5 flex flex-col items-center border-l border-black pl-6 h-full">
-                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
-                            <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
-                        </div>
-                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
-                            <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
-                        </div>
-                        <div id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
-                            <p>[Budget name]</p>
-                            <p>
-                                <Icon.AttachMoney />
-                                [Amount spent so far]
-                            </p>
-                        </div>
+                        {budgetsStore.budgets.map((budget: BudgetRowProps, idx: number)=> (
+                            <div key={idx} id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
+                                <p>{budget.category}</p>
+                                <p>
+                                    <Icon.AttachMoney />
+                                    {budget.spentAmount}/{budget.totalAmount}
+                                </p>
+                            </div>
+                        ))}
                         <Link to="/dashboard/budgets">
                             <Button className="mt-10" type="submit">
                                 {t("dashboard.view-budgets")}
@@ -458,9 +452,9 @@ const Dashboard: React.FC = () => {
                                         {currentTransaction.accountId && (
                                             <div className="flex flex-col">
                                                 {accounts.map(
-                                                    (account) =>
+                                                    (account, idx) =>
                                                         account.id === currentTransaction.accountId && (
-                                                            <>
+                                                            <div key={idx} >
                                                                 <div className="flex items-center text-sm text-gray-500">
                                                                     <Icon.AccountBalance className="mr-2" />
                                                                     <div>{account.institution}</div>
@@ -468,7 +462,7 @@ const Dashboard: React.FC = () => {
                                                                 <div className="mt-2 text-sm text-gray-500">
                                                                     Account Number: {account.accountNumber}
                                                                 </div>
-                                                            </>
+                                                            </div>
                                                         )
                                                 )}
                                             </div>

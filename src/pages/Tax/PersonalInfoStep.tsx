@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/Store";
+import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
 import { Fieldset, Form, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
 
@@ -33,32 +33,32 @@ const PersonalInfoStep: React.FC = () => {
             <div>
                 <Fieldset legend="Employer's Address" legendStyle="large">
                     <FormGroup >
-                        <label htmlFor="cstreet">Test</label>
+                        <label htmlFor="employerField">Employer's Name</label>
                             <TextInput
-                                id="cstreet2"
-                                name="formType"
+                                id="w2EmployerField"
+                                name="employer"
                                 type="text"
-                                defaultValue="test"
-                                value={W2info.formType}
+                                //defaultValue="test"
+                                value={W2info.employer}
                                 onChange={handleChange}
-                                validationStatus={errors.formType ? "error" : undefined}
+                                validationStatus={errors.employer ? "error" : undefined}
                             />
-                            {errors.formType && <span style={{ color: 'red' }}>{errors.formType}</span>}
+                            {errors.employer && <span style={{ color: 'red' }}>{errors.employer}</span>}
                     </FormGroup>
 
                     <FormGroup>
-                        <label htmlFor="cstreet">Test</label>
+                        <label htmlFor="wages">Wages</label>
                             <TextInput
-                                id="cstreet2"
-                                name="status"
+                                id="wages"
+                                name="wages"
                                 type="text"
-                                defaultValue="test"
-                                value={W2info.status}
+                                //defaultValue="test"
+                                value={W2info.wages}
                                 onChange={handleChange}
-                                validationStatus={errors.status ? "error" : undefined}
+                                validationStatus={errors.wages ? "error" : undefined}
 
                             />
-                        {errors.status && <span style={{ color: 'red' }}>{errors.status}</span>}
+                        {errors.wages && <span style={{ color: 'red' }}>{errors.wages}</span>}
                     </FormGroup>
                 </Fieldset>
             </div>

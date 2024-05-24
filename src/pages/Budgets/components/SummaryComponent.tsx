@@ -4,8 +4,13 @@ import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
 import { useAppSelector } from "../../../util/redux/hooks";
 import { updateSpendingBudget } from "../../../util/redux/budgetSlice";
 import { useDispatch } from "react-redux";
+import { getSpendingBudget } from "./requests/summaryRequests";
 
-const SummaryComponent: React.FC = () => {
+type CustomComponentProps = {
+    hideAdditionalInfo?: boolean;
+};
+
+const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }) => {
     const budgets = useAppSelector((store) => store.budgets);
     const buckets = useAppSelector((store) => store.buckets);
     const dispatch = useDispatch();
@@ -26,18 +31,20 @@ const SummaryComponent: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            const spendingBudget = await getSpendingBudget();
+            //TODO use budgets.monthYear instead. Ensure it's populated correctly
+            const spendingBudget = await getSpendingBudget("2024-05");
+            console.log("spending budget:", spendingBudget);
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             dispatch(updateSpendingBudget(spendingBudget));
         })();
     }, []);
     return (
         <>
-            <div className="flex flex-row justify-between w-full">
-                <div className="flex flex-col items-center justify-around ml-8">
+            <div className="flex flex-row justify-between w-full" id="summary-component-container">
+                <div className="flex flex-col items-center justify-around ml-8" hidden={hideAdditionalInfo}>
                     <div className="text-2xl font-bold">Total Available Funds Across Account</div>
                     <div className=" text-6xl text-green-600 font-bold">${budgets.totalFundsAvailable}</div>
-                    <div>{"(accounts + projected earnings - reserved)"}</div>
+                    <div>{"(accounts - reserved)"}</div>
                 </div>
 
                 <div className="flex flex-col items-center">
@@ -64,7 +71,7 @@ const SummaryComponent: React.FC = () => {
                     <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">of ${budgets.spendingBudget}</div>
                 </div>
 
-                <div className="flex flex-col justify-around mr-8">
+                <div className="flex flex-col justify-around mr-8" hidden={hideAdditionalInfo}>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">
                             {selectedMonthString} {selectedYear} Spending Budget <EditSpendingBudgetModal />
