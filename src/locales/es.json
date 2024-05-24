@@ -18,7 +18,7 @@
       "username": "Nombre de usuario."
     },
     "intlDateTime": "{{val, datetime}}",
-    "dateLocale": "es-MX",
+    "locale": "es-MX",
     "nav": {
       "greeting": "Hola",
       "settings": "Configuración",

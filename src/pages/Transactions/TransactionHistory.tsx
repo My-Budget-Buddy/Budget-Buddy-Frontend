@@ -24,6 +24,7 @@ import { useMatch } from "react-router-dom";
 import { BarChart } from "@mui/x-charts";
 import { Account, Transaction, TransactionCategory } from "../../types/models";
 import { deleteTransaction, getAccountsByUserId, getTransactionByVendor } from "../../utils/transactionService";
+import { formatCurrency, formatDate } from "../../util/helpers";
 
 function TransactionHistory() {
     const Name = useMatch("/:first/:second/:name")?.params.name;
@@ -90,8 +91,6 @@ function TransactionHistory() {
             userId: 1
         }
     ];
-
-    const categories: Array<string> = ["food", "shopping", "entertainment"];
 
     const [transactions, setTransactions] = useState<Array<Transaction>>(transactionsInit);
     const [accounts, setAccounts] = useState<Account[]>([]);
@@ -213,11 +212,7 @@ function TransactionHistory() {
                                 <tbody>
                                     {transactions.map((transaction: Transaction, index: number) => (
                                         <tr key={index}>
-                                            <td>
-                                                {Intl.DateTimeFormat(t("dateLocale")).format(
-                                                    new Date(transaction.date)
-                                                )}
-                                            </td>
+                                            <td>{formatDate(transaction.date)}</td>
                                             <td>{transaction.vendorName}</td>
                                             <td>{transaction.category}</td>
                                             <td>
@@ -239,10 +234,7 @@ function TransactionHistory() {
                                                     <Icon.Delete />
                                                 </Button>
                                             </td>
-                                            <td>
-                                                <Icon.AttachMoney />
-                                                {Number(transaction.amount).toFixed(2)}
-                                            </td>
+                                            <td>{formatCurrency(transaction.amount)}</td>
                                             <td>
                                                 <ModalToggleButton
                                                     type="button"
@@ -262,8 +254,8 @@ function TransactionHistory() {
                     <Card gridLayout={{ col: 4 }}>
                         <CardHeader>{t("transactions.summary")}</CardHeader>
                         <CardBody>
-                            {t("transactions.spent")}: $
-                            {transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0).toFixed(2)}
+                            {t("transactions.spent")}:{" "}
+                            {formatCurrency(transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0))}
                             <hr />
                             {t("transactions.amount")}: {transactions.length}
                             <hr />
@@ -375,7 +367,7 @@ function TransactionHistory() {
                     </div>
                 </Form>
             </Modal>
-            <Modal ref={infoRef} id="info-modal" isLarge>
+            {/* <Modal ref={infoRef} id="info-modal" isLarge>
                 <div className="grid grid-cols-6 gap-5">
                     <input
                         name={"date"}
@@ -463,7 +455,7 @@ function TransactionHistory() {
                         </div>
                     </div>
                 </div>
-            </Modal>
+            </Modal> */}
 
             {/* Detailed Info Transaction Modal */}
             <Modal ref={infoRef} id="transaction-info-modal" isLarge>
@@ -472,11 +464,7 @@ function TransactionHistory() {
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex gap-4 items-center">
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
-                                    <div>
-                                        {Intl.DateTimeFormat(t("dateLocale")).format(
-                                            new Date(transactions[current].date)
-                                        )}
-                                    </div>
+                                    <div>{formatDate(transactions[current].date)}</div>
                                 </div>
                             </div>
                         </div>
@@ -485,7 +473,7 @@ function TransactionHistory() {
                             <div className="flex flex-col w-2/3">
                                 <div className="mb-6">
                                     <h3 className="text-2xl font-bold">{transactions[current].vendorName}</h3>
-                                    <p className="mt-2 text-xl">${Number(transactions[current].amount).toFixed(2)}</p>
+                                    <p className="mt-2 text-xl">{formatCurrency(transactions[current].amount)}</p>
                                     <p className="mt-4 text-lg">{transactions[current].category}</p>
                                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
                                         <p className="text-md">
