@@ -174,6 +174,7 @@ const Dashboard: React.FC = () => {
         };
         fetchMonthlyTransactions();
     }, []);
+console.log(monthlyTransactions)
 
     return (
         <div className="flex flex-col flex-wrap ">
