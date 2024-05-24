@@ -426,8 +426,20 @@ const Spending: React.FC = () => {
                                     { scaleType: "band", data: categories, categoryGapRatio: 0.5 } as AxisConfig<"band">
                                 ]}
                                 series={[
-                                    { data: earnedValues, color: "#cbd5e8", label: "Earned" },
-                                    { data: spendingValues, color: "#1f78b4", label: "Spendings" }
+                                    {
+                                        data: earnedValues,
+                                        color: "#BCC3CB",
+                                        label: "Earned"
+                                        // area: true,
+                                        //stack: "total"
+                                    },
+                                    {
+                                        data: spendingValues,
+                                        color: "#1f78b4",
+                                        label: "Spendings"
+                                        //area: true,
+                                        //stack: "total"
+                                    }
                                 ]}
                                 grid={{ horizontal: true }}
                                 width={1300}
@@ -440,7 +452,7 @@ const Spending: React.FC = () => {
                     <div className="flex">
                         <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 shadow-lg">
                             <h2></h2>
-                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full lg:-m-5">
+                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full lg:-m-2">
                                 <PieChart
                                     series={[
                                         {

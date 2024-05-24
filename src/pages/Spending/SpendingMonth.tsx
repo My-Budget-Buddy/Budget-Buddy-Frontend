@@ -1,4 +1,4 @@
-import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
+import { Button, Icon, Table, Title, Select } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { AxisConfig, BarItemIdentifier, legendClasses, useDrawingArea } from "@mui/x-charts";
@@ -333,6 +333,16 @@ const SpendingMonth: React.FC = () => {
         );
     }
 
+    const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedMonth = event.target.value as Month;
+        navigate(`/dashboard/spending/${selectedMonth}`);
+    };
+
+    const monthOptions = monthNames.map((month) => ({
+        value: month,
+        label: month.charAt(0).toUpperCase() + month.slice(1)
+    }));
+
     return (
         <div className="min-w-screen">
             <div className="flex-1">
@@ -354,16 +364,28 @@ const SpendingMonth: React.FC = () => {
                                     Back to Annual Spending Overview
                                 </Button>
                             </Link>
-                            <Link to={`/dashboard/spending/${previousMonth}`} className="mr-3">
-                                <Button type="button" className="ml-3">
-                                    Previous Month
-                                </Button>
-                            </Link>
-                            <Link to={`/dashboard/spending/${nextMonth}`} className="mr-3">
-                                <Button type="button" className="ml-3">
-                                    Next Month
-                                </Button>
-                            </Link>
+                            <div className="flex items-center gap-4 bg-transparent p-4">
+                                <Select
+                                    id="month-select"
+                                    name="month-select"
+                                    defaultValue={lowercaseMonth}
+                                    onChange={handleMonthChange}
+                                    style={{
+                                        padding: "0.5rem",
+                                        width: "10rem",
+                                        backgroundColor: "transparent",
+                                        border: "1px solid black",
+                                        borderRadius: "4px",
+                                        appearance: "none"
+                                    }}
+                                >
+                                    {monthOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </div>
                         </div>
                         <div className="flex items-center mb-2 justify-start w-full">
                             <BarChart
