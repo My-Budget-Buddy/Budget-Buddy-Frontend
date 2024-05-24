@@ -1,4 +1,4 @@
-import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
+import { Button, Icon, Table, Title, Select } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { AxisConfig, BarItemIdentifier, legendClasses, useDrawingArea } from "@mui/x-charts";
@@ -33,6 +33,10 @@ const SpendingMonth: React.FC = () => {
     const [spendingCategories, setSpendingCategories] = useState<
         { name: TransactionCategory; value: number; color: string }[]
     >([]);
+    const [mostPopularVendors, setMostPopularVendors] = useState<{ vendorName: string; amount: number }[]>([]);
+    const [topThreePurchases, setTopThreePurchases] = useState<Transaction[]>([]);
+    const [currentMonthSpending, setCurrentMonthSpending] = useState(0);
+    const [previousMonthSpending, setPreviousMonthSpending] = useState(0);
 
     //colors for categories
     const categoryColors: { [key in TransactionCategory]: string } = {
@@ -122,11 +126,29 @@ const SpendingMonth: React.FC = () => {
         const fetchTransactions = async () => {
             try {
                 const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
-                const monthIndex = getMonthIndex(lowercaseMonth);
-                const transactions = response.data.filter(
-                    (transaction) => new Date(transaction.date).getMonth() === monthIndex
+                const transactions = response.data;
+                const currentMonthIndex = getMonthIndex(lowercaseMonth);
+
+                const previousMonthIndex = currentMonthIndex === 0 ? 11 : currentMonthIndex - 1;
+
+                const currentMonthTransactions = transactions.filter(
+                    (transaction) => new Date(transaction.date).getMonth() === currentMonthIndex
                 );
-                setTransactions(transactions);
+                const previousMonthTransactions = transactions.filter(
+                    (transaction) => new Date(transaction.date).getMonth() === previousMonthIndex
+                );
+
+                const currentSpending = currentMonthTransactions.reduce(
+                    (sum, transaction) => sum + (transaction.category !== "Income" ? transaction.amount : 0),
+                    0
+                );
+                const previousSpending = previousMonthTransactions.reduce(
+                    (sum, transaction) => sum + (transaction.category !== "Income" ? transaction.amount : 0),
+                    0
+                );
+
+                setCurrentMonthSpending(currentSpending);
+                setPreviousMonthSpending(previousSpending);
 
                 const weeklySpending: { [key: number]: number } = {};
                 const weeklyEarning: { [key: number]: number } = {};
@@ -146,7 +168,7 @@ const SpendingMonth: React.FC = () => {
 
                 //get all weeks in the current month
                 const year = new Date().getFullYear();
-                const weeksInMonth = getAllWeeksInMonth(year, monthIndex);
+                const weeksInMonth = getAllWeeksInMonth(year, currentMonthIndex);
 
                 //prepare spending and earning data for the bar chart
                 const data = weeksInMonth.map((week) => ({
@@ -159,12 +181,19 @@ const SpendingMonth: React.FC = () => {
 
                 //calculate spending by category
                 const categorySpending: { [key in TransactionCategory]?: number } = {};
+                const vendorSpending: { [vendorName: string]: number } = {};
+
                 transactions.forEach((transaction: Transaction) => {
                     if (transaction.category !== "Income") {
                         if (!categorySpending[transaction.category]) {
                             categorySpending[transaction.category] = 0;
                         }
                         categorySpending[transaction.category]! += transaction.amount;
+
+                        if (!vendorSpending[transaction.vendorName]) {
+                            vendorSpending[transaction.vendorName] = 0;
+                        }
+                        vendorSpending[transaction.vendorName] += transaction.amount;
                     }
                 });
 
@@ -175,7 +204,22 @@ const SpendingMonth: React.FC = () => {
                     color: categoryColors[category]
                 }));
 
+                //prepare top three purchases data
+                const topPurchases = [...transactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
+
+                //prepare top vendors data
+                const popularVendors = Object.keys(vendorSpending)
+                    .map((vendorName) => ({
+                        vendorName,
+                        amount: vendorSpending[vendorName]
+                    }))
+                    .sort((a, b) => b.amount - a.amount)
+                    .slice(0, 3);
+
+                setTransactions(transactions);
                 setSpendingCategories(spendingCategories);
+                setTopThreePurchases(topPurchases);
+                setMostPopularVendors(popularVendors);
             } catch (error) {
                 console.error("Error fetching transactions:", error);
             }
@@ -189,6 +233,9 @@ const SpendingMonth: React.FC = () => {
         (sum, transaction) => (transaction.category !== "Income" ? sum + transaction.amount : sum),
         0
     );
+    const spendingDifference = currentMonthSpending - previousMonthSpending;
+    const percentageChange = Math.abs((spendingDifference / previousMonthSpending) * 100).toFixed(2);
+    const isSpendingIncreased = spendingDifference > 0;
 
     //category expenses table
     const categoryExpenses = (
@@ -241,6 +288,46 @@ const SpendingMonth: React.FC = () => {
         </>
     );
 
+    const topPurchases = (
+        <>
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {topThreePurchases.map((purchase) => (
+                    <tr>
+                        <td>{new Date(purchase.date).toLocaleDateString()}</td>
+                        <td>{purchase.vendorName}</td>
+                        <td>${purchase.amount.toFixed(2)}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </>
+    );
+
+    const popularVendorsTable = (
+        <>
+            <thead>
+                <tr>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {mostPopularVendors.map((vendor) => (
+                    <tr key={vendor.vendorName}>
+                        <th scope="row">{vendor.vendorName}</th>
+                        <td>${vendor.amount.toFixed(2)}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </>
+    );
+
     //for text in the center of the pie chart
     const StyledText = styled("text")(({ theme }) => ({
         fill: theme.palette.text.primary,
@@ -270,6 +357,20 @@ const SpendingMonth: React.FC = () => {
         );
     }
 
+    const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedMonth = event.target.value as Month;
+        navigate(`/dashboard/spending/${selectedMonth}`);
+    };
+
+    const capitalizeFirstLetter = (string: string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
+    const monthOptions = monthNames.map((month) => ({
+        value: month,
+        label: capitalizeFirstLetter(month)
+    }));
+
     return (
         <div className="min-w-screen">
             <div className="flex-1">
@@ -280,7 +381,31 @@ const SpendingMonth: React.FC = () => {
                             {" "}
                             {lowercaseMonth.charAt(0).toUpperCase() + lowercaseMonth.slice(1)} Spending
                         </Title>
-                        <p className="text-6xl font-semibold">${totalSpending.toFixed(2)}</p>
+                        <div className="flex items-center">
+                            <p className="text-6xl font-semibold">${currentMonthSpending.toFixed(2)}</p>
+                            <div className="flex items-center ml-5">
+                                <p
+                                    className={`text-2xl font-semibold ${
+                                        isSpendingIncreased ? "text-red-600" : "text-green-600"
+                                    }`}
+                                >
+                                    {isSpendingIncreased ? (
+                                        <Icon.ArrowDropUp className="inline-block mr-1" style={{ fontSize: "2rem" }} />
+                                    ) : (
+                                        <Icon.ArrowDropDown
+                                            className="inline-block mr-1"
+                                            style={{ fontSize: "2rem" }}
+                                        />
+                                    )}
+                                    {percentageChange}% from{" "}
+                                    {capitalizeFirstLetter(
+                                        monthNames[
+                                            getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
+                                        ]
+                                    )}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Full-width row */}
@@ -291,33 +416,47 @@ const SpendingMonth: React.FC = () => {
                                     Back to Annual Spending Overview
                                 </Button>
                             </Link>
-                            <Link to={`/dashboard/spending/${previousMonth}`} className="mr-3">
-                                <Button type="button" className="ml-3">
-                                    Previous Month
-                                </Button>
-                            </Link>
-                            <Link to={`/dashboard/spending/${nextMonth}`} className="mr-3">
-                                <Button type="button" className="ml-3">
-                                    Next Month
-                                </Button>
-                            </Link>
+                            <div className="flex items-center gap-4 bg-transparent p-4">
+                                <Select
+                                    id="month-select"
+                                    name="month-select"
+                                    defaultValue={lowercaseMonth}
+                                    onChange={handleMonthChange}
+                                    style={{
+                                        padding: "0.5rem",
+                                        width: "10rem",
+                                        backgroundColor: "transparent",
+                                        border: "1px solid black",
+                                        borderRadius: "4px",
+                                        appearance: "none"
+                                    }}
+                                >
+                                    {monthOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </div>
                         </div>
-                        <BarChart
-                            xAxis={[
-                                {
-                                    scaleType: "band",
-                                    data: weeklyData.map((d) => `Week ${d.week}`),
-                                    categoryGapRatio: 0.5
-                                } as AxisConfig<"band">
-                            ]}
-                            series={[
-                                { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: "Earnings" },
-                                { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: "Spendings" }
-                            ]}
-                            grid={{ horizontal: true }}
-                            width={1400}
-                            height={400}
-                        />
+                        <div className="flex items-center mb-2 justify-start w-full">
+                            <BarChart
+                                xAxis={[
+                                    {
+                                        scaleType: "band",
+                                        data: weeklyData.map((d) => `Week ${d.week}`),
+                                        categoryGapRatio: 0.5
+                                    } as AxisConfig<"band">
+                                ]}
+                                series={[
+                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: "Earnings" },
+                                    { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: "Spendings" }
+                                ]}
+                                grid={{ horizontal: true }}
+                                width={1400}
+                                height={400}
+                            />
+                        </div>
                     </div>
                     {/* Second row with two columns */}
                     <div className="flex">
@@ -377,11 +516,31 @@ const SpendingMonth: React.FC = () => {
                         </div>
                         {/* section for more insights -> top expenses..and?? */}
 
-                        <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 bg-white shadow-lg">
-                            <h2 className="text-2xl mb-4">Top Expenses</h2>
-                            <Table bordered={false} className="w-full">
-                                {topExpenses}
-                            </Table>
+                        <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md">
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
+                                <Table bordered={false} className="w-full">
+                                    {topPurchases}
+                                </Table>
+                            </div>
+
+                            {/* Top Categories Table */}
+
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-4 mt-1">Top Spending Categories</h2>
+                                <Table bordered={false} className="w-full">
+                                    {topExpenses}
+                                </Table>
+                            </div>
+
+                            {/* Most Popular Vendors Table */}
+
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                                <h2 className="text-2xl mb-4 mt-1">Top Spending Locations</h2>
+                                <Table bordered={false} className="w-full">
+                                    {popularVendorsTable}
+                                </Table>
+                            </div>
                         </div>
                     </div>
                 </section>
