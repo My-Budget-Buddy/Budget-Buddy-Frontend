@@ -1,32 +1,32 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface W2State{
-    "state": string,
-    "id"?: number,
-    "taxReturnId": number,
-    "year": number,
-    "userId": number,
-    "employer": string,
-    "wages": number,
-    "federalIncomeTaxWithheld": number,
-    "stateIncomeTaxWithheld": number,
-    "socialSecurityTaxWithheld": number,
-    "medicareTaxWithheld": number,
-    "imageKey": any
+    "w2state": string,
+    "w2id"?: number,
+    "w2taxReturnId": number,
+    "w2year": number,
+    "w2userId": number,
+    "w2employer": string,
+    "w2wages": number,
+    "w2federalIncomeTaxWithheld": number,
+    "w2stateIncomeTaxWithheld": number,
+    "w2socialSecurityTaxWithheld": number,
+    "w2medicareTaxWithheld": number,
+    "w2imageKey": any
 }
 
 const initialState: W2State = {
-    "state": "FLORIDA",
-    "taxReturnId": 1,
-    "year": 2024,
-    "userId": 1,
-    "employer": "Skillstorm",
-    "wages": 0,
-    "federalIncomeTaxWithheld": 0,
-    "stateIncomeTaxWithheld": 0,
-    "socialSecurityTaxWithheld": 0,
-    "medicareTaxWithheld": 0,
-    "imageKey": null
+    "w2state": "FL",
+    "w2taxReturnId": 1,
+    "w2year": 2024,
+    "w2userId": 1,
+    "w2employer": "",
+    "w2wages": 0,
+    "w2federalIncomeTaxWithheld": 0,
+    "w2stateIncomeTaxWithheld": 0,
+    "w2socialSecurityTaxWithheld": 0,
+    "w2medicareTaxWithheld": 0,
+    "w2imageKey": null
 }
 
 

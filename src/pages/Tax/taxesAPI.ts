@@ -27,6 +27,21 @@ interface RawBudgetToSend {
     //createdTimestamp: string;
 };
 
+interface W2StateR{
+    "state": string,
+    "id"?: number,
+    "taxReturnId": number,
+    "year": number,
+    "userId": number,
+    "employer": string,
+    "wages": number,
+    "federalIncomeTaxWithheld": number,
+    "stateIncomeTaxWithheld": number,
+    "socialSecurityTaxWithheld": number,
+    "medicareTaxWithheld": number,
+    "imageKey": any
+};
+
 export const createTaxReturn = (initTaxReturn : initReturn) => {
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 }
@@ -108,10 +123,36 @@ export const deleteAccountAPI = (accountId: number) => {
     return apiClient.delete(`/accounts/1/${accountId}`);
 }
 
-export const createW2API = (w2payload: Omit<W2State, "id">[]) => {
-    return apiClient.post(`/taxes/w2s?taxReturnId=1`, w2payload);
+export const createW2API = (w2payload: Omit<W2State, "w2id">[]) => {
+    const result: W2StateR[] = [];
+    for (const payload of w2payload) {
+        const mappedPayload: W2StateR = {
+            state: payload.w2state,
+            taxReturnId: payload.w2taxReturnId,
+            year: payload.w2year,
+            userId: payload.w2userId,
+            employer: payload.w2employer,
+            wages: payload.w2wages,
+            federalIncomeTaxWithheld: payload.w2federalIncomeTaxWithheld,
+            stateIncomeTaxWithheld: payload.w2stateIncomeTaxWithheld,
+            socialSecurityTaxWithheld: payload.w2socialSecurityTaxWithheld,
+            medicareTaxWithheld: payload.w2medicareTaxWithheld,
+            imageKey: undefined
+        };
+        result.push(mappedPayload);
+    }
+
+    return apiClient.post(`/taxes/w2s?taxReturnId=1`, result);
 }
 
-export const createTaxReturnAPI = (taxPayload: taxReturn) => {
+export const createTaxReturnAPI = (taxPayload: Omit<taxReturn, "id">) => {
     return apiClient.put(`/taxes/taxreturns/1`, taxPayload);
+}
+
+export const findW2sByTaxReturnIdAPI = () => {
+    return apiClient.get(`/taxes/w2s?taxReturnId=1`);
+}
+
+export const findAllDeductionsByTaxReturnAPI = () => {
+    return apiClient.get(`/taxes/taxreturns/1/deductions`);
 }

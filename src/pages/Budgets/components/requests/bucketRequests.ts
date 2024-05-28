@@ -2,7 +2,7 @@ import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 
 export async function getBuckets() {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/user/1`;
+    const endpoint = `/buckets/user/1`;
     try {
         console.log("getting... ");
         const response = await fetch(endpoint, {

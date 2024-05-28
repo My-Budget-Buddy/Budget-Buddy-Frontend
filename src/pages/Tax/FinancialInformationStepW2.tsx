@@ -2,18 +2,18 @@ import { ChangeEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
+import { setOtherIncomeInfo } from "./otherIncomeSlice";
 import { Fieldset, Form, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
 import { setTaxReturnInfo } from "./TaxReturnSlice";
 const FinancialInformationStepW2: React.FC = () => {
 
 
     
+    const otherIncome = useSelector((state : RootState) => state.otherIncome);
     
-    const W2info = useSelector((state: RootState) => state.w2); 
-    const taxReturnInfo = useSelector((state:RootState) => state.taxReturn.taxReturn)
     const dispatch = useDispatch();
-    const [errors, setErrors] = useState<typeof W2info>({} as typeof W2info);
-    const [errors2, setErrors2] = useState<typeof taxReturnInfo>({} as typeof taxReturnInfo);
+    
+    const [errors2, setErrors2] = useState<typeof otherIncome>({} as typeof otherIncome);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -25,14 +25,14 @@ const FinancialInformationStepW2: React.FC = () => {
           error = 'Status must be at least 3 characters long.';
         }
     
-        setErrors({ ...errors, [name]: error });
+        
         setErrors2({ ...errors2, [name]: error });
     
         if (!error) {
-          const updatedW2info = { ...W2info, [name]: value };
-          const updatedTaxReturnInfo = {...taxReturnInfo, [name]: value}
-          dispatch(setW2Info(updatedW2info));
-          dispatch(setTaxReturnInfo(updatedTaxReturnInfo));
+          const updatedOtherIncome = { ...otherIncome, [name]: value };
+          
+          dispatch(setOtherIncomeInfo(updatedOtherIncome));
+          
         }
       };
 
@@ -40,89 +40,75 @@ const FinancialInformationStepW2: React.FC = () => {
         <>
             <div>
                 
-                    {/* <FormGroup >
-                        <label htmlFor="otherIncome">Other Income</label>
+                    <FormGroup >
+                        <label htmlFor="otherIncome">Long Term Capital Gains</label>
                             <TextInput
                                 id="otherIncome"
-                                name="otherIncome"
+                                name="oilongTermCapitalGains"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.otherIncome}
+                                value={otherIncome.oilongTermCapitalGains}
                                 onChange={handleChange}
-                                validationStatus={errors2.otherIncome ? "error" : undefined}
+                                validationStatus={errors2.oilongTermCapitalGains ? "error" : undefined}
                             />
-                            {errors2.otherIncome && <span style={{ color: 'red' }}>{errors2.otherIncome}</span>}
+                            {errors2.oilongTermCapitalGains && <span style={{ color: 'red' }}>{errors2.oilongTermCapitalGains}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="taxCredit">Tax Credit</label>
+                        <label htmlFor="otherIncome">Short Term Capital Gains</label>
                             <TextInput
-                                id="taxCredit"
-                                name="taxCredit"
+                                id="otherIncome"
+                                name="oishortTermCapitalGains"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.taxCredit}
+                                value={otherIncome.oishortTermCapitalGains}
                                 onChange={handleChange}
-                                validationStatus={errors2.taxCredit ? "error" : undefined}
+                                validationStatus={errors2.oishortTermCapitalGains ? "error" : undefined}
                             />
-                            {errors2.taxCredit && <span style={{ color: 'red' }}>{errors2.taxCredit}</span>}
+                            {errors2.oishortTermCapitalGains && <span style={{ color: 'red' }}>{errors2.oishortTermCapitalGains}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="fedTaxWithheld">Additional Federal Tax Withheld</label>
+                        <label htmlFor="otherIncome">Other Investment Income</label>
                             <TextInput
-                                id="fedTaxWithheld"
-                                name="taxReturnInfo.fedTaxWithheld"
+                                id="otherIncome"
+                                name="oiotherInvestmentIncome"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.fedTaxWithheld}
+                                value={otherIncome.oiotherInvestmentIncome}
                                 onChange={handleChange}
-                                validationStatus={errors2.fedTaxWithheld ? "error" : undefined}
+                                validationStatus={errors2.oiotherInvestmentIncome ? "error" : undefined}
                             />
-                            {errors2.fedTaxWithheld && <span style={{ color: 'red' }}>{errors2.fedTaxWithheld}</span>}
+                            {errors2.oiotherInvestmentIncome && <span style={{ color: 'red' }}>{errors2.oiotherInvestmentIncome}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="stateTaxWithheld">Additional State Tax Withheld</label>
+                        <label htmlFor="otherIncome">Net Business Income</label>
                             <TextInput
-                                id="stateTaxWithheld"
-                                name="stateTaxWithheld"
+                                id="otherIncome"
+                                name="oinetBusinessIncome"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.stateTaxWithheld}
+                                value={otherIncome.oinetBusinessIncome}
                                 onChange={handleChange}
-                                validationStatus={errors2.stateTaxWithheld ? "error" : undefined}
+                                validationStatus={errors2.oinetBusinessIncome ? "error" : undefined}
                             />
-                            {errors2.stateTaxWithheld && <span style={{ color: 'red' }}>{errors2.stateTaxWithheld}</span>}
+                            {errors2.oinetBusinessIncome && <span style={{ color: 'red' }}>{errors2.oinetBusinessIncome}</span>}
                     </FormGroup>
 
                     <FormGroup >
-                        <label htmlFor="socialSecurityTaxWithheld">Additional Social Security Tax Withheld</label>
+                        <label htmlFor="otherIncome">Additional Income</label>
                             <TextInput
-                                id="socialSecurityTaxWithheld"
-                                name="socialSecurityTaxWithheld"
+                                id="otherIncome"
+                                name="oiadditionalIncome"
                                 type="text"
                                 //defaultValue="test"
-                                value={taxReturnInfo.socialSecurityTaxWithheld}
+                                value={otherIncome.oiadditionalIncome}
                                 onChange={handleChange}
-                                validationStatus={errors2.socialSecurityTaxWithheld ? "error" : undefined}
+                                validationStatus={errors2.oiadditionalIncome ? "error" : undefined}
                             />
-                            {errors2.socialSecurityTaxWithheld && <span style={{ color: 'red' }}>{errors2.socialSecurityTaxWithheld}</span>}
+                            {errors2.oiadditionalIncome && <span style={{ color: 'red' }}>{errors2.oiadditionalIncome}</span>}
                     </FormGroup>
-
-                    <FormGroup >
-                        <label htmlFor="medicareTaxWithheld">Additional Medicare Tax Withheld</label>
-                            <TextInput
-                                id="medicareTaxWithheld"
-                                name="medicareTaxWithheld"
-                                type="text"
-                                //defaultValue="test"
-                                value={taxReturnInfo.medicareTaxWithheld}
-                                onChange={handleChange}
-                                validationStatus={errors2.medicareTaxWithheld ? "error" : undefined}
-                            />
-                            {errors2.medicareTaxWithheld && <span style={{ color: 'red' }}>{errors2.medicareTaxWithheld}</span>}
-                    </FormGroup> */}
                
             </div>
         </>

@@ -14,8 +14,6 @@ const DisplayTaxTables: React.FC = () => {
   const nav = useNavigate();
   const dispatch = useDispatch();
 
-  
-
   useEffect(() => {
     getTaxReturnByUserId(1)
       .then((res) => {
@@ -79,6 +77,11 @@ const DisplayTaxTables: React.FC = () => {
     nav('/dashboard/tax/1/w2/0');
   };
 
+  const currentYear = new Date().getFullYear();
+
+  const currentYearTaxReturns = sortedData.filter(data => data.year === currentYear);
+  const archivedTaxReturns = sortedData.filter(data => data.year !== currentYear);
+
   return (
     <>
       <div className="flex flex-col flex-wrap content-center">
@@ -98,7 +101,7 @@ const DisplayTaxTables: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedData.map((data, index) => (
+              {currentYearTaxReturns.map((data, index) => (
                 <tr key={index}>
                   <td>{data.filingStatus}</td>
                   <td>{data.firstName}</td>
@@ -120,20 +123,18 @@ const DisplayTaxTables: React.FC = () => {
             <thead>
               <tr>
                 <th>Filing Status</th>
-                <th onClick={() => handleSort('phoneNumber')} style={{ cursor: 'pointer' }}>
-                  Organization {getSortIndicator('phoneNumber')}
-                </th>
-                <th onClick={() => handleSort('year')} style={{ cursor: 'pointer' }}>
-                  Year {getSortIndicator('year')}
-                </th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Year</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {sortedData.map((data, index) => (
+              {archivedTaxReturns.map((data, index) => (
                 <tr key={index}>
                   <td>{data.filingStatus}</td>
-                  <td>{data.phoneNumber}</td>
+                  <td>{data.firstName}</td>
+                  <td>{data.lastName}</td>
                   <td>{data.year}</td>
                   <td>
                     <div className="action-buttons">

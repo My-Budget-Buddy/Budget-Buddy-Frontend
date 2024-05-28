@@ -5,6 +5,8 @@ import formSubmissionReducer from "./formSubmissionStateSlice";
 import simpleSubmissionReducer from "./simpleSubmissionSlice";
 import w2Reducer from "../../pages/Tax/W2Slice";
 import taxReturnReducer from "../../pages/Tax/TaxReturnSlice"
+import otherIncomeReducer from "../../pages/Tax/otherIncomeSlice"
+import deductionsReducer from "../../pages/Tax/deductionsSlice"
 
 export const store = configureStore({
     reducer: {
@@ -13,7 +15,9 @@ export const store = configureStore({
         formStatus: formSubmissionReducer,
         simpleFormStatus: simpleSubmissionReducer,
         w2: w2Reducer,
-        taxReturn: taxReturnReducer
+        taxReturn: taxReturnReducer,
+        otherIncome : otherIncomeReducer,
+        deductions : deductionsReducer
     }
 });
 

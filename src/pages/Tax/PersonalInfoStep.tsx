@@ -37,7 +37,7 @@ const PersonalInfoStep: React.FC = () => {
     return (
         <>
             <div>
-                <Fieldset legend="Employer's Address" legendStyle="large">
+                <Fieldset legend="Your Address" legendStyle="large">
                     <FormGroup >
                         <label htmlFor="firstName">First Name</label>
                             <TextInput
