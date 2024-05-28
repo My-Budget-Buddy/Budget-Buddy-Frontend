@@ -26,7 +26,10 @@ jobs:
       - name: Update npm
         run: npm install -g npm@7
       - name: Update Node.js
-        run: npm install -g node@latest
+        run: |
+          if ! command -v node &> /dev/null; then
+            npm install -g node@latest
+          fi
       - name: Clear npm cache
         run: npm cache clean --force
       - run: npm ci
