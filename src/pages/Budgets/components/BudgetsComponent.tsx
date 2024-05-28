@@ -2,21 +2,25 @@ import { Table, Button, ButtonGroup, Icon } from "@trussworks/react-uswds";
 import BudgetsRow from "./subComponents/BudgetsRow";
 import NewBudgetModal from "./modals/NewBudgetModal";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateBudgets, updateSelectedDate } from "../../../util/redux/budgetSlice";
 import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { BudgetRowProps } from "../../../types/budgetInterfaces";
 import { getCategoriesTransactionsMap, getCompleteBudgets } from "./util/transactionsCalculator";
 import { Transaction } from "../../../types/models";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../../util/redux/hooks";
+
+type SortableKeys = keyof BudgetRowProps;
+const defaultKey: SortableKeys = "category";
 
 const BudgetsComponent: React.FC = () => {
-    const isSending = useSelector((store: any) => store.simpleFormStatus.isSending);
-    const budgetsStore = useSelector((store: any) => store.budgets);
+    const isSending = useAppSelector((store) => store.simpleFormStatus.isSending);
+    const budgetsStore = useAppSelector((store) => store.budgets);
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const currentDate = new Date();
-    const [sortingOrder, setSortingOrder] = useState<{ key: string | null; direction: string }>({
+    const [sortingOrder, setSortingOrder] = useState<{ key: SortableKeys | null; direction: string }>({
         key: "category",
         direction: "asc"
     });
@@ -25,11 +29,11 @@ const BudgetsComponent: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date(currentDate.setDate(1)));
 
     // one month before selected date
-    let previousMonthDate = new Date(selectedDate);
+    const previousMonthDate = new Date(selectedDate);
     previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
 
     // one month after selected date
-    let nextMonthDate = new Date(selectedDate);
+    const nextMonthDate = new Date(selectedDate);
     nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
 
     const [transactionsMap, setTransactionsMap] = useState<Map<string, Transaction[]>>(
@@ -57,7 +61,7 @@ const BudgetsComponent: React.FC = () => {
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
             // Sort the budgets before updating the store
-            const sortedBudgets = sortBudgets(completeBudgets, sortingOrder.key ?? "category", sortingOrder.direction);
+            const sortedBudgets = sortBudgets(completeBudgets, sortingOrder.key ?? defaultKey, sortingOrder.direction);
             dispatch(updateBudgets(sortedBudgets));
         })();
     }, [isSending]);
@@ -95,14 +99,14 @@ const BudgetsComponent: React.FC = () => {
         setSelectedDate(new Date(nextMonthDate));
     };
 
-    const sortBudgets = (budgets: any[], key: string, direction: string) => {
+    const sortBudgets = (budgets: BudgetRowProps[], key: SortableKeys, direction: string) => {
         // using the spread operator so that the state of budgets isn't modified directly
         return [...budgets].sort((a, b) => {
             let aValue = a[key];
             let bValue = b[key];
 
             // the remaining value is not stored in the store like the other values so we handle that exception here
-            if (key === "remaining") {
+            if (key === ("remaining" as SortableKeys)) {
                 aValue = a.totalAmount - a.spentAmount;
                 bValue = b.totalAmount - b.spentAmount;
             }
@@ -117,7 +121,7 @@ const BudgetsComponent: React.FC = () => {
         });
     };
 
-    const sortStoreBudgets = (key: string) => {
+    const sortStoreBudgets = (key: SortableKeys) => {
         let direction = "asc";
         if (sortingOrder.key === key && sortingOrder.direction === "asc") {
             direction = "desc";
@@ -176,7 +180,7 @@ const BudgetsComponent: React.FC = () => {
                             {t("budgets.actual")}
                             {renderSortArrow("spentAmount")}
                         </th>
-                        <th onClick={() => sortStoreBudgets("remaining")}>
+                        <th onClick={() => sortStoreBudgets("remaining" as SortableKeys)}>
                             {t("budgets.remaining")}
                             {renderSortArrow("remaining")}
                         </th>
@@ -187,25 +191,31 @@ const BudgetsComponent: React.FC = () => {
                 </thead>
 
                 <tbody>
-                    {/* map table rows using budgets data from backend */}
-                    {/* budgets.map((budget) => {
-                        calculate actual of current row from transactions
-                        <BudgetsRow />
-                    }) */}
-                    {budgetsStore.budgets.map((budget: BudgetRowProps) => {
-                        return (
-                            <BudgetsRow
-                                key={budget.id}
-                                id={budget.id}
-                                category={budget.category}
-                                totalAmount={budget.totalAmount}
-                                isReserved={budget.isReserved}
-                                actual={budget.spentAmount}
-                                notes={budget.notes}
-                                transactions={transactionsMap.get(budget.category)}
-                            />
-                        );
-                    })}
+                    {budgetsStore.budgets.length === 0 ? (
+                        <tr>
+                            <td colSpan={7} className="text-center align-middle">
+                                <h1>{t("budgets.no-budgets")}</h1>
+                                {t("budgets.click")}{" "}
+                                <span className="font-bold text-[#005ea2]">{t("budgets.add-new-budget")}</span>{" "}
+                                {t("budgets.to-add-budget")}
+                            </td>
+                        </tr>
+                    ) : (
+                        budgetsStore.budgets.map((budget: BudgetRowProps) => {
+                            return (
+                                <BudgetsRow
+                                    key={budget.id}
+                                    id={budget.id}
+                                    category={budget.category}
+                                    totalAmount={budget.totalAmount}
+                                    isReserved={budget.isReserved}
+                                    actual={budget.spentAmount}
+                                    notes={budget.notes}
+                                    transactions={transactionsMap.get(budget.category)}
+                                />
+                            );
+                        })
+                    )}
                 </tbody>
             </Table>
             <div className="flex flex-col items-center">

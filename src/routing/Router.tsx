@@ -19,7 +19,6 @@ import TaxEditView from "../pages/Tax/TaxEditView.tsx";
 
 import { loadBudgets } from "./loaders.ts";
 
-
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route errorElement={<ErrorPage />}>

@@ -12,12 +12,15 @@ import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { getCompleteBudgets } from "./util/transactionsCalculator";
 import { getCurrentMonthYear } from "../../../util/util";
 import { updateUserId } from "../../../util/redux/userSlice";
+import { formatCurrency } from "../../../util/helpers";
+import { useTranslation } from "react-i18next";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
 };
 
 const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }) => {
+    const { t } = useTranslation();
     const budgets = useAppSelector((store) => store.budgets);
     const buckets = useAppSelector((store) => store.buckets);
     const dispatch = useDispatch();
@@ -44,10 +47,10 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
             dispatch(updateBudgets(completeBudgets));
 
-            const totalReserved = budgets.totalReserved + buckets.totalReserved;
+            const totalReserved = Math.round((budgets.totalReserved + buckets.totalReserved) * 100) / 100;
 
             const grossFundsAvailable = await getTotalFundsAvailable();
-            setTotalFundsAvailable(grossFundsAvailable - totalReserved);
+            setTotalFundsAvailable(Math.round((grossFundsAvailable - totalReserved) * 100) / 100);
             //Also, dispatch userId.
             // TODO Move this to a more sensible location.
             // TODO See if backend is able to provide the required data. Scrap if not.
@@ -66,51 +69,100 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
 
     return (
         <>
-            <div className="flex flex-row justify-between w-full" id="summary-component-container">
+            <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-col items-center justify-around ml-8" hidden={hideAdditionalInfo}>
-                    <div className="text-2xl font-bold">Total Available Funds Across Account</div>
-                    <div className=" text-6xl text-green-600 font-bold">${budgets.totalFundsAvailable}</div>
+                    <div className="text-2xl font-bold">{t("budgets.total-funds")}</div>
+                    <div className=" text-6xl text-green-600 font-bold">{formatCurrency(totalFundsAvailable)}</div>
                     <div>{"(accounts - reserved)"}</div>
                 </div>
 
                 <div className="flex flex-col items-center">
                     <div className="text-2xl mt-4 font-bold">
-                        Left to spend in {selectedMonthString} {selectedYear}
+                        {t("budgets.left-to-spend")} {selectedMonthString} {selectedYear}
                     </div>
-                    <Gauge
-                        width={400}
-                        height={200}
-                        value={percentageRemaining}
-                        text={`$${remainingBudget}`}
-                        startAngle={-90}
-                        endAngle={90}
-                        innerRadius="80%"
-                        outerRadius="100%"
-                        sx={{
-                            [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: 40,
-                                transform: "translate(0px, -20px)"
-                            }
-                        }}
-                        // ...
-                    />
-                    <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">of ${budgets.spendingBudget}</div>
+                    {percentageRemaining >= 0 ? (
+                        percentageRemaining >= 25 ? (
+                            <Gauge
+                                width={400}
+                                height={200}
+                                value={percentageRemaining}
+                                text={formatCurrency(remainingBudget)}
+                                startAngle={-90}
+                                endAngle={90}
+                                innerRadius="80%"
+                                outerRadius="100%"
+                                sx={{
+                                    [`& .${gaugeClasses.valueText}`]: {
+                                        fontSize: 40,
+                                        transform: "translate(0px, -20px)"
+                                    },
+                                    [`& .${gaugeClasses.valueArc}`]: {
+                                        fill: "#52b202"
+                                    }
+                                }}
+                                // ...
+                            />
+                        ) : (
+                            <Gauge
+                                width={400}
+                                height={200}
+                                value={percentageRemaining}
+                                text={formatCurrency(remainingBudget)}
+                                startAngle={-90}
+                                endAngle={90}
+                                innerRadius="80%"
+                                outerRadius="100%"
+                                sx={{
+                                    [`& .${gaugeClasses.valueText}`]: {
+                                        fontSize: 40,
+                                        transform: "translate(0px, -20px)"
+                                    },
+                                    [`& .${gaugeClasses.valueArc}`]: {
+                                        fill: "#b20202"
+                                    }
+                                }}
+                                // ...
+                            />
+                        )
+                    ) : (
+                        <Gauge
+                            width={400}
+                            height={200}
+                            value={0}
+                            text={formatCurrency(remainingBudget)}
+                            startAngle={-90}
+                            endAngle={90}
+                            innerRadius="80%"
+                            outerRadius="100%"
+                            sx={{
+                                [`& .${gaugeClasses.valueText}`]: {
+                                    fontSize: 40,
+                                    transform: "translate(0px, -20px)"
+                                }
+                            }}
+                            // ...
+                        />
+                    )}
+                    <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">
+                        {t("budgets.of")} {formatCurrency(budgets.spendingBudget)}
+                    </div>
                 </div>
 
                 <div className="flex flex-col justify-around mr-8" hidden={hideAdditionalInfo}>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">
-                            {selectedMonthString} {selectedYear} Spending Budget <EditSpendingBudgetModal />
+                            {selectedMonthString} {selectedYear} {t("budgets.spending-budget")}{" "}
+                            <EditSpendingBudgetModal />
                         </div>
-                        <div className="text-lg">${budgets.spendingBudget}</div>
+                        <div className="text-lg">{formatCurrency(budgets.spendingBudget)}</div>
                     </div>
                     <div className="flex flex-col items-center">
-                        <div className="text-2xl font-bold">Allocated</div>
-                        <div className="text-lg">${budgets.totalReserved}</div>
+                        <div className="text-2xl font-bold">{t("budgets.allocated")}</div>
+                        <div className="text-lg">{formatCurrency(budgets.totalReserved)}</div>
                     </div>
                     <div className="flex flex-col items-center">
-                        <div className="text-2xl font-bold">Remaining</div>
-                        <div className="text-lg">${remainingBudget}</div>
+                        <div className="text-2xl font-bold">{t("budgets.remaining")}</div>
+                        <div className="text-lg">{formatCurrency(remainingBudget)}</div>
                     </div>
                 </div>
             </div>
