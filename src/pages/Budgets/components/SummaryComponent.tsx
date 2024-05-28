@@ -78,23 +78,69 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                     <div className="text-2xl mt-4 font-bold">
                         Left to spend in {selectedMonthString} {selectedYear}
                     </div>
-                    <Gauge
-                        width={400}
-                        height={200}
-                        value={percentageRemaining}
-                        text={formatCurrency(remainingBudget)}
-                        startAngle={-90}
-                        endAngle={90}
-                        innerRadius="80%"
-                        outerRadius="100%"
-                        sx={{
-                            [`& .${gaugeClasses.valueText}`]: {
-                                fontSize: 40,
-                                transform: "translate(0px, -20px)"
-                            }
-                        }}
-                        // ...
-                    />
+                    {percentageRemaining >= 0 ? (
+                        percentageRemaining >= 25 ? (
+                            <Gauge
+                                width={400}
+                                height={200}
+                                value={percentageRemaining}
+                                text={formatCurrency(remainingBudget)}
+                                startAngle={-90}
+                                endAngle={90}
+                                innerRadius="80%"
+                                outerRadius="100%"
+                                sx={{
+                                    [`& .${gaugeClasses.valueText}`]: {
+                                        fontSize: 40,
+                                        transform: "translate(0px, -20px)"
+                                    },
+                                    [`& .${gaugeClasses.valueArc}`]: {
+                                        fill: "#52b202"
+                                    }
+                                }}
+                                // ...
+                            />
+                        ) : (
+                            <Gauge
+                                width={400}
+                                height={200}
+                                value={percentageRemaining}
+                                text={formatCurrency(remainingBudget)}
+                                startAngle={-90}
+                                endAngle={90}
+                                innerRadius="80%"
+                                outerRadius="100%"
+                                sx={{
+                                    [`& .${gaugeClasses.valueText}`]: {
+                                        fontSize: 40,
+                                        transform: "translate(0px, -20px)"
+                                    },
+                                    [`& .${gaugeClasses.valueArc}`]: {
+                                        fill: "#b20202"
+                                    }
+                                }}
+                                // ...
+                            />
+                        )
+                    ) : (
+                        <Gauge
+                            width={400}
+                            height={200}
+                            value={0}
+                            text={formatCurrency(remainingBudget)}
+                            startAngle={-90}
+                            endAngle={90}
+                            innerRadius="80%"
+                            outerRadius="100%"
+                            sx={{
+                                [`& .${gaugeClasses.valueText}`]: {
+                                    fontSize: 40,
+                                    transform: "translate(0px, -20px)"
+                                }
+                            }}
+                            // ...
+                        />
+                    )}
                     <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">
                         of {formatCurrency(budgets.spendingBudget)}
                     </div>
