@@ -79,6 +79,12 @@
       "delete-bucket": "Eliminar este depósito?",
       "edit": "Editar",
       "reserve-from-funds": "Presupuesto de reserva con fondos disponibles",
+      "of": "de",
+      "no-budgets": "Actualmente no hay presupuestos para este mes",
+      "no-buckets": "Actualmente no hay depósitos de ahorro",
+      "to-add-budget": "para agregar un nuevo presupuesto",
+      "to-add-bucket": "para agregar un nuevo depósito",
+      "click": "Hacer clic",
       "buttons": {
         "delete": "Borrar",
         "done": "Hecho",

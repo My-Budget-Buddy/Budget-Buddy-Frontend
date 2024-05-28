@@ -79,6 +79,12 @@
       "delete-bucket": "Delete this bucket?",
       "edit": "Edit",
       "reserve-from-funds": "Reserve budget from available funds",
+      "of": "of",
+      "no-budgets": "There are currently no budgets for this month",
+      "no-buckets": "There are currently no savings buckets",
+      "to-add-budget": "to add a new budget",
+      "to-add-bucket": "to add a new bucket",
+      "click": "Click",
       "buttons": {
         "delete": "Delete",
         "done": "Done",
