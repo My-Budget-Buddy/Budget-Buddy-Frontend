@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { BudgetRowProps } from "../../types/budgetInterfaces";
 import { updateBudgets } from "../../util/redux/budgetSlice";
 import { getBudgetsByMonthYear } from "../Budgets/components/requests/budgetRequests";
+import { getCompleteBudgets } from "../Budgets/components/util/transactionsCalculator";
 
 interface InitialAccountType {
     id: number;
@@ -65,8 +66,6 @@ const Dashboard: React.FC = () => {
     const [budgetGaugeTotal, setBudgetGaugeTotal] = useState(0);
     const [budgetGaugeSpent, setBudgetGaugeSpent] = useState(0);
     const dispatch = useDispatch();
-
-console.log('budgets Store: ', budgetsStore.budgets)
 
     // ---Calculate net cash---
     useEffect(() => {
@@ -182,14 +181,14 @@ console.log('budgets Store: ', budgetsStore.budgets)
         };
         fetchMonthlyTransactions();
     }, []);
-    // console.log(monthlyTransactions)
 
     //---- budgets gauge ----
     useEffect(() => {
         const fetchBudgets = async () => {
             try {
                 const response = await getBudgetsByMonthYear(budgetsStore.monthYear)
-                dispatch(updateBudgets(response));
+                const completeBudgets = await getCompleteBudgets(response);
+                dispatch(updateBudgets(completeBudgets));
             } catch (error) {
                 console.log('There was an error fetching budgets: ', error)
             }
@@ -393,9 +392,9 @@ console.log('budgets Store: ', budgetsStore.budgets)
                         <Gauge
                             width={200}
                             height={200}
-                            value={budgetGaugeSpent}
+                            value={parseFloat((budgetGaugeSpent).toFixed(2))}
                             // value={300}
-                            valueMax={budgetGaugeTotal}
+                            valueMax={parseFloat(budgetGaugeTotal.toFixed(2))}
                             startAngle={0}
                             endAngle={360}
                             innerRadius="80%"
@@ -413,7 +412,7 @@ console.log('budgets Store: ', budgetsStore.budgets)
                                 <p>{budget.category}</p>
                                 <p className="flex items-center">
                                     <Icon.AttachMoney />
-                                    {formatCurrency(budget.spentAmount, false)} /  {formatCurrency(budget.totalAmount, false)}
+                                    <span className={`${budget.spentAmount <= budget.totalAmount ? "" : "text-[#b50909] font-bold"}`}>{formatCurrency(budget.spentAmount, false)}</span> / {formatCurrency(budget.totalAmount, false)}
                                 </p>
                             </div>
                         ))}
