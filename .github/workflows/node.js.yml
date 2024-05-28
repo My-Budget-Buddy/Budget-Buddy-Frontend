@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - name: Update npm
-        run: npm install -g npm@latest
+        run: npm install -g npm@7
       - name: Update Node.js
         run: npm install -g node@latest
       - name: Clear npm cache
@@ -32,4 +32,3 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
-
