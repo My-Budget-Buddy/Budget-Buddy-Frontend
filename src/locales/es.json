@@ -120,7 +120,8 @@
       "vendor-name": "Nombre del Proveedor",
       "description": "Descripción",
       "submit": "Enviar",
-      "account": "Cuenta"
+      "account": "Cuenta",
+      "history": "Todas las {{val}} transacciones"
     },
     "tax": {
       "title": "Impuestos"
