@@ -89,9 +89,19 @@ function SavingsBucketTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {listOfBuckets.map((rowData: SavingsBucketRowProps) => (
-                        <SavingsBucketRow key={rowData.data.id} data={rowData.data} />
-                    ))}
+                    {listOfBuckets.length === 0 ? (
+                        <tr>
+                            <td colSpan={7} className="text-center align-middle">
+                                <h1>There are currently no savings buckets</h1>
+                                Click <span className="font-bold text-[#005ea2]">Add New Savings Bucket</span> to add a
+                                new bucket
+                            </td>
+                        </tr>
+                    ) : (
+                        listOfBuckets.map((rowData: SavingsBucketRowProps) => (
+                            <SavingsBucketRow key={rowData.data.id} data={rowData.data} />
+                        ))
+                    )}
                 </tbody>
             </Table>
 

@@ -187,25 +187,30 @@ const BudgetsComponent: React.FC = () => {
                 </thead>
 
                 <tbody>
-                    {/* map table rows using budgets data from backend */}
-                    {/* budgets.map((budget) => {
-                        calculate actual of current row from transactions
-                        <BudgetsRow />
-                    }) */}
-                    {budgetsStore.budgets.map((budget: BudgetRowProps) => {
-                        return (
-                            <BudgetsRow
-                                key={budget.id}
-                                id={budget.id}
-                                category={budget.category}
-                                totalAmount={budget.totalAmount}
-                                isReserved={budget.isReserved}
-                                actual={budget.spentAmount}
-                                notes={budget.notes}
-                                transactions={transactionsMap.get(budget.category)}
-                            />
-                        );
-                    })}
+                    {budgetsStore.budgets.length === 0 ? (
+                        <tr>
+                            <td colSpan={7} className="text-center align-middle">
+                                <h1>There are currently no budgets for this month</h1>
+                                Click <span className="font-bold text-[#005ea2]">Add New Budget</span> to add a new
+                                budget
+                            </td>
+                        </tr>
+                    ) : (
+                        budgetsStore.budgets.map((budget: BudgetRowProps) => {
+                            return (
+                                <BudgetsRow
+                                    key={budget.id}
+                                    id={budget.id}
+                                    category={budget.category}
+                                    totalAmount={budget.totalAmount}
+                                    isReserved={budget.isReserved}
+                                    actual={budget.spentAmount}
+                                    notes={budget.notes}
+                                    transactions={transactionsMap.get(budget.category)}
+                                />
+                            );
+                        })
+                    )}
                 </tbody>
             </Table>
             <div className="flex flex-col items-center">

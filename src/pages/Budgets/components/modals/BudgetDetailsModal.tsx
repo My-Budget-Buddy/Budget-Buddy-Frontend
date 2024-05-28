@@ -13,6 +13,7 @@ import { useRef } from "react";
 import { Transaction } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
 import { categoryIconsMap } from "../util/categoryIconsMap";
+import { formatCurrency } from "../../../../util/helpers";
 
 interface BudgetDetailsProps {
     category: string;
@@ -68,16 +69,16 @@ const BudgetDetailsModal: React.FC<BudgetDetailsProps> = ({
 
                         <div className="flex justify-between mr-10 mt-4">
                             <div className="text-lg font-bold">{t("budgets.budgeted")}:</div>
-                            <div className="text-lg">$ {budgeted}</div>
+                            <div className="text-lg">{formatCurrency(budgeted)}</div>
                         </div>
 
                         <div className="flex justify-between mr-10 mt-4">
                             <div className="text-lg font-bold">{t("budgets.actual")}:</div>
-                            <div className="text-lg">$ {actual}</div>
+                            <div className="text-lg">{formatCurrency(actual)}</div>
                         </div>
                         <div className="flex justify-between mr-10 mt-4">
                             <div className="text-lg font-bold">{t("budgets.remaining")}:</div>
-                            <div className="text-lg">$ {remaining}</div>
+                            <div className="text-lg">{formatCurrency(remaining)}</div>
                         </div>
                     </div>
 
