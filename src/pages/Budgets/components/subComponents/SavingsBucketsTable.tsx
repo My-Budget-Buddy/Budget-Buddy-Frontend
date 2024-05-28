@@ -7,6 +7,9 @@ import { updateBuckets } from "../../../../util/redux/bucketSlice";
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 import { getBuckets } from "../requests/bucketRequests";
 import { useTranslation } from "react-i18next";
+//IMPORTANT-  This ensures that key can only be 'id', 'name', 'amount_required', 'amount_reserved', or 'is_currently_reserved'.
+//Avoid just treating keys as a generic string
+type SortableKeys = keyof SavingsBucketRowProps["data"];
 
 function SavingsBucketTable() {
     const [listOfBuckets, setListOfBuckets] = useState<SavingsBucketRowProps[]>([]);
@@ -14,7 +17,7 @@ function SavingsBucketTable() {
     const dispatch = useAppDispatch();
     const storedBuckets = useAppSelector((state) => state.buckets.buckets);
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
-    const [sortingOrder, setSortingOrder] = useState<{ key: string | null; direction: string }>({
+    const [sortingOrder, setSortingOrder] = useState<{ key: SortableKeys | null; direction: string }>({
         key: "name",
         direction: "asc"
     });
@@ -37,10 +40,10 @@ function SavingsBucketTable() {
         // TODO Calculated total reserved then Dispatch to totalReserved.
     }, [storedBuckets]);
 
-    const sortBuckets = (buckets: any[], key: string, direction: string) => {
-        return [...buckets].sort((a, b) => {
-            let aValue = a.data[key];
-            let bValue = b.data[key];
+    const sortBuckets = (buckets: SavingsBucketRowProps[], key: SortableKeys, direction: string) => {
+        return [...buckets].sort((a: SavingsBucketRowProps, b: SavingsBucketRowProps) => {
+            const aValue = a.data[key];
+            const bValue = b.data[key];
 
             if (aValue < bValue) {
                 return direction === "asc" ? -1 : 1;
@@ -52,7 +55,7 @@ function SavingsBucketTable() {
         });
     };
 
-    const sortListBuckets = (key: string) => {
+    const sortListBuckets = (key: SortableKeys) => {
         let direction = "asc";
         if (sortingOrder.key === key && sortingOrder.direction === "asc") {
             direction = "desc";
@@ -63,7 +66,7 @@ function SavingsBucketTable() {
     };
 
     // render an up or down arrow depending on if the sorted category is ascending or descending
-    const renderSortArrow = (key: string) => {
+    const renderSortArrow = (key: SortableKeys) => {
         if (sortingOrder.key === key) {
             return sortingOrder.direction === "asc" ? <Icon.ArrowDropUp /> : <Icon.ArrowDropDown />;
         }
@@ -89,9 +92,19 @@ function SavingsBucketTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {listOfBuckets.map((rowData: SavingsBucketRowProps) => (
-                        <SavingsBucketRow key={rowData.data.id} data={rowData.data} />
-                    ))}
+                    {listOfBuckets.length === 0 ? (
+                        <tr>
+                            <td colSpan={7} className="text-center align-middle">
+                                <h1>There are currently no savings buckets</h1>
+                                Click <span className="font-bold text-[#005ea2]">Add New Savings Bucket</span> to add a
+                                new bucket
+                            </td>
+                        </tr>
+                    ) : (
+                        listOfBuckets.map((rowData: SavingsBucketRowProps) => (
+                            <SavingsBucketRow key={rowData.data.id} data={rowData.data} />
+                        ))
+                    )}
                 </tbody>
             </Table>
 

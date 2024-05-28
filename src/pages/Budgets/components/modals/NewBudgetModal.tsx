@@ -18,13 +18,12 @@ import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { useSelector } from "react-redux";
 import { createBudget } from "../requests/budgetRequests";
 import { TransactionCategory } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
 
 const NewCategoryModal: React.FC = () => {
-    const budgetsStore = useSelector((store: any) => store.budgets);
+    const budgetsStore = useAppSelector((store) => store.budgets);
     const { t } = useTranslation();
 
     //TODO Update Budget data schema
@@ -48,14 +47,14 @@ const NewCategoryModal: React.FC = () => {
     let isDuplicateBudgetError = false;
 
     // Checks if there is a budget in the budgets array where the category matches the currently selected category
-    if (budgetsStore.budgets.some((budget: any) => budget.category === formData.category)) {
+    if (budgetsStore.budgets.some((budget: BudgetRowProps) => budget.category === formData.category)) {
         isDuplicateBudgetError = true;
     } else {
         isDuplicateBudgetError = false;
     }
 
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
-    const handleChangeInput = (e: any) => {
+    const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLSelectElement | HTMLInputElement>) => {
         const { name, value } = e.target;
 
         // Nested data interface is useful to keep simple top level component declarations, but leads to this.
@@ -146,7 +145,9 @@ const NewCategoryModal: React.FC = () => {
                                     key={category}
                                     value={category}
                                     disabled={
-                                        budgetsStore.budgets.some((budget: any) => budget.category === category)
+                                        budgetsStore.budgets.some(
+                                            (budget: BudgetRowProps) => budget.category === category
+                                        )
                                             ? true
                                             : false
                                     }
