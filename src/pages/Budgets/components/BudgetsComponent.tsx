@@ -106,7 +106,7 @@ const BudgetsComponent: React.FC = () => {
             let bValue = b[key];
 
             // the remaining value is not stored in the store like the other values so we handle that exception here
-            if (key === "spentAmount") {
+            if (key === ("remaining" as SortableKeys)) {
                 aValue = a.totalAmount - a.spentAmount;
                 bValue = b.totalAmount - b.spentAmount;
             }
@@ -180,9 +180,9 @@ const BudgetsComponent: React.FC = () => {
                             {t("budgets.actual")}
                             {renderSortArrow("spentAmount")}
                         </th>
-                        <th onClick={() => sortStoreBudgets("spentAmount")}>
-                            {t("budgets.spentAmount")}
-                            {renderSortArrow("spentAmount")}
+                        <th onClick={() => sortStoreBudgets("remaining" as SortableKeys)}>
+                            {t("budgets.remaining")}
+                            {renderSortArrow("remaining")}
                         </th>
                         <th></th>
                         <th>{t("budgets.actions")}</th>
