@@ -18,7 +18,7 @@
       "username": "Username"
     },
     "intlDateTime": "{{val, datetime}}",
-    "dateLocale": "en-US",
+    "locale": "en-US",
     "nav": {
       "greeting": "Hi",
       "settings": "Settings",
@@ -103,6 +103,19 @@
     },
     "tax": {
       "title": "Tax"
-    }
+    },
+    "checking" : "Checkings",
+    "savings" : "Savings",
+    "credit" : "Credit Cards",
+    "investment" : "Investments",
+    "Groceries" : "Groceries",
+    "Entertainment" : "Entertainment",
+    "Dining" : "Dining",
+    "Transportation" : "Transportation",
+    "Healthcare" : "Healthcare",
+    "Living Expenses" : "Living Expenses",
+    "Shopping" : "Shopping",
+    "Income" : "Income",
+    "Misc" : "Misc"
   }
 }

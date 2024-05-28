@@ -24,17 +24,7 @@ import { useMatch } from "react-router-dom";
 import { BarChart } from "@mui/x-charts";
 import { Account, Transaction, TransactionCategory } from "../../types/models";
 import { deleteTransaction, getAccountsByUserId, getTransactionByVendor } from "../../utils/transactionService";
-
-// interface TransactionDTO {
-//     transactionId: number;
-//     userId: number;
-//     accountId: number;
-//     vendorName: string;
-//     amount: number;
-//     category: string;
-//     description: string;
-//     date: string;
-// }
+import { formatCurrency, formatDate } from "../../util/helpers";
 
 function TransactionHistory() {
     const Name = useMatch("/:first/:second/:name")?.params.name;
@@ -102,27 +92,26 @@ function TransactionHistory() {
         }
     ];
 
-    const categories: Array<string> = ["food", "shopping", "entertainment"];
-
     const [transactions, setTransactions] = useState<Array<Transaction>>(transactionsInit);
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [current, setCurrent] = useState<number>(0);
+    const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[current]);
     const modalRef = useRef<ModalRef>(null);
     const infoRef = useRef<ModalRef>(null);
 
     type TransactionTarget = EventTarget & {
-        name: HTMLInputElement;
+        vendorName: HTMLInputElement;
         date: HTMLInputElement;
         category: HTMLSelectElement;
         amount: HTMLInputElement;
-        note: HTMLTextAreaElement;
-        account: HTMLSelectElement;
+        description: HTMLTextAreaElement;
+        accountId: HTMLSelectElement;
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form: TransactionTarget = event.target as TransactionTarget;
-        const { name, date, category, amount, note, account } = form;
+        const { vendorName: name, date, category, amount, description, accountId } = form;
         setTransactions(
             transactions.map((transaction, index) => {
                 if (index === current) {
@@ -132,55 +121,41 @@ function TransactionHistory() {
                         vendorName: String(name.value),
                         category: category.value as TransactionCategory,
                         amount: Number(amount.value),
-                        description: String(note.value),
-                        account: String(account.value)
+                        description: description.value,
+                        account: accountId
                     };
                 } else return transaction;
             })
         );
+
+        modalRef.current?.toggleModal();
     };
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value, type } = event.target;
         console.log(type);
-        setTransactions(
-            transactions.map((transaction, index) => {
-                if (index === current && (type !== "number" || (type === "number" && Number(value)))) {
-                    return {
-                        ...transaction,
-                        [name]: value
-                    };
-                } else return transaction;
-            })
-        );
+        if (type !== "number" || (type === "number" && Number(value))) {
+            setCurrentTransaction({
+                ...currentTransaction,
+                [name]: value
+            });
+        }
     }
 
     function handleAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
         const { name, value } = event.target;
-        setTransactions(
-            transactions.map((transaction, index) => {
-                if (index === current) {
-                    return {
-                        ...transaction,
-                        [name]: value
-                    };
-                } else return transaction;
-            })
-        );
+        setCurrentTransaction({
+            ...currentTransaction,
+            [name]: value
+        });
     }
 
     function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
         const { name, value } = event.target;
-        setTransactions(
-            transactions.map((transaction, index) => {
-                if (index === current) {
-                    return {
-                        ...transaction,
-                        [name]: value
-                    };
-                } else return transaction;
-            })
-        );
+        setCurrentTransaction({
+            ...currentTransaction,
+            [name]: value
+        });
     }
 
     const handleDelete = async (transactionId: number) => {
@@ -205,7 +180,7 @@ function TransactionHistory() {
         <>
             <div>
                 <Title>
-                    <h1>{t("transactions.history", { val: Name })}</h1>
+                    <h1>{t("transactions.history", { val: decodeURI(Name as string) })}</h1>
                 </Title>
                 <CardGroup>
                     <Card gridLayout={{ col: 8 }}>
@@ -224,13 +199,9 @@ function TransactionHistory() {
                                 <tbody>
                                     {transactions.map((transaction: Transaction, index: number) => (
                                         <tr key={index}>
-                                            <td>
-                                                {Intl.DateTimeFormat(t("dateLocale")).format(
-                                                    new Date(transaction.date)
-                                                )}
-                                            </td>
+                                            <td>{formatDate(transaction.date)}</td>
                                             <td>{transaction.vendorName}</td>
-                                            <td>{transaction.category}</td>
+                                            <td>{t(transaction.category)}</td>
                                             <td>
                                                 <ModalToggleButton
                                                     type={"button"}
@@ -238,6 +209,7 @@ function TransactionHistory() {
                                                     modalRef={modalRef}
                                                     onClick={() => {
                                                         setCurrent(index);
+                                                        setCurrentTransaction(transactions[index]);
                                                     }}
                                                 >
                                                     <Icon.Edit />
@@ -250,10 +222,7 @@ function TransactionHistory() {
                                                     <Icon.Delete />
                                                 </Button>
                                             </td>
-                                            <td>
-                                                <Icon.AttachMoney />
-                                                {Number(transaction.amount).toFixed(2)}
-                                            </td>
+                                            <td>{formatCurrency(transaction.amount)}</td>
                                             <td>
                                                 <ModalToggleButton
                                                     type="button"
@@ -273,8 +242,8 @@ function TransactionHistory() {
                     <Card gridLayout={{ col: 4 }}>
                         <CardHeader>{t("transactions.summary")}</CardHeader>
                         <CardBody>
-                            {t("transactions.spent")}: $
-                            {transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0).toFixed(2)}
+                            {t("transactions.spent")}:{" "}
+                            {formatCurrency(transactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0))}
                             <hr />
                             {t("transactions.amount")}: {transactions.length}
                             <hr />
@@ -284,7 +253,6 @@ function TransactionHistory() {
                                         data: transactions.map((transaction) => {
                                             return transaction.amount;
                                         })
-                                        // stack: "total"
                                     }
                                 ]}
                                 xAxis={[
@@ -307,9 +275,9 @@ function TransactionHistory() {
                         <input
                             id={"transaction-date"}
                             name={"date"}
-                            className="col-span-3 usa-input usa-date-picker_external-inpu"
+                            className="col-span-3 usa-input usa-date-picker_external-input"
                             type={"date"}
-                            value={transactions[current].date}
+                            value={currentTransaction.date}
                             onChange={handleInputChange}
                         />
                         <div className="col-span-3" />
@@ -317,9 +285,9 @@ function TransactionHistory() {
                         <div className="col-span-4">
                             <Label htmlFor={"transaction-name"}>Name</Label>
                             <TextInput
-                                value={transactions[current].vendorName}
+                                value={currentTransaction.vendorName}
                                 id={"transaction-name"}
-                                name={"name"}
+                                name={"vendorName"}
                                 type={"text"}
                                 onChange={handleInputChange}
                             />
@@ -327,7 +295,7 @@ function TransactionHistory() {
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
-                                    value={transactions[current].amount}
+                                    value={currentTransaction.amount}
                                     id={"transaction-amount"}
                                     name={"amount"}
                                     type={"number"}
@@ -339,28 +307,25 @@ function TransactionHistory() {
                                 <Select
                                     id={"transaction-category"}
                                     name={"category"}
-                                    value={transactions[current].category}
+                                    value={currentTransaction.category}
                                     onChange={handleSelectChange}
                                     className="col-span-8"
                                 >
                                     {Object.values(TransactionCategory).map((category) => (
                                         <option key={category} value={category}>
-                                            {category}
+                                            {t(`${category}`)}
                                         </option>
                                     ))}
                                 </Select>
-                                {/* <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button> */}
                             </div>
                             <Label htmlFor="transaction-note">Notes</Label>
                             <Textarea
-                                value={transactions[current].description as string}
+                                value={currentTransaction.description as string}
                                 id="transaction-note"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <ModalToggleButton modalRef={modalRef} type="submit">
-                                submit
-                            </ModalToggleButton>
+                            <Button type="submit">Submit</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">Account</Label>
@@ -368,7 +333,7 @@ function TransactionHistory() {
                                 <Select
                                     id={"transaction-account"}
                                     name={"accountId"}
-                                    value={transactions[current].accountId}
+                                    value={currentTransaction.accountId}
                                     onChange={handleSelectChange}
                                     className="col-span-8"
                                 >
@@ -380,100 +345,10 @@ function TransactionHistory() {
                                         );
                                     })}
                                 </Select>
-                                {/* <Button type={"button"} className="usa-button--unstyled"><Icon.Add size={4} /></Button> */}
                             </div>
                         </div>
                     </div>
                 </Form>
-            </Modal>
-            <Modal ref={infoRef} id="info-modal" isLarge>
-                <div className="grid grid-cols-6 gap-5">
-                    <input
-                        name={"date"}
-                        className="col-span-3 usa-input usa-date-picker_external-inpu"
-                        type={"date"}
-                        value={transactions[current].date}
-                        onChange={handleInputChange}
-                        readOnly
-                        disabled
-                    />
-                    <div className="col-span-3" />
-                    <hr className="col-span-6" />
-                    <div className="col-span-4">
-                        <Label htmlFor={"info-name"}>Name</Label>
-                        <TextInput
-                            value={transactions[current].vendorName}
-                            id={"info-name"}
-                            name={"name"}
-                            type={"text"}
-                            onChange={handleInputChange}
-                            readOnly
-                            disabled
-                        />
-                        <Label htmlFor={"info-amount"}>Amount</Label>
-                        <InputGroup>
-                            <InputPrefix>$</InputPrefix>
-                            <TextInput
-                                value={transactions[current].amount}
-                                id={"info-amount"}
-                                name={"amount"}
-                                type={"number"}
-                                onChange={handleInputChange}
-                                readOnly
-                                disabled
-                            />
-                        </InputGroup>
-                        <Label htmlFor={"info-category"}>Category</Label>
-                        <div className="grid grid-cols-8">
-                            <Select
-                                id={"info-category"}
-                                name={"category"}
-                                value={transactions[current].category}
-                                onChange={handleSelectChange}
-                                className="col-span-8"
-                                disabled
-                            >
-                                {categories.map((category: string) => {
-                                    return (
-                                        <React.Fragment key={category}>
-                                            <option value={category}>{category}</option>
-                                        </React.Fragment>
-                                    );
-                                })}
-                            </Select>
-                        </div>
-                        <Label htmlFor="info-note">Notes</Label>
-                        <Textarea
-                            value={transactions[current].description || ""}
-                            id="info-note"
-                            onChange={handleAreaChange}
-                            name="note"
-                            readOnly
-                            disabled
-                        />
-                    </div>
-                    <div className="col-span-2">
-                        <Label htmlFor="info-account">Account</Label>
-                        <div className="grid grid-cols-8">
-                            <Select
-                                id={"info-account"}
-                                name={"account"}
-                                value={transactions[current].accountId}
-                                onChange={handleSelectChange}
-                                className="col-span-8"
-                                disabled
-                            >
-                                {accounts.map((account: Account) => {
-                                    return (
-                                        <option value={account.id} key={account.id}>
-                                            {account.institution}
-                                        </option>
-                                    );
-                                })}
-                            </Select>
-                        </div>
-                    </div>
-                </div>
             </Modal>
 
             {/* Detailed Info Transaction Modal */}
@@ -483,11 +358,7 @@ function TransactionHistory() {
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex gap-4 items-center">
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
-                                    <div>
-                                        {Intl.DateTimeFormat(t("dateLocale")).format(
-                                            new Date(transactions[current].date)
-                                        )}
-                                    </div>
+                                    <div>{formatDate(transactions[current].date)}</div>
                                 </div>
                             </div>
                         </div>
@@ -496,8 +367,8 @@ function TransactionHistory() {
                             <div className="flex flex-col w-2/3">
                                 <div className="mb-6">
                                     <h3 className="text-2xl font-bold">{transactions[current].vendorName}</h3>
-                                    <p className="mt-2 text-xl">${Number(transactions[current].amount).toFixed(2)}</p>
-                                    <p className="mt-4 text-lg">{transactions[current].category}</p>
+                                    <p className="mt-2 text-xl">{formatCurrency(transactions[current].amount)}</p>
+                                    <p className="mt-4 text-lg">{t(transactions[current].category)}</p>
                                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
                                         <p className="text-md">
                                             {transactions[current].description || "No notes available"}

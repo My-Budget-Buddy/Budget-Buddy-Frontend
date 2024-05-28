@@ -6,7 +6,7 @@ import axios from "axios";
 import { formatCurrency } from "../../util/helpers";
 import { useTranslation } from "react-i18next";
 import SummaryComponent from "../Budgets/components/SummaryComponent";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BudgetRowProps } from "../../types/budgetInterfaces";
 import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "../Tax/taxesAPI";
 
@@ -23,7 +23,6 @@ interface InitialAccountType {
 }
 
 interface AllAccountsType {
-    id: string;
     type: string;
     balance: number;
     accounts: AccountType[];
@@ -63,14 +62,12 @@ const Dashboard: React.FC = () => {
     const [monthlyTransactions, setMonthlyTransactions] = useState<MonthlyTransactionType[]>([]);
     const [monthlySpend, setMonthlySpend] = useState(0);
     const budgetsStore = useSelector((store: any) => store.budgets);
-    const dispatch = useDispatch();
 
-    console.log('budgets Store: ', budgetsStore)
     // ---Calculate net cash---
     useEffect(() => {
         let total = 0;
         allAccounts.map((acc) => {
-            if (acc.id === "credit") {
+            if (acc.type === "credit") {
                 total -= acc.balance;
             } else {
                 total += acc.balance;
@@ -94,19 +91,7 @@ const Dashboard: React.FC = () => {
                 let allAccounts: AllAccountsType[] = accounts.reduce(
                     (prev: AllAccountsType[], account: InitialAccountType) => {
                         const accountId = account.type.toLowerCase();
-
-                        let type;
-                        if (account.type === "CHECKING") {
-                            type = "Checkings";
-                        } else if (account.type === "SAVINGS") {
-                            type = "Savings";
-                        } else if (account.type === "CREDIT") {
-                            type = "Credit Cards";
-                        } else {
-                            type = "Investments";
-                        }
-
-                        const existingAccount = prev.find((acc) => acc.id === accountId);
+                        const existingAccount = prev.find((acc) => acc.type === accountId);
                         if (existingAccount) {
                             existingAccount.balance += account.currentBalance;
                             existingAccount.accounts.push({
@@ -117,8 +102,7 @@ const Dashboard: React.FC = () => {
                             });
                         } else {
                             prev.push({
-                                id: accountId,
-                                type: type,
+                                type: accountId,
                                 balance: account.currentBalance,
                                 accounts: [
                                     {
@@ -173,7 +157,7 @@ const Dashboard: React.FC = () => {
                 const today = new Date
                 const totalSpentPerDay: MonthlyTransactionType[] = [];
                 let runningTotal = 0;
-                for (let i=0; i<= today.getDate(); i++){
+                for (let i=1; i<= today.getDate(); i++){
                     const dateString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
                     totalSpentPerDay.push({ date: dateString, total: 0})
                 }
@@ -189,7 +173,6 @@ const Dashboard: React.FC = () => {
                     totalSpentPerDay[i].total += totalSpentPerDay[i - 1].total;
                 }
                 setMonthlyTransactions(totalSpentPerDay);
-                console.log(typeof runningTotal)
                 setMonthlySpend(runningTotal);
             })
             } catch (err) {
@@ -200,47 +183,33 @@ const Dashboard: React.FC = () => {
     }, []);
     console.log("===============================");
     console.log("this is a test", monthlyTransactions);
-
-    // --- Budgets --
-    // backend: /budgets/userId
-    // useEffect(() => {
-    //     const fetchBudgets = async () => {
-    //         try {
-    //             const response = await axios.get("http://localhost:8125/budgets/123", {
-    //                 // withCredentials: true,
-    //             });
-    //             console.log("response: ", response.data);
-    //         } catch (err) {
-    //             console.log("There was an error fetching budgets: ", err);
-    //         }
-    //     };
-    //     fetchBudgets();
-    // }, []);
+console.log(monthlyTransactions)
 
     return (
         <div className="flex flex-col flex-wrap ">
             <h1>{t("dashboard.welcome")} [add user name]</h1>
             <div className="flex">
-                <div id="chart-container" className="flex flex-col flex-auto w-2/3 bg-accent-cool-lighter p-8 mr-12 rounded-lg">
-                    <h1 className="flex items-center text-2xl font-bold ">
+                <div id="chart-container" className="flex flex-col flex-auto w-2/3 p-8 mr-12 border-solid border-4 rounded-lg shadow-lg">
+                    <h1 className="flex items-center justify-center text-2xl font-bold my-0">
                         {t("dashboard.chart")} <Icon.AttachMoney />
                         {formatCurrency(monthlySpend, false)}
                     </h1>
                     <LineChart
                         xAxis={[
                             {
-                                scaleType: "point",
-                                data: monthlyTransactions.map((transaction) => transaction.total && transaction.date.toString().slice(5, 10))
+                                scaleType: "band",
+                                data: monthlyTransactions.map((transaction) => transaction.date.toString().slice(8, 10))
                             }
                         ]}
                         series={[
                             {
-                                data: (monthlyTransactions.map((transaction) => transaction.total)),
+                                data: monthlyTransactions.map((transaction) => transaction.total),
                                 yAxisKey: "rightAxisId",
                                 // area: true,
                                 color: "#005ea2"
                             }
                         ]}
+                        grid={{ horizontal: true }}
                         height={300}
                         leftAxis={null}
                         yAxis={[{ id: "rightAxisId" }]}
@@ -256,29 +225,29 @@ const Dashboard: React.FC = () => {
                                 items={allAccounts.map((acc) => {
                                     return {
                                         title: (
-                                            <div key={acc.id} className="flex justify-between items-center">
-                                                {acc.id === "checking" && (
+                                            <div key={acc.type} className="flex justify-between items-center">
+                                                {acc.type === "checking" && (
                                                     <p className="flex items-center">
                                                         <Icon.AccountBalance className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                {acc.id === "credit" && (
+                                                {acc.type === "credit" && (
                                                     <p className="flex items-center">
                                                         <Icon.CreditCard className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                {acc.id === "savings" && (
+                                                {acc.type === "savings" && (
                                                     <p className="flex items-center">
                                                         <Icon.AccountBalance className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                {acc.id === "investment" && (
+                                                {acc.type === "investment" && (
                                                     <p className="flex items-center">
                                                         <Icon.TrendingUp className="mr-2" />
-                                                        {acc.type}
+                                                        {t(`${acc.type}`)}
                                                     </p>
                                                 )}
                                                 <p className="flex items-center">
@@ -302,7 +271,7 @@ const Dashboard: React.FC = () => {
                                             </div>
                                         )),
                                         expanded: false,
-                                        id: `${acc.id}`,
+                                        id: `${acc.type}`,
                                         headingLevel: "h4"
                                     };
                                 })}
@@ -323,7 +292,7 @@ const Dashboard: React.FC = () => {
                                                 netCash > 0 ? "text-[#00a91c]" : "text-[#b50909]"
                                             }`}
                                         >
-                                            <Icon.AttachMoney /> {Math.abs(netCash)}
+                                            <Icon.AttachMoney /> {formatCurrency(Math.abs(netCash), false)}
                                         </p>
                                     </div>
                                 </button>
@@ -358,7 +327,7 @@ const Dashboard: React.FC = () => {
                                     <tr key={`${recentTransaction.accountId}-${idx}`}>
                                         <td>{recentTransaction.date}</td>
                                         <td>{recentTransaction.vendorName}</td>
-                                        <td>{recentTransaction.category}</td>
+                                        <td>{t(`${recentTransaction.category}`)}</td>
                                         <td>
                                             <Icon.AttachMoney />
                                             {formatCurrency(recentTransaction.amount, false)}

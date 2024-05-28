@@ -14,6 +14,7 @@ const month =
 const year = selectedYear.toString();
 const monthYear = year + "-" + month;
 
+// IMPORTANT NOTE: We use an endpoint to get the budgets for a specific month/year. All the following information reflects ONLY the bdugets information of a given month/year, and NOT any budgets for any other time period.
 export const budgetSlice = createSlice({
     name: "budgets",
     initialState: {
