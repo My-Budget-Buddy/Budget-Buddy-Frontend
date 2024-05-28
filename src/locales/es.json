@@ -98,10 +98,29 @@
     },
     "transactions": {
       "title": "Transacciones",
-      "history": "Todas las {{val}} transacciones",
-      "spent": "Total gastado",
-      "amount": "Transacciones totales",
-      "summary": "Resumen"
+      "clear-filters": "Limpiar filtros",
+      "sort-by-date": "Ordenar por fecha",
+      "sort-by-amount": "Ordenar por cantidad",
+      "add-transaction": "Agregar Transacción",
+      "all-categories": "Todas las Categorías",
+      "all-accounts": "Todas las Cuentas",
+      "all-amounts": "Todas las Cantidades",
+      "amount-range": "Rango de Cantidad",
+      "all-dates": "Todas las Fechas",
+      "date-range": "Rango de Fechas",
+      "no-transactions": "No se encontraron transacciones",
+      "click-add": "Haga clic en Agregar Transacción para comenzar a realizar transacciones",
+      "list-of-transactions": "Lista de Transacciones",
+      "date": "Fecha",
+      "name": "Nombre",
+      "category": "Categoría",
+      "actions": "Acciones",
+      "amount": "Cantidad",
+      "view-history": "Ver Historial",
+      "vendor-name": "Nombre del Proveedor",
+      "description": "Descripción",
+      "submit": "Enviar",
+      "account": "Cuenta"
     },
     "tax": {
       "title": "Impuestos"
