@@ -98,10 +98,29 @@
     },
     "transactions": {
       "title": "Transactions",
-      "history": "All {{val}} transactions",
-      "spent": "Total spent",
-      "amount": "Total transactions",
-      "summary": "Summary"
+      "clear-filters": "Clear Filters",
+      "sort-by-date": "Sort by date",
+      "sort-by-amount": "Sort by amount",
+      "add-transaction": "Add Transaction",
+      "all-categories": "All Categories",
+      "all-accounts": "All Accounts",
+      "all-amounts": "All Amounts",
+      "amount-range": "Amount Range",
+      "all-dates": "All Dates",
+      "date-range": "Date Range",
+      "no-transactions": "No transactions found",
+      "click-add": "Click Add Transaction to start making transactions",
+      "list-of-transactions": "List of Transactions",
+      "date": "Date",
+      "name": "Name",
+      "category": "Category",
+      "actions": "Actions",
+      "amount": "Amount",
+      "view-history": "View History",
+      "vendor-name": "Vendor Name",
+      "description": "Description",
+      "submit": "Submit",
+      "account": "Account"
     },
     "tax": {
       "title": "Tax"
