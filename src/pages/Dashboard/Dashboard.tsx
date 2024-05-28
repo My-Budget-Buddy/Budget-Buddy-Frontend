@@ -3,7 +3,7 @@ import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } fr
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { formatCurrency } from "../../util/helpers";
+import { formatCurrency, formatDate } from "../../util/helpers";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { BudgetRowProps } from "../../types/budgetInterfaces";
@@ -218,8 +218,7 @@ const Dashboard: React.FC = () => {
                     className="flex flex-col flex-auto w-2/3 p-8 mr-12 border-solid border-4 rounded-lg shadow-lg"
                 >
                     <h1 className="flex items-center justify-center text-2xl font-bold my-0">
-                        {t("dashboard.chart")} <Icon.AttachMoney />
-                        {formatCurrency(monthlySpend, false)}
+                        {t("dashboard.chart")} {formatCurrency(monthlySpend)}
                     </h1>
                     <LineChart
                         xAxis={[
@@ -280,8 +279,8 @@ const Dashboard: React.FC = () => {
                                                         {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                <p className="flex items-center">
-                                                    <Icon.AttachMoney /> {formatCurrency(acc.balance, false)}
+                                                <p>
+                                                    {formatCurrency(acc.balance)}
                                                 </p>
                                             </div>
                                         ),
@@ -294,9 +293,8 @@ const Dashboard: React.FC = () => {
                                                     <p className="mr-2">{account.accountNumber}</p>|
                                                     <p className="ml-2">{account.institution}</p>
                                                 </div>
-                                                <p className="flex items-center">
-                                                    <Icon.AttachMoney />
-                                                    {formatCurrency(account.currentBalance, false)}
+                                                <p>
+                                                    {formatCurrency(account.currentBalance)}
                                                 </p>
                                             </div>
                                         )),
@@ -325,7 +323,7 @@ const Dashboard: React.FC = () => {
                                                 netCash > 0 ? "text-[#00a91c]" : "text-[#b50909]"
                                             }`}
                                         >
-                                            <Icon.AttachMoney /> {formatCurrency(Math.abs(netCash), false)}
+                                            {formatCurrency(Math.abs(netCash))}
                                         </p>
                                     </div>
                                 </button>
@@ -358,12 +356,11 @@ const Dashboard: React.FC = () => {
                             <tbody>
                                 {recentTransactions.map((recentTransaction, idx) => (
                                     <tr key={`${recentTransaction.accountId}-${idx}`}>
-                                        <td>{recentTransaction.date}</td>
+                                        <td>{formatDate(recentTransaction.date)}</td>
                                         <td>{recentTransaction.vendorName}</td>
                                         <td>{t(`${recentTransaction.category}`)}</td>
                                         <td>
-                                            <Icon.AttachMoney />
-                                            {formatCurrency(recentTransaction.amount, false)}
+                                            {formatCurrency(recentTransaction.amount)}
                                         </td>
                                         <td>
                                             <ModalToggleButton
@@ -418,9 +415,8 @@ const Dashboard: React.FC = () => {
                                 className="grid-row flex-justify border-b border-black p-3 w-full"
                             >
                                 <p>{budget.category}</p>
-                                <p className="flex items-center">
-                                    <Icon.AttachMoney />
-                                    <span className={`${budget.spentAmount <= budget.totalAmount ? "" : "text-[#b50909] font-bold"}`}>{formatCurrency(budget.spentAmount, false)}</span> / {formatCurrency(budget.totalAmount, false)}
+                                <p>
+                                    <span className={`${budget.spentAmount <= budget.totalAmount ? "" : "text-[#b50909] font-bold"}`}>{formatCurrency(budget.spentAmount)}</span> / {formatCurrency(budget.totalAmount)}
                                 </p>
                             </div>
                         ))}
