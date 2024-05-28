@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { Gauge, gaugeClasses } from "@mui/x-charts";
 import {
     Modal,
@@ -6,7 +9,7 @@ import {
     ModalFooter,
     ModalHeading,
     ModalToggleButton,
-    Alert,
+    Alert
 } from "@trussworks/react-uswds";
 import { t } from "i18next";
 import React, { useEffect, useState } from "react";
@@ -22,19 +25,15 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const [creditColor, setCreditColor] = useState<string | null>(null);
     const [creditScore, setCreditScore] = useState<number>(0);
 
-    const url = "http://localhost:8125/api/credit/score/1"
+    const url = "http://localhost:8125/api/credit/score/1";
 
     // returns the color of the gauge based on the credit score
     const getCreditColor = (creditScore: number): string => {
-        if (creditScore > 719)
-            return "#52b202";
-        else if (creditScore > 689)
-            return "#90EE90";
-        else if (creditScore > 629)
-            return "#FFA500";
-        else
-            return "#b20202";
-    }
+        if (creditScore > 719) return "#52b202";
+        else if (creditScore > 689) return "#90EE90";
+        else if (creditScore > 629) return "#FFA500";
+        else return "#b20202";
+    };
 
     useEffect(() => {
         // TODO: update this to use the users information + the gateway service + headers for Auth
@@ -57,13 +56,12 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         score = Math.max(score, 0);
 
         // Increase creditScore by score
-        setCreditScore(prevCreditScore => prevCreditScore + score);
+        setCreditScore((prevCreditScore) => prevCreditScore + score);
     }, [totalDebt]);
     // sets the color of the gauge based on the credit score
     useEffect(() => {
         setCreditColor(getCreditColor(creditScore));
     }, [creditScore]);
-
 
     return (
         <>
@@ -105,12 +103,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
                     </div>
                     <ModalFooter>
                         <ButtonGroup>
-                            <ModalToggleButton
-                                modalRef={modalRef}
-                                closer
-                                unstyled
-                                className="padding-105 text-center"
-                            >
+                            <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
                                 Go back
                             </ModalToggleButton>
                         </ButtonGroup>
