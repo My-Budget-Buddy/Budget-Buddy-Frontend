@@ -1,13 +1,14 @@
-import { LineChart } from "@mui/x-charts";
+import { LineChart, Gauge } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { formatCurrency } from "../../util/helpers";
 import { useTranslation } from "react-i18next";
-import SummaryComponent from "../Budgets/components/SummaryComponent";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { BudgetRowProps } from "../../types/budgetInterfaces";
+import { updateBudgets } from "../../util/redux/budgetSlice";
+import { getBudgetsByMonthYear } from "../Budgets/components/requests/budgetRequests";
 
 interface InitialAccountType {
     id: number;
@@ -61,6 +62,11 @@ const Dashboard: React.FC = () => {
     const [monthlyTransactions, setMonthlyTransactions] = useState<MonthlyTransactionType[]>([]);
     const [monthlySpend, setMonthlySpend] = useState(0);
     const budgetsStore = useSelector((store: any) => store.budgets);
+    const [budgetGaugeTotal, setBudgetGaugeTotal] = useState(0);
+    const [budgetGaugeSpent, setBudgetGaugeSpent] = useState(0);
+    const dispatch = useDispatch();
+
+console.log('budgets Store: ', budgetsStore.budgets)
 
     // ---Calculate net cash---
     useEffect(() => {
@@ -148,19 +154,21 @@ const Dashboard: React.FC = () => {
                     // withCredentials: true,
                 });
                 const monthlyTransactions = response.data;
-                const today = new Date
+                const today = new Date();
                 const totalSpentPerDay: MonthlyTransactionType[] = [];
                 let runningTotal = 0;
-                for (let i=1; i<= today.getDate(); i++){
-                    const dateString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-                    totalSpentPerDay.push({ date: dateString, total: 0})
+                for (let i = 1; i <= today.getDate(); i++) {
+                    const dateString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${i
+                        .toString()
+                        .padStart(2, "0")}`;
+                    totalSpentPerDay.push({ date: dateString, total: 0 });
                 }
                 monthlyTransactions.forEach((transaction: TransactionType) => {
-                    const transactionDate = transaction.date
+                    const transactionDate = transaction.date;
                     const idx = totalSpentPerDay.findIndex((day) => day.date === transactionDate);
-                    if (idx !== -1){
+                    if (idx !== -1) {
                         totalSpentPerDay[idx].total += transaction.amount;
-                        runningTotal += transaction.amount
+                        runningTotal += transaction.amount;
                     }
                 });
                 for (let i = 1; i < totalSpentPerDay.length; i++) {
@@ -174,13 +182,40 @@ const Dashboard: React.FC = () => {
         };
         fetchMonthlyTransactions();
     }, []);
-console.log(monthlyTransactions)
+    // console.log(monthlyTransactions)
+
+    //---- budgets gauge ----
+    useEffect(() => {
+        const fetchBudgets = async () => {
+            try {
+                const response = await getBudgetsByMonthYear(budgetsStore.monthYear)
+                dispatch(updateBudgets(response));
+            } catch (error) {
+                console.log('There was an error fetching budgets: ', error)
+            }
+        };
+        fetchBudgets()
+    }, []);
+
+    useEffect(()=> {
+        let gauegeTotal= 0
+        let gaugeSpent = 0
+        budgetsStore.budgets.map((budget: BudgetRowProps)=> {
+            gaugeSpent += budget.spentAmount
+            gauegeTotal += budget.totalAmount
+        })
+        setBudgetGaugeTotal(gauegeTotal)
+        setBudgetGaugeSpent(gaugeSpent)
+    }, [budgetsStore])
 
     return (
         <div className="flex flex-col flex-wrap ">
             <h1>{t("dashboard.welcome")} [add user name]</h1>
             <div className="flex">
-                <div id="chart-container" className="flex flex-col flex-auto w-2/3 p-8 mr-12 border-solid border-4 rounded-lg shadow-lg">
+                <div
+                    id="chart-container"
+                    className="flex flex-col flex-auto w-2/3 p-8 mr-12 border-solid border-4 rounded-lg shadow-lg"
+                >
                     <h1 className="flex items-center justify-center text-2xl font-bold my-0">
                         {t("dashboard.chart")} <Icon.AttachMoney />
                         {formatCurrency(monthlySpend, false)}
@@ -353,16 +388,32 @@ console.log(monthlyTransactions)
             <div>
                 <h1>{t("budgets.title")}</h1>
                 <div id="budgets-container" className="flex items-center mb-14">
-                    <div className="w-2/5">
-                        <SummaryComponent hideAdditionalInfo/>
+                    <div className="w-2/5 flex justify-center">
+                        {/* <SummaryComponent hideAdditionalInfo/> */}
+                        <Gauge
+                            width={200}
+                            height={200}
+                            value={budgetGaugeSpent}
+                            // value={300}
+                            valueMax={budgetGaugeTotal}
+                            startAngle={0}
+                            endAngle={360}
+                            innerRadius="80%"
+                            outerRadius="100%"
+                            text={({ value, valueMax }) => `$ ${value} / ${valueMax}`}
+                        />
                     </div>
                     <div className="w-3/5 flex flex-col items-center border-l border-black pl-6 h-full">
-                        {budgetsStore.budgets.map((budget: BudgetRowProps, idx: number)=> (
-                            <div key={idx} id="budget-items" className="grid-row flex-justify border-b border-black p-3 w-full">
+                        {budgetsStore.budgets.map((budget: BudgetRowProps, idx: number) => (
+                            <div
+                                key={idx}
+                                id="budget-items"
+                                className="grid-row flex-justify border-b border-black p-3 w-full"
+                            >
                                 <p>{budget.category}</p>
-                                <p>
+                                <p className="flex items-center">
                                     <Icon.AttachMoney />
-                                    {budget.spentAmount}/{budget.totalAmount}
+                                    {formatCurrency(budget.spentAmount, false)} /  {formatCurrency(budget.totalAmount, false)}
                                 </p>
                             </div>
                         ))}
@@ -422,7 +473,7 @@ console.log(monthlyTransactions)
                                                 {accounts.map(
                                                     (account, idx) =>
                                                         account.id === currentTransaction.accountId && (
-                                                            <div key={idx} >
+                                                            <div key={idx}>
                                                                 <div className="flex items-center text-sm text-gray-500">
                                                                     <Icon.AccountBalance className="mr-2" />
                                                                     <div>{account.institution}</div>
