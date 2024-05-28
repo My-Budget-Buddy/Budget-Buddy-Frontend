@@ -12,6 +12,7 @@ import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { getCompleteBudgets } from "./util/transactionsCalculator";
 import { getCurrentMonthYear } from "../../../util/util";
 import { updateUserId } from "../../../util/redux/userSlice";
+import { formatCurrency } from "../../../util/helpers";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
@@ -81,7 +82,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                         width={400}
                         height={200}
                         value={percentageRemaining}
-                        text={`$${remainingBudget}`}
+                        text={formatCurrency(remainingBudget)}
                         startAngle={-90}
                         endAngle={90}
                         innerRadius="80%"
@@ -94,7 +95,9 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                         }}
                         // ...
                     />
-                    <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">of ${budgets.spendingBudget}</div>
+                    <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">
+                        of {formatCurrency(budgets.spendingBudget)}
+                    </div>
                 </div>
 
                 <div className="flex flex-col justify-around mr-8" hidden={hideAdditionalInfo}>
@@ -102,15 +105,15 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                         <div className="text-2xl font-bold">
                             {selectedMonthString} {selectedYear} Spending Budget <EditSpendingBudgetModal />
                         </div>
-                        <div className="text-lg">${budgets.spendingBudget}</div>
+                        <div className="text-lg">{formatCurrency(budgets.spendingBudget)}</div>
                     </div>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">Allocated</div>
-                        <div className="text-lg">${budgets.totalReserved}</div>
+                        <div className="text-lg">{formatCurrency(budgets.totalReserved)}</div>
                     </div>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">Remaining</div>
-                        <div className="text-lg">${remainingBudget}</div>
+                        <div className="text-lg">{formatCurrency(remainingBudget)}</div>
                     </div>
                 </div>
             </div>
