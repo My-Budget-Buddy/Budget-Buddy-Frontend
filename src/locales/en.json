@@ -121,7 +121,9 @@
       "description": "Description",
       "submit": "Submit",
       "account": "Account",
-      "history": "All {{val}} transactions"
+      "history": "All {{val}} transactions",
+      "spent": "Spent",
+      "summary": "Summary"
     },
     "tax": {
       "title": "Tax"
