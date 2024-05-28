@@ -37,6 +37,18 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     ).toString();
     const percentageRemaining = (Number(remainingBudget) / budgets.spendingBudget) * 100;
 
+    let gaugeColor = "#52b202";
+
+    if (percentageRemaining > 70) {
+        gaugeColor = "#52b202";
+    } else if (percentageRemaining > 35) {
+        gaugeColor = "#90EE90";
+    } else if (percentageRemaining > 15) {
+        gaugeColor = "#FFA500";
+    } else {
+        gaugeColor = "#b20202";
+    }
+
     //Make a fetch request for budget and buckets, and total in accounts on load. Results in duplicate fetch requests as each component also does that, but simple for now. Consider skipping the initial calls from budgets and buckets.
     useEffect(() => {
         (async () => {
@@ -80,69 +92,27 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                     <div className="text-2xl mt-4 font-bold">
                         {t("budgets.left-to-spend")} {selectedMonthString} {selectedYear}
                     </div>
-                    {percentageRemaining >= 0 ? (
-                        percentageRemaining >= 25 ? (
-                            <Gauge
-                                width={400}
-                                height={200}
-                                value={percentageRemaining}
-                                text={formatCurrency(remainingBudget)}
-                                startAngle={-90}
-                                endAngle={90}
-                                innerRadius="80%"
-                                outerRadius="100%"
-                                sx={{
-                                    [`& .${gaugeClasses.valueText}`]: {
-                                        fontSize: 40,
-                                        transform: "translate(0px, -20px)"
-                                    },
-                                    [`& .${gaugeClasses.valueArc}`]: {
-                                        fill: "#52b202"
-                                    }
-                                }}
-                                // ...
-                            />
-                        ) : (
-                            <Gauge
-                                width={400}
-                                height={200}
-                                value={percentageRemaining}
-                                text={formatCurrency(remainingBudget)}
-                                startAngle={-90}
-                                endAngle={90}
-                                innerRadius="80%"
-                                outerRadius="100%"
-                                sx={{
-                                    [`& .${gaugeClasses.valueText}`]: {
-                                        fontSize: 40,
-                                        transform: "translate(0px, -20px)"
-                                    },
-                                    [`& .${gaugeClasses.valueArc}`]: {
-                                        fill: "#b20202"
-                                    }
-                                }}
-                                // ...
-                            />
-                        )
-                    ) : (
-                        <Gauge
-                            width={400}
-                            height={200}
-                            value={0}
-                            text={formatCurrency(remainingBudget)}
-                            startAngle={-90}
-                            endAngle={90}
-                            innerRadius="80%"
-                            outerRadius="100%"
-                            sx={{
-                                [`& .${gaugeClasses.valueText}`]: {
-                                    fontSize: 40,
-                                    transform: "translate(0px, -20px)"
-                                }
-                            }}
-                            // ...
-                        />
-                    )}
+
+                    <Gauge
+                        width={400}
+                        height={200}
+                        value={percentageRemaining >= 0 ? percentageRemaining : 0}
+                        text={formatCurrency(remainingBudget)}
+                        startAngle={-90}
+                        endAngle={90}
+                        innerRadius="80%"
+                        outerRadius="100%"
+                        sx={{
+                            [`& .${gaugeClasses.valueText}`]: {
+                                fontSize: 40,
+                                transform: "translate(0px, -20px)"
+                            },
+                            [`& .${gaugeClasses.valueArc}`]: {
+                                fill: gaugeColor
+                            }
+                        }}
+                        // ...
+                    />
                     <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">
                         {t("budgets.of")} {formatCurrency(budgets.spendingBudget)}
                     </div>
