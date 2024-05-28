@@ -349,16 +349,28 @@ const Accounts: React.FC = () => {
                         <tbody className="bg-white divide-y divide-gray-200">
                             <tr>
                                 <td className="px-6 py-4 border-r border-gray-600">
-                                    <p><span className="font-bold">300-629 </span>{t("accounts.bad-desc")}</p>
+                                    <p>
+                                        <span className="font-bold">300-629 </span>
+                                        {t("accounts.bad-desc")}
+                                    </p>
                                 </td>
                                 <td className="px-6 py-4 border-r border-gray-600">
-                                    <p><span className="font-bold">630-689 </span>{t("accounts.fair-desc")}</p>
+                                    <p>
+                                        <span className="font-bold">630-689 </span>
+                                        {t("accounts.fair-desc")}
+                                    </p>
                                 </td>
                                 <td className="px-6 py-4 border-r border-gray-600">
-                                    <p><span className="font-bold">690-719 </span>{t("accounts.good-desc")}</p>
+                                    <p>
+                                        <span className="font-bold">690-719 </span>
+                                        {t("accounts.good-desc")}
+                                    </p>
                                 </td>
                                 <td className="px-6 py-4 border-gray-600">
-                                    <p><span className="font-bold">720-850 </span>{t("accounts.excellent-desc")}</p>
+                                    <p>
+                                        <span className="font-bold">720-850 </span>
+                                        {t("accounts.excellent-desc")}
+                                    </p>
                                 </td>
                             </tr>
                         </tbody>
