@@ -8,9 +8,9 @@ import {
     ModalToggleButton,
     Alert,
 } from "@trussworks/react-uswds";
-import { t } from "i18next";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface CreditScoreModalProps {
     totalDebt: number;
@@ -21,6 +21,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const [error, setError] = useState<string | null>(null);
     const [creditColor, setCreditColor] = useState<string | null>(null);
     const [creditScore, setCreditScore] = useState<number>(0);
+    const { t } = useTranslation();
 
     const url = "http://localhost:8125/api/credit/score/1"
 
@@ -41,7 +42,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         fetch(url)
             .then((res) => {
                 if (!res.ok) {
-                    throw new Error("Error fetching credit score information");
+                    throw new Error(t("accounts.error-credit-score"));
                 }
                 return res.json();
             })
@@ -69,7 +70,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         <>
             <div>
                 <ModalToggleButton modalRef={modalRef} opener>
-                    Get Report
+                    {t("accounts.get-report")}
                 </ModalToggleButton>
                 <Modal
                     ref={modalRef}
@@ -79,8 +80,13 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
                     className="w-[1600px]"
                 >
                     <ModalHeading id="credit-score-modal-heading" className="pb-4">
-                        Credit Score Report
+                        {t("accounts.credit-score-report")}
                     </ModalHeading>
+                    {error && (
+                        <Alert type="error" headingLevel="h4">
+                            {error}
+                        </Alert>
+                    )}
                     <div className="flex justify-center items-center h-full py-4">
                         <Gauge
                             width={400}
@@ -111,7 +117,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
                                 unstyled
                                 className="padding-105 text-center"
                             >
-                                Go back
+                                {t("accounts.back")}
                             </ModalToggleButton>
                         </ButtonGroup>
                     </ModalFooter>

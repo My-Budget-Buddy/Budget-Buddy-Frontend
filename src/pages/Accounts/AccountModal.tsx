@@ -16,6 +16,7 @@ import type { Account } from "../../types/models";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRef } from "react";
 import { postAccountData } from "../Tax/taxesAPI";
+import { useTranslation } from "react-i18next";
 
 interface AccountModalProps {
     onAccountAdded: (account: Account) => void;
@@ -27,6 +28,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     const [showRoutingNumberInput, setShowRoutingNumberInput] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { t } = useTranslation();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -51,7 +53,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
             .then((response) => {
                 // if (!response.ok) {
-                //     throw new Error("Error adding account");
+                //     throw new Error(t("accounts.error-add"));
                 // }
                 console.log(JSON.stringify(response.data));
                 return response.data;
@@ -81,7 +83,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
         <>
             <div>
                 <ModalToggleButton modalRef={modalRef} opener>
-                    Add Account
+                    {t("accounts.add-account")}
                 </ModalToggleButton>
                 <Modal
                     ref={modalRef}
@@ -90,7 +92,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                     aria-describedby="account-modal-description"
                 >
                     <ModalHeading id="account-modal-heading">
-                        Enter the Account Details
+                        {t("accounts.enter-account")}
                     </ModalHeading>
                     {error && (
                         <Alert type="error" headingLevel="h4">
@@ -103,7 +105,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             htmlFor="account-type"
                             requiredMarker
                         >
-                            Account Type
+                            {t("accounts.account-type")}
                         </Label>
                         <Select
                             id="account-type"
@@ -114,15 +116,15 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         >
                             <React.Fragment key=".0">
                                 <option>- Select - </option>
-                                <option value="CHECKING">Checking</option>
-                                <option value="SAVINGS">Savings</option>
-                                <option value="CREDIT">Credit</option>
-                                <option value="INVESTMENT">Investments</option>
+                                <option value="CHECKING">{t("accounts.checking")}</option>
+                                <option value="SAVINGS">{t("accounts.savings")}</option>
+                                <option value="CREDIT">{t("accounts.credit")}</option>
+                                <option value="INVESTMENT">{t("accounts.investment")}</option>
                             </React.Fragment>
                         </Select>
 
                         <Label htmlFor="input-account-name" requiredMarker>
-                            Institution Name
+                            {t("accounts.institution")}
                         </Label>
                         <TextInput
                             id="input-account-name"
@@ -132,7 +134,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         />
 
                         <Label id="label-account-num" htmlFor="account-num" requiredMarker>
-                            Account Number
+                            {t("accounts.account-number")}
                         </Label>
                         <TextInput
                             id="input-account-num"
@@ -144,7 +146,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         {showRoutingNumberInput && (
                             <>
                                 <Label id="label-routing-num" htmlFor="input-routing-num" requiredMarker>
-                                    Routing Number
+                                    {t("accounts.routing-number")}
                                 </Label>
                                 <TextInput
                                     id="input-routing-num"
@@ -158,7 +160,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         )}
 
                         <Label id="label-interest-rate" htmlFor="input-interest-rate" requiredMarker>
-                            Interest Rate
+                            {t("accounts.interest-rate")}
                         </Label>
                         <TextInput
                             id="input-interest-rate"
@@ -168,7 +170,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         />
 
                         <Label htmlFor="account-balance" requiredMarker>
-                            Balance
+                            {t("accounts.balance")}
                         </Label>
                         <TextInput
                             id="account-balance"
@@ -179,14 +181,14 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
                         <ModalFooter>
                             <ButtonGroup>
-                                <Button type="submit">Add Account</Button>
+                                <Button type="submit">{t("accounts.add")}</Button>
                                 <ModalToggleButton
                                     modalRef={modalRef}
                                     closer
                                     unstyled
                                     className="padding-105 text-center"
                                 >
-                                    Go back
+                                    {t("accounts.back")}
                                 </ModalToggleButton>
                             </ButtonGroup>
                         </ModalFooter>
