@@ -152,7 +152,7 @@ const NewCategoryModal: React.FC = () => {
                                             : false
                                     }
                                 >
-                                    {category}
+                                    {t(category)}
                                 </option>
                             )
                         )}
