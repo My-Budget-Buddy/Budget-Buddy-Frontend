@@ -69,7 +69,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
             <div className="flex flex-row justify-between w-full" id="summary-component-container">
                 <div className="flex flex-col items-center justify-around ml-8" hidden={hideAdditionalInfo}>
                     <div className="text-2xl font-bold">Total Available Funds Across Account</div>
-                    <div className=" text-6xl text-green-600 font-bold">${budgets.totalFundsAvailable}</div>
+                    <div className=" text-6xl text-green-600 font-bold">${totalFundsAvailable}</div>
                     <div>{"(accounts - reserved)"}</div>
                 </div>
 

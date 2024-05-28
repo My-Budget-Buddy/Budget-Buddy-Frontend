@@ -2,7 +2,6 @@ import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { getTransactionsThing } from "../../../Tax/taxesAPI";
 
 // TODO Given a list of transactions, return budget totals
-const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
 
 export async function getCompleteBudgets(transformedBudgets: BudgetRowProps[]) {
     const date = transformedBudgets[0].monthYear;
@@ -69,16 +68,12 @@ function mapTransactionsToCategories(transactions: Transaction[]) {
 
 async function getTransactions(userid: number, date: string): Promise<Transaction[]> {
     //TODO Wait for backend team to update on final endpoint
-    
-       return( getTransactionsThing(date, userid)
-        .then((res) => {
-            const data =  res.data;
-            console.log("data:", data);
-            return data;
-        })
-    )
-            
-    
+
+    return getTransactionsThing(date, userid).then((res) => {
+        const data = res.data;
+        console.log("data:", data);
+        return data;
+    });
 }
 
 interface Transaction {
