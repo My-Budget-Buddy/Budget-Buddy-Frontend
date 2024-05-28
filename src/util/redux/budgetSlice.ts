@@ -50,7 +50,7 @@ export const budgetSlice = createSlice({
                     return 0;
                 }
             }, 0);
-            state.totalReserved = totalReserved;
+            state.totalReserved = Math.round(totalReserved * 100) / 100;
         },
 
         // pass in the amount to be reserved (or a negative amount for unreserving)
