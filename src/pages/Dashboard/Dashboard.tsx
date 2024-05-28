@@ -10,6 +10,8 @@ import { BudgetRowProps } from "../../types/budgetInterfaces";
 import { updateBudgets } from "../../util/redux/budgetSlice";
 import { getBudgetsByMonthYear } from "../Budgets/components/requests/budgetRequests";
 import { getCompleteBudgets } from "../Budgets/components/util/transactionsCalculator";
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 
 interface InitialAccountType {
     id: number;
@@ -265,7 +267,10 @@ const Dashboard: React.FC = () => {
                                                 )}
                                                 {acc.type === "savings" && (
                                                     <p className="flex items-center">
-                                                        <Icon.AccountBalance className="mr-2" />
+                                                        <SavingsOutlinedIcon 
+                                                            fontSize="small"
+                                                            className="mr-2"
+                                                        />
                                                         {t(`${acc.type}`)}
                                                     </p>
                                                 )}
@@ -309,7 +314,10 @@ const Dashboard: React.FC = () => {
                                 >
                                     <div className="flex justify-between items-center">
                                         <p className="flex items-center">
-                                            <Icon.AccountBalance className="mr-2" />
+                                            <MonetizationOnOutlinedIcon
+                                                fontSize="small"
+                                                className="mr-2" 
+                                            />
                                             {t("accounts.net-cash")}
                                         </p>
                                         <p
