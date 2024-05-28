@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { Transaction } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
 import { categoryIconsMap } from "../util/categoryIconsMap";
+import { formatCurrency } from "../../../../util/helpers";
 
 interface BudgetsRowProps {
     id: number;
@@ -123,14 +124,14 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
                 {categoryIconsMap.get(category)}
                 {category}
             </td>
-            <td>$ {totalAmount}</td>
-            <td>$ {actual}</td>
+            <td>{formatCurrency(totalAmount)}</td>
+            <td>{formatCurrency(actual)}</td>
             <td>
                 <div className="flex flex-row items-center">
                     {remaining > 0 ? (
-                        <div className="text-green-600 font-bold">$ {remaining}</div>
+                        <div className="text-green-600 font-bold">{formatCurrency(remaining)}</div>
                     ) : (
-                        <div className="text-red-600 font-bold">$ {remaining}</div>
+                        <div className="text-red-600 font-bold">{formatCurrency(remaining)}</div>
                     )}
                 </div>
             </td>
