@@ -325,10 +325,10 @@ function TransactionHistory() {
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
-                            <Label htmlFor="transaction-account">{t("transactions-table.account")}</Label>
+                            <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
                                     id={"transaction-account"}
@@ -378,7 +378,7 @@ function TransactionHistory() {
                             </div>
                             <div className="flex flex-col w-1/3">
                                 <div className="border-l border-black pl-6 h-full">
-                                    <h4 className="text-xl">Account</h4>
+                                    <h4 className="text-xl">{t("transactions.account")}</h4>
                                     <div className="flex items-center mt-3 text-sm text-gray-500">
                                         {transactions[current].accountId && (
                                             <div className="flex flex-col">
@@ -392,7 +392,7 @@ function TransactionHistory() {
                                                     </div>
                                                 </div>
                                                 <div className="mt-2 text-sm text-gray-500">
-                                                    Account Number:{" "}
+                                                    {t("accounts.account-number")}:{" "}
                                                     {getAccountDetails(transactions[current].accountId)?.accountNumber}
                                                 </div>
                                             </div>

@@ -121,7 +121,9 @@
       "description": "Descripción",
       "submit": "Enviar",
       "account": "Cuenta",
-      "history": "Todas las {{val}} transacciones"
+      "history": "Todas las {{val}} transacciones",
+      "spent": "Gastado",
+      "summary": "Resumen"
     },
     "tax": {
       "title": "Impuestos"
