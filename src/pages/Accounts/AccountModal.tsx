@@ -1,34 +1,38 @@
+import type { Account } from "../../types/models";
+
 import {
+    Form,
+    Alert,
     Label,
     Modal,
+    Button,
     Select,
     ModalRef,
     TextInput,
     ButtonGroup,
     ModalFooter,
     ModalHeading,
-    ModalToggleButton,
-    Form,
-    Button,
-    Alert,
+    ModalToggleButton
 } from "@trussworks/react-uswds";
-import type { Account } from "../../types/models";
-import React, { FormEvent, useEffect, useState } from "react";
 import { useRef } from "react";
-import { postAccountData } from "../Tax/taxesAPI";
 import { useTranslation } from "react-i18next";
+import React, { FormEvent, useEffect, useState } from "react";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 interface AccountModalProps {
     onAccountAdded: (account: Account) => void;
 }
 
 const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
+    const { t } = useTranslation();
+    const { jwt } = useAuthentication();
+
     const modalRef = useRef<ModalRef>(null);
     const formRef = useRef<HTMLFormElement>(null);
-    const [showRoutingNumberInput, setShowRoutingNumberInput] = useState(true);
+
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { t } = useTranslation();
+    const [showRoutingNumberInput, setShowRoutingNumberInput] = useState(true);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,26 +50,21 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             //@ts-expect-error elements aren't typed
             investmentRate: e.currentTarget.elements["input-interest-rate"].value as number,
             //@ts-expect-error elements aren't typed
-            startingBalance: e.currentTarget.elements["account-balance"].value as number,
+            startingBalance: e.currentTarget.elements["account-balance"].value as number
         };
 
-        postAccountData(fields)
-
-            .then((response) => {
-                // if (!response.ok) {
-                //     throw new Error(t("accounts.error-add"));
-                // }
-                console.log(JSON.stringify(response.data));
-                return response.data;
-            })
-            .then((newAccount) => {
+        fetch("http://localhost:8125/accounts", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
+            body: JSON.stringify(fields)
+        })
+            .then((response) => response.json())
+            .then((newAccount: Account) => {
                 onAccountAdded(newAccount);
                 modalRef.current?.toggleModal();
-                setIsModalOpen(prevState => !prevState); // Toggle isModalOpen
+                setIsModalOpen((prev) => !prev);
             })
-            .catch((error) => {
-                setError(error.message);
-            });
+            .catch((error) => setError(error.message));
     };
 
     // will reset the form when the modal is opened
@@ -91,20 +90,14 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                     aria-labelledby="account-modal-heading"
                     aria-describedby="account-modal-description"
                 >
-                    <ModalHeading id="account-modal-heading">
-                        {t("accounts.enter-account")}
-                    </ModalHeading>
+                    <ModalHeading id="account-modal-heading">{t("accounts.enter-account")}</ModalHeading>
                     {error && (
                         <Alert type="error" headingLevel="h4">
                             {error}
                         </Alert>
                     )}
                     <Form ref={formRef} onSubmit={handleSubmit} className="usa-prose">
-                        <Label
-                            id="label-account-type"
-                            htmlFor="account-type"
-                            requiredMarker
-                        >
+                        <Label id="label-account-type" htmlFor="account-type" requiredMarker>
                             {t("accounts.account-type")}
                         </Label>
                         <Select
@@ -126,12 +119,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         <Label htmlFor="input-account-name" requiredMarker>
                             {t("accounts.institution")}
                         </Label>
-                        <TextInput
-                            id="input-account-name"
-                            name="input-account-name"
-                            type="text"
-                            required
-                        />
+                        <TextInput id="input-account-name" name="input-account-name" type="text" required />
 
                         <Label id="label-account-num" htmlFor="account-num" requiredMarker>
                             {t("accounts.account-number")}
@@ -162,22 +150,12 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                         <Label id="label-interest-rate" htmlFor="input-interest-rate" requiredMarker>
                             {t("accounts.interest-rate")}
                         </Label>
-                        <TextInput
-                            id="input-interest-rate"
-                            name="input-interest-rate"
-                            type="text"
-                            required
-                        />
+                        <TextInput id="input-interest-rate" name="input-interest-rate" type="text" required />
 
                         <Label htmlFor="account-balance" requiredMarker>
                             {t("accounts.balance")}
                         </Label>
-                        <TextInput
-                            id="account-balance"
-                            name="account-balance"
-                            type="text"
-                            required
-                        />
+                        <TextInput id="account-balance" name="account-balance" type="text" required />
 
                         <ModalFooter>
                             <ButtonGroup>

@@ -1,24 +1,27 @@
 import type { Account } from "../../types/models";
 
 import AccountModal from "./AccountModal";
-
-import { useEffect, useMemo, useState } from "react";
-import { formatCurrency } from "../../util/helpers";
-import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
-import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 import CreditScoreModal from "./CreditScoreModal";
-import { getAccountByID } from "../Tax/taxesAPI";
+
 import { useTranslation } from "react-i18next";
+import { formatCurrency } from "../../util/helpers";
+import { useEffect, useMemo, useState } from "react";
+import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 
 const Accounts: React.FC = () => {
+    const { t } = useTranslation();
+    const { jwt } = useAuthentication();
+
     const [showTooltip, setShowTooltip] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [accounts, setAccounts] = useState<Account[] | null>(null);
-    const { t } = useTranslation();
 
     const handleDelete = (accountId: number): void => {
-        fetch(`http://localhost:8080/accounts/1/${accountId}`, {
-            method: "DELETE"
+        fetch(`http://localhost:8125/accounts/${accountId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${jwt}` }
         })
             .then((res) => {
                 if (!res.ok) {
@@ -29,25 +32,25 @@ const Accounts: React.FC = () => {
             .catch((err: Error) => setError(err.message));
     };
 
+    // FETCH ACCOUNTS USING THE LOGGED IN USER'S JWT
     useEffect(() => {
-        // TODO: update this to use the users information + the gateway service + headers for Auth
-        getAccountByID()
+        fetch("http://localhost:8125/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
-                // if (!res.ok) {
-                //     throw new Error(t("accounts.fetch-error"));
-                // }
-                console.log((res.data));
-                return res.data;
+                if (res.ok) {
+                    return res.json().then((data: Account[]) => setAccounts(data));
+                } else {
+                    return res.text().then((errText: string) => {
+                        throw new Error(errText);
+                    });
+                }
             })
-            .then((data: Account[]) => setAccounts(data))
             .catch((err: Error) => setError(err.message));
-    }, []);
+    }, [jwt, t]);
 
     const handleAccountAdded = (newAccount: Account) => {
         setAccounts((prevAccounts) => (prevAccounts ? [...prevAccounts, newAccount] : [newAccount]));
     };
 
-    // do something here? idk useMemo or useCallback?
     const totalBalance = useMemo(() => {
         if (!accounts) return 0;
 
@@ -66,11 +69,14 @@ const Accounts: React.FC = () => {
         <>
             <Title>{t("accounts.title")}</Title>
 
-            {error && (
-                <Alert type="error" headingLevel="h4">
-                    {error}
-                </Alert>
-            )}
+            <GridContainer>
+                {error && (
+                    <Alert type="error" heading="Error Fetching Account Information" headingLevel="h4">
+                        {error}
+                    </Alert>
+                )}
+            </GridContainer>
+
             {/* Net Cash Section */}
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
                 <div className="flex items-center space-x-2 mb-6">
@@ -316,7 +322,6 @@ const Accounts: React.FC = () => {
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-3xl font-semibold">{t("accounts.view-credit-score")}</h2>
                     <CreditScoreModal totalDebt={debts} />
-
                 </div>
                 <div className="flex justify-center py-5">
                     <table className="table-auto w-full divide-gray-200">
