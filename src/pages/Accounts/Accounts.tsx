@@ -34,10 +34,15 @@ const Accounts: React.FC = () => {
 
     // FETCH ACCOUNTS USING THE LOGGED IN USER'S JWT
     useEffect(() => {
+        if (!jwt) return; // to prevent an unnecessary 401
+
         fetch("http://localhost:8125/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (res.ok) {
-                    return res.json().then((data: Account[]) => setAccounts(data));
+                    return res.json().then((data: Account[]) => {
+                        setAccounts(data);
+                        setError(null);
+                    });
                 } else {
                     return res.text().then((errText: string) => {
                         throw new Error(errText);
