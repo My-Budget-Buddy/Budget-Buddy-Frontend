@@ -42,6 +42,18 @@ interface W2StateR{
     "imageKey": any
 };
 
+interface RawBucketToSend {
+    // bucketId: number;
+    userId: number;
+    bucketName: string;
+    amountReserved: number;
+    amountRequired: number;
+    // dateCreated: string;
+    isActive: boolean;
+    isReserved: boolean;
+    // monthYear: string;
+}
+
 export const createTaxReturn = (initTaxReturn : initReturn) => {
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 }
@@ -155,4 +167,20 @@ export const findW2sByTaxReturnIdAPI = () => {
 
 export const findAllDeductionsByTaxReturnAPI = () => {
     return apiClient.get(`/taxes/taxreturns/1/deductions`);
+}
+
+export const getBucketsAPI = () => {
+    return apiClient.get(`/buckets/user/1`);
+}
+
+export const addBucketsAPI = (bucket : RawBucketToSend) => {
+    return apiClient.post(`/buckets/add`, bucket);
+}
+
+export const updateBucketAPI = (bucket : RawBucketToSend, id:number) => {
+    return apiClient.put(`/buckets/update/${id}`, bucket);
+}
+
+export const deleteBucketAPI = (id: number) => {
+    return apiClient.delete(`/buckets/delete/${id}`);
 }

@@ -1,106 +1,66 @@
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+import { addBucketsAPI, deleteBucketAPI, getBucketsAPI, updateBucketAPI } from "../../../Tax/taxesAPI";
 
-export async function getBuckets() {
+export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `/buckets/user/1`;
-    try {
+    //const endpoint = `/buckets/user/1`;
+    // try {
         console.log("getting... ");
-        const response = await fetch(endpoint, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
+        return(getBucketsAPI()
+        .then((res) =>{
+            const buckets: RawBucket[] =  res.data;
+            console.log(`/////////////////////////////////////////////////////////`);
+            console.log(buckets);
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
+            const transformedBuckets = transformBuckets(buckets);
 
-        const buckets: RawBucket[] = await response.json();
-        console.log(buckets);
+            // Update redux store
+            return transformedBuckets;
 
-        const transformedBuckets = transformBuckets(buckets);
+        })
+        )
+        // if (!response.ok) {
+        //     throw new Error(`Error: ${response.status} ${response.statusText}`);
+        // }
 
-        // Update redux store
-        return transformedBuckets;
+        
 
         // Call from redux store
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        throw error;
-    }
+    // } catch (error) {
+    //     console.error("Failed to fetch user data:", error);
+    //     throw error;
+    // }
 }
 
 export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/add`;
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/add`;
 
-    try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(bucket)
-        });
+        return(addBucketsAPI(bucket)
+            .then((res) =>{
+                const data: RawBucketToSend =  res.data;
+                return data;
+            })
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data: RawBucketToSend = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to create bucket:", error);
-        throw error;
-    }
+        )
+   
 }
 
 export async function putBucket(bucket: RawBucketToSend, id: number): Promise<RawBucketToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/update/${id}`;
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/update/${id}`;
 
-    try {
-        const response = await fetch(endpoint, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(bucket)
-        });
+    return(updateBucketAPI(bucket, id)
+            .then((res) =>{
+                const data: RawBucketToSend =  res.data;
+                return data;
+            })
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const data: RawBucketToSend = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to create bucket:", error);
-        throw error;
-    }
+        )
 }
 
 export async function deleteBucket(id: number) {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/delete/${id}`;
-    try {
-        const response = await fetch(endpoint, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        // Call from redux store
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        throw error;
-    }
+    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/delete/${id}`;
+    deleteBucketAPI(id);
 }
 
 // The data from the endpoint needs to be trimmed down to this.
