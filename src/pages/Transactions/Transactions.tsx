@@ -1,9 +1,12 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, Card, CardBody, CardGroup, CardHeader, Icon, InputGroup, InputPrefix, Modal, ModalRef, ModalToggleButton, Table, TextInput, Label, Form, Select, Textarea } from '@trussworks/react-uswds';
 import { useNavigate } from 'react-router-dom';
 import { Transaction, TransactionCategory, Account } from '../../types/models';
 import { deleteTransaction, getTransactionByUserId, getAccountsByUserId, createTransaction } from '../../utils/transactionService';
 import { useTranslation } from 'react-i18next';
+
+
 
 const Transactions: React.FC = () => {
     const { t } = useTranslation();
@@ -122,6 +125,7 @@ const Transactions: React.FC = () => {
         const { name, value } = e.target;
         setNewTransaction({ ...newTransaction, [name]: value });
     };
+
 
     return (
         <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
