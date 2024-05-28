@@ -1,34 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import {
-    Button,
-    Card,
-    CardBody,
-    CardGroup,
-    CardHeader,
-    Icon,
-    InputGroup,
-    InputPrefix,
-    Modal,
-    ModalRef,
-    ModalToggleButton,
-    Table,
-    TextInput,
-    Label,
-    Form,
-    Select,
-    Textarea
-} from "@trussworks/react-uswds";
-import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Transaction, TransactionCategory, Account } from "../../types/models.ts";
-import {
-    deleteTransaction,
-    getTransactionByUserId,
-    getAccountsByUserId,
-    createTransaction
-} from "../../utils/transactionService.ts";
-import { useTranslation } from "react-i18next";
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Button, Card, CardBody, CardGroup, CardHeader, Icon, InputGroup, InputPrefix, Modal, ModalRef, ModalToggleButton, Table, TextInput, Label, Form, Select, Textarea } from '@trussworks/react-uswds';
+import { useNavigate } from 'react-router-dom';
+import { Transaction, TransactionCategory, Account } from '../../types/models';
+import { deleteTransaction, getTransactionByUserId, getAccountsByUserId, createTransaction } from '../../utils/transactionService';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -40,28 +16,28 @@ const Transactions: React.FC = () => {
     const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
 
-    const [selectedCategory, setSelectedCategory] = useState<string>("All Categories");
-    const [selectedAccount, setSelectedAccount] = useState<string>("All Accounts");
+    const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
+    const [selectedAccount, setSelectedAccount] = useState<string>('All Accounts');
 
-    const [minAmount, setMinAmount] = useState<number | "">("");
-    const [maxAmount, setMaxAmount] = useState<number | "">("");
+    const [minAmount, setMinAmount] = useState<number | ''>('');
+    const [maxAmount, setMaxAmount] = useState<number | ''>('');
     const [showAmountFilter, setShowAmountFilter] = useState<boolean>(false);
 
-    const [minDate, setMinDate] = useState<string>("");
-    const [maxDate, setMaxDate] = useState<string>("");
+    const [minDate, setMinDate] = useState<string>('');
+    const [maxDate, setMaxDate] = useState<string>('');
     const [showDateFilter, setShowDateFilter] = useState<boolean>(false);
 
-    const [sortOrder, setSortOrder] = useState<string>("date");
-    const [sortDirection, setSortDirection] = useState<string>("asc");
+    const [sortOrder, setSortOrder] = useState<string>('date');
+    const [sortDirection, setSortDirection] = useState<string>('asc');
 
-    const [newTransaction, setNewTransaction] = useState<Omit<Transaction, "transactionId">>({
+    const [newTransaction, setNewTransaction] = useState<Omit<Transaction, 'transactionId'>>({
         userId: 1,
         accountId: 1,
-        vendorName: "",
+        vendorName: '',
         amount: 0,
         category: TransactionCategory.GROCERIES,
-        description: "",
-        date: new Date().toISOString().slice(0, 10)
+        description: '',
+        date: new Date().toISOString().slice(0, 10),
     });
 
     const infoRef = useRef<ModalRef>(null);
@@ -70,11 +46,11 @@ const Transactions: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const transactionsData = await getTransactionByUserId(1);
-            setTransactions(transactionsData);
-
             const accountsData = await getAccountsByUserId(1);
             setAccounts(accountsData);
+
+            const transactionsData = await getTransactionByUserId(1);
+            setTransactions(transactionsData);
         };
         fetchData();
     }, []);
@@ -82,19 +58,19 @@ const Transactions: React.FC = () => {
     useEffect(() => {
         let sortedTransactions = [...transactions].filter(
             (transaction) =>
-                (selectedCategory === "All Categories" || transaction.category === selectedCategory) &&
-                (selectedAccount === "All Accounts" || transaction.accountId.toString() === selectedAccount) &&
-                (minAmount === "" || transaction.amount >= minAmount) &&
-                (maxAmount === "" || transaction.amount <= maxAmount) &&
-                (minDate === "" || new Date(transaction.date) >= new Date(minDate)) &&
-                (maxDate === "" || new Date(transaction.date) <= new Date(maxDate))
+                (selectedCategory === 'All Categories' || transaction.category === selectedCategory) &&
+                (selectedAccount === 'All Accounts' || transaction.accountId.toString() === selectedAccount) &&
+                (minAmount === '' || transaction.amount >= minAmount) &&
+                (maxAmount === '' || transaction.amount <= maxAmount) &&
+                (minDate === '' || new Date(transaction.date) >= new Date(minDate)) &&
+                (maxDate === '' || new Date(transaction.date) <= new Date(maxDate))
         );
 
         sortedTransactions = sortedTransactions.sort((a, b) => {
-            if (sortOrder === "amount") {
-                return sortDirection === "asc" ? a.amount - b.amount : b.amount - a.amount;
+            if (sortOrder === 'amount') {
+                return sortDirection === 'asc' ? a.amount - b.amount : b.amount - a.amount;
             } else {
-                return sortDirection === "asc"
+                return sortDirection === 'asc'
                     ? new Date(a.date).getTime() - new Date(b.date).getTime()
                     : new Date(b.date).getTime() - new Date(a.date).getTime();
             }
@@ -110,7 +86,7 @@ const Transactions: React.FC = () => {
         maxDate,
         transactions,
         sortOrder,
-        sortDirection
+        sortDirection,
     ]);
 
     const handleDelete = async (transactionId: number) => {
@@ -127,21 +103,17 @@ const Transactions: React.FC = () => {
 
     const handleCreateTransaction = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Form submitted"); // checking if it ever reached here
         try {
-            console.log("Submitting transaction:", newTransaction); // Logingg the transaction data
             const createdTransaction = await createTransaction(newTransaction);
-            console.log("Created transaction:", createdTransaction); // Logging the response data
             setTransactions([...transactions, createdTransaction]);
         } catch (error) {
-            console.error("Error creating transaction:", error);
+            console.error('Error creating transaction:', error);
         }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setNewTransaction({ ...newTransaction, [name]: value });
-        console.log(newTransaction);
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -164,29 +136,21 @@ const Transactions: React.FC = () => {
                         type="button"
                         className="usa-button--secondary"
                         onClick={() => {
-                            setSelectedCategory("All Categories");
-                            setSelectedAccount("All Accounts");
-                            setMinAmount("");
-                            setMaxAmount("");
-                            setMinDate("");
-                            setMaxDate("");
+                            setSelectedCategory('All Categories');
+                            setSelectedAccount('All Accounts');
+                            setMinAmount('');
+                            setMaxAmount('');
+                            setMinDate('');
+                            setMaxDate('');
                         }}
                     >
                         Clear Filters
                     </Button>
-                    <select
-                        className="p-2 border rounded"
-                        value={sortOrder}
-                        onChange={(e) => setSortOrder(e.target.value)}
-                    >
+                    <select className="p-2 border rounded" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
                         <option value="date">Sort by date</option>
                         <option value="amount">Sort by amount</option>
                     </select>
-                    <select
-                        className="p-2 border rounded"
-                        value={sortDirection}
-                        onChange={(e) => setSortDirection(e.target.value)}
-                    >
+                    <select className="p-2 border rounded" value={sortDirection} onChange={(e) => setSortDirection(e.target.value)}>
                         <option value="asc">Ascending</option>
                         <option value="desc">Descending</option>
                     </select>
@@ -197,11 +161,7 @@ const Transactions: React.FC = () => {
             </div>
 
             <div className="flex justify-center items-center gap-4 bg-transparent p-4">
-                <select
-                    className="p-2 w-40"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                >
+                <select className="p-2 w-40" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
                     <option>All Categories</option>
                     {Object.values(TransactionCategory).map((category) => (
                         <option key={category} value={category}>
@@ -209,11 +169,7 @@ const Transactions: React.FC = () => {
                         </option>
                     ))}
                 </select>
-                <select
-                    className="p-2 w-40"
-                    value={selectedAccount}
-                    onChange={(e) => setSelectedAccount(e.target.value)}
-                >
+                <select className="p-2 w-40" value={selectedAccount} onChange={(e) => setSelectedAccount(e.target.value)}>
                     <option>All Accounts</option>
                     {accounts.map((account) => (
                         <option key={account.id} value={account.id.toString()}>
@@ -224,10 +180,10 @@ const Transactions: React.FC = () => {
                 <select
                     className="p-2 w-40"
                     onChange={(e) => {
-                        setShowAmountFilter(e.target.value === "amount");
-                        if (e.target.value !== "amount") {
-                            setMinAmount("");
-                            setMaxAmount("");
+                        setShowAmountFilter(e.target.value === 'amount');
+                        if (e.target.value !== 'amount') {
+                            setMinAmount('');
+                            setMaxAmount('');
                         }
                     }}
                 >
@@ -237,10 +193,10 @@ const Transactions: React.FC = () => {
                 <select
                     className="p-2 w-40"
                     onChange={(e) => {
-                        setShowDateFilter(e.target.value === "date");
-                        if (e.target.value !== "date") {
-                            setMinDate("");
-                            setMaxDate("");
+                        setShowDateFilter(e.target.value === 'date');
+                        if (e.target.value !== 'date') {
+                            setMinDate('');
+                            setMaxDate('');
                         }
                     }}
                 >
@@ -260,7 +216,7 @@ const Transactions: React.FC = () => {
                                 name="minAmount"
                                 type="number"
                                 placeholder="Min Amount"
-                                onChange={(e) => setMinAmount(e.target.value === "" ? "" : parseFloat(e.target.value))}
+                                onChange={(e) => setMinAmount(e.target.value === '' ? '' : parseFloat(e.target.value))}
                             />
                         </InputGroup>
                         <InputGroup>
@@ -271,7 +227,7 @@ const Transactions: React.FC = () => {
                                 name="maxAmount"
                                 type="number"
                                 placeholder="Max Amount"
-                                onChange={(e) => setMaxAmount(e.target.value === "" ? "" : parseFloat(e.target.value))}
+                                onChange={(e) => setMaxAmount(e.target.value === '' ? '' : parseFloat(e.target.value))}
                             />
                         </InputGroup>
                     </div>
@@ -315,7 +271,8 @@ const Transactions: React.FC = () => {
                             {filteredTransactions.length === 0 ? (
                                 <div className="text-center">
                                     <p className="text-lg">
-                                        No transactions found<br/>
+                                        No transactions found
+                                        <br />
                                         Click <span className="font-bold text-blue-600">Add Transaction</span> to start making transactions
                                     </p>
                                 </div>
@@ -337,11 +294,7 @@ const Transactions: React.FC = () => {
                                             <td>{transaction.vendorName}</td>
                                             <td>{transaction.category}</td>
                                             <td>
-                                                <Button
-                                                    type="button"
-                                                    className="usa-button--unstyled"
-                                                    onClick={() => handleDelete(transaction.transactionId)}
-                                                >
+                                                <Button type="button" className="usa-button--unstyled" onClick={() => handleDelete(transaction.transactionId)}>
                                                     <Icon.Delete />
                                                 </Button>
                                             </td>
@@ -369,14 +322,14 @@ const Transactions: React.FC = () => {
                 </CardGroup>
             </div>
 
-            <Modal ref={infoRef} id="transaction-info-modal" isLarge aria-describedby={"test"} aria-labelledby={"test"}>
+            <Modal ref={infoRef} id="transaction-info-modal" isLarge aria-describedby="transaction-details" aria-labelledby="transaction-details-title">
                 {infoTransaction && (
                     <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex gap-4 items-center">
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
                                     <div>
-                                        {Intl.DateTimeFormat(t("dateLocale")).format(new Date(infoTransaction.date))}
+                                        {infoTransaction.date}
                                     </div>
                                 </div>
                                 <Button type="button" onClick={() => handleViewHistory(infoTransaction)}>
@@ -392,7 +345,7 @@ const Transactions: React.FC = () => {
                                     <p className="mt-2 text-xl">${infoTransaction.amount.toFixed(2)}</p>
                                     <p className="mt-4 text-lg">{infoTransaction.category}</p>
                                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
-                                        <p className="text-md">{infoTransaction.description || "No notes available"}</p>
+                                        <p className="text-md">{infoTransaction.description || 'No notes available'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -404,13 +357,10 @@ const Transactions: React.FC = () => {
                                             <div className="flex flex-col">
                                                 <div className="flex items-center text-sm text-gray-500">
                                                     <Icon.AccountBalance className="mr-2" />
-                                                    <div>
-                                                        {getAccountDetails(infoTransaction.accountId)?.institution}
-                                                    </div>
+                                                    <div>{getAccountDetails(infoTransaction.accountId)?.institution}</div>
                                                 </div>
                                                 <div className="mt-2 text-sm text-gray-500">
-                                                    Account Number:{" "}
-                                                    {getAccountDetails(infoTransaction.accountId)?.accountNumber}
+                                                    Account Number: {getAccountDetails(infoTransaction.accountId)?.accountNumber}
                                                 </div>
                                             </div>
                                         )}
@@ -422,7 +372,7 @@ const Transactions: React.FC = () => {
                 )}
             </Modal>
 
-            <Modal ref={createRef} id="create-transaction-modal" aria-describedby={"test"} aria-labelledby={"test"}>
+            <Modal ref={createRef} id="create-transaction-modal" aria-describedby="create-transaction-form" aria-labelledby="create-transaction-form-title">
                 <Form onSubmit={handleCreateTransaction} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
@@ -459,13 +409,7 @@ const Transactions: React.FC = () => {
                             </InputGroup>
                             <Label htmlFor="transaction-category">Category</Label>
                             <div className="grid grid-cols-8">
-                                <Select
-                                    id="transaction-category"
-                                    name="category"
-                                    value={newTransaction.category}
-                                    onChange={handleSelectChange}
-                                    className="col-span-8"
-                                >
+                                <Select id="transaction-category" name="category" value={newTransaction.category} onChange={handleSelectChange} className="col-span-8">
                                     {Object.values(TransactionCategory).map((category) => (
                                         <option key={category} value={category}>
                                             {category}
@@ -474,24 +418,13 @@ const Transactions: React.FC = () => {
                                 </Select>
                             </div>
                             <Label htmlFor="transaction-description">Description</Label>
-                            <Textarea
-                                value={newTransaction.description || ""}
-                                id="transaction-description"
-                                onChange={handleAreaChange}
-                                name="description"
-                            />
+                            <Textarea value={newTransaction.description || ''} id="transaction-description" onChange={handleAreaChange} name="description" />
                             <Button type="submit">Submit</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">Account</Label>
                             <div className="grid grid-cols-8">
-                                <Select
-                                    id="transaction-account"
-                                    name="accountId"
-                                    value={newTransaction.accountId}
-                                    onChange={handleSelectChange}
-                                    className="col-span-8"
-                                >
+                                <Select id="transaction-account" name="accountId" value={newTransaction.accountId} onChange={handleSelectChange} className="col-span-8">
                                     {accounts.map((account) => (
                                         <option key={account.id} value={account.id}>
                                             {account.institution}

@@ -134,7 +134,7 @@ const EditBudgetModal: React.FC<CategoryProps> = ({ id, category, budgeted, isRe
                     id={id.toString()}
                     name="category"
                     type="text"
-                    value={formData.category}
+                    value={t(formData.category)}
                     disabled
                 ></TextInput>
 

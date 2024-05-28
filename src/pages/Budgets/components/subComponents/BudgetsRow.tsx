@@ -113,7 +113,7 @@ const BudgetsRow: React.FC<BudgetsRowProps> = ({
         <tr>
             <td>
                 {categoryIconsMap.get(category)}
-                {category}
+                {t(category)}
             </td>
             <td>{formatCurrency(totalAmount)}</td>
             <td>{formatCurrency(actual)}</td>

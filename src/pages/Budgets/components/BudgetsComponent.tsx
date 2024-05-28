@@ -106,7 +106,7 @@ const BudgetsComponent: React.FC = () => {
             let bValue = b[key];
 
             // the remaining value is not stored in the store like the other values so we handle that exception here
-            if (key === "spentAmount") {
+            if (key === ("remaining" as SortableKeys)) {
                 aValue = a.totalAmount - a.spentAmount;
                 bValue = b.totalAmount - b.spentAmount;
             }
@@ -180,9 +180,9 @@ const BudgetsComponent: React.FC = () => {
                             {t("budgets.actual")}
                             {renderSortArrow("spentAmount")}
                         </th>
-                        <th onClick={() => sortStoreBudgets("spentAmount")}>
-                            {t("budgets.spentAmount")}
-                            {renderSortArrow("spentAmount")}
+                        <th onClick={() => sortStoreBudgets("remaining" as SortableKeys)}>
+                            {t("budgets.remaining")}
+                            {renderSortArrow("remaining")}
                         </th>
                         <th></th>
                         <th>{t("budgets.actions")}</th>
@@ -194,9 +194,10 @@ const BudgetsComponent: React.FC = () => {
                     {budgetsStore.budgets.length === 0 ? (
                         <tr>
                             <td colSpan={7} className="text-center align-middle">
-                                <h1>There are currently no budgets for this month</h1>
-                                Click <span className="font-bold text-[#005ea2]">Add New Budget</span> to add a new
-                                budget
+                                <h1>{t("budgets.no-budgets")}</h1>
+                                {t("budgets.click")}{" "}
+                                <span className="font-bold text-[#005ea2]">{t("budgets.add-new-budget")}</span>{" "}
+                                {t("budgets.to-add-budget")}
                             </td>
                         </tr>
                     ) : (
