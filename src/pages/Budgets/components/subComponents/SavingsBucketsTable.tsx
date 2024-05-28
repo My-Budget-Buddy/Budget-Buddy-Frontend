@@ -95,9 +95,10 @@ function SavingsBucketTable() {
                     {listOfBuckets.length === 0 ? (
                         <tr>
                             <td colSpan={7} className="text-center align-middle">
-                                <h1>There are currently no savings buckets</h1>
-                                Click <span className="font-bold text-[#005ea2]">Add New Savings Bucket</span> to add a
-                                new bucket
+                                <h1>{t("budgets.no-buckets")}</h1>
+                                {t("budgets.click")}{" "}
+                                <span className="font-bold text-[#005ea2]">{t("budgets.add-new-bucket")}</span>{" "}
+                                {t("budgets.to-add-bucket")}
                             </td>
                         </tr>
                     ) : (

@@ -13,12 +13,14 @@ import { getCompleteBudgets } from "./util/transactionsCalculator";
 import { getCurrentMonthYear } from "../../../util/util";
 import { updateUserId } from "../../../util/redux/userSlice";
 import { formatCurrency } from "../../../util/helpers";
+import { useTranslation } from "react-i18next";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
 };
 
 const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }) => {
+    const { t } = useTranslation();
     const budgets = useAppSelector((store) => store.budgets);
     const buckets = useAppSelector((store) => store.buckets);
     const dispatch = useDispatch();
@@ -69,14 +71,14 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
         <>
             <div className="flex flex-row justify-between w-full" id="summary-component-container">
                 <div className="flex flex-col items-center justify-around ml-8" hidden={hideAdditionalInfo}>
-                    <div className="text-2xl font-bold">Total Available Funds Across Account</div>
-                    <div className=" text-6xl text-green-600 font-bold">${totalFundsAvailable}</div>
+                    <div className="text-2xl font-bold">{t("budgets.total-funds")}</div>
+                    <div className=" text-6xl text-green-600 font-bold">{formatCurrency(totalFundsAvailable)}</div>
                     <div>{"(accounts - reserved)"}</div>
                 </div>
 
                 <div className="flex flex-col items-center">
                     <div className="text-2xl mt-4 font-bold">
-                        Left to spend in {selectedMonthString} {selectedYear}
+                        {t("budgets.left-to-spend")} {selectedMonthString} {selectedYear}
                     </div>
                     {percentageRemaining >= 0 ? (
                         percentageRemaining >= 25 ? (
@@ -142,23 +144,24 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                         />
                     )}
                     <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">
-                        of {formatCurrency(budgets.spendingBudget)}
+                        {t("budgets.of")} {formatCurrency(budgets.spendingBudget)}
                     </div>
                 </div>
 
                 <div className="flex flex-col justify-around mr-8" hidden={hideAdditionalInfo}>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">
-                            {selectedMonthString} {selectedYear} Spending Budget <EditSpendingBudgetModal />
+                            {selectedMonthString} {selectedYear} {t("budgets.spending-budget")}{" "}
+                            <EditSpendingBudgetModal />
                         </div>
                         <div className="text-lg">{formatCurrency(budgets.spendingBudget)}</div>
                     </div>
                     <div className="flex flex-col items-center">
-                        <div className="text-2xl font-bold">Allocated</div>
+                        <div className="text-2xl font-bold">{t("budgets.allocated")}</div>
                         <div className="text-lg">{formatCurrency(budgets.totalReserved)}</div>
                     </div>
                     <div className="flex flex-col items-center">
-                        <div className="text-2xl font-bold">Remaining</div>
+                        <div className="text-2xl font-bold">{t("budgets.remaining")}</div>
                         <div className="text-lg">{formatCurrency(remainingBudget)}</div>
                     </div>
                 </div>

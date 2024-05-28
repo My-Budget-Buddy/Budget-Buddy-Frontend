@@ -20,7 +20,7 @@ import { updateSpendingBudgetFor } from "../requests/summaryRequests";
 const EditSpendingBudgetModal: React.FC = () => {
     const { t } = useTranslation();
     const budgetsStore = useAppSelector((store) => store.budgets);
-    const selectedMonth = budgetsStore.selectedMonth;
+    const selectedMonthString = budgetsStore.selectedMonthString;
     const selectedYear = budgetsStore.selectedYear;
     const spendingBudget = budgetsStore.spendingBudget;
     const curMonthYear = budgetsStore.monthYear;
@@ -66,10 +66,10 @@ const EditSpendingBudgetModal: React.FC = () => {
                 id="example-modal-3"
             >
                 <ModalHeading id="modal-3-heading">
-                    {t("budgets.edit")} {selectedMonth} {selectedYear} {t("budgets.spending-budget")}
+                    {t("budgets.edit")} {selectedMonthString} {selectedYear} {t("budgets.spending-budget")}
                 </ModalHeading>
 
-                <Label htmlFor="monthly-budget">{t("budgets.spending-budget")}t</Label>
+                <Label htmlFor="monthly-budget">{t("budgets.spending-budget")}</Label>
                 <TextInput
                     id="monthly-budget"
                     name="monthly-budget"

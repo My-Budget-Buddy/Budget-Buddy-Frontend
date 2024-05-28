@@ -194,9 +194,10 @@ const BudgetsComponent: React.FC = () => {
                     {budgetsStore.budgets.length === 0 ? (
                         <tr>
                             <td colSpan={7} className="text-center align-middle">
-                                <h1>There are currently no budgets for this month</h1>
-                                Click <span className="font-bold text-[#005ea2]">Add New Budget</span> to add a new
-                                budget
+                                <h1>{t("budgets.no-budgets")}</h1>
+                                {t("budgets.click")}{" "}
+                                <span className="font-bold text-[#005ea2]">{t("budgets.add-new-budget")}</span>{" "}
+                                {t("budgets.to-add-budget")}
                             </td>
                         </tr>
                     ) : (
