@@ -1,4 +1,4 @@
-import { Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
+import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { updateUserInfo, updateUserPassword } from "../../pages/Tax/taxesAPI";
@@ -24,10 +24,13 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
     const { t } = useTranslation();
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+    const [passwordError, setPasswordError] = useState(false)
+    const [passwordSuccess, setPasswordSuccess] = useState(false)
     // get profile infomration
     useEffect(()=> {
         fetchUserInfo()
+        setPasswordError(false)
+        setPasswordSuccess(false)
     }, [])
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,6 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
         try {
             updateUserInfo(profile)
             const confirmPassword = evt.currentTarget.elements["confirm-password"].value;
-            //if a password was input 
             const fields = {
                 username: profile.email,
                 password: evt.currentTarget.elements["new-password"].value
@@ -49,7 +51,9 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
             if (confirmPassword === fields.password){
                 updateUserPassword(fields)
                 evt.currentTarget.reset()
+                setPasswordSuccess(true)
             }else{
+                setPasswordError(true)
                 return
             }
         } catch (error) {
@@ -89,7 +93,12 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
                         value={profile.email}
                         disabled 
                     />
-
+                    {passwordSuccess && <Alert type="success" heading="Success" headingLevel="h4">
+                        Password has been updated
+                    </Alert>}
+                    {passwordError && <Alert type="error" heading="Error updating password" headingLevel="h4">
+                        Passwords do not match
+                    </Alert>}
                     <Label htmlFor="new-password">{t("nav.new-password")}</Label>
                     <InputGroup>
                         <TextInput 
