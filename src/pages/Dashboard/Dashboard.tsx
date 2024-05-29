@@ -3,12 +3,15 @@ import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } fr
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { formatCurrency } from "../../util/helpers";
+import { formatCurrency, formatDate } from "../../util/helpers";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { BudgetRowProps } from "../../types/budgetInterfaces";
 import { updateBudgets } from "../../util/redux/budgetSlice";
 import { getBudgetsByMonthYear } from "../Budgets/components/requests/budgetRequests";
+import { getCompleteBudgets } from "../Budgets/components/util/transactionsCalculator";
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 
 interface InitialAccountType {
     id: number;
@@ -65,8 +68,6 @@ const Dashboard: React.FC = () => {
     const [budgetGaugeTotal, setBudgetGaugeTotal] = useState(0);
     const [budgetGaugeSpent, setBudgetGaugeSpent] = useState(0);
     const dispatch = useDispatch();
-
-console.log('budgets Store: ', budgetsStore.budgets)
 
     // ---Calculate net cash---
     useEffect(() => {
@@ -182,14 +183,14 @@ console.log('budgets Store: ', budgetsStore.budgets)
         };
         fetchMonthlyTransactions();
     }, []);
-    // console.log(monthlyTransactions)
 
     //---- budgets gauge ----
     useEffect(() => {
         const fetchBudgets = async () => {
             try {
                 const response = await getBudgetsByMonthYear(budgetsStore.monthYear)
-                dispatch(updateBudgets(response));
+                const completeBudgets = await getCompleteBudgets(response);
+                dispatch(updateBudgets(completeBudgets));
             } catch (error) {
                 console.log('There was an error fetching budgets: ', error)
             }
@@ -217,8 +218,7 @@ console.log('budgets Store: ', budgetsStore.budgets)
                     className="flex flex-col flex-auto w-2/3 p-8 mr-12 border-solid border-4 rounded-lg shadow-lg"
                 >
                     <h1 className="flex items-center justify-center text-2xl font-bold my-0">
-                        {t("dashboard.chart")} <Icon.AttachMoney />
-                        {formatCurrency(monthlySpend, false)}
+                        {t("dashboard.chart")} {formatCurrency(monthlySpend)}
                     </h1>
                     <LineChart
                         xAxis={[
@@ -266,7 +266,10 @@ console.log('budgets Store: ', budgetsStore.budgets)
                                                 )}
                                                 {acc.type === "savings" && (
                                                     <p className="flex items-center">
-                                                        <Icon.AccountBalance className="mr-2" />
+                                                        <SavingsOutlinedIcon 
+                                                            fontSize="small"
+                                                            className="mr-2"
+                                                        />
                                                         {t(`${acc.type}`)}
                                                     </p>
                                                 )}
@@ -276,8 +279,8 @@ console.log('budgets Store: ', budgetsStore.budgets)
                                                         {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                <p className="flex items-center">
-                                                    <Icon.AttachMoney /> {formatCurrency(acc.balance, false)}
+                                                <p>
+                                                    {formatCurrency(acc.balance)}
                                                 </p>
                                             </div>
                                         ),
@@ -290,9 +293,8 @@ console.log('budgets Store: ', budgetsStore.budgets)
                                                     <p className="mr-2">{account.accountNumber}</p>|
                                                     <p className="ml-2">{account.institution}</p>
                                                 </div>
-                                                <p className="flex items-center">
-                                                    <Icon.AttachMoney />
-                                                    {formatCurrency(account.currentBalance, false)}
+                                                <p>
+                                                    {formatCurrency(account.currentBalance)}
                                                 </p>
                                             </div>
                                         )),
@@ -310,7 +312,10 @@ console.log('budgets Store: ', budgetsStore.budgets)
                                 >
                                     <div className="flex justify-between items-center">
                                         <p className="flex items-center">
-                                            <Icon.AccountBalance className="mr-2" />
+                                            <MonetizationOnOutlinedIcon
+                                                fontSize="small"
+                                                className="mr-2" 
+                                            />
                                             {t("accounts.net-cash")}
                                         </p>
                                         <p
@@ -318,7 +323,7 @@ console.log('budgets Store: ', budgetsStore.budgets)
                                                 netCash > 0 ? "text-[#00a91c]" : "text-[#b50909]"
                                             }`}
                                         >
-                                            <Icon.AttachMoney /> {formatCurrency(Math.abs(netCash), false)}
+                                            {formatCurrency(Math.abs(netCash))}
                                         </p>
                                     </div>
                                 </button>
@@ -351,12 +356,11 @@ console.log('budgets Store: ', budgetsStore.budgets)
                             <tbody>
                                 {recentTransactions.map((recentTransaction, idx) => (
                                     <tr key={`${recentTransaction.accountId}-${idx}`}>
-                                        <td>{recentTransaction.date}</td>
+                                        <td>{formatDate(recentTransaction.date)}</td>
                                         <td>{recentTransaction.vendorName}</td>
                                         <td>{t(`${recentTransaction.category}`)}</td>
                                         <td>
-                                            <Icon.AttachMoney />
-                                            {formatCurrency(recentTransaction.amount, false)}
+                                            {formatCurrency(recentTransaction.amount)}
                                         </td>
                                         <td>
                                             <ModalToggleButton
@@ -393,9 +397,9 @@ console.log('budgets Store: ', budgetsStore.budgets)
                         <Gauge
                             width={200}
                             height={200}
-                            value={budgetGaugeSpent}
+                            value={parseFloat((budgetGaugeSpent).toFixed(2))}
                             // value={300}
-                            valueMax={budgetGaugeTotal}
+                            valueMax={parseFloat(budgetGaugeTotal.toFixed(2))}
                             startAngle={0}
                             endAngle={360}
                             innerRadius="80%"
@@ -411,9 +415,8 @@ console.log('budgets Store: ', budgetsStore.budgets)
                                 className="grid-row flex-justify border-b border-black p-3 w-full"
                             >
                                 <p>{budget.category}</p>
-                                <p className="flex items-center">
-                                    <Icon.AttachMoney />
-                                    {formatCurrency(budget.spentAmount, false)} /  {formatCurrency(budget.totalAmount, false)}
+                                <p>
+                                    <span className={`${budget.spentAmount <= budget.totalAmount ? "" : "text-[#b50909] font-bold"}`}>{formatCurrency(budget.spentAmount)}</span> / {formatCurrency(budget.totalAmount)}
                                 </p>
                             </div>
                         ))}

@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
 import Languages from "./Settings/Languages";
 import Profile from "./Settings/Profile";
+import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
+import RequestPageOutlinedIcon from '@mui/icons-material/RequestPageOutlined';
 
 const NavBar = () => {
     const { t } = useTranslation();
@@ -14,32 +16,32 @@ const NavBar = () => {
         {
             path: "/dashboard",
             title: t("dashboard.title"),
-            icon: Icon.List
+            icon: <Icon.List className="mr-3"/>
         },
         {
             path: "/dashboard/accounts",
             title: t("accounts.title"),
-            icon: Icon.AccountBalance
+            icon: <Icon.AccountBalance className="mr-3"/>
         },
         {
             path: "/dashboard/budgets",
             title: t("budgets.title"),
-            icon: Icon.Assessment
+            icon: <Icon.Assessment className="mr-3"/>
         },
         {
             path: "/dashboard/spending",
             title: t("spending.title"),
-            icon: Icon.Assessment
+            icon: <ReceiptOutlinedIcon className="mr-3" fontSize="small"/>
         },
         {
             path: "/dashboard/transactions",
             title: t("transactions.title"),
-            icon: Icon.Search
+            icon: <Icon.Search className="mr-3"/>
         },
         {
             path: "/dashboard/tax",
             title: t("tax.title"),
-            icon: Icon.Assessment
+            icon: <RequestPageOutlinedIcon className="mr-3" fontSize="small"/>
         }
     ];
 
@@ -87,7 +89,7 @@ const NavBar = () => {
                                                     sideNav === `${option.title}` ? "usa-current" : ""
                                                 }`}
                                             >
-                                                <option.icon className="mr-2" />
+                                                <option.icon className="mr-2" fontSize={"small"}/>
                                                 <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
                                                     {option.title}
                                                 </button>
@@ -108,7 +110,7 @@ const NavBar = () => {
                         className="w-full usa-button min-w-full text-left items-center"
                         key={pages.path}
                     >
-                        <pages.icon className="mr-3" /> {pages.title}
+                        {pages.icon} {pages.title}
                     </Link>
                 ))}
             </div>
