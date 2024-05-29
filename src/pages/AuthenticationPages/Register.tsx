@@ -28,9 +28,7 @@ const Register: React.FC = () => {
             password: e.currentTarget.elements.password.value
         };
 
-        if (confirmPassword !== fields.password) {
-            return;
-        }
+         
 
         const res = await fetch("http://localhost:8125/auth/register", {
             method: "POST",
