@@ -14,6 +14,7 @@ import { updateUserId } from "../../../util/redux/userSlice";
 import { formatCurrency } from "../../../util/helpers";
 import { useTranslation } from "react-i18next";
 import { getTotalAvailableFunds } from "./requests/accountRequests";
+import { Icon } from "@trussworks/react-uswds";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
@@ -33,6 +34,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     const buckets = useAppSelector((store) => store.buckets);
     const dispatch = useDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
+    const [showTooltip, setShowTooltip] = useState(false);
     const [totalFundsAvailable, setTotalFundsAvailable] = useState(0);
     const [monthlySummary, setMonthlySummary] = useState<MonthlySummary>({
         summaryId: 0,
@@ -100,11 +102,26 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
         <>
             <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-col items-center justify-around ml-8" hidden={hideAdditionalInfo}>
-                    <div className="text-2xl font-bold">{t("budgets.total-funds")}</div>
+                    <div className="text-2xl font-bold flex flex-row">
+                        {t("budgets.total-funds")}
+                        <span
+                            onMouseEnter={() => setShowTooltip(true)}
+                            onMouseLeave={() => setShowTooltip(false)}
+                            className="relative text-sm align-middle ml-1"
+                        >
+                            <Icon.Help />
+                            {/* Render tooltip conditionally */}
+                            {showTooltip && (
+                                <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-80 text-sm">
+                                    {"= (Checkings + Savings) - (Credits + Reserved)"}
+                                </div>
+                            )}
+                        </span>
+                    </div>
                     <div style={{ color: totalFundsAvailable >= 0 ? "green" : "red" }} className=" text-6xl  font-bold">
                         {formatCurrency(totalFundsAvailable)}
                     </div>
-                    <div>{"(accounts - reserved)"}</div>
+                    <div></div>
                 </div>
 
                 <div className="flex flex-col items-center">

@@ -104,7 +104,10 @@ interface UserType {
     password: string;
 }
 
+
 export const createTaxReturn = (initTaxReturn: initReturn) => {
+    console.log("////////////////////////////////");
+    console.log(initTaxReturn);
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 };
 
@@ -185,8 +188,8 @@ export const createTransactionAPI = (transaction: Omit<Transaction, "transaction
     return apiClient.post(`/transactions`, transaction);
 }
 
-export const updateTransactionAPI = (transaction: Transaction) => {
-    return apiClient.put(`/transactions/updateTransaction`, transaction);
+export const updateTransactionAPI = (transactionId: number, transaction: Transaction) => {
+    return apiClient.put(`/transactions/${transactionId}`, transaction);
 }
 
 export const getTransactionByVendorAPI = (vendorName:string) => {
@@ -255,8 +258,8 @@ export const deleteBucketAPI = (id: number) => {
     return apiClient.delete(`/buckets/delete/${id}`);
 }
 
-export const updateTaxReturnAPI = (payload: Partial<taxReturn>) => {
-    return apiClient.put(`/taxes/taxreturns`, payload);
+export const updateTaxReturnAPI = (payload: Partial<taxReturn>, id: number | undefined) => {
+    return apiClient.put(`/taxes/taxreturns/${id}`, payload);
 }
 
 export const addOtherIncomeAPI = (payload : otherIncome) => {
@@ -278,6 +281,7 @@ export const getOtherIncomeAPI = () => {
 export const deleteTaxReturn = (id: number | undefined) => {
     return apiClient.delete(`/taxes/taxreturns/${id}`);
 }
+
 export const getUserInformationAPI = () => {
     return apiClient.get(`/users/user`);
 }
@@ -290,3 +294,4 @@ export const updateUserPassword = (updatedUserPassword : UserType) => {
     return apiClient.put(`/auth/update/password`, updatedUserPassword)
 }
 ;
+
