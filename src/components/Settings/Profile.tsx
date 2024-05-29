@@ -14,23 +14,24 @@ type SetProfileType = (profile: ProfileType) => void;
 
 type FetchUserInfoType = () => Promise<void>;
 
+type SetNameType = (name: string) => void;
+
 interface ProfileProps {
     profile: ProfileType;
     setProfile: SetProfileType;
     fetchUserInfo: FetchUserInfoType;
+    setName: SetNameType;
 }
 
-const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })=> {
+const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo, setName })=> {
     const { t } = useTranslation();
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [passwordError, setPasswordError] = useState(false)
-    const [passwordSuccess, setPasswordSuccess] = useState(false)
-    // get profile infomration
+    const [passwordError, setPasswordError] = useState<Boolean | string>('')
+
     useEffect(()=> {
         fetchUserInfo()
-        setPasswordError(false)
-        setPasswordSuccess(false)
+        setPasswordError('')
     }, [])
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,17 +44,20 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
         evt.preventDefault()
         try {
             updateUserInfo(profile)
+            setName(profile.firstName)
             const confirmPassword = evt.currentTarget.elements["confirm-password"].value;
             const fields = {
                 username: profile.email,
                 password: evt.currentTarget.elements["new-password"].value
             };
-            if (confirmPassword === fields.password){
+            if (confirmPassword === fields.password && confirmPassword !== ''){
                 updateUserPassword(fields)
                 evt.currentTarget.reset()
-                setPasswordSuccess(true)
-            }else{
+                setPasswordError(false)
+            }else if (confirmPassword !== fields.password){
                 setPasswordError(true)
+                return
+            }else{
                 return
             }
         } catch (error) {
@@ -93,10 +97,10 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
                         value={profile.email}
                         disabled 
                     />
-                    {passwordSuccess && <Alert type="success" heading="Success" headingLevel="h4">
+                    {passwordError===false && <Alert type="success" heading="Success" headingLevel="h4">
                         Password has been updated
                     </Alert>}
-                    {passwordError && <Alert type="error" heading="Error updating password" headingLevel="h4">
+                    {passwordError===true && <Alert type="error" heading="Error updating password" headingLevel="h4">
                         Passwords do not match
                     </Alert>}
                     <Label htmlFor="new-password">{t("nav.new-password")}</Label>
