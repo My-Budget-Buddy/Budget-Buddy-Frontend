@@ -21,10 +21,10 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMatch } from "react-router-dom";
-import { BarChart } from "@mui/x-charts";
 import { Account, Transaction, TransactionCategory } from "../../types/models";
 import { deleteTransaction, getAccountsByUserId, getTransactionByVendor } from "../../utils/transactionService";
 import { formatCurrency, formatDate } from "../../util/helpers";
+import { BarChart } from "@mui/x-charts";
 
 function TransactionHistory() {
     const Name = useMatch("/:first/:second/:name")?.params.name;
@@ -32,7 +32,7 @@ function TransactionHistory() {
     const transactionsInit: Transaction[] = [
         {
             transactionId: 10,
-            date: "2023-10-11",
+            date: "2021-10-01",
             vendorName: "Hot dog breakfast",
             category: TransactionCategory.DINING,
             amount: 2.33,
@@ -252,18 +252,28 @@ function TransactionHistory() {
                                     {
                                         data: transactions.map((transaction) => {
                                             return transaction.amount;
-                                        })
+                                        }),
+                                        valueFormatter: (v) => {
+                                            return formatCurrency(String(v), true);
+                                        }
                                     }
                                 ]}
                                 xAxis={[
                                     {
                                         scaleType: "band",
-                                        data: transactions.map((transaction) => {
-                                            return transaction.transactionId;
-                                        })
+                                        data: transactions.map((_transaction, index) => {
+                                            return index;
+                                        }),
+                                        valueFormatter: (v) => {
+                                            return formatDate(transactions[v].date);
+                                        }
                                     }
                                 ]}
                                 height={300}
+                                onItemClick={(_event, params) => {
+                                    setCurrent(params.dataIndex);
+                                    infoRef.current?.toggleModal();
+                                }}
                             />
                         </CardBody>
                     </Card>
@@ -290,6 +300,7 @@ function TransactionHistory() {
                                 name={"vendorName"}
                                 type={"text"}
                                 onChange={handleInputChange}
+                                disabled
                             />
                             <Label htmlFor={"transaction-amount"}>{t("transactions-table.amount")}</Label>
                             <InputGroup>
