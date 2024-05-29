@@ -1,10 +1,41 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Card, CardBody, CardGroup, CardHeader, Icon, InputGroup, InputPrefix, Modal, ModalRef, ModalToggleButton, Table, TextInput, Label, Form, Select, Textarea } from '@trussworks/react-uswds';
+import {
+    Button,
+    Card,
+    CardBody,
+    CardGroup,
+    CardHeader,
+    Icon,
+    InputGroup,
+    InputPrefix,
+    Modal,
+    ModalRef,
+    ModalToggleButton,
+    Table,
+    TextInput,
+    Label,
+    Form,
+    Select,
+    Textarea,
+    ModalHeading
+} from "@trussworks/react-uswds";
 import { useNavigate } from 'react-router-dom';
 import { Transaction, TransactionCategory, Account } from '../../types/models';
 import { deleteTransaction, getTransactionByUserId, getAccountsByUserId, createTransaction, updateTransaction, validateTransaction } from '../../utils/transactionService';
 import { useTranslation } from 'react-i18next';
+import CategoryIcon from '../../components/CategoryIcon';
 
+const categoryColors: { [key in TransactionCategory]: string } = {
+    [TransactionCategory.GROCERIES]: "#90c8f4",
+    [TransactionCategory.ENTERTAINMENT]: "#e5d23a",
+    [TransactionCategory.DINING]: "#6ed198",
+    [TransactionCategory.TRANSPORTATION]: "#af98f9",
+    [TransactionCategory.HEALTHCARE]: "#fd6d6d",
+    [TransactionCategory.LIVING_EXPENSES]: "#5a7ffa",
+    [TransactionCategory.SHOPPING]: "#fe992b",
+    [TransactionCategory.INCOME]: "#f7b7e5",
+    [TransactionCategory.MISC]: "#dce2e1"
+};
 
 const Transactions: React.FC = () => {
     const { t } = useTranslation();
@@ -309,7 +340,7 @@ const Transactions: React.FC = () => {
 
             <div className="flex-grow overflow-auto" style={{ maxHeight: 'calc(100vh - 250px)' }}>
                 <CardGroup>
-                    <Card gridLayout={{ col: 12 }}>
+                    <Card gridLayout={{ col: 12 }} className="mr-5">
                         <CardHeader className="flex justify-center mb-5">
                             <h1>List of Transactions</h1>
                         </CardHeader>
@@ -338,7 +369,10 @@ const Transactions: React.FC = () => {
                                         <tr key={transaction.transactionId}>
                                             <td>{transaction.date}</td>
                                             <td>{transaction.vendorName}</td>
-                                            <td>{transaction.category}</td>
+                                            <td>
+                                                <CategoryIcon category={transaction.category} color={categoryColors[transaction.category]} />
+                                                {transaction.category}
+                                            </td>
                                             <td>
                                                 <Button type="button" className="usa-button--unstyled" onClick={() => handleDelete(transaction.transactionId)}>
                                                     <Icon.Delete />
@@ -372,7 +406,6 @@ const Transactions: React.FC = () => {
                                     ))}
                                     </tbody>
                                 </Table>
-
                             )}
                         </CardBody>
                     </Card>
@@ -380,6 +413,9 @@ const Transactions: React.FC = () => {
             </div>
 
             <Modal ref={infoRef} id="transaction-info-modal" isLarge aria-describedby="transaction-details" aria-labelledby="transaction-details-title">
+                <ModalHeading className="text-center mb-6">
+                     Transaction Detailed Information
+                </ModalHeading>
                 {infoTransaction && (
                     <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
                         <div className="flex justify-between items-center mb-6">
@@ -400,7 +436,10 @@ const Transactions: React.FC = () => {
                                 <div className="mb-6">
                                     <h3 className="text-2xl font-bold">{infoTransaction.vendorName}</h3>
                                     <p className="mt-2 text-xl">${infoTransaction.amount.toFixed(2)}</p>
-                                    <p className="mt-4 text-lg">{infoTransaction.category}</p>
+                                    <p className="mt-4 text-lg">
+                                        <CategoryIcon category={infoTransaction.category} color={categoryColors[infoTransaction.category]} />
+                                        {infoTransaction.category}
+                                    </p>
                                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
                                         <p className="text-md">{infoTransaction.description || 'No notes available'}</p>
                                     </div>
@@ -428,8 +467,10 @@ const Transactions: React.FC = () => {
                     </div>
                 )}
             </Modal>
-
-            <Modal ref={createRef} id="create-transaction-modal" aria-describedby="create-transaction-form" aria-labelledby="create-transaction-form-title">
+            <Modal ref={createRef} id="create-transaction-modal"  aria-describedby="create-transaction-form" aria-labelledby="create-transaction-form-title">
+                <ModalHeading className="text-center mb-4">
+                    Create Transaction
+                </ModalHeading>
                 <Form onSubmit={handleCreateTransaction} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
@@ -496,6 +537,9 @@ const Transactions: React.FC = () => {
 
 
             <Modal ref={editRef} id="edit-transaction-modal" aria-describedby="edit-transaction-form" aria-labelledby="edit-transaction-form-title">
+                <ModalHeading className="text-center mb-4">
+                    Edit Transaction
+                </ModalHeading>
                 <Form onSubmit={handleUpdateTransaction} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
