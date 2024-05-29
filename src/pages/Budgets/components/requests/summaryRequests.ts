@@ -1,6 +1,6 @@
 // Mock data:
 
-import { mockFetch } from "../../../../util/util";
+import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../../../Tax/taxesAPI";
 
 const mockSummary = [
     {
@@ -12,14 +12,27 @@ const mockSummary = [
     }
 ];
 
-export async function getSpendingBudget(monthYear: string) {
-    //TODO if fetch gets nothing, post with new empty summary object
-
-    const summaries = await mockFetch(mockSummary);
-    const summary = summaries.find((summary: BudgetSummary) => summary.monthYear === monthYear);
-    return summary.totalBudgetAmount;
+export async function getMonthlySummary(monthYear: string): Promise<MonthlySummary> {
+    return getMonthlySummaryAPI(monthYear).then((res) => {
+        const monthlySummaryList = res.data;
+        const monthlySummary = monthlySummaryList[0];
+        return monthlySummary;
+    });
 }
 
+export async function updateMonthlySummary(summaryId: number, monthlySummary: MonthlySummary): Promise<MonthlySummary> {
+    return updateMonthlySummaryAPI(summaryId, monthlySummary).then((res) => {
+        const data: MonthlySummary = res.data;
+        return data;
+    });
+}
+
+export async function createMonthlySummary(monthlySummary: NewMonthlySummary): Promise<MonthlySummary> {
+    return createMonthlySummaryAPI(monthlySummary).then((res) => {
+        const data: MonthlySummary = res.data;
+        return data;
+    });
+}
 export async function updateSpendingBudgetFor(id: string, monthYear: string, amount: number) {
     const summary = {
         userId: id,
@@ -58,7 +71,7 @@ async function putBucket(summary: BudgetSummary, id: string) {
         throw error;
     }
 }
-
+/*
 export async function getTotalFundsAvailable(): Promise<number> {
     const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/accounts`;
 
@@ -86,7 +99,7 @@ export async function getTotalFundsAvailable(): Promise<number> {
         throw error;
     }
 }
-
+*/
 type BudgetSummary = {
     summaryId?: number;
     userId: string;
@@ -97,4 +110,20 @@ type BudgetSummary = {
 
 type Account = {
     type: string;
+};
+
+type MonthlySummary = {
+    summaryId: number;
+    userId?: string;
+    projectedIncome?: number;
+    monthYear?: string;
+    totalBudgetAmount?: number;
+};
+
+// The necessary fields for a post request
+type NewMonthlySummary = {
+    userId: number;
+    projectedIncome: number;
+    monthYear: string;
+    totalBudgetAmount: number;
 };
