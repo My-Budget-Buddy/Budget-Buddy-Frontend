@@ -92,7 +92,12 @@ interface otherIncomeToSend {
 //     return apiClient
 // }
 
-
+interface ProfileType {
+    firstName: string;
+    lastName: string;
+    email: string;
+    id: number;
+}
 
 export const createTaxReturn = (initTaxReturn: initReturn) => {
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
@@ -267,5 +272,13 @@ export const getOtherIncomeAPI = () => {
 
 export const deleteTaxReturn = (id: number | undefined) => {
     return apiClient.delete(`/taxes/taxreturns/${id}`);
+}
+export const getUserInformationAPI = () => {
+    return apiClient.get(`/users/user`);
+}
+
+export const updateUserInfo = (profile : ProfileType) => {
+    console.log("UPDATE PROFILE: ", profile)
+    return apiClient.put(`/users`, profile);
 }
 ;
