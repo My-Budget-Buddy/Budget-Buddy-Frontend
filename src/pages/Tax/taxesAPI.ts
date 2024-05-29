@@ -92,7 +92,12 @@ interface otherIncomeToSend {
 //     return apiClient
 // }
 
-
+interface ProfileType {
+    firstName: string;
+    lastName: string;
+    email: string;
+    id: number;
+}
 
 
 
@@ -180,8 +185,8 @@ export const createTransactionAPI = (transaction: Omit<Transaction, "transaction
     return apiClient.post(`/transactions`, transaction);
 }
 
-export const updateTransactionAPI = (transaction: Transaction) => {
-    return apiClient.put(`/transactions/updateTransaction`, transaction);
+export const updateTransactionAPI = (transactionId: number, transaction: Transaction) => {
+    return apiClient.put(`/transactions/${transactionId}`, transaction);
 }
 
 export const getTransactionByVendorAPI = (vendorName:string) => {
@@ -277,3 +282,9 @@ export const deleteTaxReturn = (id: number | undefined) => {
 export const getUserInformationAPI = () => {
     return apiClient.get(`/users/user`);
 }
+
+export const updateUserInfo = (profile : ProfileType) => {
+    console.log("UPDATE PROFILE: ", profile)
+    return apiClient.put(`/users`, profile);
+}
+
