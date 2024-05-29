@@ -110,12 +110,12 @@ export const getTaxReturnByUserId = (jwt: string | null, userId : number) => {
 }
 
 export const getAccountByID = () => {
-    return apiClient.get(`/accounts/1`);
+    return apiClient.get(`/accounts`);
 };
 
 export const postAccountData = (field: fields) => {
     console.log(field);
-    return apiClient.post("/accounts/1", field);
+    return apiClient.post("/accounts", field);
 };
 
 export const getBudgetsMonthyear = ( monthyear: string) => {
@@ -160,35 +160,39 @@ export const updateBudgetAPI = (id: number, budget: RawBudgetToSend) => {
 }
 
 export const getTransactionByUserIdAPI = (userId: number) => {
-    return apiClient.get(`/transactions/user/${userId}`);
+    return apiClient.get(`/transactions`);
 }
 
 export const getAccountsByUserIdAPI = (userId:number) => {
-    return apiClient.get(`/accounts/${userId}`);
+    return apiClient.get(`/accounts`);
 }
 
 export const deleteTransactionAPI = (transactionId:number) => {
-    return apiClient.delete(`/transactions/deleteTransaction/${transactionId}`);
+    return apiClient.delete(`/transactions/${transactionId}`);
 }
 
 export const createTransactionAPI = (transaction: Omit<Transaction, "transactionId">) => {
-    return apiClient.post(`/transactions/createTransaction`, transaction);
+    return apiClient.post(`/transactions`, transaction);
 }
 
-export const getTransactionByVendorAPI = (userId:number, vendorName:string) => {
-    return apiClient.get(`/transactions/user/${userId}/vendor/${vendorName}`);
+export const updateTransactionAPI = (transaction: Transaction) => {
+    return apiClient.put(`/transactions/updateTransaction`, transaction);
+}
+
+export const getTransactionByVendorAPI = (vendorName:string) => {
+    return apiClient.get(`/transactions/vendor/${vendorName}`);
 }
 
 export const getRecentTransactionsAPI = () => {
-    return apiClient.get(`/transactions/recentTransactions/1`);
+    return apiClient.get(`/transactions/recentTransactions`);
 }
 
 export const getCurrentMonthTransactionsAPI = () => {
-    return apiClient.get(`/transactions/currentMonthTransactions/1`);
+    return apiClient.get(`/transactions/currentMonthTransactions`);
 }
 
 export const deleteAccountAPI = (accountId: number) => {
-    return apiClient.delete(`/accounts/1/${accountId}`);
+    return apiClient.delete(`/accounts/${accountId}`);
 }
 
 export const createW2API = (w2payload: Omit<W2State, "w2id">[]) => {
@@ -214,7 +218,7 @@ export const createW2API = (w2payload: Omit<W2State, "w2id">[]) => {
 }
 
 export const createTaxReturnAPI = (taxPayload: Omit<taxReturn, "id">) => {
-    return apiClient.put(`/taxes/taxreturns/1`, taxPayload);
+    return apiClient.put(`/taxes/taxreturns`, taxPayload);
 }
 
 export const findW2sByTaxReturnIdAPI = () => {
@@ -242,7 +246,7 @@ export const deleteBucketAPI = (id: number) => {
 }
 
 export const updateTaxReturnAPI = (payload: Partial<taxReturn>) => {
-    return apiClient.put(`/taxes/taxreturns/1`, payload);
+    return apiClient.put(`/taxes/taxreturns`, payload);
 }
 
 export const addOtherIncomeAPI = (payload : otherIncome) => {
