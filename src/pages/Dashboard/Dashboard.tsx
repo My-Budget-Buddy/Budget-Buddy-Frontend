@@ -92,7 +92,6 @@ const Dashboard: React.FC = () => {
                     const accounts = res.data;
                 
                 //const accounts = response.data;
-                console.log("accounts: ", accounts);
                 setAccounts(accounts);
                 let allAccounts: AllAccountsType[] = accounts.reduce(
                     (prev: AllAccountsType[], account: InitialAccountType) => {
@@ -189,8 +188,6 @@ const Dashboard: React.FC = () => {
         };
         fetchMonthlyTransactions();
     }, []);
-    console.log("===============================");
-    console.log("this is a test", monthlyTransactions);
 
     //---- budgets gauge ----
     useEffect(() => {
