@@ -25,6 +25,7 @@ import { Account, Transaction, TransactionCategory } from "../../types/models";
 import { deleteTransaction, getAccountsByUserId, getTransactionByVendor } from "../../utils/transactionService";
 import { formatCurrency, formatDate } from "../../util/helpers";
 import { BarChart } from "@mui/x-charts";
+import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";
 
 function TransactionHistory() {
     const Name = useMatch("/:first/:second/:name")?.params.name;
@@ -186,7 +187,7 @@ function TransactionHistory() {
                     <Card gridLayout={{ col: 8 }}>
                         <CardHeader></CardHeader>
                         <CardBody>
-                            <Table bordered={false} fullWidth={true} striped>
+                            <Table bordered={false} fullWidth={true}>
                                 <thead>
                                     <tr>
                                         <th>{t("transactions-table.date")}</th>
@@ -201,7 +202,13 @@ function TransactionHistory() {
                                         <tr key={index}>
                                             <td>{formatDate(transaction.date)}</td>
                                             <td>{transaction.vendorName}</td>
-                                            <td>{t(transaction.category)}</td>
+                                            <td>
+                                                <CategoryIcon
+                                                    category={transaction.category}
+                                                    color={categoryColors[transaction.category]}
+                                                />
+                                                {t(transaction.category)}
+                                            </td>
                                             <td>
                                                 <ModalToggleButton
                                                     type={"button"}
