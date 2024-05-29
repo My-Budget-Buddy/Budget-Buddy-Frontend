@@ -132,7 +132,7 @@ export const getBudgetsTransactionsMonthyear = (monthyear: string) => {
 };
 
 export const getMonthlySummaryAPI = (monthyear: string) => {
-    return apiClient.get(`/summarys/monthyear/${monthyear}/user/1`);
+    return apiClient.get(`/summarys/monthyear/${monthyear}`);
 };
 
 export const updateMonthlySummaryAPI = (summaryId: number, monthlySummary: MonthlySummary) => {
