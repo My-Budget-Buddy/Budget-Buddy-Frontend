@@ -1,22 +1,22 @@
-import apiClient from './index';
+import apiClient from "./index";
 import { Transaction } from '../../types/models';
 import { W2State } from './W2Slice';
 import { taxReturn } from './TaxReturnSlice';
 import { otherIncome } from './otherIncomeSlice';
 import createApiClient from './index';
 interface initReturn {
-    year : number,
-    userId : number
+    year: number;
+    userId: number;
 }
 
 interface fields {
-    type: string,
-    institution: string,
-    accountNumber: number,
-    routingNumber: number,
-    investmentRate: number,
-    startingBalance: number
-};
+    type: string;
+    institution: string;
+    accountNumber: number;
+    routingNumber: number;
+    investmentRate: number;
+    startingBalance: number;
+}
 
 interface RawBudgetToSend {
     //budgetId: number;
@@ -27,6 +27,27 @@ interface RawBudgetToSend {
     monthYear: string;
     notes: string;
     //createdTimestamp: string;
+}
+
+type MonthlySummary = {
+    summaryId: number;
+    userId?: string;
+    projectedIncome?: number;
+    monthYear?: string;
+    totalBudgetAmount?: number;
+};
+
+type NewMonthlySummary = {
+    userId: number;
+    monthYear: string;
+    totalBudgetAmount: number;
+};
+
+type Account = {
+    id: number;
+    userId: number;
+    type: string;
+    currentBalance: number;
 };
 
 interface W2StateR{
@@ -73,13 +94,13 @@ interface otherIncomeToSend {
 
 
 
-export const createTaxReturn = (initTaxReturn : initReturn) => {
+export const createTaxReturn = (initTaxReturn: initReturn) => {
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
-}
+};
 
-export const getTaxReturnById = (taxReturnId : number) =>{
+export const getTaxReturnById = (taxReturnId: number) => {
     return apiClient.get(`/taxes/taxreturns/${taxReturnId}`);
-}
+};
 
 export const getTaxReturnByUserId = (jwt: string | null, userId : number) => {
     
@@ -90,39 +111,51 @@ export const getTaxReturnByUserId = (jwt: string | null, userId : number) => {
 
 export const getAccountByID = () => {
     return apiClient.get(`/accounts/1`);
-}
+};
 
-export const postAccountData = (field : fields) => {
+export const postAccountData = (field: fields) => {
     console.log(field);
-    return apiClient.post('/accounts/1', field);
-}
+    return apiClient.post("/accounts/1", field);
+};
 
 export const getBudgetsMonthyear = (jwt: string | null, monthyear: string) => {
     //const apiClient = createApiClient(jwt);
     return apiClient.get(`/budgets/monthyear/${monthyear}/user/1`);
   };
 
-export const getTransactionsThing = (date : string, userid : number) => {
+export const getTransactionsThing = (date: string, userid: number) => {
     return apiClient.get(`/budgets/transactions/${date}/user/${userid}`);
-}
+};
 
-export const getBudgetsTransactionsMonthyear = (monthyear : string) => {
-    return apiClient.get(`/budgets/transactions/${monthyear}/user/1`)
-}
+export const getBudgetsTransactionsMonthyear = (monthyear: string) => {
+    return apiClient.get(`/budgets/transactions/${monthyear}/user/1`);
+};
+
+export const getMonthlySummaryAPI = (monthyear: string) => {
+    return apiClient.get(`/summarys/monthyear/${monthyear}/user/1`);
+};
+
+export const updateMonthlySummaryAPI = (summaryId: number, monthlySummary: MonthlySummary) => {
+    return apiClient.put(`/summarys/${summaryId}`, monthlySummary);
+};
+
+export const createMonthlySummaryAPI = (monthlySummary: NewMonthlySummary) => {
+    return apiClient.post(`/summarys`, monthlySummary);
+};
 
 export const getBudgetsByIdAPI = () => {
     return apiClient.get(`/budgets/1`);
-}
+};
 
-export const createBudgetAPI = (budget: RawBudgetToSend) =>{
+export const createBudgetAPI = (budget: RawBudgetToSend) => {
     return apiClient.post(`/budgets`, budget);
-}
+};
 
-export const deleteBudgetAPI = (id : number) => {
-    return apiClient.delete(`/budgets/${id}`)
-}
+export const deleteBudgetAPI = (id: number) => {
+    return apiClient.delete(`/budgets/${id}`);
+};
 
-export const updateBudgetAPI = (id : number, budget : RawBudgetToSend) => {
+export const updateBudgetAPI = (id: number, budget: RawBudgetToSend) => {
     return apiClient.put(`/budgets/${id}`, budget);
 }
 
@@ -231,3 +264,4 @@ export const getOtherIncomeAPI = () => {
 export const deleteTaxReturn = (id: number | undefined) => {
     return apiClient.delete(`/taxes/taxreturns/${id}`);
 }
+;

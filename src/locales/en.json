@@ -120,7 +120,10 @@
       "vendor-name": "Vendor Name",
       "description": "Description",
       "submit": "Submit",
-      "account": "Account"
+      "account": "Account",
+      "history": "All {{val}} transactions",
+      "spent": "Spent",
+      "summary": "Summary"
     },
     "tax": {
       "title": "Tax"

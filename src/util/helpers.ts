@@ -18,7 +18,8 @@ export function formatCurrency(value: string | number, includeSymbol: boolean = 
 
     const fm = new Intl.NumberFormat(i18next.t("locale"), {
         style: "currency",
-        currency: "USD"
+        currency: "USD",
+        currencyDisplay: "narrowSymbol"
     });
 
     if (!includeSymbol) return fm.format(valueNum).slice(1);

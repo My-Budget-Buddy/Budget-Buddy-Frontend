@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Account, Transaction } from "../types/models.ts";
+import { Account, Transaction, TransactionCategory } from "../types/models.ts";
 import { createTransactionAPI, deleteTransactionAPI, getAccountsByUserIdAPI, getTransactionByUserIdAPI, getTransactionByVendorAPI } from "../pages/Tax/taxesAPI.ts";
 
 const TRANSACTIONS_API_URL = "http://localhost:8125/transactions";
@@ -28,19 +28,52 @@ export const getAccountsByUserId = async (userId: number): Promise<Account[]> =>
 };
 
 export const createTransaction = async (transaction: Omit<Transaction, "transactionId">): Promise<Transaction> => {
-    //const response = await axios.post<Transaction>(`${TRANSACTIONS_API_URL}/createTransaction`, transaction);
-    return(createTransactionAPI(transaction)
-    .then((res) =>{
-        return res.data;
-    }))
-    
+    const response = await axios.post<Transaction>(`${TRANSACTIONS_API_URL}/createTransaction`, transaction);
+    return response.data;
 };
 
+export const updateTransaction = async (transaction: Transaction): Promise<Transaction> => {
+    const response = await axios.put<Transaction>(`${TRANSACTIONS_API_URL}/updateTransaction`, transaction);
+    return response.data;
+}
 export const getTransactionByVendor = async (userId: number, vendorName: string): Promise<Transaction[]> => {
-    //const response = await axios.get<Transaction[]>(`${TRANSACTIONS_API_URL}/user/${userId}/vendor/${vendorName}`);
-    return(getTransactionByVendorAPI(userId, vendorName)
-    .then((res) => {
-        return res.data;
-    }))
-    
+    const response = await axios.get<Transaction[]>(`${TRANSACTIONS_API_URL}/user/${userId}/vendor/${vendorName}`);
+    return response.data;
 };
+
+export const validateTransaction = (transaction: Omit<Transaction, 'transactionId'>): string[] => {
+    const errors: string[] = [];
+    const { vendorName, date, amount, category, accountId } = transaction;
+
+    if (!vendorName || vendorName.trim() === '') {
+        errors.push('Vendor name is required.');
+    }
+    if (vendorName.length > 100) {
+        errors.push('Vendor name cannot exceed 100 characters.');
+    }
+    if (!date) {
+        errors.push('Date is required.');
+    } else if (new Date(date) > new Date()) {
+        errors.push('Date cannot be in the future.');
+    } else if (isNaN(Date.parse(date))) {
+        errors.push('Date is invalid.');
+    }
+    if (amount <= 0) {
+        errors.push('Amount must be greater than zero.');
+    }
+    if (amount > 1000000) {
+        errors.push('Amount is excessively large.');
+    }
+    if (!category) {
+        errors.push('Category is required.');
+    }
+    if (!Object.values(TransactionCategory).includes(category as TransactionCategory)) {
+        errors.push('Invalid category.');
+    }
+    if (!accountId) {
+        errors.push('Account is required.');
+    }
+    return errors;
+};
+
+

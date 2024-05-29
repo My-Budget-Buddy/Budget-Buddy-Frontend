@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
-import { Button, Fieldset, Form, FormGroup, Grid, GridContainer, Label, TextInput } from "@trussworks/react-uswds";
+import { Button, Fieldset, FormGroup, Grid, GridContainer, TextInput } from "@trussworks/react-uswds";
 import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
 import { deleteTaxReturn, getTaxReturnById, updateTaxReturnAPI } from "./taxesAPI";
 
@@ -24,13 +24,13 @@ const PersonalInfoStep: React.FC = () => {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
-        let error = '';
-        if (name === 'formType' && value.length < 2) {
-          error = 'Form type must be at least 2 characters long.';
-        } else if (name === 'status' && value.length < 3) {
-          error = 'Status must be at least 3 characters long.';
+        let error = "";
+        if (name === "formType" && value.length < 2) {
+            error = "Form type must be at least 2 characters long.";
+        } else if (name === "status" && value.length < 3) {
+            error = "Status must be at least 3 characters long.";
         }
-    
+
         setErrors({ ...errors, [name]: error });
         setErrors2({ ...errors2, [name]: error });
     
