@@ -315,22 +315,24 @@ const Transactions: React.FC = () => {
                 <div className="flex justify-center items-center gap-4 bg-transparent p-4">
                     <div className="flex items-center gap-2">
                         <InputGroup>
-                            <TextInput
+                            <input
                                 value={minDate}
                                 id="min-date"
                                 name="minDate"
                                 type="date"
                                 placeholder="Min Date"
+                                className="usa-input"
                                 onChange={(e) => setMinDate(e.target.value)}
                             />
                         </InputGroup>
                         <InputGroup>
-                            <TextInput
+                            <input
                                 value={maxDate}
                                 id="max-date"
                                 name="maxDate"
                                 type="date"
                                 placeholder="Max Date"
+                                className="usa-input"
                                 onChange={(e) => setMaxDate(e.target.value)}
                             />
                         </InputGroup>
