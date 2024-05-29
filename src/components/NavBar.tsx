@@ -6,11 +6,33 @@ import Languages from "./Settings/Languages";
 import Profile from "./Settings/Profile";
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import RequestPageOutlinedIcon from '@mui/icons-material/RequestPageOutlined';
+import { useAuthentication } from "../contexts/AuthenticationContext";
+import axios from "axios";
 
 const NavBar = () => {
     const { t } = useTranslation();
     const modalRef = useRef<ModalRef>(null);
     const [sideNav, setSideNav] = useState(t("nav.profile"));
+    const { jwt } = useAuthentication();
+    const [profile, setProfile] = useState({
+        firstName: "",
+        lastName: "",
+        email: ""
+    })
+
+    const fetchUserInfo = async () => {
+        try {
+            const response = await axios.get("http://localhost:8125/users/user", {
+                headers: { Authorization: `Bearer ${jwt}` }
+            })
+            const user = response.data
+            console.log(user)
+            setProfile({firstName: user.firstName, lastName: user.lastName, email: user.email})
+        } catch (error) {
+            console.log("There was an error fetching user information: ", error)
+        }
+    }
+
 
     const pages = [
         {
@@ -49,7 +71,7 @@ const NavBar = () => {
         {
             title: t("nav.profile"),
             icon: Icon.Person,
-            component: <Profile />
+            component: <Profile profile={profile} setProfile={setProfile} fetchUserInfo={fetchUserInfo}/>
         },
         {
             title: t("nav.languages"),
@@ -57,6 +79,9 @@ const NavBar = () => {
             component: <Languages setSideNav={setSideNav} />
         }
     ];
+
+
+
 
     return (
         <div className="nav-container bg-base-lighter px-6 h-screen min-w-64 max-w-64">
@@ -66,7 +91,7 @@ const NavBar = () => {
                 </Link>
                 <div className="flex flex-row items-center gap-4 mt-4">
                     <h3>{t("nav.greeting")}, [Name]</h3>
-                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" id="no-focus">
+                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" id="no-focus" onClick={fetchUserInfo}>
                         <Icon.Settings style={{ fontSize: "1.4rem" }} />
                     </ModalToggleButton>
                     <Modal
