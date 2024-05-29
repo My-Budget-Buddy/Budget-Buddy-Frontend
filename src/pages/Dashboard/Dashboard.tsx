@@ -216,7 +216,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className="flex flex-col flex-wrap ">
-            <h1>{t("dashboard.welcome")} [add user name]</h1>
+            <h1>{t("dashboard.welcome")}</h1>
             <div className="flex">
                 <div
                     id="chart-container"
