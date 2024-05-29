@@ -42,12 +42,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     const selectedMonthString = budgets.selectedMonthString;
     const selectedYear = budgets.selectedYear;
 
-    const remainingBudget = (
-        budgets.spendingBudget -
-        budgets.totalReserved -
-        buckets.totalReserved -
-        budgets.totalActuallySpent
-    ).toString();
+    const remainingBudget = (budgets.spendingBudget - budgets.totalReserved - budgets.totalActuallySpent).toString();
     const percentageRemaining = (Number(remainingBudget) / budgets.spendingBudget) * 100;
 
     let gaugeColor = "#52b202";
@@ -72,16 +67,14 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
             dispatch(updateBudgets(completeBudgets));
 
-            const totalReserved = Math.round((budgets.totalReserved + buckets.totalReserved) * 100) / 100;
-
+            const totalReserved = buckets.totalReserved;
             const grossFundsAvailable = await getTotalAvailableFunds();
-            setTotalFundsAvailable(Math.round((grossFundsAvailable - totalReserved) * 100) / 100);
-            //Also, dispatch userId.
+            setTotalFundsAvailable(grossFundsAvailable - totalReserved);
             // TODO Move this to a more sensible location.
             // TODO See if backend is able to provide the required data. Scrap if not.
             dispatch(updateUserId(1));
         })();
-    }, []);
+    }, [buckets.totalReserved]);
 
     useEffect(() => {
         (async () => {
@@ -108,7 +101,9 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
             <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-col items-center justify-around ml-8" hidden={hideAdditionalInfo}>
                     <div className="text-2xl font-bold">{t("budgets.total-funds")}</div>
-                    <div className=" text-6xl text-green-600 font-bold">{formatCurrency(totalFundsAvailable)}</div>
+                    <div style={{ color: totalFundsAvailable >= 0 ? "green" : "red" }} className=" text-6xl  font-bold">
+                        {formatCurrency(totalFundsAvailable)}
+                    </div>
                     <div>{"(accounts - reserved)"}</div>
                 </div>
 
