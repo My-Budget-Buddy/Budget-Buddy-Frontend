@@ -27,7 +27,7 @@ const LandingHeader = () => {
     ];
 
     return (
-        <Header basic showMobileOverlay={mobileExpanded} className="relative z-50">
+        <Header basic showMobileOverlay={mobileExpanded}>
             <div className="usa-nav-container">
                 <div className="usa-navbar w-full flex justify-between">
                     <Link to="/">
