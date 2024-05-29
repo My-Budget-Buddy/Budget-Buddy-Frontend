@@ -26,8 +26,6 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const [creditScore, setCreditScore] = useState<number>(0);
     const { t } = useTranslation();
 
-    const url = "http://localhost:8125/api/credit/score/1";
-
     // returns the color of the gauge based on the credit score
     const getCreditColor = (creditScore: number): string => {
         if (creditScore > 719) return "#52b202";
@@ -37,8 +35,8 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     };
 
     useEffect(() => {
-        // TODO: update this to use the users information + the gateway service + headers for Auth
-        fetch(url)
+        if (!jwt) return; // to prevent an unnecessary 401
+        fetch("http://localhost:8125/api/credit/score", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(t("accounts.error-credit-score"));
