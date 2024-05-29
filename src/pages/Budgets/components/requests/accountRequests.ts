@@ -12,7 +12,7 @@ export async function getTotalAvailableFunds(): Promise<number> {
     return getAccountByID().then((res) => {
         const accounts = res.data;
         return accounts.reduce((sum: number, account: Account) => {
-            if (account.type !== "CREDIT") {
+            if (["CHECKING", "SAVINGS"].includes(account.type)) {
                 //TODO Use real account types. This will likely be a hardcoded list to check against.
                 sum += account.currentBalance;
             } else {
