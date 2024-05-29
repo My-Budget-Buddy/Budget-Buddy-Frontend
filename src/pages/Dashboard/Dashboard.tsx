@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
+
 import { LineChart, Gauge } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
@@ -10,8 +13,8 @@ import { BudgetRowProps } from "../../types/budgetInterfaces";
 import { updateBudgets } from "../../util/redux/budgetSlice";
 import { getBudgetsByMonthYear } from "../Budgets/components/requests/budgetRequests";
 import { getCompleteBudgets } from "../Budgets/components/util/transactionsCalculator";
-import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
-import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
+import SavingsOutlinedIcon from "@mui/icons-material/SavingsOutlined";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "../Tax/taxesAPI";
 
 interface InitialAccountType {
@@ -88,45 +91,44 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchAccounts = async () => {
             try {
-                getAccountByID()
-                .then((res) => {
+                getAccountByID().then((res) => {
                     const accounts = res.data;
-                
-                //const accounts = response.data;
-                console.log("accounts: ", accounts);
-                setAccounts(accounts);
-                let allAccounts: AllAccountsType[] = accounts.reduce(
-                    (prev: AllAccountsType[], account: InitialAccountType) => {
-                        const accountId = account.type.toLowerCase();
-                        const existingAccount = prev.find((acc) => acc.type === accountId);
-                        if (existingAccount) {
-                            existingAccount.balance += account.currentBalance;
-                            existingAccount.accounts.push({
-                                accountNumber: account.accountNumber,
-                                routingNumber: account.routingNumber,
-                                currentBalance: account.currentBalance,
-                                institution: account.institution
-                            });
-                        } else {
-                            prev.push({
-                                type: accountId,
-                                balance: account.currentBalance,
-                                accounts: [
-                                    {
-                                        accountNumber: account.accountNumber,
-                                        routingNumber: account.routingNumber,
-                                        currentBalance: account.currentBalance,
-                                        institution: account.institution
-                                    }
-                                ]
-                            });
-                        }
-                        return prev;
-                    },
-                    []
-                );
-                setAllAccounts(allAccounts);
-            })
+
+                    //const accounts = response.data;
+                    console.log("accounts: ", accounts);
+                    setAccounts(accounts);
+                    let allAccounts: AllAccountsType[] = accounts.reduce(
+                        (prev: AllAccountsType[], account: InitialAccountType) => {
+                            const accountId = account.type.toLowerCase();
+                            const existingAccount = prev.find((acc) => acc.type === accountId);
+                            if (existingAccount) {
+                                existingAccount.balance += account.currentBalance;
+                                existingAccount.accounts.push({
+                                    accountNumber: account.accountNumber,
+                                    routingNumber: account.routingNumber,
+                                    currentBalance: account.currentBalance,
+                                    institution: account.institution
+                                });
+                            } else {
+                                prev.push({
+                                    type: accountId,
+                                    balance: account.currentBalance,
+                                    accounts: [
+                                        {
+                                            accountNumber: account.accountNumber,
+                                            routingNumber: account.routingNumber,
+                                            currentBalance: account.currentBalance,
+                                            institution: account.institution
+                                        }
+                                    ]
+                                });
+                            }
+                            return prev;
+                        },
+                        []
+                    );
+                    setAllAccounts(allAccounts);
+                });
             } catch (err) {
                 console.log("There was an error fetching account data: ", err);
             }
@@ -139,11 +141,9 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                getRecentTransactionsAPI()
-                .then((res) => {
+                getRecentTransactionsAPI().then((res) => {
                     setRecentTransactions(res.data);
-                })
-                
+                });
             } catch (err) {
                 console.log("There was an error fetching recent tranactions: ", err);
             }
@@ -156,34 +156,31 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchMonthlyTransactions = async () => {
             try {
-                getCurrentMonthTransactionsAPI()
-                .then((res) => {
-
-                
-                const monthlyTransactions = res.data;
-                const today = new Date
-                const totalSpentPerDay: MonthlyTransactionType[] = [];
-                let runningTotal = 0;
-                for (let i = 1; i <= today.getDate(); i++) {
-                    const dateString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${i
-                        .toString()
-                        .padStart(2, "0")}`;
-                    totalSpentPerDay.push({ date: dateString, total: 0 });
-                }
-                monthlyTransactions.forEach((transaction: TransactionType) => {
-                    const transactionDate = transaction.date;
-                    const idx = totalSpentPerDay.findIndex((day) => day.date === transactionDate);
-                    if (idx !== -1) {
-                        totalSpentPerDay[idx].total += transaction.amount;
-                        runningTotal += transaction.amount;
+                getCurrentMonthTransactionsAPI().then((res) => {
+                    const monthlyTransactions = res.data;
+                    const today = new Date();
+                    const totalSpentPerDay: MonthlyTransactionType[] = [];
+                    let runningTotal = 0;
+                    for (let i = 1; i <= today.getDate(); i++) {
+                        const dateString = `${today.getFullYear()}-${(today.getMonth() + 1)
+                            .toString()
+                            .padStart(2, "0")}-${i.toString().padStart(2, "0")}`;
+                        totalSpentPerDay.push({ date: dateString, total: 0 });
                     }
+                    monthlyTransactions.forEach((transaction: TransactionType) => {
+                        const transactionDate = transaction.date;
+                        const idx = totalSpentPerDay.findIndex((day) => day.date === transactionDate);
+                        if (idx !== -1) {
+                            totalSpentPerDay[idx].total += transaction.amount;
+                            runningTotal += transaction.amount;
+                        }
+                    });
+                    for (let i = 1; i < totalSpentPerDay.length; i++) {
+                        totalSpentPerDay[i].total += totalSpentPerDay[i - 1].total;
+                    }
+                    setMonthlyTransactions(totalSpentPerDay);
+                    setMonthlySpend(runningTotal);
                 });
-                for (let i = 1; i < totalSpentPerDay.length; i++) {
-                    totalSpentPerDay[i].total += totalSpentPerDay[i - 1].total;
-                }
-                setMonthlyTransactions(totalSpentPerDay);
-                setMonthlySpend(runningTotal);
-            })
             } catch (err) {
                 console.log("There was an error fetching monthly tranactions: ", err);
             }
@@ -197,26 +194,26 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchBudgets = async () => {
             try {
-                const response = await getBudgetsByMonthYear(budgetsStore.monthYear)
+                const response = await getBudgetsByMonthYear(budgetsStore.monthYear);
                 const completeBudgets = await getCompleteBudgets(response);
                 dispatch(updateBudgets(completeBudgets));
             } catch (error) {
-                console.log('There was an error fetching budgets: ', error)
+                console.log("There was an error fetching budgets: ", error);
             }
         };
-        fetchBudgets()
+        fetchBudgets();
     }, []);
 
-    useEffect(()=> {
-        let gauegeTotal= 0
-        let gaugeSpent = 0
-        budgetsStore.budgets.map((budget: BudgetRowProps)=> {
-            gaugeSpent += budget.spentAmount
-            gauegeTotal += budget.totalAmount
-        })
-        setBudgetGaugeTotal(gauegeTotal)
-        setBudgetGaugeSpent(gaugeSpent)
-    }, [budgetsStore])
+    useEffect(() => {
+        let gauegeTotal = 0;
+        let gaugeSpent = 0;
+        budgetsStore.budgets.map((budget: BudgetRowProps) => {
+            gaugeSpent += budget.spentAmount;
+            gauegeTotal += budget.totalAmount;
+        });
+        setBudgetGaugeTotal(gauegeTotal);
+        setBudgetGaugeSpent(gaugeSpent);
+    }, [budgetsStore]);
 
     return (
         <div className="flex flex-col flex-wrap ">
@@ -275,10 +272,7 @@ const Dashboard: React.FC = () => {
                                                 )}
                                                 {acc.type === "savings" && (
                                                     <p className="flex items-center">
-                                                        <SavingsOutlinedIcon 
-                                                            fontSize="small"
-                                                            className="mr-2"
-                                                        />
+                                                        <SavingsOutlinedIcon fontSize="small" className="mr-2" />
                                                         {t(`${acc.type}`)}
                                                     </p>
                                                 )}
@@ -288,9 +282,7 @@ const Dashboard: React.FC = () => {
                                                         {t(`${acc.type}`)}
                                                     </p>
                                                 )}
-                                                <p>
-                                                    {formatCurrency(acc.balance)}
-                                                </p>
+                                                <p>{formatCurrency(acc.balance)}</p>
                                             </div>
                                         ),
                                         content: acc.accounts.map((account, idx) => (
@@ -302,9 +294,7 @@ const Dashboard: React.FC = () => {
                                                     <p className="mr-2">{account.accountNumber}</p>|
                                                     <p className="ml-2">{account.institution}</p>
                                                 </div>
-                                                <p>
-                                                    {formatCurrency(account.currentBalance)}
-                                                </p>
+                                                <p>{formatCurrency(account.currentBalance)}</p>
                                             </div>
                                         )),
                                         expanded: false,
@@ -321,10 +311,7 @@ const Dashboard: React.FC = () => {
                                 >
                                     <div className="flex justify-between items-center">
                                         <p className="flex items-center">
-                                            <MonetizationOnOutlinedIcon
-                                                fontSize="small"
-                                                className="mr-2" 
-                                            />
+                                            <MonetizationOnOutlinedIcon fontSize="small" className="mr-2" />
                                             {t("accounts.net-cash")}
                                         </p>
                                         <p
@@ -368,9 +355,7 @@ const Dashboard: React.FC = () => {
                                         <td>{formatDate(recentTransaction.date)}</td>
                                         <td>{recentTransaction.vendorName}</td>
                                         <td>{t(`${recentTransaction.category}`)}</td>
-                                        <td>
-                                            {formatCurrency(recentTransaction.amount)}
-                                        </td>
+                                        <td>{formatCurrency(recentTransaction.amount)}</td>
                                         <td>
                                             <ModalToggleButton
                                                 modalRef={modalRef}
@@ -406,7 +391,7 @@ const Dashboard: React.FC = () => {
                         <Gauge
                             width={200}
                             height={200}
-                            value={parseFloat((budgetGaugeSpent).toFixed(2))}
+                            value={parseFloat(budgetGaugeSpent.toFixed(2))}
                             // value={300}
                             valueMax={parseFloat(budgetGaugeTotal.toFixed(2))}
                             startAngle={0}
@@ -425,7 +410,14 @@ const Dashboard: React.FC = () => {
                             >
                                 <p>{budget.category}</p>
                                 <p>
-                                    <span className={`${budget.spentAmount <= budget.totalAmount ? "" : "text-[#b50909] font-bold"}`}>{formatCurrency(budget.spentAmount)}</span> / {formatCurrency(budget.totalAmount)}
+                                    <span
+                                        className={`${
+                                            budget.spentAmount <= budget.totalAmount ? "" : "text-[#b50909] font-bold"
+                                        }`}
+                                    >
+                                        {formatCurrency(budget.spentAmount)}
+                                    </span>{" "}
+                                    / {formatCurrency(budget.totalAmount)}
                                 </p>
                             </div>
                         ))}

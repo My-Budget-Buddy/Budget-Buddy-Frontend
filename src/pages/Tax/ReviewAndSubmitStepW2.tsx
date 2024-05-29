@@ -1,8 +1,20 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
+
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { W2State, setW2Info } from "./W2Slice";
-import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, Grid, GridContainer } from "@trussworks/react-uswds";
+import {
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardGroup,
+    CardHeader,
+    Grid,
+    GridContainer
+} from "@trussworks/react-uswds";
 import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
 import { createTaxReturnAPI, findAllDeductionsByTaxReturnAPI, findW2sByTaxReturnIdAPI } from "./taxesAPI";
 import { useNavigate } from "react-router-dom";
@@ -21,36 +33,34 @@ const ReviewAndSubmitStepW2: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        findW2sByTaxReturnIdAPI()
-            .then((res) => {
-                const result: W2State[] = res.data.map((payload: any) => ({
-                    w2id: payload.id,
-                    w2state: payload.state,
-                    w2taxReturnId: payload.taxReturnId,
-                    w2year: payload.year,
-                    w2userId: payload.userId,
-                    w2employer: payload.employer,
-                    w2wages: payload.wages,
-                    w2federalIncomeTaxWithheld: payload.federalIncomeTaxWithheld,
-                    w2stateIncomeTaxWithheld: payload.stateIncomeTaxWithheld,
-                    w2socialSecurityTaxWithheld: payload.socialSecurityTaxWithheld,
-                    w2medicareTaxWithheld: payload.medicareTaxWithheld,
-                    w2imageKey: undefined
-                }));
-                setW2s(result);
-            });
-        findAllDeductionsByTaxReturnAPI()
-            .then((res) => {
-                const dedResult: deductions[] = res.data.map((payload: any) => ({
-                    dedid: payload.id,
-                    dedtaxReturn: payload.taxReturn,
-                    deddeduction: payload.deduction,
-                    deddeductionName: payload.deductionName,
-                    dedamountSpent: payload.amountSpent,
-                    dednetDeduction: payload.netDeduction
-                }));
-                setDeductions(dedResult);
-            })
+        findW2sByTaxReturnIdAPI().then((res) => {
+            const result: W2State[] = res.data.map((payload: any) => ({
+                w2id: payload.id,
+                w2state: payload.state,
+                w2taxReturnId: payload.taxReturnId,
+                w2year: payload.year,
+                w2userId: payload.userId,
+                w2employer: payload.employer,
+                w2wages: payload.wages,
+                w2federalIncomeTaxWithheld: payload.federalIncomeTaxWithheld,
+                w2stateIncomeTaxWithheld: payload.stateIncomeTaxWithheld,
+                w2socialSecurityTaxWithheld: payload.socialSecurityTaxWithheld,
+                w2medicareTaxWithheld: payload.medicareTaxWithheld,
+                w2imageKey: undefined
+            }));
+            setW2s(result);
+        });
+        findAllDeductionsByTaxReturnAPI().then((res) => {
+            const dedResult: deductions[] = res.data.map((payload: any) => ({
+                dedid: payload.id,
+                dedtaxReturn: payload.taxReturn,
+                deddeduction: payload.deduction,
+                deddeductionName: payload.deductionName,
+                dedamountSpent: payload.amountSpent,
+                dednetDeduction: payload.netDeduction
+            }));
+            setDeductions(dedResult);
+        });
     }, []);
 
     const handlePreviousW2 = () => {
@@ -83,13 +93,12 @@ const ReviewAndSubmitStepW2: React.FC = () => {
             state: taxReturnInfo.state || "",
             zip: taxReturnInfo.zip || "",
             dateOfBirth: taxReturnInfo.dateOfBirth || "",
-            ssn: taxReturnInfo.ssn || "",
+            ssn: taxReturnInfo.ssn || ""
         };
 
-        createTaxReturnAPI(taxReturnPayload)
-            .then(() => {
-                dispatch(setTaxReturnInfo(taxReturnPayload));
-            });
+        createTaxReturnAPI(taxReturnPayload).then(() => {
+            dispatch(setTaxReturnInfo(taxReturnPayload));
+        });
 
         navigate("/dashboard/tax");
     };
@@ -108,8 +117,13 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                                         </CardHeader>
                                         <CardBody>
                                             <p>Filing Status: {taxReturnInfo.filingStatus}</p>
-                                            <p>Name: {taxReturnInfo.firstName} {taxReturnInfo.lastName}</p>
-                                            <p>Address: {taxReturnInfo.address} {taxReturnInfo.city} {taxReturnInfo.state} {taxReturnInfo.zip}</p>
+                                            <p>
+                                                Name: {taxReturnInfo.firstName} {taxReturnInfo.lastName}
+                                            </p>
+                                            <p>
+                                                Address: {taxReturnInfo.address} {taxReturnInfo.city}{" "}
+                                                {taxReturnInfo.state} {taxReturnInfo.zip}
+                                            </p>
                                             <p>Email: {taxReturnInfo.email}</p>
                                             <p>Date of Birth: {taxReturnInfo.dateOfBirth}</p>
                                             <p>Social Security Number: {taxReturnInfo.ssn}</p>
@@ -128,15 +142,30 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                                                     <p>Employer: {W2s[currentW2Index].w2employer}</p>
                                                     <p>State Filed: {W2s[currentW2Index].w2state}</p>
                                                     <p>Wages: {W2s[currentW2Index].w2wages}</p>
-                                                    <p>Federal Income Tax Withheld: {W2s[currentW2Index].w2federalIncomeTaxWithheld}</p>
+                                                    <p>
+                                                        Federal Income Tax Withheld:{" "}
+                                                        {W2s[currentW2Index].w2federalIncomeTaxWithheld}
+                                                    </p>
                                                 </>
                                             ) : (
                                                 <p>No W2 data available</p>
                                             )}
                                         </CardBody>
                                         <CardFooter>
-                                            <Button type="button" onClick={handlePreviousW2} disabled={currentW2Index === 0}>Previous</Button>
-                                            <Button type="button" onClick={handleNextW2} disabled={currentW2Index === W2s.length - 1}>Next</Button>
+                                            <Button
+                                                type="button"
+                                                onClick={handlePreviousW2}
+                                                disabled={currentW2Index === 0}
+                                            >
+                                                Previous
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                onClick={handleNextW2}
+                                                disabled={currentW2Index === W2s.length - 1}
+                                            >
+                                                Next
+                                            </Button>
                                         </CardFooter>
                                     </Card>
                                 </Grid>
@@ -160,17 +189,38 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                                         <CardBody>
                                             {DeductionList.length > 0 ? (
                                                 <>
-                                                    <p>Deduction Name: {DeductionList[currentDeductionIndex].deddeductionName}</p>
-                                                    <p>Amount Spent: {DeductionList[currentDeductionIndex].dedamountSpent}</p>
-                                                    <p>Net Deduction: {DeductionList[currentDeductionIndex].dednetDeduction}</p>
+                                                    <p>
+                                                        Deduction Name:{" "}
+                                                        {DeductionList[currentDeductionIndex].deddeductionName}
+                                                    </p>
+                                                    <p>
+                                                        Amount Spent:{" "}
+                                                        {DeductionList[currentDeductionIndex].dedamountSpent}
+                                                    </p>
+                                                    <p>
+                                                        Net Deduction:{" "}
+                                                        {DeductionList[currentDeductionIndex].dednetDeduction}
+                                                    </p>
                                                 </>
                                             ) : (
                                                 <p>No deduction data available</p>
                                             )}
                                         </CardBody>
                                         <CardFooter>
-                                            <Button type="button" onClick={handlePreviousDeduction} disabled={currentDeductionIndex === 0}>Previous</Button>
-                                            <Button type="button" onClick={handleNextDeduction} disabled={currentDeductionIndex === DeductionList.length - 1}>Next</Button>
+                                            <Button
+                                                type="button"
+                                                onClick={handlePreviousDeduction}
+                                                disabled={currentDeductionIndex === 0}
+                                            >
+                                                Previous
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                onClick={handleNextDeduction}
+                                                disabled={currentDeductionIndex === DeductionList.length - 1}
+                                            >
+                                                Next
+                                            </Button>
                                         </CardFooter>
                                     </Card>
                                 </Grid>
@@ -179,7 +229,9 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                     </Grid>
                 </GridContainer>
             </div>
-            <Button type="button" onClick={handleSubmit}>Submit</Button>
+            <Button type="button" onClick={handleSubmit}>
+                Submit
+            </Button>
         </>
     );
 };

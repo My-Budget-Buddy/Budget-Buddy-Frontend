@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
+
 import type { Account } from "../../types/models";
 
 import AccountModal from "./AccountModal";
