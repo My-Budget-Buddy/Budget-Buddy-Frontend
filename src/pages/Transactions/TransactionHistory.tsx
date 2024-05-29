@@ -580,13 +580,11 @@ function TransactionHistory() {
                                     {
                                         colorMap: {
                                             type: "continuous",
-                                            min: transactions.reduce(
-                                                (prev, cur) => (prev.amount < cur.amount ? prev : cur),
-                                                { ...transactions[0] }
+                                            min: transactions.reduce((prev, cur) =>
+                                                prev.amount < cur.amount ? prev : cur
                                             ).amount,
-                                            max: transactions.reduce(
-                                                (prev, cur) => (prev.amount > cur.amount ? prev : cur),
-                                                { ...transactions[0] }
+                                            max: transactions.reduce((prev, cur) =>
+                                                prev.amount > cur.amount ? prev : cur
                                             ).amount,
                                             color: ["#ff9800", "#4caf50"]
                                         },
