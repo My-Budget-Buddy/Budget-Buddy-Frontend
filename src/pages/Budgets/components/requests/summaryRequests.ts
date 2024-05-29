@@ -59,47 +59,13 @@ async function putBucket(summary: BudgetSummary, id: string) {
         throw error;
     }
 }
-/*
-export async function getTotalFundsAvailable(): Promise<number> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/accounts`;
-    const jwtCookie = Cookies.get("jwt") as string;
 
-    try {
-        const response = await fetch(endpoint, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: jwtCookie
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const accountsList = await response.json();
-
-        return accountsList.reduce((sum: number, account: Account) => {
-            if (account.type == "savings") {
-                return (sum += sum);
-            }
-        });
-    } catch (error) {
-        console.error("Failed to create bucket:", error);
-        throw error;
-    }
-}
-*/
 type BudgetSummary = {
     summaryId?: number;
     userId: string;
     projectedIncome?: number;
     monthYear: string;
     totalBudgetAmount: number;
-};
-
-type Account = {
-    type: string;
 };
 
 type MonthlySummary = {
