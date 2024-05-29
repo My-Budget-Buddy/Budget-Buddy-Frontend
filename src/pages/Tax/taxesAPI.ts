@@ -175,8 +175,8 @@ export const createTransactionAPI = (transaction: Omit<Transaction, "transaction
     return apiClient.post(`/transactions`, transaction);
 }
 
-export const updateTransactionAPI = (transaction: Transaction) => {
-    return apiClient.put(`/transactions/updateTransaction`, transaction);
+export const updateTransactionAPI = (transactionId: number, transaction: Transaction) => {
+    return apiClient.put(`/transactions/${transactionId}`, transaction);
 }
 
 export const getTransactionByVendorAPI = (vendorName:string) => {
