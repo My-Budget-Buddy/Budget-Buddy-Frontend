@@ -309,26 +309,26 @@ function TransactionHistory() {
                                 setShowDateFilter(false);
                             }}
                         >
-                            Clear Filters
+                            {t("transactions.clear-filters")}
                         </Button>
                         <select
                             className="p-2 border rounded"
                             value={sortOrder}
                             onChange={(e) => setSortOrder(e.target.value)}
                         >
-                            <option value="date">Sort by date</option>
-                            <option value="amount">Sort by amount</option>
+                            <option value="date">{t("transactions.sort-by-date")}</option>
+                            <option value="amount">{t("transactions.sort-by-amount")}</option>
                         </select>
                         <select
                             className="p-2 border rounded"
                             value={sortDirection}
                             onChange={(e) => setSortDirection(e.target.value)}
                         >
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
+                            <option value="asc">{t("transactions.ascending")}</option>
+                            <option value="desc">{t("transactions.descending")}</option>
                         </select>
                         <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
-                            Add Transaction
+                            {t("transactions.add-transaction")}
                         </ModalToggleButton>
                     </div>
                 </div>
@@ -339,10 +339,10 @@ function TransactionHistory() {
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
-                        <option>All Categories</option>
+                        <option value={"All Categories"}>{t("transactions.all-categories")}</option>
                         {Object.values(TransactionCategory).map((category) => (
                             <option key={category} value={category}>
-                                {category}
+                                {t(category)}
                             </option>
                         ))}
                     </select>
@@ -351,7 +351,7 @@ function TransactionHistory() {
                         value={selectedAccount}
                         onChange={(e) => setSelectedAccount(e.target.value)}
                     >
-                        <option>All Accounts</option>
+                        <option value="All Accounts">{t("transactions.all-accounts")}</option>
                         {accounts.map((account) => (
                             <option key={account.id} value={account.id.toString()}>
                                 {account.institution}
@@ -370,8 +370,8 @@ function TransactionHistory() {
                             }
                         }}
                     >
-                        <option value="all">All Amounts</option>
-                        <option value="amount">Amount Range</option>
+                        <option value="all">{t("transactions.all-amounts")}</option>
+                        <option value="amount">{t("transactions.amount-range")}</option>
                     </select>
                     <select
                         className="p-2 w-40"
@@ -385,8 +385,8 @@ function TransactionHistory() {
                             }
                         }}
                     >
-                        <option value="all">All Dates</option>
-                        <option value="date">Date Range</option>
+                        <option value="all">{t("transactions.all-dates")}</option>
+                        <option value="date">{t("transactions.date-range")}</option>
                     </select>
                 </div>
 
@@ -453,7 +453,7 @@ function TransactionHistory() {
                             {filteredTransactions.length === 0 ? (
                                 <div className="text-center">
                                     <p className="text-lg">
-                                        No transactions found
+                                        {t("transactions.no-transactions")}
                                         <br />
                                         Click <span className="font-bold text-blue-600">Add Transaction</span> to start
                                         making transactions
@@ -653,7 +653,7 @@ function TransactionHistory() {
                 aria-describedby="create-transaction-form"
                 aria-labelledby="create-transaction-form-title"
             >
-                <ModalHeading className="text-center mb-4">Create Transaction</ModalHeading>
+                <ModalHeading className="text-center mb-4">{t("transactions.create-transaction")}</ModalHeading>
                 <Form onSubmit={handleCreateTransaction} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
@@ -667,7 +667,7 @@ function TransactionHistory() {
                         <div className="col-span-3" />
                         <hr className="col-span-6" />
                         <div className="col-span-4">
-                            <Label htmlFor="transaction-vendorName">Vendor Name</Label>
+                            <Label htmlFor="transaction-vendorName">{t("transactions-table.name")}</Label>
                             <TextInput
                                 value={newTransaction.vendorName}
                                 id="transaction-vendorName"
@@ -677,7 +677,7 @@ function TransactionHistory() {
                                 disabled
                                 required
                             />
-                            <Label htmlFor="transaction-amount">Amount</Label>
+                            <Label htmlFor="transaction-amount">{t("transactions-table.amount")}</Label>
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
@@ -689,7 +689,7 @@ function TransactionHistory() {
                                     required
                                 />
                             </InputGroup>
-                            <Label htmlFor="transaction-category">Category</Label>
+                            <Label htmlFor="transaction-category">{t("transactions-table.category")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
                                     id="transaction-category"
@@ -700,22 +700,22 @@ function TransactionHistory() {
                                 >
                                     {Object.values(TransactionCategory).map((category) => (
                                         <option key={category} value={category}>
-                                            {category}
+                                            {t(category)}
                                         </option>
                                     ))}
                                 </Select>
                             </div>
-                            <Label htmlFor="transaction-description">Description</Label>
+                            <Label htmlFor="transaction-description">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={newTransaction.description || ""}
                                 id="transaction-description"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
-                            <Label htmlFor="transaction-account">Account</Label>
+                            <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
                                     id="transaction-account"
