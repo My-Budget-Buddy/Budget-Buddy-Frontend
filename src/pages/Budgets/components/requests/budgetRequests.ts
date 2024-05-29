@@ -55,7 +55,7 @@ export async function getBudgetsByMonthYear(monthyear: string): Promise<BudgetRo
     //TODO Wait for backend team to update on final endpoint
     //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/monthyear/${monthyear}/user/1`;
     
-        return(getBudgetsMonthyear(jwt, monthyear)
+        return(getBudgetsMonthyear( monthyear)
         .then((res) => {
             console.log(res.data);
             const budgets: RawBudget[] =  res.data;

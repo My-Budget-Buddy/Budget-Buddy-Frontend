@@ -118,7 +118,7 @@ export const postAccountData = (field: fields) => {
     return apiClient.post("/accounts/1", field);
 };
 
-export const getBudgetsMonthyear = (jwt: string | null, monthyear: string) => {
+export const getBudgetsMonthyear = ( monthyear: string) => {
     //const apiClient = createApiClient(jwt);
     return apiClient.get(`/budgets/monthyear/${monthyear}/user/1`);
   };
