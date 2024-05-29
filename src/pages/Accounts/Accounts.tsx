@@ -10,6 +10,8 @@ import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 
+import { deleteAccountAPI, getAccountByID } from "../Tax/taxesAPI";
+
 const Accounts: React.FC = () => {
     const { t } = useTranslation();
     const { jwt } = useAuthentication();
@@ -19,14 +21,11 @@ const Accounts: React.FC = () => {
     const [accounts, setAccounts] = useState<Account[] | null>(null);
 
     const handleDelete = (accountId: number): void => {
-        fetch(`http://localhost:8125/accounts/${accountId}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${jwt}` }
-        })
+        deleteAccountAPI(accountId)
             .then((res) => {
-                if (!res.ok) {
-                    throw new Error(t("accounts.delete-error"));
-                }
+                // if (!res.ok) {
+                //     throw new Error("Error deleting account");
+                // }
                 setAccounts((prevAccounts) => prevAccounts?.filter((acc) => acc.id !== accountId) || null);
             })
             .catch((err: Error) => setError(err.message));
