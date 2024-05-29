@@ -14,6 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 interface CreditScoreModalProps {
     totalDebt: number;
@@ -25,6 +26,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const [creditColor, setCreditColor] = useState<string | null>(null);
     const [creditScore, setCreditScore] = useState<number>(0);
     const { t } = useTranslation();
+    const { jwt } = useAuthentication();
 
     // returns the color of the gauge based on the credit score
     const getCreditColor = (creditScore: number): string => {
