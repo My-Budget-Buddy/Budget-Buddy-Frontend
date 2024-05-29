@@ -55,7 +55,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
         e.currentTarget.reset();
 
-        fetch("http://localhost:8125/accounts", {
+        fetch("https://api.skillstorm-congo.com/accounts", {
             method: "POST",
             headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
             body: JSON.stringify(fields)
