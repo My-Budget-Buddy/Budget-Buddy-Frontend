@@ -47,7 +47,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
             })
             .then((data: { creditScore: number }) => setCreditScore(data.creditScore))
             .catch((err: Error) => setError(err.message));
-    }, []);
+    }, [jwt]);
 
     useEffect(() => {
         let score = 300;
