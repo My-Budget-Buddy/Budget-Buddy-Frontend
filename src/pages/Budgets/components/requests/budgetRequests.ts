@@ -64,7 +64,7 @@ export async function getBudgetsByMonthYear(monthyear: string) {
 }
 
 export async function createBudget(budget: RawBudgetToSend): Promise<RawBudgetToSend> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
     const jwtCookie = Cookies.get("jwt") as string;
 
     try {
