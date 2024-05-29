@@ -589,9 +589,12 @@ function TransactionHistory() {
                                                 { ...transactions[0] }
                                             ).amount,
                                             color: ["#ff9800", "#4caf50"]
-                                        }
+                                        },
+                                        valueFormatter: (val) => formatCurrency(val)
                                     }
                                 ]}
+                                margin={{ left: 100 }}
+                                grid={{ horizontal: true }}
                             />
                         </CardBody>
                     </Card>
