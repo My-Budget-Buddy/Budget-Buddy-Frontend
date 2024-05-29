@@ -321,8 +321,8 @@ function TransactionHistory() {
                             value={sortDirection}
                             onChange={(e) => setSortDirection(e.target.value)}
                         >
-                            <option value="asc">{t("transactions.ascending")}</option>
                             <option value="desc">{t("transactions.descending")}</option>
+                            <option value="asc">{t("transactions.ascending")}</option>
                         </select>
                         <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
                             {t("transactions.add-transaction")}
@@ -443,9 +443,8 @@ function TransactionHistory() {
                     </div>
                 )}
 
-                <CardGroup>
+                <CardGroup className="">
                     <Card gridLayout={{ col: 8 }}>
-                        <CardHeader></CardHeader>
                         <CardBody>
                             {filteredTransactions.length === 0 ? (
                                 <div className="text-center">
@@ -579,16 +578,15 @@ function TransactionHistory() {
                                     {
                                         colorMap: {
                                             type: "continuous",
-                                            // thresholds: [-0.0, 0.0],
                                             min: transactions.reduce(
                                                 (prev, cur) => (prev.amount < cur.amount ? prev : cur),
-                                                { ...transactions[0], amount: Number.MAX_VALUE }
+                                                { ...transactions[0] }
                                             ).amount,
                                             max: transactions.reduce(
                                                 (prev, cur) => (prev.amount > cur.amount ? prev : cur),
-                                                { ...transactions[0], amount: Number.MIN_VALUE }
+                                                { ...transactions[0] }
                                             ).amount,
-                                            color: ["#ff5722", "#009688"]
+                                            color: ["#ff9800", "#4caf50"]
                                         }
                                     }
                                 ]}
