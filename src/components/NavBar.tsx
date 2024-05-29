@@ -6,33 +6,33 @@ import Languages from "./Settings/Languages";
 import Profile from "./Settings/Profile";
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import RequestPageOutlinedIcon from '@mui/icons-material/RequestPageOutlined';
-import { useAuthentication } from "../contexts/AuthenticationContext";
-import axios from "axios";
+import { getUserInformationAPI } from "../pages/Tax/taxesAPI";
 
 const NavBar = () => {
     const { t } = useTranslation();
     const modalRef = useRef<ModalRef>(null);
     const [sideNav, setSideNav] = useState(t("nav.profile"));
-    const { jwt } = useAuthentication();
     const [profile, setProfile] = useState({
         firstName: "",
         lastName: "",
-        email: ""
+        email: "",
+        id: 0
     })
 
     const fetchUserInfo = async () => {
         try {
-            const response = await axios.get("http://localhost:8125/users/user", {
-                headers: { Authorization: `Bearer ${jwt}` }
+            getUserInformationAPI()
+            .then((response) => {
+                const user = response.data
+                let updatedUser = {...profile}
+                user.firstName ? updatedUser.firstName = user.firstName : updatedUser.firstName = ""
+                user.lastName ? updatedUser.lastName = user.lastName : updatedUser.lastName = ""
+                setProfile({firstName: updatedUser.firstName, lastName: updatedUser.lastName, email: user.email, id: user.id})
             })
-            const user = response.data
-            console.log(user)
-            setProfile({firstName: user.firstName, lastName: user.lastName, email: user.email})
         } catch (error) {
             console.log("There was an error fetching user information: ", error)
         }
     }
-
 
     const pages = [
         {

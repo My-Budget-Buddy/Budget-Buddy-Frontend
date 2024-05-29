@@ -1,11 +1,13 @@
 import { Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { updateUserInfo } from "../../pages/Tax/taxesAPI";
 
 interface ProfileType {
     firstName: string;
     lastName: string;
     email: string;
+    id: number;
 }
 
 type SetProfileType = (profile: ProfileType) => void;
@@ -23,7 +25,6 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
     // get profile infomration
     useEffect(()=> {
         fetchUserInfo()
@@ -35,9 +36,19 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
         setProfile({...profile, [name]: value})
     }
 
+    const handleSubmit = (evt: any) => {
+        evt.preventDefault()
+        try {
+            updateUserInfo(profile)
+        } catch (error) {
+            console.log("There was an error updating profile infromation: ", error)
+        }
+    }
+
+
     return ( 
         <div className="flex w-full justify-center h-[80vh] overflow-y-auto">
-            <Form onSubmit={() => {}} className="w-9/12">
+            <Form onSubmit={handleSubmit} className="w-9/12">
                 <ModalHeading> {t("nav.profile")}
                     <Label htmlFor="firstName" >{t("nav.first-name")}</Label>
                     <TextInput
@@ -81,7 +92,7 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
                             {showConfirmPassword ? <Icon.VisibilityOff/> : <Icon.Visibility/>}
                         </InputSuffix>
                     </InputGroup>
-                    <Button type="submit">{t("nav.save")}</Button>
+                    <Button type="submit" >{t("nav.save")}</Button>
                 
                 </ModalHeading>
             </Form>
