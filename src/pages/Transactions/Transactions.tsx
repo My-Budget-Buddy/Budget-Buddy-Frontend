@@ -537,7 +537,6 @@ const Transactions: React.FC = () => {
                                 name="vendorName"
                                 type="text"
                                 onChange={handleInputChange}
-                                disabled
                                 required
                             />
                             <Label htmlFor="transaction-amount">{t("transactions-table.amount")}</Label>
