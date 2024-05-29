@@ -34,6 +34,7 @@ export async function getBudgetsById() {
 
 export async function getBudgetsByMonthYear(monthyear: string) {
     //TODO Wait for backend team to update on final endpoint
+
     const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/monthyear/${monthyear}`;
     const jwtCookie = Cookies.get("jwt") as string;
 
@@ -53,6 +54,7 @@ export async function getBudgetsByMonthYear(monthyear: string) {
 
         const budgets: RawBudget[] = await response.json();
         const transformedBudgets = transformBudgets(budgets);
+
 
         // Update redux store
         return transformedBudgets;

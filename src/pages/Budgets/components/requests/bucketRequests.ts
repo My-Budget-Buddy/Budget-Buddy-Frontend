@@ -1,8 +1,13 @@
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+
+import { addBucketsAPI, deleteBucketAPI, getBucketsAPI, updateBucketAPI } from "../../../Tax/taxesAPI";
+
 import Cookies from "js-cookie";
+
 
 export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
     //TODO Wait for backend team to update on final endpoint
+
     const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/user`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
@@ -20,10 +25,6 @@ export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const buckets: RawBucket[] = await response.json();
-        console.log(buckets);
-
-            const transformedBuckets = transformBuckets(buckets);
 
             // Update redux store
             return transformedBuckets;
@@ -44,6 +45,8 @@ export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
 }
 
 export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
+
+
     const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/add`;
     const jwtCookie = Cookies.get("jwt") as string;
 
@@ -61,15 +64,19 @@ export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSe
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: RawBucketToSend = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to create bucket:", error);
-        throw error;
-    }
+
+        return(addBucketsAPI(bucket)
+            .then((res) =>{
+                const data: RawBucketToSend =  res.data;
+                return data;
+            })
+
+        )
+   
 }
 
 export async function putBucket(bucket: RawBucketToSend, id: number): Promise<RawBucketToSend> {
+
     const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/update/${id}`;
     const jwtCookie = Cookies.get("jwt") as string;
 
@@ -87,16 +94,19 @@ export async function putBucket(bucket: RawBucketToSend, id: number): Promise<Ra
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        const data: RawBucketToSend = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to create bucket:", error);
-        throw error;
-    }
+
+    return(updateBucketAPI(bucket, id)
+            .then((res) =>{
+                const data: RawBucketToSend =  res.data;
+                return data;
+            })
+
+        )
 }
 
 export async function deleteBucket(id: number) {
     //TODO Wait for backend team to update on final endpoint
+
     const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/delete/${id}`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
@@ -118,6 +128,7 @@ export async function deleteBucket(id: number) {
         console.error("Failed to fetch user data:", error);
         throw error;
     }
+
 }
 
 // The data from the endpoint needs to be trimmed down to this.
