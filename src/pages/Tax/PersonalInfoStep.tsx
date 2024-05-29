@@ -1,12 +1,14 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
-import { Button, Fieldset, FormGroup, Grid, GridContainer, TextInput } from "@trussworks/react-uswds";
+import { Button, Fieldset, FormGroup, Grid, GridContainer, Select, TextInput } from "@trussworks/react-uswds";
 import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
 import { deleteTaxReturn, getTaxReturnById, updateTaxReturnAPI } from "./taxesAPI";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 const PersonalInfoStep: React.FC = () => {
+    const { jwt } = useAuthentication();
 
     const W2info = useSelector((state: RootState) => state.w2); 
     const taxReturnInfo = useSelector((state:RootState) => state.taxReturn.taxReturn)
@@ -19,9 +21,9 @@ const PersonalInfoStep: React.FC = () => {
         .then((res) => {
             dispatch(setTaxReturnInfo(res.data));
         })
-    })
+    },[jwt])
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         let error = "";
@@ -42,9 +44,13 @@ const PersonalInfoStep: React.FC = () => {
         }
       };
 
-      const handleSave = (payload : Partial<taxReturn>) => {
-        updateTaxReturnAPI(payload);
+      const handleSave = (payload : Partial<taxReturn>, id : number | undefined) => {
+        updateTaxReturnAPI(payload, id);
           };
+
+    // const handleSelect = (e : ChangeEvent<HTMLSelectElement>) => {
+    //     const { name, value } = e.target;
+    // }
    
 
           
@@ -120,7 +126,7 @@ const PersonalInfoStep: React.FC = () => {
                     </Grid>
                     <Grid col={6}>
                     <FormGroup >
-                        <label htmlFor="state">State</label>
+                        {/* <label htmlFor="state">State</label>
                             <TextInput
                                 id="state"
                                 name="state"
@@ -130,7 +136,69 @@ const PersonalInfoStep: React.FC = () => {
                                 onChange={handleChange}
                                 validationStatus={errors2.state ? "error" : undefined}
                             />
-                            {errors2.state && <span style={{ color: 'red' }}>{errors2.state}</span>}
+                            {errors2.state && <span style={{ color: 'red' }}>{errors2.state}</span>} */}
+                            <label htmlFor="state">State</label>
+                            <Select id="state" name="state" required onChange={handleChange}>
+                                <option>- Select -</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="DC">District of Columbia</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                                <option value="AA">AA - Armed Forces Americas</option>
+                                <option value="AE">AE - Armed Forces Africa</option>
+                                <option value="AE">AE - Armed Forces Canada</option>
+                                <option value="AE">AE - Armed Forces Europe</option>
+                                <option value="AE">AE - Armed Forces Middle East</option>
+                                <option value="AP">AP - Armed Forces Pacific</option>
+                                
+                            </Select>
                     </FormGroup>
                     </Grid>
                     <Grid col={6}>
@@ -184,7 +252,7 @@ const PersonalInfoStep: React.FC = () => {
                 </Grid>
                 </GridContainer>
             </div>
-            <Button type="button" onClick = {() => handleSave(taxReturnInfo)}>Save</Button>
+            <Button type="button" onClick = {() => handleSave(taxReturnInfo, taxReturnInfo.id)}>Save</Button>
         </>
         
     );

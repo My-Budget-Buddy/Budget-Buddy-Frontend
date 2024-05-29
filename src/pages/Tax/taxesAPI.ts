@@ -94,7 +94,12 @@ interface otherIncomeToSend {
 
 
 
+
+
+
 export const createTaxReturn = (initTaxReturn: initReturn) => {
+    console.log("////////////////////////////////");
+    console.log(initTaxReturn);
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 };
 
@@ -245,8 +250,8 @@ export const deleteBucketAPI = (id: number) => {
     return apiClient.delete(`/buckets/delete/${id}`);
 }
 
-export const updateTaxReturnAPI = (payload: Partial<taxReturn>) => {
-    return apiClient.put(`/taxes/taxreturns`, payload);
+export const updateTaxReturnAPI = (payload: Partial<taxReturn>, id: number | undefined) => {
+    return apiClient.put(`/taxes/taxreturns/${id}`, payload);
 }
 
 export const addOtherIncomeAPI = (payload : otherIncome) => {
@@ -268,4 +273,7 @@ export const getOtherIncomeAPI = () => {
 export const deleteTaxReturn = (id: number | undefined) => {
     return apiClient.delete(`/taxes/taxreturns/${id}`);
 }
-;
+
+export const getUserInformationAPI = () => {
+    return apiClient.get(`/users/user`);
+}
