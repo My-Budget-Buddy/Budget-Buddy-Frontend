@@ -28,7 +28,7 @@ function getSumForCategory(categorizedTransactions: { [key: string]: Transaction
 // e.g. "{GROCERIES: [{Transaction1}, {Transaction2}], "SHOPPING": [...]}
 export async function getCategoriesTransactionsMap(monthYear: string) {
     // TODO We currently have no way of querying userID
-    const transactions = await getTransactions(1, monthYear);
+    const transactions = await getTransactions(monthYear);
     const mapOfTransactionsByCategory = mapTransactionsToCategories(transactions);
     return mapOfTransactionsByCategory;
 }
@@ -43,7 +43,7 @@ function mapTransactionsToCategories(transactions: Transaction[]) {
     }, {});
 }
 
-async function getTransactions(userid: number, date: string) {
+async function getTransactions(date: string) {
     const jwtCookie = Cookies.get("jwt") as string;
 
     //TODO Wait for backend team to update on final endpoint

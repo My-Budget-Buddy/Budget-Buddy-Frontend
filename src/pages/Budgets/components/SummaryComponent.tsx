@@ -76,7 +76,6 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
 
             const grossFundsAvailable = await getTotalAvailableFunds();
             setTotalFundsAvailable(Math.round((grossFundsAvailable - totalReserved) * 100) / 100);
-            //Also, dispatch userId.
             // TODO Move this to a more sensible location.
             // TODO See if backend is able to provide the required data. Scrap if not.
             dispatch(updateUserId(1));
