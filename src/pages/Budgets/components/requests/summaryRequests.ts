@@ -1,4 +1,5 @@
 // Mock data:
+import Cookies from "js-cookie";
 
 import { mockFetch } from "../../../../util/util";
 
@@ -39,7 +40,7 @@ export async function updateSpendingBudgetFor(id: string, monthYear: string, amo
 async function putBucket(summary: BudgetSummary, id: string) {
     //This should only run after getSummaryFor(summary.monthYear) is run, which populates that monthyear with a budget summary if it doesn't exist.
     // But theoretically the endpoint should work without anything on the database too.
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/summarys/${id}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/summarys/${id}`;
 
     try {
         const response = await fetch(endpoint, {
@@ -60,13 +61,15 @@ async function putBucket(summary: BudgetSummary, id: string) {
 }
 
 export async function getTotalFundsAvailable(): Promise<number> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/accounts`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/accounts`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
     try {
         const response = await fetch(endpoint, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             }
         });
 

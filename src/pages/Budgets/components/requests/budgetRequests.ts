@@ -3,11 +3,13 @@ import Cookies from "js-cookie";
 export async function getBudgetsById() {
     //TODO Wait for backend team to update on final endpoint
     const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
+    const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             credentials: "include"
         });
@@ -62,13 +64,15 @@ export async function getBudgetsByMonthYear(monthyear: string) {
 }
 
 export async function createBudget(budget: RawBudgetToSend): Promise<RawBudgetToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
     try {
         const response = await fetch(endpoint, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             body: JSON.stringify(budget)
         });
@@ -86,13 +90,15 @@ export async function createBudget(budget: RawBudgetToSend): Promise<RawBudgetTo
 }
 
 export async function putBudget(budget: RawBudgetToSend, id: number): Promise<RawBudgetToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/${id}`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
     try {
         const response = await fetch(endpoint, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             body: JSON.stringify(budget)
         });
@@ -111,12 +117,14 @@ export async function putBudget(budget: RawBudgetToSend, id: number): Promise<Ra
 
 export async function deleteBudget(id: number) {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/${id}`;
+    const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             credentials: "include"
         });
@@ -134,12 +142,14 @@ export async function deleteBudget(id: number) {
 
 export async function getTransactionsByMonthYear(monthyear: string) {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/transactions/${monthyear}/user/1`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/transactions/${monthyear}`;
+    const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             credentials: "include"
         });
