@@ -98,7 +98,9 @@ const Transactions: React.FC = () => {
 
         sortedTransactions = sortedTransactions.sort((a, b) => {
             if (sortOrder === "amount") {
-                return sortDirection === "asc" ? a.amount - b.amount : b.amount - a.amount;
+                return sortDirection === "asc"
+                    ? a.amount * (a.category === "Income" ? 1 : -1) - b.amount * (b.category === "Income" ? 1 : -1)
+                    : b.amount * (b.category === "Income" ? 1 : -1) - a.amount * (a.category === "Income" ? 1 : -1);
             } else {
                 return sortDirection === "asc"
                     ? new Date(a.date).getTime() - new Date(b.date).getTime()

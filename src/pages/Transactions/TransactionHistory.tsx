@@ -159,7 +159,9 @@ function TransactionHistory() {
 
         sortedTransactions = sortedTransactions.sort((a, b) => {
             if (sortOrder === "amount") {
-                return sortDirection === "asc" ? a.amount - b.amount : b.amount - a.amount;
+                return sortDirection === "asc"
+                    ? a.amount * (a.category === "Income" ? 1 : -1) - b.amount * (b.category === "Income" ? 1 : -1)
+                    : b.amount * (b.category === "Income" ? 1 : -1) - a.amount * (a.category === "Income" ? 1 : -1);
             } else {
                 return sortDirection === "asc"
                     ? new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -578,18 +580,19 @@ function TransactionHistory() {
                                     {
                                         colorMap: {
                                             type: "continuous",
-                                            min: transactions.reduce(
-                                                (prev, cur) => (prev.amount < cur.amount ? prev : cur),
-                                                { ...transactions[0] }
+                                            min: transactions.reduce((prev, cur) =>
+                                                prev.amount < cur.amount ? prev : cur
                                             ).amount,
-                                            max: transactions.reduce(
-                                                (prev, cur) => (prev.amount > cur.amount ? prev : cur),
-                                                { ...transactions[0] }
+                                            max: transactions.reduce((prev, cur) =>
+                                                prev.amount > cur.amount ? prev : cur
                                             ).amount,
                                             color: ["#ff9800", "#4caf50"]
-                                        }
+                                        },
+                                        valueFormatter: (val) => formatCurrency(val)
                                     }
                                 ]}
+                                margin={{ left: 100 }}
+                                grid={{ horizontal: true }}
                             />
                         </CardBody>
                     </Card>
