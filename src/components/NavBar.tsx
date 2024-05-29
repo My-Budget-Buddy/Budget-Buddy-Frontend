@@ -68,11 +68,6 @@ const NavBar = () => {
             path: "/dashboard/tax",
             title: t("tax.title"),
             icon: <RequestPageOutlinedIcon className="mr-3" fontSize="small" />
-        },
-        {
-            path: "/",
-            title: t("welcomePage.title"),
-            icon: <Icon.Home className="mr-3" />
         }
     ];
 
