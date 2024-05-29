@@ -30,6 +30,9 @@
       "confirm-password": "Confirmar Contraseña",
       "save": "Guardar"
     },
+    "welcomePage": {
+      "title": "Casa"
+    },
     "dashboard": {
       "title": "Tablero",
       "welcome": "Bienvenido",
