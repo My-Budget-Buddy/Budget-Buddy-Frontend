@@ -95,6 +95,7 @@
     },
     "spending": {
       "title": "My Spendings",
+      "graphTitle": "Spendings",
       "spentThisWeek": "Spent this week",
       "depositedThisWeek": "Deposited this week",
       "spentThisYear": "Spent this year",
@@ -102,8 +103,14 @@
       "seeCurrentMonth": "See Current Month",
       "topThreePurchases": "Your top 3 purchases accounted for",
       "totalSpendings": "Total spendings",
-      "topThreeCategories": "Top Spending Categories"
-      
+      "topThreeCategories": "Top Spending Categories",
+      "category": "Category",
+      "amount": "Amount",
+      "percentageOfAnnualSpending": "% of Annual Spending",
+      "date": "Date",
+      "vendor": "Vendor",
+      "earned": "Earned",
+      "spendings": "Spendings"
     },
     "transactions": {
       "title": "Transactions",

@@ -212,13 +212,13 @@ const Spending: React.FC = () => {
             <thead>
                 <tr>
                     <th scope="col" className="px-4 py-3">
-                        Category
+                        {t('spending.category')}
                     </th>
                     <th scope="col" className="px-4 py-3">
-                        % of Annual Spending
+                        {t('spending.percentageOfAnnualSpending')}
                     </th>
                     <th scope="col" className="px-4 py-3">
-                        Amount
+                        {t('spending.amount')}
                     </th>
                 </tr>
             </thead>
@@ -244,9 +244,8 @@ const Spending: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Category</th>
-
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.category')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -274,9 +273,9 @@ const Spending: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.date')}</th>
+                    <th scope="col">{t('spending.vendor')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -296,8 +295,8 @@ const Spending: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.vendor')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -395,13 +394,8 @@ const Spending: React.FC = () => {
         <div className="min-w-screen mt-10">
             <div className="flex-1">
                 <section className="h-screen ">
+
                     {/* Title for the page */}
-                    {/* <div className="mb-4">
-                        <Title className="ml-3">Spending Overview</Title>
-                        <p className="text-6xl font-semibold">${totalSpent.toFixed(2)}</p>
-                    </div> */}
-
-
                     <div className="mb-4 ml-3">
                         <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t('spending.title')}</h2>
                         {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
@@ -441,7 +435,7 @@ const Spending: React.FC = () => {
                     {/* Full-width row */}
                     <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
                         <div className="mb-4 ml-3 flex w-full justify-between items-center">
-                            <h2 className="text-3xl p-5 pl-8 text-bold">Spendings</h2>
+                            <h2 className="text-3xl p-5 pl-8 text-bold">{t('spending.graphTitle')}</h2>
                             <div>
                                 <span
                                     onMouseEnter={() => setShowTooltip(true)}
@@ -474,14 +468,14 @@ const Spending: React.FC = () => {
                                     {
                                         data: earnedValues,
                                         color: "#BCC3CB",
-                                        label: "Earned"
+                                        label: t('spending.earned')
                                         // area: true,
                                         //stack: "total"
                                     },
                                     {
                                         data: spendingValues,
                                         color: "#1f78b4",
-                                        label: "Spendings"
+                                        label: t('spending.spendings')
                                         //area: true,
                                         //stack: "total"
                                     }
