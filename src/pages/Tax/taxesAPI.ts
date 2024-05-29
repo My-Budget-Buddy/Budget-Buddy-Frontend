@@ -99,6 +99,11 @@ interface ProfileType {
     id: number;
 }
 
+interface UserType {
+    username: string;
+    password: string;
+}
+
 export const createTaxReturn = (initTaxReturn: initReturn) => {
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 };
@@ -278,7 +283,10 @@ export const getUserInformationAPI = () => {
 }
 
 export const updateUserInfo = (profile : ProfileType) => {
-    console.log("UPDATE PROFILE: ", profile)
     return apiClient.put(`/users`, profile);
+}
+
+export const updateUserPassword = (updatedUserPassword : UserType) => {
+    return apiClient.put(`/auth/update/password`, updatedUserPassword)
 }
 ;

@@ -1,7 +1,7 @@
 import { Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { updateUserInfo } from "../../pages/Tax/taxesAPI";
+import { updateUserInfo, updateUserPassword } from "../../pages/Tax/taxesAPI";
 
 interface ProfileType {
     firstName: string;
@@ -40,6 +40,18 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
         evt.preventDefault()
         try {
             updateUserInfo(profile)
+            const confirmPassword = evt.currentTarget.elements["confirm-password"].value;
+            //if a password was input 
+            const fields = {
+                username: profile.email,
+                password: evt.currentTarget.elements["new-password"].value
+            };
+            if (confirmPassword === fields.password){
+                updateUserPassword(fields)
+                evt.currentTarget.reset()
+            }else{
+                return
+            }
         } catch (error) {
             console.log("There was an error updating profile infromation: ", error)
         }
@@ -80,7 +92,11 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
 
                     <Label htmlFor="new-password">{t("nav.new-password")}</Label>
                     <InputGroup>
-                        <TextInput id="new-password" name="new-password" type={showNewPassword ? "text" : "password"} />
+                        <TextInput 
+                            id="new-password" 
+                            name="new-password" 
+                            type={showNewPassword ? "text" : "password"}
+                        />
                         <InputSuffix onClick={()=> setShowNewPassword(!showNewPassword)}>
                             {showNewPassword ? <Icon.VisibilityOff /> : <Icon.Visibility/>}
                         </InputSuffix>

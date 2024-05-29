@@ -2,7 +2,6 @@ import { LineChart, Gauge } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { formatCurrency, formatDate } from "../../util/helpers";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
