@@ -42,12 +42,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     const selectedMonthString = budgets.selectedMonthString;
     const selectedYear = budgets.selectedYear;
 
-    const remainingBudget = (
-        budgets.spendingBudget -
-        budgets.totalReserved -
-        buckets.totalReserved -
-        budgets.totalActuallySpent
-    ).toString();
+    const remainingBudget = (budgets.spendingBudget - budgets.totalReserved - budgets.totalActuallySpent).toString();
     const percentageRemaining = (Number(remainingBudget) / budgets.spendingBudget) * 100;
 
     let gaugeColor = "#52b202";
@@ -72,15 +67,14 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
             dispatch(updateBudgets(completeBudgets));
 
-            const totalReserved = Math.round((budgets.totalReserved + buckets.totalReserved) * 100) / 100;
-
+            const totalReserved = buckets.totalReserved;
             const grossFundsAvailable = await getTotalAvailableFunds();
-            setTotalFundsAvailable(Math.round((grossFundsAvailable - totalReserved) * 100) / 100);
+            setTotalFundsAvailable(grossFundsAvailable - totalReserved);
             // TODO Move this to a more sensible location.
             // TODO See if backend is able to provide the required data. Scrap if not.
             dispatch(updateUserId(1));
         })();
-    }, []);
+    }, [buckets.totalReserved]);
 
     useEffect(() => {
         (async () => {
