@@ -388,9 +388,8 @@ const SpendingMonth: React.FC = () => {
                             <p className="text-6xl font-semibold">${currentMonthSpending.toFixed(2)}</p>
                             <div className="flex items-center ml-5">
                                 <p
-                                    className={`text-2xl font-semibold ${
-                                        isSpendingIncreased ? "text-red-600" : "text-green-600"
-                                    }`}
+                                    className={`text-2xl font-semibold ${isSpendingIncreased ? "text-red-600" : "text-green-600"
+                                        }`}
                                 >
                                     {isSpendingIncreased ? (
                                         <Icon.ArrowDropUp className="inline-block mr-1" style={{ fontSize: "2rem" }} />
@@ -403,7 +402,7 @@ const SpendingMonth: React.FC = () => {
                                     {percentageChange}% from{" "}
                                     {capitalizeFirstLetter(
                                         monthNames[
-                                            getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
+                                        getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
                                         ]
                                     )}
                                 </p>

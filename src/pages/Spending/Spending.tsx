@@ -12,6 +12,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
+import { useTranslation } from 'react-i18next';
 
 //define the type for months
 type Month =
@@ -39,6 +40,7 @@ type SpendingCategory = {
 };
 
 const Spending: React.FC = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [showTooltip, setShowTooltip] = useState(false);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -390,44 +392,84 @@ const Spending: React.FC = () => {
     const dataWithAngles = calculateAngles(spendingCategories);
 
     return (
-        <div className="min-w-screen">
+        <div className="min-w-screen mt-10">
             <div className="flex-1">
-                <section className="h-screen">
+                <section className="h-screen ">
                     {/* Title for the page */}
-
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <Title className="ml-3">Spending Overview</Title>
                         <p className="text-6xl font-semibold">${totalSpent.toFixed(2)}</p>
+                    </div> */}
+
+
+                    <div className="mb-4 ml-3">
+                        <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t('spending.title')}</h2>
+                        {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
+                        <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
                     </div>
 
-                    {/* Full-width row */}
-                    <div className="p-4 m-2 min-h-[30rem] rounded-md flex flex-col justify-center items-center border-4 border-gray-100 shadow-lg">
-                        <div className="flex items-center mb-4 justify-start w-full">
-                            <Link to="/dashboard/spending/May" className="mr-3">
-                                <Button type="button" className="ml-3">
-                                    See Current Month
-                                </Button>
-                            </Link>
-                            <span
-                                onMouseEnter={() => setShowTooltip(true)}
-                                onMouseLeave={() => setShowTooltip(false)}
-                                className="relative"
-                            >
-                                <Icon.Help style={{ color: "#74777A", fontSize: "1.7rem", marginRight: "0.8rem" }} />
-                                {/* render tooltip conditionally */}
-                                {showTooltip && (
-                                    <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-60">
-                                        Click on any bar in the chart to view detailed spending for that month.
+                    <div className="flex justify-between gap-x-4 w-full m-2">
+                        {[
+                            { details: "Spent this week", price: 4523.77, percentage: 5.2, icon: Icon.AttachMoney, bgColor: "bg-red-500" },
+                            { details: "Deposited this week", price: 6233.21, percentage: -3.4, icon: Icon.CreditCard, bgColor: "bg-green-500" },
+                            { details: "Spent this year", price: 43224.27, percentage: 10.1, icon: Icon.Api, bgColor: "bg-blue-500" }
+                        ].map((card, index) => (
+                            <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex">
+                                <div className="flex-1 flex items-center">
+                                    <div>
+                                        <card.icon className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`} />
+                                        <p className="text-bold pt-5 text-3xl">${card.price.toLocaleString()}</p>
+                                        <p className="text-light pt-1 text-xl">{card.details}</p>
                                     </div>
-                                )}
-                            </span>
-                        </div>
+                                </div>
+                                <div className="flex items-start justify-end">
+                                    <span className={`text-2xl font-light ${card.percentage >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                        {card.percentage >= 0 ? (
+                                            <Icon.ArrowDropUp className="inline-block mb-1" style={{ fontSize: "2rem" }} />
+                                        ) : (
+                                            <Icon.ArrowDropDown className="inline-block mb-1" style={{ fontSize: "2rem" }} />
+                                        )}
+                                        {Math.abs(card.percentage)}%
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
+
+
+                    {/* Full-width row */}
+                    <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
+                        <div className="mb-4 ml-3 flex w-full justify-between items-center">
+                            <h2 className="text-3xl p-5 pl-8 text-bold">Spendings</h2>
+                            <div>
+                                <span
+                                    onMouseEnter={() => setShowTooltip(true)}
+                                    onMouseLeave={() => setShowTooltip(false)}
+                                    className="relative"
+                                >
+                                    <Icon.Help style={{ color: "#74777A", fontSize: "1.7rem", marginRight: "0.8rem" }} />
+                                    {/* render tooltip conditionally */}
+                                    {showTooltip && (
+                                        <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-60">
+                                            Click on any bar in the chart to view detailed spending for that month.
+                                        </div>
+                                    )}
+                                </span>
+                                <Link to="/dashboard/spending/May" className="mr-3 pr-8">
+                                    <Button type="button" className="ml-3">
+                                        See Current Month
+                                    </Button>
+                                </Link>
+
+                            </div>
+                        </div>
                         <div className="flex items-center mb-2 justify-start w-full">
                             <LineChart
                                 xAxis={[
                                     { scaleType: "band", data: categories, categoryGapRatio: 0.5 } as AxisConfig<"band">
                                 ]}
+
                                 series={[
                                     {
                                         data: earnedValues,
@@ -445,15 +487,16 @@ const Spending: React.FC = () => {
                                     }
                                 ]}
                                 grid={{ horizontal: true }}
-                                width={1300}
+                                width={1400}
                                 height={400}
-                                //onItemClick={handleItemClick} //this lets you click on the bars
+                            //onItemClick={handleItemClick} //this lets you click on the bars
                             />
                         </div>
                     </div>
+
                     {/* Second row with two columns */}
-                    <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 shadow-lg">
+                    <div className="flex pt-1 gap-3">
+                        <div className="flex flex-col justify-center items-center flex-2 p-4 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px]">
                             <h2></h2>
                             <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full lg:-m-2">
                                 <PieChart
@@ -517,10 +560,10 @@ const Spending: React.FC = () => {
                         </div>
                         {/* section for more insights -> top expenses..and?? */}
 
-                        <div className="flex flex-col justify-center items-center flex-1 m-4 rounded-md w-10/12 min-h-[30rem] ">
+                        <div className="flex flex-col justify-center items-center flex-1 w-10/12 min-h-[30rem] ">
                             {/* Top Purchases Table */}
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                            <div className="flex flex-col justify-center items-center flex-1  p-4 m-2 rounded-xl shadow-lg border-[1px] w-full">
                                 <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
                                 <h2 className="mb-3 text-4x1  text-center">
                                     Your top 3 purchases accounted for
@@ -537,7 +580,7 @@ const Spending: React.FC = () => {
 
                             {/* Top Categories Table */}
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-lg border-[1px] w-full">
                                 <h2 className="text-2xl mb- mt-1">Top Spending Categories</h2>
                                 <h2 className="mb-3 text-4x1  text-center">
                                     Your top 3 spending categories accounted for
@@ -552,7 +595,7 @@ const Spending: React.FC = () => {
 
                             {/* Most Popular Vendors Table */}
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 rounded-md border-4 border-gray-100 shadow-md w-full">
+                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 rounded-xl shadow-lg border-[1px] w-full">
                                 <h2 className="text-2xl mb-2 mt-1">Top Spending Locations</h2>
                                 <Table bordered={false} className="w-full">
                                     {popularVendorsTable}
