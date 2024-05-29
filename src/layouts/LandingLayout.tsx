@@ -1,60 +1,22 @@
-import {
-  Header,
-  NavMenuButton,
-  PrimaryNav,
-  Title,
-} from "@trussworks/react-uswds";
-import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
-
-const navItems = [
-  <Link to="/login" className="usa-nav__link">
-    Log In
-  </Link>,
-  <Link to="/register" className="usa-nav__link">
-    Register
-  </Link>,
-];
+import { Outlet } from "react-router-dom";
+import { AuthenticationProvider } from "../contexts/AuthenticationContext";
+import LandingHeader from "../components/LandingHeader";
 
 const LandingLayout: React.FC = () => {
-  const [mobileExpanded, setMobileExpanded] = useState(false);
+    return (
+        <AuthenticationProvider>
+            <div className="layout-container">
+                <LandingHeader />
 
-  return (
-    <div className="layout-container">
-      {/* Header component */}
-      <Header
-        basic
-        showMobileOverlay={mobileExpanded}
-        className="relative z-50"
-      >
-        <div className="usa-nav-container">
-          <div className="usa-navbar w-full flex justify-between">
-            <Link to="/">
-              <Title>BudgetBuddy</Title>
-            </Link>
-
-            <NavMenuButton
-              label="Menu"
-              onClick={() => setMobileExpanded((prev) => !prev)}
-            />
-          </div>
-
-          <PrimaryNav
-            items={navItems}
-            mobileExpanded={mobileExpanded}
-            onToggleMobileNav={() => setMobileExpanded((prev) => !prev)}
-          ></PrimaryNav>
-        </div>
-      </Header>
-
-      <main className="min-h-full w-full">
-        <div className="relative isolate padding-0 lg:px-8">
-          <Outlet />
-        </div>
-      </main>
-      {/*<FooterComponent/>*/}
-    </div>
-  );
+                <main className="min-h-full w-full">
+                    <div className="relative isolate px-6 pt-14 lg:px-8">
+                        <Outlet />
+                    </div>
+                </main>
+                {/*<FooterComponent/>*/}
+            </div>
+        </AuthenticationProvider>
+    );
 };
 
 export default LandingLayout;

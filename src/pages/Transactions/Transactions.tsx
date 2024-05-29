@@ -1,3 +1,4 @@
+import React, { useState, useRef, useEffect } from "react";
 import {
     Button,
     Card,
@@ -15,18 +16,22 @@ import {
     Label,
     Form,
     Select,
-    Textarea
+    Textarea,
+    ModalHeading
 } from "@trussworks/react-uswds";
-import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Transaction, TransactionCategory, Account } from "../../types/models.ts";
+import { Transaction, TransactionCategory, Account } from "../../types/models";
 import {
     deleteTransaction,
     getTransactionByUserId,
     getAccountsByUserId,
-    createTransaction
-} from "../../utils/transactionService.ts";
-import { useTranslation } from "react-i18next";
+    createTransaction,
+    updateTransaction,
+    validateTransaction
+} from "../../utils/transactionService";
+import { Trans, useTranslation } from "react-i18next";
+import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";
+import { formatCurrency, formatDate } from "../../util/helpers";
 
 const Transactions: React.FC = () => {
     const { t } = useTranslation();
@@ -34,10 +39,14 @@ const Transactions: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [infoTransaction, setInfoTransaction] = useState<Transaction | null>(null);
+    const [editTransaction, setEditTransaction] = useState<Transaction | null>(null);
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
 
     const [selectedCategory, setSelectedCategory] = useState<string>("All Categories");
     const [selectedAccount, setSelectedAccount] = useState<string>("All Accounts");
+
+    const [amountFilter, setAmountFilter] = useState<string>("all");
+    const [dateFilter, setDateFilter] = useState<string>("all");
 
     const [minAmount, setMinAmount] = useState<number | "">("");
     const [maxAmount, setMaxAmount] = useState<number | "">("");
@@ -62,15 +71,16 @@ const Transactions: React.FC = () => {
 
     const infoRef = useRef<ModalRef>(null);
     const createRef = useRef<ModalRef>(null);
+    const editRef = useRef<ModalRef>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
-            const transactionsData = await getTransactionByUserId(1);
-            setTransactions(transactionsData);
-
             const accountsData = await getAccountsByUserId(1);
             setAccounts(accountsData);
+
+            const transactionsData = await getTransactionByUserId(1);
+            setTransactions(transactionsData);
         };
         fetchData();
     }, []);
@@ -123,37 +133,70 @@ const Transactions: React.FC = () => {
 
     const handleCreateTransaction = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Form submitted"); // checking if it ever reached here
+        const errors = validateTransaction(newTransaction);
+        if (errors.length > 0) {
+            alert(errors.join("\n"));
+            return;
+        }
         try {
-            console.log("Submitting transaction:", newTransaction); // Logingg the transaction data
             const createdTransaction = await createTransaction(newTransaction);
-            console.log("Created transaction:", createdTransaction); // Logging the response data
             setTransactions([...transactions, createdTransaction]);
+            createRef.current?.toggleModal(); // Close the modal after transaction creation
         } catch (error) {
             console.error("Error creating transaction:", error);
+        }
+    };
+
+    const handleUpdateTransaction = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (editTransaction) {
+            const errors = validateTransaction(editTransaction);
+            if (errors.length > 0) {
+                alert(errors.join("\n"));
+                return;
+            }
+            try {
+                const updatedTransaction = await updateTransaction(editTransaction);
+                setTransactions(
+                    transactions.map((t) =>
+                        t.transactionId === updatedTransaction.transactionId ? updatedTransaction : t
+                    )
+                );
+                editRef.current?.toggleModal(); // Close the modal after transaction update
+            } catch (error) {
+                console.error("Error updating transaction:", error);
+            }
         }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setNewTransaction({ ...newTransaction, [name]: value });
-        console.log(newTransaction);
+        if (editTransaction) {
+            setEditTransaction({ ...editTransaction, [name]: value });
+        }
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
         setNewTransaction({ ...newTransaction, [name]: value });
+        if (editTransaction) {
+            setEditTransaction({ ...editTransaction, [name]: value });
+        }
     };
 
     const handleAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNewTransaction({ ...newTransaction, [name]: value });
+        if (editTransaction) {
+            setEditTransaction({ ...editTransaction, [name]: value });
+        }
     };
 
     return (
         <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
             <div className="flex justify-between items-center bg-transparent p-4 ">
-                <h1>Transactions</h1>
+                <h1>{t("transactions.title")}</h1>
                 <div className="flex gap-4">
                     <Button
                         type="button"
@@ -165,28 +208,32 @@ const Transactions: React.FC = () => {
                             setMaxAmount("");
                             setMinDate("");
                             setMaxDate("");
+                            setAmountFilter("all");
+                            setDateFilter("all");
+                            setShowAmountFilter(false);
+                            setShowDateFilter(false);
                         }}
                     >
-                        Clear Filters
+                        {t("transactions.clear-filters")}
                     </Button>
                     <select
                         className="p-2 border rounded"
                         value={sortOrder}
                         onChange={(e) => setSortOrder(e.target.value)}
                     >
-                        <option value="date">Sort by date</option>
-                        <option value="amount">Sort by amount</option>
+                        <option value="date">{t("transactions.sort-by-date")}</option>
+                        <option value="amount">{t("transactions.sort-by-amount")}</option>
                     </select>
                     <select
                         className="p-2 border rounded"
                         value={sortDirection}
                         onChange={(e) => setSortDirection(e.target.value)}
                     >
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
+                        <option value="asc">{t("transactions.ascending")}</option>
+                        <option value="desc">{t("transactions.descending")}</option>
                     </select>
                     <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
-                        Add Transaction
+                        {t("transactions.add-transaction")}
                     </ModalToggleButton>
                 </div>
             </div>
@@ -197,10 +244,10 @@ const Transactions: React.FC = () => {
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                 >
-                    <option>All Categories</option>
+                    <option value={"All Categories"}>{t("transactions.all-categories")}</option>
                     {Object.values(TransactionCategory).map((category) => (
                         <option key={category} value={category}>
-                            {category}
+                            {t(category)}
                         </option>
                     ))}
                 </select>
@@ -209,7 +256,7 @@ const Transactions: React.FC = () => {
                     value={selectedAccount}
                     onChange={(e) => setSelectedAccount(e.target.value)}
                 >
-                    <option>All Accounts</option>
+                    <option value="All Accounts">{t("transactions.all-accounts")}</option>
                     {accounts.map((account) => (
                         <option key={account.id} value={account.id.toString()}>
                             {account.institution}
@@ -218,7 +265,9 @@ const Transactions: React.FC = () => {
                 </select>
                 <select
                     className="p-2 w-40"
+                    value={amountFilter}
                     onChange={(e) => {
+                        setAmountFilter(e.target.value);
                         setShowAmountFilter(e.target.value === "amount");
                         if (e.target.value !== "amount") {
                             setMinAmount("");
@@ -226,12 +275,14 @@ const Transactions: React.FC = () => {
                         }
                     }}
                 >
-                    <option value="all">All Amounts</option>
-                    <option value="amount">Amount Range</option>
+                    <option value="all">{t("transactions.all-amounts")}</option>
+                    <option value="amount">{t("transactions.amount-range")}</option>
                 </select>
                 <select
                     className="p-2 w-40"
+                    value={dateFilter}
                     onChange={(e) => {
+                        setDateFilter(e.target.value);
                         setShowDateFilter(e.target.value === "date");
                         if (e.target.value !== "date") {
                             setMinDate("");
@@ -239,8 +290,8 @@ const Transactions: React.FC = () => {
                         }
                     }}
                 >
-                    <option value="all">All Dates</option>
-                    <option value="date">Date Range</option>
+                    <option value="all">{t("transactions.all-dates")}</option>
+                    <option value="date">{t("transactions.date-range")}</option>
                 </select>
             </div>
 
@@ -277,22 +328,24 @@ const Transactions: React.FC = () => {
                 <div className="flex justify-center items-center gap-4 bg-transparent p-4">
                     <div className="flex items-center gap-2">
                         <InputGroup>
-                            <TextInput
+                            <input
                                 value={minDate}
                                 id="min-date"
                                 name="minDate"
                                 type="date"
                                 placeholder="Min Date"
+                                className="usa-input"
                                 onChange={(e) => setMinDate(e.target.value)}
                             />
                         </InputGroup>
                         <InputGroup>
-                            <TextInput
+                            <input
                                 value={maxDate}
                                 id="max-date"
                                 name="maxDate"
                                 type="date"
                                 placeholder="Max Date"
+                                className="usa-input"
                                 onChange={(e) => setMaxDate(e.target.value)}
                             />
                         </InputGroup>
@@ -300,62 +353,88 @@ const Transactions: React.FC = () => {
                 </div>
             )}
 
-            <div className="flex-grow">
+            <div className="flex-grow overflow-auto" style={{ maxHeight: "calc(100vh - 250px)" }}>
                 <CardGroup>
-                    <Card gridLayout={{ col: 12 }}>
+                    <Card gridLayout={{ col: 12 }} className="mr-5">
                         <CardHeader className="flex justify-center mb-5">
-                            <h1>List of Transactions</h1>
+                            <h1>{t("transactions.list-of-transactions")}</h1>
                         </CardHeader>
                         <CardBody>
                             {filteredTransactions.length === 0 ? (
                                 <div className="text-center">
                                     <p className="text-lg">
-                                        No transactions found<br/>
-                                        Click <span className="font-bold text-blue-600">Add Transaction</span> to start making transactions
+                                        {t("transactions.no-transactions")}
+                                        <br />
+                                        <Trans
+                                            i18nKey={"transactions.click-add"}
+                                            components={{ 1: <span className="font-bold text-blue-600" /> }}
+                                            values={{ val: t("transactions.add-transaction") }}
+                                        />
                                     </p>
                                 </div>
                             ) : (
-                                <Table fullWidth striped>
+                                <Table fullWidth>
                                     <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Actions</th>
-                                        <th scope="col">Amount</th>
-                                    </tr>
+                                        <tr>
+                                            <th>{t("transactions-table.date")}</th>
+                                            <th>{t("transactions-table.name")}</th>
+                                            <th>{t("transactions-table.category")}</th>
+                                            <th>{t("transactions-table.actions")}</th>
+                                            <th className="text-right">{t("transactions-table.amount")}</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {filteredTransactions.map((transaction) => (
-                                        <tr key={transaction.transactionId}>
-                                            <td>{transaction.date}</td>
-                                            <td>{transaction.vendorName}</td>
-                                            <td>{transaction.category}</td>
-                                            <td>
-                                                <Button
-                                                    type="button"
-                                                    className="usa-button--unstyled"
-                                                    onClick={() => handleDelete(transaction.transactionId)}
+                                        {filteredTransactions.map((transaction) => (
+                                            <tr key={transaction.transactionId}>
+                                                <td>{formatDate(transaction.date)}</td>
+                                                <td>{transaction.vendorName}</td>
+                                                <td>
+                                                    <CategoryIcon
+                                                        category={transaction.category}
+                                                        color={categoryColors[transaction.category]}
+                                                    />
+                                                    {t(transaction.category)}
+                                                </td>
+                                                <td>
+                                                    <Button
+                                                        type="button"
+                                                        className="usa-button--unstyled"
+                                                        onClick={() => handleDelete(transaction.transactionId)}
+                                                    >
+                                                        <Icon.Delete />
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        className="usa-button--unstyled"
+                                                        onClick={() => {
+                                                            setEditTransaction(transaction);
+                                                            editRef.current?.toggleModal();
+                                                        }}
+                                                    >
+                                                        <Icon.Edit />
+                                                    </Button>
+                                                </td>
+                                                <td
+                                                    className={`text-right ${
+                                                        transaction.category === TransactionCategory.INCOME
+                                                            ? "text-green-500"
+                                                            : "text-red-500"
+                                                    }`}
                                                 >
-                                                    <Icon.Delete />
-                                                </Button>
-                                            </td>
-                                            <td>
-                                                <Icon.AttachMoney />
-                                                {transaction.amount.toFixed(2)}
-                                            </td>
-                                            <td>
-                                                <ModalToggleButton
-                                                    type="button"
-                                                    className="usa-button--unstyled"
-                                                    modalRef={infoRef}
-                                                    onClick={() => handleInfoOpen(transaction)}
-                                                >
-                                                    <Icon.NavigateNext />
-                                                </ModalToggleButton>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                    {formatCurrency(transaction.amount)}
+                                                </td>
+                                                <td>
+                                                    <ModalToggleButton
+                                                        type="button"
+                                                        className="usa-button--unstyled"
+                                                        modalRef={infoRef}
+                                                        onClick={() => handleInfoOpen(transaction)}
+                                                    >
+                                                        <Icon.NavigateNext />
+                                                    </ModalToggleButton>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </Table>
                             )}
@@ -364,18 +443,25 @@ const Transactions: React.FC = () => {
                 </CardGroup>
             </div>
 
-            <Modal ref={infoRef} id="transaction-info-modal" isLarge aria-describedby={"test"} aria-labelledby={"test"}>
+            <Modal
+                ref={infoRef}
+                id="transaction-info-modal"
+                isLarge
+                aria-describedby="transaction-details"
+                aria-labelledby="transaction-details-title"
+            >
+                <ModalHeading className="text-center mb-6">
+                    {t("transactions.transaction-detailed-information")}
+                </ModalHeading>
                 {infoTransaction && (
                     <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex gap-4 items-center">
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
-                                    <div>
-                                        {Intl.DateTimeFormat(t("dateLocale")).format(new Date(infoTransaction.date))}
-                                    </div>
+                                    <div>{formatDate(infoTransaction.date)}</div>
                                 </div>
                                 <Button type="button" onClick={() => handleViewHistory(infoTransaction)}>
-                                    View History
+                                    {t("transactions.view-history")}
                                 </Button>
                             </div>
                         </div>
@@ -384,8 +470,14 @@ const Transactions: React.FC = () => {
                             <div className="flex flex-col w-2/3">
                                 <div className="mb-6">
                                     <h3 className="text-2xl font-bold">{infoTransaction.vendorName}</h3>
-                                    <p className="mt-2 text-xl">${infoTransaction.amount.toFixed(2)}</p>
-                                    <p className="mt-4 text-lg">{infoTransaction.category}</p>
+                                    <p className="mt-2 text-xl">{formatCurrency(infoTransaction.amount, true)}</p>
+                                    <p className="mt-4 text-lg">
+                                        <CategoryIcon
+                                            category={infoTransaction.category}
+                                            color={categoryColors[infoTransaction.category]}
+                                        />
+                                        {t(infoTransaction.category)}
+                                    </p>
                                     <div className="mt-6 p-4 bg-gray-200 rounded-lg">
                                         <p className="text-md">{infoTransaction.description || "No notes available"}</p>
                                     </div>
@@ -393,7 +485,7 @@ const Transactions: React.FC = () => {
                             </div>
                             <div className="flex flex-col w-1/3">
                                 <div className="border-l border-black pl-6 h-full">
-                                    <h4 className="text-xl">Account</h4>
+                                    <h4 className="text-xl">{t("transactions.account")}</h4>
                                     <div className="flex items-center mt-3 text-sm text-gray-500">
                                         {infoTransaction.accountId && (
                                             <div className="flex flex-col">
@@ -404,7 +496,7 @@ const Transactions: React.FC = () => {
                                                     </div>
                                                 </div>
                                                 <div className="mt-2 text-sm text-gray-500">
-                                                    Account Number:{" "}
+                                                    {t("accounts.account-number")}:{" "}
                                                     {getAccountDetails(infoTransaction.accountId)?.accountNumber}
                                                 </div>
                                             </div>
@@ -416,8 +508,13 @@ const Transactions: React.FC = () => {
                     </div>
                 )}
             </Modal>
-
-            <Modal ref={createRef} id="create-transaction-modal" aria-describedby={"test"} aria-labelledby={"test"}>
+            <Modal
+                ref={createRef}
+                id="create-transaction-modal"
+                aria-describedby="create-transaction-form"
+                aria-labelledby="create-transaction-form-title"
+            >
+                <ModalHeading className="text-center mb-4">{t("transactions.create-transaction")}</ModalHeading>
                 <Form onSubmit={handleCreateTransaction} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
@@ -431,16 +528,17 @@ const Transactions: React.FC = () => {
                         <div className="col-span-3" />
                         <hr className="col-span-6" />
                         <div className="col-span-4">
-                            <Label htmlFor="transaction-vendorName">Vendor Name</Label>
+                            <Label htmlFor="transaction-vendorName">{t("transactions-table.name")}</Label>
                             <TextInput
                                 value={newTransaction.vendorName}
                                 id="transaction-vendorName"
                                 name="vendorName"
                                 type="text"
                                 onChange={handleInputChange}
+                                disabled
                                 required
                             />
-                            <Label htmlFor="transaction-amount">Amount</Label>
+                            <Label htmlFor="transaction-amount">{t("transactions-table.amount")}</Label>
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
@@ -452,7 +550,7 @@ const Transactions: React.FC = () => {
                                     required
                                 />
                             </InputGroup>
-                            <Label htmlFor="transaction-category">Category</Label>
+                            <Label htmlFor="transaction-category">{t("transactions-table.category")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
                                     id="transaction-category"
@@ -463,27 +561,116 @@ const Transactions: React.FC = () => {
                                 >
                                     {Object.values(TransactionCategory).map((category) => (
                                         <option key={category} value={category}>
-                                            {category}
+                                            {t(category)}
                                         </option>
                                     ))}
                                 </Select>
                             </div>
-                            <Label htmlFor="transaction-description">Description</Label>
+                            <Label htmlFor="transaction-description">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={newTransaction.description || ""}
                                 id="transaction-description"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
-                            <Label htmlFor="transaction-account">Account</Label>
+                            <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
                                     id="transaction-account"
                                     name="accountId"
                                     value={newTransaction.accountId}
+                                    onChange={handleSelectChange}
+                                    className="col-span-8"
+                                >
+                                    {accounts.map((account) => (
+                                        <option key={account.id} value={account.id}>
+                                            {account.institution}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </div>
+                        </div>
+                    </div>
+                </Form>
+            </Modal>
+
+            <Modal
+                ref={editRef}
+                id="edit-transaction-modal"
+                aria-describedby="edit-transaction-form"
+                aria-labelledby="edit-transaction-form-title"
+            >
+                <ModalHeading className="text-center mb-4">{t("transactions.edit-transaction")}</ModalHeading>
+                <Form onSubmit={handleUpdateTransaction} large>
+                    <div className="grid grid-cols-6 gap-5">
+                        <input
+                            id="edit-transaction-date"
+                            name="date"
+                            className="col-span-3 usa-input usa-date-picker_external-input"
+                            type="date"
+                            value={editTransaction?.date}
+                            onChange={handleInputChange}
+                            lang={t("locale")}
+                        />
+                        <div className="col-span-3" />
+                        <hr className="col-span-6" />
+                        <div className="col-span-4">
+                            <Label htmlFor="edit-transaction-vendorName">{t("transactions-table.name")}</Label>
+                            <TextInput
+                                value={editTransaction?.vendorName}
+                                id="edit-transaction-vendorName"
+                                name="vendorName"
+                                type="text"
+                                onChange={handleInputChange}
+                                required
+                            />
+                            <Label htmlFor="edit-transaction-amount">{t("transactions-table.amount")}</Label>
+                            <InputGroup>
+                                <InputPrefix>$</InputPrefix>
+                                <TextInput
+                                    value={editTransaction?.amount}
+                                    id="edit-transaction-amount"
+                                    name="amount"
+                                    type="number"
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </InputGroup>
+                            <Label htmlFor="edit-transaction-category">{t("transactions-table.category")}</Label>
+                            <div className="grid grid-cols-8">
+                                <Select
+                                    id="edit-transaction-category"
+                                    name="category"
+                                    value={editTransaction?.category}
+                                    onChange={handleSelectChange}
+                                    className="col-span-8"
+                                >
+                                    {Object.values(TransactionCategory).map((category) => (
+                                        <option key={category} value={category}>
+                                            {t(category)}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </div>
+                            <Label htmlFor="edit-transaction-description">{t("budgets.notes")}</Label>
+                            <Textarea
+                                value={editTransaction?.description || ""}
+                                id="edit-transaction-description"
+                                onChange={handleAreaChange}
+                                name="description"
+                            />
+                            <Button type="submit">{t("transactions.submit")}</Button>
+                        </div>
+                        <div className="col-span-2">
+                            <Label htmlFor="edit-transaction-account">{t("transactions.account")}</Label>
+                            <div className="grid grid-cols-8">
+                                <Select
+                                    id="edit-transaction-account"
+                                    name="accountId"
+                                    value={editTransaction?.accountId}
                                     onChange={handleSelectChange}
                                     className="col-span-8"
                                 >

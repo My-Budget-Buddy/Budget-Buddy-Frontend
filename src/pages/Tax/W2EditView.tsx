@@ -1,7 +1,7 @@
 import { Button, StepIndicator, StepIndicatorStep } from "@trussworks/react-uswds";
 import { useState } from "react";
 import PersonalInfoStep from "./PersonalInfoStep";
-import EmployerInfoStep from "./EmployerInfoStep";
+import WwStep from "./w2Step";
 import ReviewAndSubmitStepW2 from "./ReviewAndSubmitStepW2";
 import FinancialInformationStepW2 from "./FinancialInformationStepW2";
 import WithholdingsAndMiscW2 from "./WithholdingsAndMiscW2";
@@ -69,7 +69,7 @@ function W2EditView () {
                     {/* You can conditionally render content for each step */}
                     <div className="bg-base-lightest">
                         {currentStep === 0 && <PersonalInfoStep />}
-                        {currentStep === 1 && <EmployerInfoStep />}
+                        {currentStep === 1 && <WwStep />}
                         {currentStep === 2 && <FinancialInformationStepW2 />}
                         {currentStep === 3 && <WithholdingsAndMiscW2 />}
                         {currentStep === 4 && <ReviewAndSubmitStepW2 />}

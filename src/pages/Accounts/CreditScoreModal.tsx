@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { Gauge, gaugeClasses } from "@mui/x-charts";
 import {
     Modal,
@@ -6,11 +9,12 @@ import {
     ModalFooter,
     ModalHeading,
     ModalToggleButton,
-    Alert,
+    Alert
 } from "@trussworks/react-uswds";
-import { t } from "i18next";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 interface CreditScoreModalProps {
     totalDebt: number;
@@ -21,33 +25,29 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const [error, setError] = useState<string | null>(null);
     const [creditColor, setCreditColor] = useState<string | null>(null);
     const [creditScore, setCreditScore] = useState<number>(0);
-
-    const url = "http://localhost:8125/api/credit/score/1"
+    const { t } = useTranslation();
+    const { jwt } = useAuthentication();
 
     // returns the color of the gauge based on the credit score
     const getCreditColor = (creditScore: number): string => {
-        if (creditScore > 719)
-            return "#52b202";
-        else if (creditScore > 689)
-            return "#90EE90";
-        else if (creditScore > 629)
-            return "#FFA500";
-        else
-            return "#b20202";
-    }
+        if (creditScore > 719) return "#52b202";
+        else if (creditScore > 689) return "#90EE90";
+        else if (creditScore > 629) return "#FFA500";
+        else return "#b20202";
+    };
 
     useEffect(() => {
-        // TODO: update this to use the users information + the gateway service + headers for Auth
-        fetch(url)
+        if (!jwt) return; // to prevent an unnecessary 401
+        fetch("http://localhost:8125/api/credit/score", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (!res.ok) {
-                    throw new Error("Error fetching credit score information");
+                    throw new Error(t("accounts.error-credit-score"));
                 }
                 return res.json();
             })
             .then((data: { creditScore: number }) => setCreditScore(data.creditScore))
             .catch((err: Error) => setError(err.message));
-    }, []);
+    }, [jwt]);
 
     useEffect(() => {
         let score = 300;
@@ -57,19 +57,18 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         score = Math.max(score, 0);
 
         // Increase creditScore by score
-        setCreditScore(prevCreditScore => prevCreditScore + score);
+        setCreditScore((prevCreditScore) => prevCreditScore + score);
     }, [totalDebt]);
     // sets the color of the gauge based on the credit score
     useEffect(() => {
         setCreditColor(getCreditColor(creditScore));
     }, [creditScore]);
 
-
     return (
         <>
             <div>
                 <ModalToggleButton modalRef={modalRef} opener>
-                    Get Report
+                    {t("accounts.get-report")}
                 </ModalToggleButton>
                 <Modal
                     ref={modalRef}
@@ -79,8 +78,13 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
                     className="w-[1600px]"
                 >
                     <ModalHeading id="credit-score-modal-heading" className="pb-4">
-                        Credit Score Report
+                        {t("accounts.credit-score-report")}
                     </ModalHeading>
+                    {error && (
+                        <Alert type="error" headingLevel="h4">
+                            {error}
+                        </Alert>
+                    )}
                     <div className="flex justify-center items-center h-full py-4">
                         <Gauge
                             width={400}
@@ -105,13 +109,8 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
                     </div>
                     <ModalFooter>
                         <ButtonGroup>
-                            <ModalToggleButton
-                                modalRef={modalRef}
-                                closer
-                                unstyled
-                                className="padding-105 text-center"
-                            >
-                                Go back
+                            <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">
+                                {t("accounts.back")}
                             </ModalToggleButton>
                         </ButtonGroup>
                     </ModalFooter>

@@ -1,128 +1,129 @@
-import {
-  Grid,
-  Form,
-  Alert,
-  Label,
-  Button,
-  Fieldset,
-  TextInput,
-  GridContainer,
-} from "@trussworks/react-uswds";
-import { Link } from "react-router-dom";
+import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer } from "@trussworks/react-uswds";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 const Register: React.FC = () => {
-  const { t } = useTranslation();
+    const navigate = useNavigate();
 
-  const [error] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
+    const { t } = useTranslation();
+    const { jwt, loading } = useAuthentication();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    const [error, setError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
-    // @ts-expect-error untyped form elements
-    const confirmPassword = e.currentTarget.elements["confirm-password"].value;
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const fields = {
-      // @ts-expect-error untyped form elements
-      email: e.currentTarget.elements.email.value,
-      // @ts-expect-error untyped form elements
-      password: e.currentTarget.elements.password.value,
+        setError(null);
+
+        // @ts-expect-error untyped form elements
+        const confirmPassword = e.currentTarget.elements["confirm-password"].value;
+
+        const fields = {
+            // @ts-expect-error untyped form elements
+            username: e.currentTarget.elements.email.value,
+            // @ts-expect-error untyped form elements
+            password: e.currentTarget.elements.password.value
+        };
+
+         
+
+        const res = await fetch("http://localhost:8125/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fields)
+        });
+
+        if (res.ok) {
+            navigate("/login");
+        } else {
+            if (res.headers.get("content-type")?.includes("text/plain")) {
+                setError(await res.text());
+            } else setError("Unknown error.");
+        }
     };
 
-    if (confirmPassword !== fields.password)
-      console.log("passwords do not match");
+    if (jwt && !loading) {
+        return <Navigate to="/dashboard" />;
+    }
 
-    return;
-  };
+    return (
+        <main>
+            <GridContainer className="usa-section">
+                {/* Error Alert */}
+                <Grid row className="flex-justify-center margin-bottom-205">
+                    <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
+                        {error && (
+                            <Alert type="error" heading="Error Creating Account" headingLevel="h4">
+                                {error}
+                            </Alert>
+                        )}
+                    </Grid>
+                </Grid>
 
-  return (
-    <main>
-      <GridContainer className="usa-section">
-        {/* Error Alert */}
-        <Grid row className="flex-justify-center margin-bottom-205">
-          <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
-            {error && (
-              <Alert type="error" heading="Error Logging In" headingLevel="h4">
-                {error}
-              </Alert>
-            )}
-          </Grid>
-        </Grid>
+                {/* Main Form Content */}
+                <Grid row className="flex-justify-center">
+                    <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
+                        <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
+                            <h1 className="margin-bottom-0">{t("auth.register")}</h1>
+                            <Form onSubmit={handleSubmit} className="min-w-full">
+                                <Fieldset legend={t("auth.register-desc")} legendStyle="default">
+                                    <Label htmlFor="email">{t("auth.email")}</Label>
+                                    <TextInput id="email" name="email" type="email" autoComplete="email" required />
 
-        {/* Main Form Content */}
-        <Grid row className="flex-justify-center">
-          <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
-            <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
-              <h1 className="margin-bottom-0">{t("auth.register")}</h1>
-              <Form onSubmit={handleSubmit} className="min-w-full">
-                <Fieldset
-                  legend={t("auth.register-desc")}
-                  legendStyle="default"
-                >
-                  <Label htmlFor="email">{t("auth.email")}</Label>
-                  <TextInput
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                  />
+                                    <Label htmlFor="password">{t("auth.new-password")}</Label>
+                                    <TextInput
+                                        id="password"
+                                        name="password"
+                                        type={showPassword ? "text" : "password"}
+                                        autoComplete="new-password"
+                                    />
+                                    <Label htmlFor="confirm-password">{t("auth.confirm-password")}</Label>
+                                    <TextInput
+                                        id="confirm-password"
+                                        name="confirm-password"
+                                        type={showPassword ? "text" : "password"}
+                                        autoComplete="new-password"
+                                    />
+                                    <button
+                                        type="button"
+                                        title="Toggle Password Visibility"
+                                        className="usa-show-password"
+                                        aria-controls="password"
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                    >
+                                        {showPassword ? t("auth.hide") : t("auth.show")}
+                                    </button>
 
-                  <Label htmlFor="password">{t("auth.new-password")}</Label>
-                  <TextInput
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="new-password"
-                  />
-                  <Label htmlFor="confirm-password">
-                    {t("auth.confirm-password")}
-                  </Label>
-                  <TextInput
-                    id="confirm-password"
-                    name="confirm-password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    title="Toggle Password Visibility"
-                    className="usa-show-password"
-                    aria-controls="password"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? t("auth.show") : t("auth.hide")}
-                  </button>
+                                    <Button type="submit">{t("auth.register")}</Button>
+                                </Fieldset>
+                            </Form>
 
-                  <Button type="submit">{t("auth.register")}</Button>
-                </Fieldset>
-              </Form>
+                            {/* separator */}
+                            <div className="flex justify-center items-center my-8">
+                                <div className="border-t-[1px] border-[#dfe1e2] w-full" />
+                                <p className="px-3 text-neutral-400">OR</p>
+                                <div className="border-t-[1px] border-[#dfe1e2] w-full" />
+                            </div>
 
-              {/* separator */}
-              <div className="flex justify-center items-center my-8">
-                <div className="border-t-[1px] border-[#dfe1e2] w-full" />
-                <p className="px-3 text-neutral-400">OR</p>
-                <div className="border-t-[1px] border-[#dfe1e2] w-full" />
-              </div>
+                            <Button type="button" outline className="width-full">
+                                {t("auth.google")}
+                            </Button>
+                        </div>
 
-              <Button type="button" outline className="width-full">
-                {t("auth.google")}
-              </Button>
-            </div>
-
-            <p className="text-center">
-              {t("auth.to-login")}{" "}
-              <Link to="/login" className="usa-link">
-                {t("auth.login")}
-              </Link>
-            </p>
-          </Grid>
-        </Grid>
-      </GridContainer>
-    </main>
-  );
+                        <p className="text-center">
+                            {t("auth.to-login")}{" "}
+                            <Link to="/login" className="usa-link">
+                                {t("auth.login")}
+                            </Link>
+                        </p>
+                    </Grid>
+                </Grid>
+            </GridContainer>
+        </main>
+    );
 };
 
 export default Register;

@@ -1,51 +1,60 @@
 import type { Account } from "../../types/models";
 
 import AccountModal from "./AccountModal";
-
-import { useEffect, useMemo, useState } from "react";
-import { formatCurrency } from "../../util/helpers";
-import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
-import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 import CreditScoreModal from "./CreditScoreModal";
-import { getAccountByID } from "../Tax/taxesAPI";
+
+import { useTranslation } from "react-i18next";
+import { formatCurrency } from "../../util/helpers";
+import { useEffect, useMemo, useState } from "react";
+import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
+
+import { deleteAccountAPI, getAccountByID } from "../Tax/taxesAPI";
 
 const Accounts: React.FC = () => {
+    const { t } = useTranslation();
+    const { jwt } = useAuthentication();
+
     const [showTooltip, setShowTooltip] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [accounts, setAccounts] = useState<Account[] | null>(null);
 
     const handleDelete = (accountId: number): void => {
-        fetch(`http://localhost:8080/accounts/1/${accountId}`, {
-            method: "DELETE"
-        })
+        deleteAccountAPI(accountId)
             .then((res) => {
-                if (!res.ok) {
-                    throw new Error("Error deleting account");
-                }
+                // if (!res.ok) {
+                //     throw new Error("Error deleting account");
+                // }
                 setAccounts((prevAccounts) => prevAccounts?.filter((acc) => acc.id !== accountId) || null);
             })
             .catch((err: Error) => setError(err.message));
     };
 
+    // FETCH ACCOUNTS USING THE LOGGED IN USER'S JWT
     useEffect(() => {
-        // TODO: update this to use the users information + the gateway service + headers for Auth
-        getAccountByID()
+        if (!jwt) return; // to prevent an unnecessary 401
+
+        fetch("http://localhost:8125/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
-                // if (!res.ok) {
-                //     throw new Error("Error fetching account information");
-                // }
-                console.log((res.data));
-                return res.data;
+                if (res.ok) {
+                    return res.json().then((data: Account[]) => {
+                        setAccounts(data);
+                        setError(null);
+                    });
+                } else {
+                    return res.text().then((errText: string) => {
+                        throw new Error(errText);
+                    });
+                }
             })
-            .then((data: Account[]) => setAccounts(data))
             .catch((err: Error) => setError(err.message));
-    }, []);
+    }, [jwt, t]);
 
     const handleAccountAdded = (newAccount: Account) => {
         setAccounts((prevAccounts) => (prevAccounts ? [...prevAccounts, newAccount] : [newAccount]));
     };
 
-    // do something here? idk useMemo or useCallback?
     const totalBalance = useMemo(() => {
         if (!accounts) return 0;
 
@@ -62,17 +71,20 @@ const Accounts: React.FC = () => {
 
     return (
         <>
-            <Title>Accounts</Title>
+            <Title>{t("accounts.title")}</Title>
 
-            {error && (
-                <Alert type="error" headingLevel="h4">
-                    {error}
-                </Alert>
-            )}
+            <GridContainer>
+                {error && (
+                    <Alert type="error" heading="Error Fetching Account Information" headingLevel="h4">
+                        {error}
+                    </Alert>
+                )}
+            </GridContainer>
+
             {/* Net Cash Section */}
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
                 <div className="flex items-center space-x-2 mb-6">
-                    <h2 className="text-3xl font-semibold">Net Cash</h2>
+                    <h2 className="text-3xl font-semibold">{t("accounts.net-cash")}</h2>
                     <span
                         onMouseEnter={() => setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
@@ -82,7 +94,7 @@ const Accounts: React.FC = () => {
                         {/* Render tooltip conditionally */}
                         {showTooltip && (
                             <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-40">
-                                Net Cash is all debits subtracted by credits.
+                                {t("accounts.net-desc")}
                             </div>
                         )}
                     </span>
@@ -139,10 +151,10 @@ const Accounts: React.FC = () => {
                         <thead>
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider border-r border-gray-600">
-                                    Total Assets:
+                                    {t("accounts.total-assets")}
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider border-gray-600">
-                                    Total Debts:
+                                    {t("accounts.total-debts")}
                                 </th>
                             </tr>
                         </thead>
@@ -159,7 +171,7 @@ const Accounts: React.FC = () => {
             </section>
 
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-semibold">View Accounts</h2>
+                <h2 className="text-3xl font-semibold">{t("accounts.view-accounts")}</h2>
                 <AccountModal onAccountAdded={handleAccountAdded} />
             </div>
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
@@ -170,7 +182,7 @@ const Accounts: React.FC = () => {
                         {
                             title: (
                                 <div className="flex space-x-2">
-                                    <Icon.AccountBalance /> <p>Checking</p>
+                                    <Icon.AccountBalance /> <p>{t("accounts.checking")}</p>
                                 </div>
                             ),
                             content: (
@@ -205,7 +217,7 @@ const Accounts: React.FC = () => {
                         {
                             title: (
                                 <div className="flex space-x-2">
-                                    <Icon.CreditCard /> <p>Credit Cards</p>
+                                    <Icon.CreditCard /> <p>{t("accounts.credit")}</p>
                                 </div>
                             ),
                             content: (
@@ -240,7 +252,7 @@ const Accounts: React.FC = () => {
                         {
                             title: (
                                 <div className="flex space-x-2">
-                                    <Icon.AccountBalance /> <p>Savings</p>
+                                    <Icon.AccountBalance /> <p>{t("accounts.savings")}</p>
                                 </div>
                             ),
                             content: (
@@ -275,7 +287,7 @@ const Accounts: React.FC = () => {
                         {
                             title: (
                                 <div className="flex space-x-2">
-                                    <Icon.AccountBalance /> <p>Investments</p>
+                                    <Icon.AccountBalance /> <p>{t("accounts.investment")}</p>
                                 </div>
                             ),
                             content: (
@@ -312,41 +324,52 @@ const Accounts: React.FC = () => {
             </section>
             <section className="pb-5 mb-5">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-3xl font-semibold">View Credit Score Report</h2>
+                    <h2 className="text-3xl font-semibold">{t("accounts.view-credit-score")}</h2>
                     <CreditScoreModal totalDebt={debts} />
-
                 </div>
                 <div className="flex justify-center py-5">
                     <table className="table-auto w-full divide-gray-200">
                         <thead>
                             <tr>
                                 <th className="px-6 py-3 text-left text-m font-bold uppercase tracking-wider border-r border-gray-600 text-red-500">
-                                    Bad:
+                                    {t("accounts.bad")}
                                 </th>
                                 <th className="px-6 py-3 text-left text-m font-bold  uppercase tracking-wider border-r border-gray-600 text-yellow-500">
-                                    Fair:
+                                    {t("accounts.fair")}
                                 </th>
                                 <th className="px-6 py-3 text-left text-m font-bold  uppercase tracking-wider border-r border-gray-600 text-green-500">
-                                    Good:
+                                    {t("accounts.good")}
                                 </th>
                                 <th className="px-6 py-3 text-left text-m font-bold  uppercase tracking-wider border-gray-600 text-green-900">
-                                    Excellent:
+                                    {t("accounts.excellent")}
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             <tr>
                                 <td className="px-6 py-4 border-r border-gray-600">
-                                    <p>High interest rates, difficulty in approval, limited credit options, may require security deposits.</p>
+                                    <p>
+                                        <span className="font-bold">300-629 </span>
+                                        {t("accounts.bad-desc")}
+                                    </p>
                                 </td>
                                 <td className="px-6 py-4 border-r border-gray-600">
-                                    <p>Moderate interest rates, higher fees, limited options compared to higher scores.</p>
+                                    <p>
+                                        <span className="font-bold">630-689 </span>
+                                        {t("accounts.fair-desc")}
+                                    </p>
                                 </td>
                                 <td className="px-6 py-4 border-r border-gray-600">
-                                    <p>Lower interest rates, easier approval, wide range of credit products, better terms.</p>
+                                    <p>
+                                        <span className="font-bold">690-719 </span>
+                                        {t("accounts.good-desc")}
+                                    </p>
                                 </td>
                                 <td className="px-6 py-4 border-gray-600">
-                                    <p>Lowest interest rates, highest approval likelihood, access to premium products, favorable terms.</p>
+                                    <p>
+                                        <span className="font-bold">720-850 </span>
+                                        {t("accounts.excellent-desc")}
+                                    </p>
                                 </td>
                             </tr>
                         </tbody>

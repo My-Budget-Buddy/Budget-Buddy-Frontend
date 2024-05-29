@@ -19,10 +19,9 @@ import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { putBudget } from "../requests/budgetRequests";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
-interface TODO_CategoryProps {
+interface CategoryProps {
     id: number;
     category: string;
     budgeted: number;
@@ -30,13 +29,13 @@ interface TODO_CategoryProps {
     notes: string;
 }
 
-const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted, isReserved, notes }) => {
+const EditBudgetModal: React.FC<CategoryProps> = ({ id, category, budgeted, isReserved, notes }) => {
     const modalRef = useRef<ModalRef>(null);
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
-    const budgetsStore = useSelector((store: any) => store.budgets);
+    const budgetsStore = useAppSelector((store) => store.budgets);
 
     //TODO Update Budget data schema
     const [formData, setFormData] = useState<BudgetRowProps>({
@@ -53,7 +52,7 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
     const hasTotalAmountError = !(formData.totalAmount >= 0) || formData.totalAmount.toString() === "";
 
     //TODO Use something to handle form state in the formData state object. This is just a starting point.
-    const handleChangeInput = (e: any) => {
+    const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const { name, value } = e.target;
 
         // Nested data interface is useful to keep simple top level component declarations, but leads to this.
@@ -135,7 +134,7 @@ const EditBudgetModal: React.FC<TODO_CategoryProps> = ({ id, category, budgeted,
                     id={id.toString()}
                     name="category"
                     type="text"
-                    value={formData.category}
+                    value={t(formData.category)}
                     disabled
                 ></TextInput>
 
