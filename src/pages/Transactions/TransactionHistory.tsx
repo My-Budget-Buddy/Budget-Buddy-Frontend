@@ -16,8 +16,7 @@ import {
     Select,
     Table,
     TextInput,
-    Textarea,
-    Title
+    Textarea
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -45,7 +44,7 @@ import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";
 // };
 
 function TransactionHistory() {
-    const Name = useMatch("/:first/:second/:name")?.params.name;
+    const Name = decodeURI(useMatch("/:first/:second/:name")?.params.name as string);
     const { t } = useTranslation();
     const transactionsInit: Transaction[] = [
         {
@@ -136,7 +135,7 @@ function TransactionHistory() {
     const [newTransaction, setNewTransaction] = useState<Omit<Transaction, "transactionId">>({
         userId: 1,
         accountId: 1,
-        vendorName: Name as string,
+        vendorName: Name,
         amount: 0,
         category: TransactionCategory.GROCERIES,
         description: "",
@@ -234,7 +233,7 @@ function TransactionHistory() {
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value, type } = event.target;
         console.log(type);
-        if (type !== "number" || (type === "number" && Number(value))) {
+        if (type !== "number" || (type === "number" && (Number(value) || value === ""))) {
             if (createRef.current?.modalIsOpen) setNewTransaction({ ...newTransaction, [name]: value });
             if (modalRef.current?.modalIsOpen) {
                 setCurrentTransaction({
@@ -274,7 +273,7 @@ function TransactionHistory() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const transactionsData = await getTransactionByVendor(1, Name as string);
+            const transactionsData = await getTransactionByVendor(Name);
             setTransactions(transactionsData);
 
             const accountsData = await getAccountsByUserId(1);
@@ -289,9 +288,7 @@ function TransactionHistory() {
         <>
             <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
                 <div className="flex justify-between items-center bg-transparent p-4 ">
-                    <Title>
-                        <h1>{t("transactions.history", { val: decodeURI(Name as string) })}</h1>
-                    </Title>
+                    <h1>{t("transactions.history", { val: Name })}</h1>
                     <div className="flex gap-4">
                         <Button
                             type="button"
