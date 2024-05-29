@@ -588,7 +588,7 @@ function TransactionHistory() {
                                                 (prev, cur) => (prev.amount > cur.amount ? prev : cur),
                                                 { ...transactions[0], amount: Number.MIN_VALUE }
                                             ).amount,
-                                            color: ["#ff5722", "#009688"]
+                                            color: ["#ff9800", "#4caf50"]
                                         }
                                     }
                                 ]}
