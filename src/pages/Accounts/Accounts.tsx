@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
-import CreditScoreModal from "./CreditScoreModal";
+
 import { deleteAccountAPI, getAccountByID } from "../Tax/taxesAPI";
 
 const Accounts: React.FC = () => {

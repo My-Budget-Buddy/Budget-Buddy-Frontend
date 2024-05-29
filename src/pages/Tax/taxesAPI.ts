@@ -2,6 +2,8 @@ import apiClient from './index';
 import { Transaction } from '../../types/models';
 import { W2State } from './W2Slice';
 import { taxReturn } from './TaxReturnSlice';
+import { otherIncome } from './otherIncomeSlice';
+import createApiClient from './index';
 interface initReturn {
     year : number,
     userId : number
@@ -54,6 +56,23 @@ interface RawBucketToSend {
     // monthYear: string;
 }
 
+interface otherIncomeToSend {
+    
+        "taxReturnId": number,
+        "longTermCapitalGains": number,
+        "shortTermCapitalGains": number,
+        "otherInvestmentIncome": number,
+        "netBusinessIncome": number,
+        "additionalIncome": number
+    
+}
+// export const initApiClient = () => {
+//     const apiClient = createApiClient(jwt);
+//     return apiClient
+// }
+
+
+
 export const createTaxReturn = (initTaxReturn : initReturn) => {
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 }
@@ -62,8 +81,11 @@ export const getTaxReturnById = (taxReturnId : number) =>{
     return apiClient.get(`/taxes/taxreturns/${taxReturnId}`);
 }
 
-export const getTaxReturnByUserId = (userId : number) => {
-    return apiClient.get(`/taxes/taxreturns?userId=${userId}`);
+export const getTaxReturnByUserId = (jwt: string | null, userId : number) => {
+    
+    console.log("////////////////////////////////");
+    console.log(jwt);
+    return apiClient.get(`/taxes/taxreturns`);
 }
 
 export const getAccountByID = () => {
@@ -75,9 +97,10 @@ export const postAccountData = (field : fields) => {
     return apiClient.post('/accounts/1', field);
 }
 
-export const getBudgetsMonthyear = (monthyear : string) => {
+export const getBudgetsMonthyear = (jwt: string | null, monthyear: string) => {
+    //const apiClient = createApiClient(jwt);
     return apiClient.get(`/budgets/monthyear/${monthyear}/user/1`);
-}
+  };
 
 export const getTransactionsThing = (date : string, userid : number) => {
     return apiClient.get(`/budgets/transactions/${date}/user/${userid}`);
@@ -183,4 +206,28 @@ export const updateBucketAPI = (bucket : RawBucketToSend, id:number) => {
 
 export const deleteBucketAPI = (id: number) => {
     return apiClient.delete(`/buckets/delete/${id}`);
+}
+
+export const updateTaxReturnAPI = (payload: Partial<taxReturn>) => {
+    return apiClient.put(`/taxes/taxreturns/1`, payload);
+}
+
+export const addOtherIncomeAPI = (payload : otherIncome) => {
+    const actual_payload : otherIncomeToSend = {
+        taxReturnId : payload.oitaxReturnId,
+        longTermCapitalGains : payload.oilongTermCapitalGains,
+        shortTermCapitalGains : payload.oishortTermCapitalGains,
+        otherInvestmentIncome : payload.oiotherInvestmentIncome,
+        netBusinessIncome : payload.oinetBusinessIncome,
+        additionalIncome : payload.oiadditionalIncome
+    }
+    return apiClient.post(`/taxes/other-income`, actual_payload);
+}
+
+export const getOtherIncomeAPI = () => {
+    return apiClient.get(`/taxes/other-income/1`);
+}
+
+export const deleteTaxReturn = (id: number | undefined) => {
+    return apiClient.delete(`/taxes/taxreturns/${id}`);
 }

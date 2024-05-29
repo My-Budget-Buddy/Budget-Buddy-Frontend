@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
-import { Button, Fieldset, Form, FormGroup, Label, Table, TextInput } from "@trussworks/react-uswds";
+import { Button, Fieldset, Form, FormGroup, Grid, GridContainer, Label, Table, TextInput } from "@trussworks/react-uswds";
 import { setTaxReturnInfo } from "./TaxReturnSlice";
 import {W2State} from "./W2Slice"
 import { createW2API, findW2sByTaxReturnIdAPI } from "./taxesAPI";
@@ -106,7 +106,9 @@ const WwStep: React.FC = () => {
    
     return (<>
  <div>
-            <h1>W2 Tax Forms</h1>
+ <GridContainer className="usa-section">
+                <Grid row className="margin-x-neg-05 flex-justify-center">
+            
             <Table>
                 <thead>
                     <tr>
@@ -127,14 +129,23 @@ const WwStep: React.FC = () => {
                         </tr>
                     ))}
                 </tbody>
-            </Table>
-            </div>
-            <Button type="button" onClick={handleAddClick}>Add</Button>
+                <Button type="button" onClick={handleAddClick}>Add</Button>
             <Button type="button" onClick={handleSubmit}>Submit</Button>
+            </Table>
+           
+            </Grid>
+            
+            </GridContainer>
+            
+            
+            
+            </div>
             {editingItem && (
         
             <div>
-                
+                <GridContainer className="usa-section">
+                <Grid row className="margin-x-neg-05 flex-justify-center">
+                <Grid row gap={6}>
                     <FormGroup >
                         <label htmlFor="state">State</label>
                             <TextInput
@@ -233,8 +244,11 @@ const WwStep: React.FC = () => {
                             {errors.w2medicareTaxWithheld && <span style={{ color: 'red' }}>{errors.w2medicareTaxWithheld}</span>}
                     </FormGroup>
 
-                    <button onClick={() => handleSaveClick(W2info)}>Save</button>
-                
+                    
+                    </Grid>
+                    <Button type="button" onClick={() => handleSaveClick(W2info)}>Save</Button>
+                    </Grid>
+                    </GridContainer>
             </div>
 
             )}

@@ -10,7 +10,7 @@ export interface otherIncome{
 }
 
 const initialState: otherIncome = {
-    "oitaxReturnId": 0,
+    "oitaxReturnId": 1,
     "oilongTermCapitalGains": 0,
     "oishortTermCapitalGains": 0,
     "oiotherInvestmentIncome": 0,

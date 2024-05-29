@@ -1,19 +1,20 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
-import { setOtherIncomeInfo } from "./otherIncomeSlice";
-import { Fieldset, Form, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
+import { otherIncome, setOtherIncomeInfo } from "./otherIncomeSlice";
+import { Button, Fieldset, Form, FormGroup, Grid, GridContainer, Label, TextInput } from "@trussworks/react-uswds";
 import { setTaxReturnInfo } from "./TaxReturnSlice";
+import { addOtherIncomeAPI, getOtherIncomeAPI } from "./taxesAPI";
 const FinancialInformationStepW2: React.FC = () => {
 
 
     
-    const otherIncome = useSelector((state : RootState) => state.otherIncome);
+    const otherIncomeState = useSelector((state : RootState) => state.otherIncome);
     
     const dispatch = useDispatch();
     
-    const [errors2, setErrors2] = useState<typeof otherIncome>({} as typeof otherIncome);
+    const [errors2, setErrors2] = useState<typeof otherIncomeState>({} as typeof otherIncomeState);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -29,17 +30,38 @@ const FinancialInformationStepW2: React.FC = () => {
         setErrors2({ ...errors2, [name]: error });
     
         if (!error) {
-          const updatedOtherIncome = { ...otherIncome, [name]: value };
+          const updatedOtherIncome = { ...otherIncomeState, [name]: value };
           
           dispatch(setOtherIncomeInfo(updatedOtherIncome));
           
         }
       };
 
+      useEffect(() => {
+        getOtherIncomeAPI()
+        .then((res) => {
+            const mapped_res : otherIncome = {
+                "oitaxReturnId": res.data.taxReturnId,
+                "oilongTermCapitalGains": res.data.longTermCapitalGains,
+                "oishortTermCapitalGains": res.data.shortTermCapitalGains,
+                "oiotherInvestmentIncome": res.data.otherInvestmentIncome,
+                "oinetBusinessIncome": res.data.netBusinessIncome,
+                "oiadditionalIncome": res.data.additionalIncome
+            }
+            dispatch(setOtherIncomeInfo(mapped_res));
+        });
+      });
+
+      const handleSave = () => {
+        addOtherIncomeAPI(otherIncomeState);
+          }
+
     return (
         <>
             <div>
-                
+            <GridContainer className="usa-section">
+                <Grid row className="margin-x-neg-05 flex-justify-center">
+                <Grid row gap={6}>
                     <FormGroup >
                         <label htmlFor="otherIncome">Long Term Capital Gains</label>
                             <TextInput
@@ -47,7 +69,7 @@ const FinancialInformationStepW2: React.FC = () => {
                                 name="oilongTermCapitalGains"
                                 type="text"
                                 //defaultValue="test"
-                                value={otherIncome.oilongTermCapitalGains}
+                                value={otherIncomeState.oilongTermCapitalGains}
                                 onChange={handleChange}
                                 validationStatus={errors2.oilongTermCapitalGains ? "error" : undefined}
                             />
@@ -61,7 +83,7 @@ const FinancialInformationStepW2: React.FC = () => {
                                 name="oishortTermCapitalGains"
                                 type="text"
                                 //defaultValue="test"
-                                value={otherIncome.oishortTermCapitalGains}
+                                value={otherIncomeState.oishortTermCapitalGains}
                                 onChange={handleChange}
                                 validationStatus={errors2.oishortTermCapitalGains ? "error" : undefined}
                             />
@@ -75,7 +97,7 @@ const FinancialInformationStepW2: React.FC = () => {
                                 name="oiotherInvestmentIncome"
                                 type="text"
                                 //defaultValue="test"
-                                value={otherIncome.oiotherInvestmentIncome}
+                                value={otherIncomeState.oiotherInvestmentIncome}
                                 onChange={handleChange}
                                 validationStatus={errors2.oiotherInvestmentIncome ? "error" : undefined}
                             />
@@ -89,7 +111,7 @@ const FinancialInformationStepW2: React.FC = () => {
                                 name="oinetBusinessIncome"
                                 type="text"
                                 //defaultValue="test"
-                                value={otherIncome.oinetBusinessIncome}
+                                value={otherIncomeState.oinetBusinessIncome}
                                 onChange={handleChange}
                                 validationStatus={errors2.oinetBusinessIncome ? "error" : undefined}
                             />
@@ -103,12 +125,18 @@ const FinancialInformationStepW2: React.FC = () => {
                                 name="oiadditionalIncome"
                                 type="text"
                                 //defaultValue="test"
-                                value={otherIncome.oiadditionalIncome}
+                                value={otherIncomeState.oiadditionalIncome}
                                 onChange={handleChange}
                                 validationStatus={errors2.oiadditionalIncome ? "error" : undefined}
                             />
                             {errors2.oiadditionalIncome && <span style={{ color: 'red' }}>{errors2.oiadditionalIncome}</span>}
                     </FormGroup>
+                    
+                    </Grid>
+                    
+                    </Grid>
+                    <Button type="button" onClick={handleSave}>Save</Button>
+                    </GridContainer>
                
             </div>
         </>

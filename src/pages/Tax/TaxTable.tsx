@@ -4,23 +4,25 @@ import {
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TaxNav from './TaxNav';
-import { getTaxReturnByUserId } from './taxesAPI';
+import { deleteTaxReturn, getTaxReturnByUserId } from './taxesAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAllTaxReturns } from './TaxReturnSlice';
 import { RootState } from '../../util/redux/store';
 import { taxReturn } from './TaxReturnSlice';
+import { useAuthentication } from '../../contexts/AuthenticationContext';
 
 const DisplayTaxTables: React.FC = () => {
+  const { jwt } = useAuthentication();
   const nav = useNavigate();
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
-    getTaxReturnByUserId(1)
+    getTaxReturnByUserId(jwt, 1)
       .then((res) => {
         dispatch(setAllTaxReturns(res.data)); // Assuming res.data is an array of tax return items
       })
       .catch((err) => console.error(err));
-  }, [dispatch]);
+  }, [jwt]);
 
   const allTaxReturns = useSelector((state: RootState) => state.taxReturn.taxReturns);
 
@@ -77,6 +79,12 @@ const DisplayTaxTables: React.FC = () => {
     nav('/dashboard/tax/1/w2/0');
   };
 
+  const handleDelete = (id:number | undefined) => {
+    deleteTaxReturn(id);
+};
+
+
+
   const currentYear = new Date().getFullYear();
 
   const currentYearTaxReturns = sortedData.filter(data => data.year === currentYear);
@@ -110,7 +118,7 @@ const DisplayTaxTables: React.FC = () => {
                   <td>
                     <div className="action-buttons">
                       <button className="usa-button usa-button--primary" onClick={redirectToEditView}>Edit</button>
-                      <button className="usa-button usa-button--secondary">Delete</button>
+                      <button className="usa-button usa-button--secondary"onClick={() => handleDelete(data.id)}>Delete</button>
                     </div>
                   </td>
                 </tr>

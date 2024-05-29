@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
-import { Fieldset, Form, FormGroup, Label, TextInput } from "@trussworks/react-uswds";
-import { setTaxReturnInfo } from "./TaxReturnSlice";
+import { Button, Fieldset, Form, FormGroup, Grid, GridContainer, Label, TextInput } from "@trussworks/react-uswds";
+import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
+import { deleteTaxReturn, getTaxReturnById, updateTaxReturnAPI } from "./taxesAPI";
 
 const PersonalInfoStep: React.FC = () => {
 
@@ -12,6 +13,13 @@ const PersonalInfoStep: React.FC = () => {
     const dispatch = useDispatch();
     const [errors, setErrors] = useState<typeof W2info>({} as typeof W2info);
     const [errors2, setErrors2] = useState<typeof taxReturnInfo>({} as typeof taxReturnInfo);
+    
+    useEffect(()=> {
+        getTaxReturnById(1)
+        .then((res) => {
+            dispatch(setTaxReturnInfo(res.data));
+        })
+    })
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -34,10 +42,23 @@ const PersonalInfoStep: React.FC = () => {
         }
       };
 
+      const handleSave = (payload : Partial<taxReturn>) => {
+        updateTaxReturnAPI(payload);
+          };
+   
+
+          
+
     return (
         <>
             <div>
+            <GridContainer className="usa-section">
+            <Grid row className="margin-x-neg-05 flex-justify-center">
+                
+                
                 <Fieldset legend="Your Address" legendStyle="large">
+                <Grid row gap={6}>
+                <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="firstName">First Name</label>
                             <TextInput
@@ -51,7 +72,8 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.firstName && <span style={{ color: 'red' }}>{errors2.firstName}</span>}
                     </FormGroup>
-
+                    </Grid>
+                    <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="lastName">Last Name</label>
                             <TextInput
@@ -65,7 +87,8 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.lastName && <span style={{ color: 'red' }}>{errors2.lastName}</span>}
                     </FormGroup>
-
+                    </Grid>
+                    <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="StreetName">Street Name</label>
                             <TextInput
@@ -79,7 +102,8 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.address && <span style={{ color: 'red' }}>{errors2.address}</span>}
                     </FormGroup>
-
+                    </Grid>
+                    <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="city">City</label>
                             <TextInput
@@ -93,7 +117,8 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.city && <span style={{ color: 'red' }}>{errors2.city}</span>}
                     </FormGroup>
-
+                    </Grid>
+                    <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="state">State</label>
                             <TextInput
@@ -107,7 +132,8 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.state && <span style={{ color: 'red' }}>{errors2.state}</span>}
                     </FormGroup>
-
+                    </Grid>
+                    <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="zip">ZIP</label>
                             <TextInput
@@ -121,7 +147,8 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.zip && <span style={{ color: 'red' }}>{errors2.zip}</span>}
                     </FormGroup>
-
+                    </Grid>
+                    <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="dob">Date of Birth</label>
                             <TextInput
@@ -135,7 +162,8 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.dateOfBirth && <span style={{ color: 'red' }}>{errors2.dateOfBirth}</span>}
                     </FormGroup>
-
+                    </Grid>
+                    <Grid col={6}>
                     <FormGroup >
                         <label htmlFor="ssn">Social Security Number</label>
                             <TextInput
@@ -149,9 +177,16 @@ const PersonalInfoStep: React.FC = () => {
                             />
                             {errors2.ssn && <span style={{ color: 'red' }}>{errors2.ssn}</span>}
                     </FormGroup>
+                    </Grid>
+                    </Grid>
                 </Fieldset>
+                
+                </Grid>
+                </GridContainer>
             </div>
+            <Button type="button" onClick = {() => handleSave(taxReturnInfo)}>Save</Button>
         </>
+        
     );
 };
 
