@@ -1,6 +1,6 @@
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 
-import { addBucketsAPI, deleteBucketAPI, getBucketsAPI, updateBucketAPI } from "../../../Tax/taxesAPI";
+import { addBucketsAPI, updateBucketAPI } from "../../../Tax/taxesAPI";
 
 import Cookies from "js-cookie";
 
@@ -25,6 +25,8 @@ export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
+            const buckets: RawBucket[] = await response.json();
+            const transformedBuckets = transformBuckets(buckets);
 
             // Update redux store
             return transformedBuckets;
@@ -65,15 +67,22 @@ export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSe
         }
 
 
-        return(addBucketsAPI(bucket)
-            .then((res) =>{
-                const data: RawBucketToSend =  res.data;
-                return data;
-            })
+        // return(addBucketsAPI(bucket)
+        //     .then((res) =>{
+        //         const data: RawBucketToSend =  res.data;
+        //         return data;
+        //     })
 
-        )
-   
+        // )
+        const data: RawBucketToSend = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
 }
+   
+
 
 export async function putBucket(bucket: RawBucketToSend, id: number): Promise<RawBucketToSend> {
 
@@ -95,13 +104,19 @@ export async function putBucket(bucket: RawBucketToSend, id: number): Promise<Ra
         }
 
 
-    return(updateBucketAPI(bucket, id)
-            .then((res) =>{
-                const data: RawBucketToSend =  res.data;
-                return data;
-            })
+    // return(updateBucketAPI(bucket, id)
+    //         .then((res) =>{
+    //             const data: RawBucketToSend =  res.data;
+    //             return data;
+    //         })
 
-        )
+    //     )
+    const data: RawBucketToSend = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
 }
 
 export async function deleteBucket(id: number) {
