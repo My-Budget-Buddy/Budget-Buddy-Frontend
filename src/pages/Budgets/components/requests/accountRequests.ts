@@ -17,6 +17,8 @@ export async function getTotalAvailableFunds(): Promise<number> {
     return accounts.reduce((sum: number, account: Account) => {
         if (["CHECKING", "SAVINGS"].includes(account.type)) {
             sum += account.currentBalance;
+        } else if (["INVESTMENT"].includes(account.type)) {
+            // do not add or subtract from total if the account is an investment
         } else {
             sum -= account.currentBalance;
         }
