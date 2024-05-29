@@ -27,7 +27,7 @@ const Login: React.FC = () => {
             password: e.currentTarget.elements.password.value
         };
 
-        const res = await fetch("http://localhost:8125/auth/login", {
+        const res = await fetch("https://api.skillstorm-congo.com/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fields),
