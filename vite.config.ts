@@ -10,10 +10,10 @@ export default defineConfig(({ command, mode }) => {
         server: {
             proxy: {
                 // Proxy requests from /api to the backend URL specified in the environment variables
-                "/api": {
+                "/dunce": {
                     target: "http://localhost:8125",
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, "")
+                    rewrite: (path) => path.replace(/^\/dunce/, "")
                 }
             }
         },

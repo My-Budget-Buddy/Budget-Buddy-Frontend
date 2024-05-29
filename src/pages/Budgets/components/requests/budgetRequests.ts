@@ -1,135 +1,159 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
-import { createBudgetAPI, deleteBudgetAPI, getBudgetsByIdAPI, getBudgetsMonthyear, getBudgetsTransactionsMonthyear, updateBudgetAPI } from "../../../Tax/taxesAPI";
+import Cookies from "js-cookie";
+export async function getBudgetsById() {
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
+    const jwtCookie = Cookies.get("jwt") as string;
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
+            },
+            credentials: "include"
+        });
 
-export async function getBudgetsById(): Promise<BudgetRowProps[]> {
-    //TODO Wait for backend team to update on final endpoint
-    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/1`;
-    
-    return(getBudgetsByIdAPI()
-    .then((res) => {
-        const budgets: RawBudget[] =  res.data;
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const budgets: RawBudget[] = await response.json();
         const transformedBudgets = transformBudgets(budgets);
 
-        // Update redux store
         return transformedBudgets;
-    })
-)
-
-        
-
-        // Call from redux store
-    
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
 }
 
-// export async function getBudgetsByMonthYear(monthyear: string) {
-//     //TODO Wait for backend team to update on final endpoint
-//     const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/monthyear/${monthyear}/user/1`;
-//     try {
-//         const response = await fetch(endpoint, {
-//             method: "GET",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             credentials: "include"
-//         });
+export async function getBudgetsByMonthYear(monthyear: string) {
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/monthyear/${monthyear}`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status} ${response.statusText}`);
-//         }
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
+            },
+            credentials: "include"
+        });
 
-//         const budgets: RawBudget[] = await response.json();
-//         const transformedBudgets = transformBudgets(budgets);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
 
-//         // Update redux store
-//         return transformedBudgets;
+        const budgets: RawBudget[] = await response.json();
+        const transformedBudgets = transformBudgets(budgets);
 
-//         // Call from redux store
-//     } catch (error) {
-//         console.error("Failed to fetch user data:", error);
-//         throw error;
-//     }
-// }
-
-export async function getBudgetsByMonthYear(monthyear: string): Promise<BudgetRowProps[]> {
-    //TODO Wait for backend team to update on final endpoint
-    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/monthyear/${monthyear}/user/1`;
-    
-        return(getBudgetsMonthyear(monthyear)
-        .then((res) => {
-            console.log(res.data);
-            const budgets: RawBudget[] =  res.data;
-            const transformedBudgets = transformBudgets(budgets);
-
-            // Update redux store
-            return transformedBudgets;
-        }))
-
-        // if (!response.ok) {
-        //     throw new Error(`Error: ${response.status} ${response.statusText}`);
-        // }
-
-
-        // Call from redux store
-    
+        return transformedBudgets;
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
 }
 
 export async function createBudget(budget: RawBudgetToSend): Promise<RawBudgetToSend> {
-    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
-    
-        return(createBudgetAPI(budget)
-        .then((res) => {
-            const data: RawBudgetToSend =  res.data;
-            return data;
-        })
-    )
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
+            },
+            body: JSON.stringify(budget)
+        });
 
-        
-    
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: RawBudgetToSend = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to create budget:", error);
+        throw error;
+    }
 }
 
 export async function putBudget(budget: RawBudgetToSend, id: number): Promise<RawBudgetToSend> {
-    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/${id}`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
-    
-        return(updateBudgetAPI(id, budget)
-        .then((res) => {
-            const data: RawBudgetToSend =  res.data;
-            return data;
-        }))
+    try {
+        const response = await fetch(endpoint, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
+            },
+            body: JSON.stringify(budget)
+        });
 
-       
-        
-    
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: RawBudgetToSend = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to create budget:", error);
+        throw error;
+    }
 }
 
 export async function deleteBudget(id: number) {
-    //TODO Wait for backend team to update on final endpoint
-    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/${id}`;
-    
-        deleteBudgetAPI(id);
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/${id}`;
+    const jwtCookie = Cookies.get("jwt") as string;
+    try {
+        const response = await fetch(endpoint, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
+            },
+            credentials: "include"
+        });
 
-
-        // Call from redux store
-    
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
 }
 
-export async function getTransactionsByMonthYear(monthyear: string): Promise<BudgetRowProps[]> {
-    //TODO Wait for backend team to update on final endpoint
-    //const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/transactions/${monthyear}/user/1`;
-    
-        return(getBudgetsTransactionsMonthyear(monthyear)
-        .then((res) => {
-            const budgets: RawBudget[] =  res.data;
-            const transformedBudgets = transformBudgets(budgets);
-    
-            // Update redux store
-            return transformedBudgets;
-        })
-    )
+export async function getTransactionsByMonthYear(monthyear: string) {
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/transactions/${monthyear}`;
+    const jwtCookie = Cookies.get("jwt") as string;
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
+            },
+            credentials: "include"
+        });
 
-        // Call from redux store
-    
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const budgets: RawBudget[] = await response.json();
+        const transformedBudgets = transformBudgets(budgets);
+
+        return transformedBudgets;
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
 }
 
 // The data from the endpoint needs to be trimmed down to this.

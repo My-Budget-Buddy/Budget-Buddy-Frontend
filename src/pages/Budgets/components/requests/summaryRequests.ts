@@ -1,25 +1,26 @@
-// Mock data:
+import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../../../Tax/taxesAPI";
 
-import { mockFetch } from "../../../../util/util";
-
-const mockSummary = [
-    {
-        summaryId: 1,
-        userId: 1,
-        projectedIncome: 7777.0,
-        monthYear: "2024-05",
-        totalBudgetAmount: 1111.0
-    }
-];
-
-export async function getSpendingBudget(monthYear: string) {
-    //TODO if fetch gets nothing, post with new empty summary object
-
-    const summaries = await mockFetch(mockSummary);
-    const summary = summaries.find((summary: BudgetSummary) => summary.monthYear === monthYear);
-    return summary.totalBudgetAmount;
+export async function getMonthlySummary(monthYear: string): Promise<MonthlySummary> {
+    return getMonthlySummaryAPI(monthYear).then((res) => {
+        const monthlySummaryList = res.data;
+        const monthlySummary = monthlySummaryList[0];
+        return monthlySummary;
+    });
 }
 
+export async function updateMonthlySummary(summaryId: number, monthlySummary: MonthlySummary): Promise<MonthlySummary> {
+    return updateMonthlySummaryAPI(summaryId, monthlySummary).then((res) => {
+        const data: MonthlySummary = res.data;
+        return data;
+    });
+}
+
+export async function createMonthlySummary(monthlySummary: NewMonthlySummary): Promise<MonthlySummary> {
+    return createMonthlySummaryAPI(monthlySummary).then((res) => {
+        const data: MonthlySummary = res.data;
+        return data;
+    });
+}
 export async function updateSpendingBudgetFor(id: string, monthYear: string, amount: number) {
     const summary = {
         userId: id,
@@ -39,7 +40,7 @@ export async function updateSpendingBudgetFor(id: string, monthYear: string, amo
 async function putBucket(summary: BudgetSummary, id: string) {
     //This should only run after getSummaryFor(summary.monthYear) is run, which populates that monthyear with a budget summary if it doesn't exist.
     // But theoretically the endpoint should work without anything on the database too.
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/summarys/${id}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/summarys/${id}`;
 
     try {
         const response = await fetch(endpoint, {
@@ -59,34 +60,6 @@ async function putBucket(summary: BudgetSummary, id: string) {
     }
 }
 
-export async function getTotalFundsAvailable(): Promise<number> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/accounts`;
-
-    try {
-        const response = await fetch(endpoint, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
-        const accountsList = await response.json();
-
-        return accountsList.reduce((sum: number, account: Account) => {
-            if (account.type == "savings") {
-                return (sum += sum);
-            }
-        });
-    } catch (error) {
-        console.error("Failed to create bucket:", error);
-        throw error;
-    }
-}
-
 type BudgetSummary = {
     summaryId?: number;
     userId: string;
@@ -95,6 +68,18 @@ type BudgetSummary = {
     totalBudgetAmount: number;
 };
 
-type Account = {
-    type: string;
+type MonthlySummary = {
+    summaryId: number;
+    userId?: string;
+    projectedIncome?: number;
+    monthYear?: string;
+    totalBudgetAmount?: number;
+};
+
+// The necessary fields for a post request
+type NewMonthlySummary = {
+    userId: number;
+    projectedIncome: number;
+    monthYear: string;
+    totalBudgetAmount: number;
 };

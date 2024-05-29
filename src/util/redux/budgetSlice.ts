@@ -47,7 +47,7 @@ export const budgetSlice = createSlice({
                     const sum = total + (row.totalAmount - row.spentAmount);
                     return sum;
                 } else {
-                    return 0;
+                    return total;
                 }
             }, 0);
             state.totalReserved = Math.round(totalReserved * 100) / 100;

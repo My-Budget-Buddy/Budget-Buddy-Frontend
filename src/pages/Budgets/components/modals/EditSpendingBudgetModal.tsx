@@ -11,24 +11,27 @@ import {
     Button
 } from "@trussworks/react-uswds";
 import { useRef, useState } from "react";
-import { BudgetProps } from "../../../../types/budgetInterfaces";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { useTranslation } from "react-i18next";
-import { updateSpendingBudgetFor } from "../requests/summaryRequests";
+import { updateMonthlySummary } from "../requests/summaryRequests";
 
-const EditSpendingBudgetModal: React.FC = () => {
+interface MonthlySummary {
+    summaryId: number;
+    totalBudgetAmount?: number;
+}
+
+const EditSpendingBudgetModal: React.FC<MonthlySummary> = ({ summaryId, totalBudgetAmount }) => {
     const { t } = useTranslation();
     const budgetsStore = useAppSelector((store) => store.budgets);
-    const selectedMonth = budgetsStore.selectedMonth;
+    const selectedMonthString = budgetsStore.selectedMonthString;
     const selectedYear = budgetsStore.selectedYear;
-    const spendingBudget = budgetsStore.spendingBudget;
+    //const spendingBudget = budgetsStore.spendingBudget;
     const curMonthYear = budgetsStore.monthYear;
 
-    const [formData, setFormData] = useState<BudgetProps>({
-        data: {
-            value: 0
-        }
+    const [formData, setFormData] = useState({
+        summaryId: summaryId,
+        totalBudgetAmount: totalBudgetAmount
     });
 
     const modalRef = useRef<ModalRef>(null);
@@ -37,25 +40,45 @@ const EditSpendingBudgetModal: React.FC = () => {
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
     const userId = useAppSelector((state) => state.user.userId);
-
-    async function sendUpdatedBudget(budget: BudgetProps) {
+    /*
+    async function sendUpdatedBudget(updatedSummary: MonthlySummary) {
         // Sets buttons to 'waiting', prevent closing
         dispatch(setIsSending(true));
-        console.log("UPDATING BUDGET..."); // <--- This is the bucket to send to the post endpoint
         await updateSpendingBudgetFor(userId, curMonthYear, formData.data.value);
-        console.log("BUDGET SENT: ", budget);
         dispatch(setIsSending(false));
     }
-
+*/
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        await sendUpdatedBudget(formData);
+        dispatch(setIsSending(true));
+        await updateMonthlySummary(formData.summaryId, formData);
+        console.log("summary submit form data summary id", formData.summaryId);
+        console.log("summary submit form data", formData);
+        dispatch(setIsSending(false));
         modalRef.current?.toggleModal();
     }
 
+    const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        // Nested data interface is useful to keep simple top level component declarations, but leads to this.
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    // resets form data
+    const handleModalOpen = () => {
+        setFormData({
+            summaryId: summaryId,
+            totalBudgetAmount: totalBudgetAmount
+        });
+    };
+
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled>
+            <ModalToggleButton modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
                 <Icon.Edit />
             </ModalToggleButton>
 
@@ -66,20 +89,17 @@ const EditSpendingBudgetModal: React.FC = () => {
                 id="example-modal-3"
             >
                 <ModalHeading id="modal-3-heading">
-                    {t("budgets.edit")} {selectedMonth} {selectedYear} {t("budgets.spending-budget")}
+                    {t("budgets.edit")} {selectedMonthString} {selectedYear} {t("budgets.spending-budget")}
                 </ModalHeading>
 
-                <Label htmlFor="monthly-budget">{t("budgets.spending-budget")}t</Label>
+                <Label htmlFor="monthly-budget">{t("budgets.spending-budget")}</Label>
                 <TextInput
-                    id="monthly-budget"
-                    name="monthly-budget"
+                    id="totalBudgetAmount"
+                    name="totalBudgetAmount"
                     type="number"
-                    defaultValue={spendingBudget}
-                    value={formData.data.value}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-                        //TODO Enforce form validation.
-                        setFormData({ data: { value: e.target.value as unknown as number } });
-                    }}
+                    //defaultValue={spendingBudget}
+                    value={formData.totalBudgetAmount}
+                    onChange={handleChangeInput}
                 ></TextInput>
 
                 <ModalFooter>
