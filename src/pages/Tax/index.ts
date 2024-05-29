@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 
 const apiClient = axios.create({
     // hiding the URL in the .env file
-    baseURL: `/api`,
+    baseURL: `/dunce`,
     headers: {
         'Content-Type': 'application/json',
       }
