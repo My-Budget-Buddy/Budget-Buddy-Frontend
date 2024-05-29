@@ -94,7 +94,7 @@
       }
     },
     "spending": {
-      "title": "Mi Gastos",
+      "title": "Gastos",
       "graphTitle": "Gastos",
       "spentThisWeek": "Gastado esta semana",
       "depositedThisWeek": "Depositado esta semana",
@@ -110,7 +110,8 @@
       "date": "Fecha",
       "vendor": "Proveedor",
       "earned": "Ganado",
-      "spendings": "Gastos"
+      "spendings": "Gastos",
+      "totalSpent": "Gasto total"
     },
     "transactions": {
       "title": "Transacciones",

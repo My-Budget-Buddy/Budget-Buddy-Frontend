@@ -46,6 +46,11 @@ const Spending: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [mostPopularVendors, setMostPopularVendors] = useState<{ vendorName: string; amount: number }[]>([]);
     const [spendingCategories, setSpendingCategories] = useState<SpendingCategory[]>([]);
+    const [currentWeekSpending, setCurrentWeekSpending] = useState<number>(0);
+    const [previousWeekSpending, setPreviousWeekSpending] = useState<number>(0);
+    const [currentWeekDeposits, setCurrentWeekDeposits] = useState<number>(0);
+    const [previousWeekDeposits, setPreviousWeekDeposits] = useState<number>(0);
+    const [currentYearSpending, setCurrentYearSpending] = useState<number>(0);
 
     //colors for each category
     const categoryColors: { [key in TransactionCategory]: string } = {
@@ -98,10 +103,49 @@ const Spending: React.FC = () => {
         const fetchTransactions = async () => {
             try {
                 const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
-                console.log(response.data);
                 const transactions = response.data;
                 setTransactions(transactions);
-                console.log("Fetched transactions:", transactions);
+
+                const now = new Date();
+                const startOfThisWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                const startOfLastWeek = new Date(new Date(startOfThisWeek).setDate(startOfThisWeek.getDate() - 7));
+                const startOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+                let thisWeekSpending = 0;
+                let lastWeekSpending = 0;
+                let thisWeekDeposits = 0;
+                let lastWeekDeposits = 0;
+                let thisYearSpending = 0;
+
+                transactions.forEach(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    const amount = transaction.amount;
+
+                    if (transactionDate >= startOfThisYear) {
+                        thisYearSpending += amount; // Total spending this year
+                    }
+
+                    if (transactionDate >= startOfThisWeek) {
+                        if (transaction.category === "Income") {
+                            thisWeekDeposits += amount;
+                        } else {
+                            thisWeekSpending += amount;
+                        }
+                    } else if (transactionDate >= startOfLastWeek && transactionDate < startOfThisWeek) {
+                        if (transaction.category === "Income") {
+                            lastWeekDeposits += amount;
+                        } else {
+                            lastWeekSpending += amount;
+                        }
+                    }
+                });
+
+                setCurrentWeekSpending(thisWeekSpending);
+                setPreviousWeekSpending(lastWeekSpending);
+                setCurrentWeekDeposits(thisWeekDeposits);
+                setPreviousWeekDeposits(lastWeekDeposits);
+                setCurrentYearSpending(thisYearSpending);
+
                 const updatedSpendingData: Record<Month, number> = { ...spendingData };
                 const updatedEarnedData: Record<Month, number> = { ...earnedData };
 
@@ -176,6 +220,14 @@ const Spending: React.FC = () => {
 
         fetchTransactions();
     }, []);
+
+    const calculatePercentageChange = (current: number, previous: number) => {
+        if (previous === 0) return 0; // handle division by zero
+        return ((current - previous) / previous) * 100;
+    };
+
+    const spendingWeekChange = calculatePercentageChange(currentWeekSpending, previousWeekSpending);
+    const depositsWeekChange = calculatePercentageChange(currentWeekDeposits, previousWeekDeposits);
 
     // -----BAR CHART------
     // prepare data for the bar chart
@@ -404,9 +456,9 @@ const Spending: React.FC = () => {
 
                     <div className="flex justify-between gap-x-4 w-full m-2">
                         {[
-                            { details: t('spending.spentThisWeek'), price: 4523.77, percentage: 5.2, icon: Icon.AttachMoney, bgColor: "bg-red-500" },
-                            { details: t('spending.depositedThisWeek'), price: 6233.21, percentage: -3.4, icon: Icon.CreditCard, bgColor: "bg-green-500" },
-                            { details: t('spending.spentThisYear'), price: 43224.27, percentage: 10.1, icon: Icon.Api, bgColor: "bg-blue-500" }
+                            { details: t('spending.spentThisWeek'), price: currentWeekSpending, percentage: spendingWeekChange, icon: Icon.AttachMoney, bgColor: "bg-red-500" },
+                            { details: t('spending.depositedThisWeek'), price: currentWeekDeposits, percentage: depositsWeekChange, icon: Icon.CreditCard, bgColor: "bg-green-500" },
+                            { details: t('spending.totalSpent'), price: currentYearSpending, percentage: 0, icon: Icon.Api, bgColor: "bg-blue-500" }
                         ].map((card, index) => (
                             <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex">
                                 <div className="flex-1 flex items-center">
@@ -423,7 +475,7 @@ const Spending: React.FC = () => {
                                         ) : (
                                             <Icon.ArrowDropDown className="inline-block mb-1" style={{ fontSize: "2rem" }} />
                                         )}
-                                        {Math.abs(card.percentage)}%
+                                        {Math.abs(card.percentage).toFixed(2)}%
                                     </span>
                                 </div>
                             </div>

@@ -94,7 +94,7 @@
       }
     },
     "spending": {
-      "title": "My Spendings",
+      "title": "Spendings",
       "graphTitle": "Spendings",
       "spentThisWeek": "Spent this week",
       "depositedThisWeek": "Deposited this week",
@@ -110,7 +110,8 @@
       "date": "Date",
       "vendor": "Vendor",
       "earned": "Earned",
-      "spendings": "Spendings"
+      "spendings": "Spendings",
+      "totalSpent": "Total spent"
     },
     "transactions": {
       "title": "Transactions",
