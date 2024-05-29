@@ -120,7 +120,7 @@ export const postAccountData = (field: fields) => {
 
 export const getBudgetsMonthyear = ( monthyear: string) => {
     //const apiClient = createApiClient(jwt);
-    return apiClient.get(`/budgets/monthyear/${monthyear}/user/1`);
+    return apiClient.get(`/budgets/monthyear/${monthyear}`);
   };
 
 export const getTransactionsThing = (date: string, userid: number) => {
