@@ -1,17 +1,4 @@
-// Mock data:
-import Cookies from "js-cookie";
-
 import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../../../Tax/taxesAPI";
-
-const mockSummary = [
-    {
-        summaryId: 1,
-        userId: 1,
-        projectedIncome: 7777.0,
-        monthYear: "2024-05",
-        totalBudgetAmount: 1111.0
-    }
-];
 
 export async function getMonthlySummary(monthYear: string): Promise<MonthlySummary> {
     return getMonthlySummaryAPI(monthYear).then((res) => {

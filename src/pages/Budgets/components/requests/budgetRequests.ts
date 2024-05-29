@@ -1,8 +1,6 @@
-import { useAuthentication } from "../../../../contexts/AuthenticationContext";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import Cookies from "js-cookie";
 export async function getBudgetsById() {
-    //TODO Wait for backend team to update on final endpoint
     const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
@@ -22,10 +20,7 @@ export async function getBudgetsById() {
         const budgets: RawBudget[] = await response.json();
         const transformedBudgets = transformBudgets(budgets);
 
-        // Update redux store
         return transformedBudgets;
-
-        // Call from redux store
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;
@@ -33,8 +28,6 @@ export async function getBudgetsById() {
 }
 
 export async function getBudgetsByMonthYear(monthyear: string) {
-    //TODO Wait for backend team to update on final endpoint
-
     const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/monthyear/${monthyear}`;
     const jwtCookie = Cookies.get("jwt") as string;
 
@@ -55,11 +48,7 @@ export async function getBudgetsByMonthYear(monthyear: string) {
         const budgets: RawBudget[] = await response.json();
         const transformedBudgets = transformBudgets(budgets);
 
-
-        // Update redux store
         return transformedBudgets;
-
-        // Call from redux store
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;
@@ -119,7 +108,6 @@ export async function putBudget(budget: RawBudgetToSend, id: number): Promise<Ra
 }
 
 export async function deleteBudget(id: number) {
-    //TODO Wait for backend team to update on final endpoint
     const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/${id}`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
@@ -135,8 +123,6 @@ export async function deleteBudget(id: number) {
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
-
-        // Call from redux store
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;
@@ -144,7 +130,6 @@ export async function deleteBudget(id: number) {
 }
 
 export async function getTransactionsByMonthYear(monthyear: string) {
-    //TODO Wait for backend team to update on final endpoint
     const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/transactions/${monthyear}`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
@@ -164,10 +149,7 @@ export async function getTransactionsByMonthYear(monthyear: string) {
         const budgets: RawBudget[] = await response.json();
         const transformedBudgets = transformBudgets(budgets);
 
-        // Update redux store
         return transformedBudgets;
-
-        // Call from redux store
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;
