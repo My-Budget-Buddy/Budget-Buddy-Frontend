@@ -18,7 +18,7 @@ const NavBar = () => {
         email: "",
         id: 0
     })
-
+    
     const fetchUserInfo = async () => {
         try {
             getUserInformationAPI()
