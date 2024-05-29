@@ -94,7 +94,16 @@
       }
     },
     "spending": {
-      "title": "Spending"
+      "title": "My Spendings",
+      "spentThisWeek": "Spent this week",
+      "depositedThisWeek": "Deposited this week",
+      "spentThisYear": "Spent this year",
+      "clickBarForDetails": "Click on any bar in the chart to view detailed spending for that month.",
+      "seeCurrentMonth": "See Current Month",
+      "topThreePurchases": "Your top 3 purchases accounted for",
+      "totalSpendings": "Total spendings",
+      "topThreeCategories": "Top Spending Categories"
+      
     },
     "transactions": {
       "title": "Transactions",

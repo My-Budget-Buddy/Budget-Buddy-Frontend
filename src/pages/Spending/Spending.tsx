@@ -410,9 +410,9 @@ const Spending: React.FC = () => {
 
                     <div className="flex justify-between gap-x-4 w-full m-2">
                         {[
-                            { details: "Spent this week", price: 4523.77, percentage: 5.2, icon: Icon.AttachMoney, bgColor: "bg-red-500" },
-                            { details: "Deposited this week", price: 6233.21, percentage: -3.4, icon: Icon.CreditCard, bgColor: "bg-green-500" },
-                            { details: "Spent this year", price: 43224.27, percentage: 10.1, icon: Icon.Api, bgColor: "bg-blue-500" }
+                            { details: t('spending.spentThisWeek'), price: 4523.77, percentage: 5.2, icon: Icon.AttachMoney, bgColor: "bg-red-500" },
+                            { details: t('spending.depositedThisWeek'), price: 6233.21, percentage: -3.4, icon: Icon.CreditCard, bgColor: "bg-green-500" },
+                            { details: t('spending.spentThisYear'), price: 43224.27, percentage: 10.1, icon: Icon.Api, bgColor: "bg-blue-500" }
                         ].map((card, index) => (
                             <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex">
                                 <div className="flex-1 flex items-center">
@@ -452,13 +452,13 @@ const Spending: React.FC = () => {
                                     {/* render tooltip conditionally */}
                                     {showTooltip && (
                                         <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-60">
-                                            Click on any bar in the chart to view detailed spending for that month.
+                                            {t('spending.clickBarForDetails')}
                                         </div>
                                     )}
                                 </span>
                                 <Link to="/dashboard/spending/May" className="mr-3 pr-8">
                                     <Button type="button" className="ml-3">
-                                        See Current Month
+                                        {t('spending.seeCurrentMonth')}
                                     </Button>
                                 </Link>
 
@@ -564,9 +564,9 @@ const Spending: React.FC = () => {
                             {/* Top Purchases Table */}
 
                             <div className="flex flex-col justify-center items-center flex-1  p-4 m-2 rounded-xl shadow-lg border-[1px] w-full">
-                                <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
+                                <h2 className="text-2xl mb-2">{t('spending.topThreePurchases')}</h2>
                                 <h2 className="mb-3 text-4x1  text-center">
-                                    Your top 3 purchases accounted for
+                                    {t('spending.topThreePurchases')}
                                     <span className="text-3xl font-bold text-blue-600">
                                         {" "}
                                         {topPurchasePercentage}%{" "}
@@ -581,7 +581,7 @@ const Spending: React.FC = () => {
                             {/* Top Categories Table */}
 
                             <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-lg border-[1px] w-full">
-                                <h2 className="text-2xl mb- mt-1">Top Spending Categories</h2>
+                                <h2 className="text-2xl mb- mt-1">{t('spending.topThreeCategories')}</h2>
                                 <h2 className="mb-3 text-4x1  text-center">
                                     Your top 3 spending categories accounted for
                                     <span className="text-3xl font-bold text-blue-600"> {topThreePercentage}% </span> of

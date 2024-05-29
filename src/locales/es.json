@@ -94,7 +94,16 @@
       }
     },
     "spending": {
-      "title": "Gastos"
+      "title": "Mi Gastos",
+      "spentThisWeek": "Gastado esta semana",
+      "depositedThisWeek": "Depositado esta semana",
+      "spentThisYear": "Gastado este año",
+      "clickBarForDetails": "Haga clic en cualquier barra del gráfico para ver los detalles del gasto para ese mes.",
+      "seeCurrentMonth": "Ver gastos del mes actual",
+      "topThreePurchases": "Tus 3 compras más costosas",
+      "totalSpendings": "Gastos totales",
+      "topThreeCategories": "Tus 3 categorías de gastos"
+
     },
     "transactions": {
       "title": "Transacciones",
