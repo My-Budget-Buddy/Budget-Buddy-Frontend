@@ -283,7 +283,7 @@ function TransactionHistory() {
                         <div className="col-span-3" />
                         <hr className="col-span-6" />
                         <div className="col-span-4">
-                            <Label htmlFor={"transaction-name"}>Name</Label>
+                            <Label htmlFor={"transaction-name"}>{t("transactions-table.name")}</Label>
                             <TextInput
                                 value={currentTransaction.vendorName}
                                 id={"transaction-name"}
@@ -291,7 +291,7 @@ function TransactionHistory() {
                                 type={"text"}
                                 onChange={handleInputChange}
                             />
-                            <Label htmlFor={"transaction-amount"}>Amount</Label>
+                            <Label htmlFor={"transaction-amount"}>{t("transactions-table.amount")}</Label>
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
@@ -302,7 +302,7 @@ function TransactionHistory() {
                                     onChange={handleInputChange}
                                 />
                             </InputGroup>
-                            <Label htmlFor={"transaction-category"}>Category</Label>
+                            <Label htmlFor={"transaction-category"}>{t("transactions-table.category")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
                                     id={"transaction-category"}
@@ -318,17 +318,17 @@ function TransactionHistory() {
                                     ))}
                                 </Select>
                             </div>
-                            <Label htmlFor="transaction-note">Notes</Label>
+                            <Label htmlFor="transaction-note">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={currentTransaction.description as string}
                                 id="transaction-note"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
-                            <Label htmlFor="transaction-account">Account</Label>
+                            <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
                                     id={"transaction-account"}
@@ -378,7 +378,7 @@ function TransactionHistory() {
                             </div>
                             <div className="flex flex-col w-1/3">
                                 <div className="border-l border-black pl-6 h-full">
-                                    <h4 className="text-xl">Account</h4>
+                                    <h4 className="text-xl">{t("transactions.account")}</h4>
                                     <div className="flex items-center mt-3 text-sm text-gray-500">
                                         {transactions[current].accountId && (
                                             <div className="flex flex-col">
@@ -392,7 +392,7 @@ function TransactionHistory() {
                                                     </div>
                                                 </div>
                                                 <div className="mt-2 text-sm text-gray-500">
-                                                    Account Number:{" "}
+                                                    {t("accounts.account-number")}:{" "}
                                                     {getAccountDetails(transactions[current].accountId)?.accountNumber}
                                                 </div>
                                             </div>
