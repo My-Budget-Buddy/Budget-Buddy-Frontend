@@ -1,7 +1,8 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
+import Cookies from "js-cookie";
 
 // TODO Given a list of transactions, return budget totals
-const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets`;
+const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
 
 export async function getCompleteBudgets(transformedBudgets: BudgetRowProps[]) {
     const date = transformedBudgets[0].monthYear;
@@ -43,12 +44,15 @@ function mapTransactionsToCategories(transactions: Transaction[]) {
 }
 
 async function getTransactions(userid: number, date: string) {
+    const jwtCookie = Cookies.get("jwt") as string;
+
     //TODO Wait for backend team to update on final endpoint
     try {
-        const response = await fetch(`${endpoint}/transactions/${date}/user/${userid}`, {
+        const response = await fetch(`${endpoint}/transactions/${date}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             credentials: "include"
         });

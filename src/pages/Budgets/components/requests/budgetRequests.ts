@@ -1,8 +1,8 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
-
+import Cookies from "js-cookie";
 export async function getBudgetsById() {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/1`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
     try {
         const response = await fetch(endpoint, {
             method: "GET",
@@ -31,12 +31,15 @@ export async function getBudgetsById() {
 
 export async function getBudgetsByMonthYear(monthyear: string) {
     //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/budgets/monthyear/${monthyear}/user/1`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/monthyear/${monthyear}`;
+    const jwtCookie = Cookies.get("jwt") as string;
+
     try {
         const response = await fetch(endpoint, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             credentials: "include"
         });
