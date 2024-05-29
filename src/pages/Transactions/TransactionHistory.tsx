@@ -535,7 +535,12 @@ function TransactionHistory() {
                         <CardHeader>{t("transactions.summary")}</CardHeader>
                         <CardBody>
                             {t("transactions.spent")}:{" "}
-                            {formatCurrency(filteredTransactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0))}
+                            {formatCurrency(
+                                filteredTransactions.reduce(
+                                    (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? -1 : 1),
+                                    0.0
+                                )
+                            )}
                             <hr />
                             {t("transactions.amount")}: {filteredTransactions.length}
                             <hr />
@@ -543,7 +548,10 @@ function TransactionHistory() {
                                 series={[
                                     {
                                         data: filteredTransactions.map((transaction) => {
-                                            return transaction.amount;
+                                            return (
+                                                Number(transaction.amount) *
+                                                (transaction.category === "Income" ? 1 : -1)
+                                            );
                                         }),
                                         valueFormatter: (v) => {
                                             return formatCurrency(String(v), true);
@@ -567,6 +575,23 @@ function TransactionHistory() {
                                     setCurrentTransaction(filteredTransactions[params.dataIndex]);
                                     infoRef.current?.toggleModal();
                                 }}
+                                yAxis={[
+                                    {
+                                        colorMap: {
+                                            type: "continuous",
+                                            // thresholds: [-0.0, 0.0],
+                                            min: transactions.reduce(
+                                                (prev, cur) => (prev.amount < cur.amount ? prev : cur),
+                                                { ...transactions[0], amount: Number.MAX_VALUE }
+                                            ).amount,
+                                            max: transactions.reduce(
+                                                (prev, cur) => (prev.amount > cur.amount ? prev : cur),
+                                                { ...transactions[0], amount: Number.MIN_VALUE }
+                                            ).amount,
+                                            color: ["#ff5722", "#009688"]
+                                        }
+                                    }
+                                ]}
                             />
                         </CardBody>
                     </Card>
