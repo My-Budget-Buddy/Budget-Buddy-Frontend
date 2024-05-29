@@ -23,8 +23,16 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
     const timerRef = useRef<number | null>(null);
     const [isCurrentlyEditing, setIsCurrentlyEditing] = useState<boolean>(false);
 
+    function setAmountReservedWithCap(amount: number, cap: number) {
+        if (amount > cap) {
+            setAmountReserved(cap);
+        } else {
+            setAmountReserved(amount);
+        }
+    }
+
     const handleReservedChange = (amount_reserved: number) => {
-        setAmountReserved(amount_reserved);
+        setAmountReservedWithCap(amount_reserved, data.amount_required);
         setIsCurrentlyEditing(true);
         setLastEditTime(new Date());
     };
@@ -93,6 +101,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
             <td style={{ width: "200px" }}>{data.amount_required}</td>
             <td style={{ width: "200px" }}>
                 <ReservedMoniesInput
+                    max={data.amount_required}
                     amount={amountReserved}
                     onChange={
                         initialized

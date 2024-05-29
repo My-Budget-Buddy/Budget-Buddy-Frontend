@@ -2,12 +2,21 @@ import { Button, Icon } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
 
 interface ReservedMoniesInputProps {
+    max: number;
     amount: number;
     disabled: boolean;
     onChange: (amount_reserved: number) => void;
 }
 
-const ReservedMoniesInput: React.FC<ReservedMoniesInputProps> = ({ amount, onChange, disabled }) => {
+function returnCapped(amount: number, cap: number): number {
+    if (amount > cap) {
+        return cap;
+    } else {
+        return amount;
+    }
+}
+
+const ReservedMoniesInput: React.FC<ReservedMoniesInputProps> = ({ max, amount, onChange, disabled }) => {
     const [value, setValue] = useState(amount);
 
     //TODO Something looks wrong about this
@@ -16,11 +25,11 @@ const ReservedMoniesInput: React.FC<ReservedMoniesInputProps> = ({ amount, onCha
     }, [value]);
 
     const handleIncrement = () => {
-        setValue((prevValue) => prevValue + 100);
+        setValue((prevValue) => returnCapped(prevValue + 100, max));
     };
 
     const handleDecrement = () => {
-        setValue((prevValue) => prevValue - 100);
+        setValue((prevValue) => returnCapped(prevValue - 100, max));
     };
 
     return (
@@ -29,7 +38,7 @@ const ReservedMoniesInput: React.FC<ReservedMoniesInputProps> = ({ amount, onCha
                 disabled={disabled}
                 type="number"
                 value={value}
-                onChange={(e) => setValue(parseInt(e.target.value))}
+                onChange={(e) => setValue(returnCapped(parseInt(e.target.value), max))}
                 style={{
                     appearance: "textfield",
                     marginRight: "10px",
