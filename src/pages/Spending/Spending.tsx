@@ -30,8 +30,7 @@ type Month =
     | "december";
 
 // define the type for spending categories
-//this is for icons on the pie chart
-//but it's not working. so maybe go back to the way it was before
+
 type SpendingCategory = {
     name: TransactionCategory;
     value: number;
@@ -54,15 +53,15 @@ const Spending: React.FC = () => {
 
     //colors for each category
     const categoryColors: { [key in TransactionCategory]: string } = {
-        [TransactionCategory.GROCERIES]: "#90c8f4",
-        [TransactionCategory.ENTERTAINMENT]: "#e5d23a",
-        [TransactionCategory.DINING]: "#6ed198",
-        [TransactionCategory.TRANSPORTATION]: "#af98f9",
-        [TransactionCategory.HEALTHCARE]: "#fd6d6d",
-        [TransactionCategory.LIVING_EXPENSES]: "#5a7ffa",
-        [TransactionCategory.SHOPPING]: "#fe992b",
-        [TransactionCategory.INCOME]: "#f7b7e5",
-        [TransactionCategory.MISC]: "#dce2e1"
+        [TransactionCategory.GROCERIES]: "#4F81BD",  // Cool Blue
+        [TransactionCategory.ENTERTAINMENT]: "#1E3A8A",  // Dark Blue
+        [TransactionCategory.DINING]: "#4BC0C0",  // Cool Teal
+        [TransactionCategory.TRANSPORTATION]: "#60A5FA",  // Light Blue
+        [TransactionCategory.HEALTHCARE]: "#6B7280",  // Cool Gray
+        [TransactionCategory.LIVING_EXPENSES]: "#1e4d4d",  // Sea Green
+        [TransactionCategory.SHOPPING]: "#87CEEB",  // Sky Blue
+        [TransactionCategory.INCOME]: "#9CA3AF",  // Medium Gray
+        [TransactionCategory.MISC]: "#CBD5E1"  // Light Gray Blue
     };
 
     //starting state for spending data. set all months to zero
@@ -200,6 +199,8 @@ const Spending: React.FC = () => {
                     icon: categoryIcons[category]
                 }));
 
+
+
                 //to get the top five vendors
                 const popularVendors = Object.keys(vendorSpending)
                     .map((vendorName) => ({
@@ -320,27 +321,38 @@ const Spending: React.FC = () => {
     const topPurchaseTotal = topThreePurchases.reduce((sum, expense) => sum + expense.amount, 0);
     const topPurchasePercentage = ((topPurchaseTotal / totalSpent) * 100).toFixed(2);
 
+
+    // top purchases cards
+    const topPurchases = topThreePurchases.map((expense, index) => (
+        <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex flex-col items-center m-2">
+            <p className="text-xl font-bold">{new Date(expense.date).toLocaleDateString()}</p>
+            <p className="text-lg">{expense.vendorName}</p>
+            <p className="text-2xl font-semibold">${expense.amount.toFixed(2)}</p>
+        </div>
+    ));
+
+
     // top three purchases table
-    const topPurchases = (
-        <>
-            <thead>
-                <tr>
-                    <th scope="col">{t('spending.date')}</th>
-                    <th scope="col">{t('spending.vendor')}</th>
-                    <th scope="col">{t('spending.amount')}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {topThreePurchases.map((expense) => (
-                    <tr>
-                        <td>{new Date(expense.date).toLocaleDateString()}</td>
-                        <td>{expense.vendorName}</td>
-                        <td>${expense.amount.toFixed(2)}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </>
-    );
+    // const topPurchases = (
+    //     <>
+    //         <thead>
+    //             <tr>
+    //                 <th scope="col">{t('spending.date')}</th>
+    //                 <th scope="col">{t('spending.vendor')}</th>
+    //                 <th scope="col">{t('spending.amount')}</th>
+    //             </tr>
+    //         </thead>
+    //         <tbody>
+    //             {topThreePurchases.map((expense) => (
+    //                 <tr>
+    //                     <td>{new Date(expense.date).toLocaleDateString()}</td>
+    //                     <td>{expense.vendorName}</td>
+    //                     <td>${expense.amount.toFixed(2)}</td>
+    //                 </tr>
+    //             ))}
+    //         </tbody>
+    //     </>
+    // );
 
     //top 5 vendors table
     const popularVendorsTable = (
@@ -393,54 +405,13 @@ const Spending: React.FC = () => {
             <StyledText x={left + width / 2} y={top + height / 2 - 10}>
                 <Line1 dy="-1.0em">TOTAL SPENT</Line1>
                 <Line2 x={left + width / 2} dy="1.2em">
-                    ${totalSpent.toFixed(2)}
+                    ${totalSpent.toLocaleString()}
                 </Line2>
             </StyledText>
         );
     }
 
-    //put icons in the pie chart instead of word label
-    //THIS ISN'T WORKING!!!!!! TRY AGAIN LATER.
-    const calculateCentroid = (startAngle: any, endAngle: any, innerRadius: any, outerRadius: any) => {
-        const angle = (startAngle + endAngle) / 2;
-        const radians = (angle * Math.PI) / 180;
-        const x = ((outerRadius + innerRadius) / 2) * Math.cos(radians);
-        const y = ((outerRadius + innerRadius) / 2) * Math.sin(radians);
-        return { x, y };
-    };
 
-    const CustomLabel = ({
-        x,
-        y,
-        icon: IconComponent,
-        label
-    }: {
-        x: number;
-        y: number;
-        icon: React.ElementType;
-        label: string;
-    }) => (
-        <foreignObject x={x} y={y} width="100" height="30">
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <IconComponent style={{ marginRight: 4 }} />
-                <span>{label}</span>
-            </div>
-        </foreignObject>
-    );
-
-    const calculateAngles = (data: SpendingCategory[]) => {
-        let startAngle = 0;
-        return data.map((d: { value: any }) => {
-            const value = d.value;
-            const angle = (value / totalSpent) * 360;
-            const endAngle = startAngle + angle;
-            const result = { ...d, startAngle, endAngle }; //this ensures that name, value, color and icon are retained
-            startAngle = endAngle;
-            return result;
-        });
-    };
-
-    const dataWithAngles = calculateAngles(spendingCategories);
 
     return (
         <div className="min-w-screen mt-10">
@@ -489,19 +460,7 @@ const Spending: React.FC = () => {
                         <div className="mb-4 ml-3 flex w-full justify-between items-center">
                             <h2 className="text-3xl p-5 pl-8 text-bold">{t('spending.graphTitle')}</h2>
                             <div>
-                                <span
-                                    onMouseEnter={() => setShowTooltip(true)}
-                                    onMouseLeave={() => setShowTooltip(false)}
-                                    className="relative"
-                                >
-                                    <Icon.Help style={{ color: "#74777A", fontSize: "1.7rem", marginRight: "0.8rem" }} />
-                                    {/* render tooltip conditionally */}
-                                    {showTooltip && (
-                                        <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-60">
-                                            {t('spending.clickBarForDetails')}
-                                        </div>
-                                    )}
-                                </span>
+
                                 <Link to="/dashboard/spending/May" className="mr-3 pr-8">
                                     <Button type="button" className="ml-3">
                                         {t('spending.seeCurrentMonth')}
@@ -583,20 +542,7 @@ const Spending: React.FC = () => {
                                 >
                                     <PieCenterLabel totalSpent={totalSpent} />
                                 </PieChart>
-                                {/*
-                                {dataWithAngles.map((d, index) => {
-                                    const { x, y } = calculateCentroid(d.startAngle, d.endAngle, 48, 95);
-                                    return (
-                                        <CustomLabel
-                                            key={index}
-                                            x={x}
-                                            y={y}
-                                    icon={d.icon}   
-                                            label={`${((d.value / totalSpent) * 100).toFixed(0)}%`}
-                                        />
-                                    );
-                                })}
-                                */}
+
                             </div>
                             <div className="w-full">
                                 <Table bordered={false} className="w-full">
@@ -607,46 +553,100 @@ const Spending: React.FC = () => {
                         {/* section for more insights -> top expenses..and?? */}
 
                         <div className="flex flex-col justify-center items-center flex-1 w-10/12 min-h-[30rem] ">
-                            {/* Top Purchases Table */}
 
-                            <div className="flex flex-col justify-center items-center flex-1  p-4 m-2 rounded-xl shadow-lg border-[1px] w-full">
-                                <h2 className="text-2xl mb-2">{t('spending.topThreePurchases')}</h2>
-                                <h2 className="mb-3 text-4x1  text-center">
-                                    {t('spending.topThreePurchases')}
-                                    <span className="text-3xl font-bold text-blue-600">
-                                        {" "}
-                                        {topPurchasePercentage}%{" "}
-                                    </span>{" "}
-                                    of your spending this year.
-                                </h2>
-                                <Table bordered={false} className="w-full">
-                                    {topPurchases}
-                                </Table>
+
+                            {/* Top Categories components */}
+
+                            <div className="w-full m-2 p-6 rounded-xl shadow-md border-[1px]">
+                                <p className="text-xl">
+                                    Your top three categories accounted for <span className="font-bold">{topThreePercentage}%</span> of your spending this year.
+                                </p>
                             </div>
 
-                            {/* Top Categories Table */}
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-lg border-[1px] w-full">
-                                <h2 className="text-2xl mb- mt-1">{t('spending.topThreeCategories')}</h2>
-                                <h2 className="mb-3 text-4x1  text-center">
-                                    Your top 3 spending categories accounted for
-                                    <span className="text-3xl font-bold text-blue-600"> {topThreePercentage}% </span> of
-                                    your spending this year.
-                                </h2>
+                            {[...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 1).map((category, index) => (
+                                <div key={index} className="w-full m-2 p-6 rounded-xl shadow-md border-[1px] flex items-center" style={{ backgroundColor: category.color }}>
+                                    <div className="flex-1 flex items-center">
+                                        <div>
 
-                                <Table bordered={false} className="w-full">
-                                    {topExpenses}
-                                </Table>
+                                            <p className="text-white text-light pt-1 text-xl">You spent the most on <span className="text-2xl font-bold">{category.name}</span> this year.</p>
+
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-end">
+                                        <category.icon className="text-white rounded-xl p-[5px] text-5xl" />
+                                        <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="flex justify-between gap-x-4 w-full m-2">
+                                {[...spendingCategories].sort((a, b) => b.value - a.value).slice(1, 3).map((category, index) => (
+                                    <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex" style={{ backgroundColor: category.color }}>
+                                        <div className="flex-1 flex items-center">
+                                            <div>
+                                                <category.icon className="text-white rounded-xl p-[5px] text-4xl" />
+                                                <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
+                                                <p className="text-white text-light pt-1 text-xl">{category.name}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
-                            {/* Most Popular Vendors Table */}
+                            <div className="flex flex-col md:flex-row justify-between w-full min-h-[30rem] gap-x-4 m-2">
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 rounded-xl shadow-lg border-[1px] w-full">
-                                <h2 className="text-2xl mb-2 mt-1">Top Spending Locations</h2>
-                                <Table bordered={false} className="w-full">
-                                    {popularVendorsTable}
-                                </Table>
+                                {/* Top Purchases Section */}
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl w-full shadow-md border-[1px]">
+                                    <div className="p-4 rounded-lg mb-4 w-full text-center">
+                                        <p className="text-lg text-gray-700">Your top 3 purchases accounted for <span className="font-bold text-blue-600">4.64%</span> of your spending this year.</p>
+                                    </div>
+                                    <div className="flex flex-col gap-y-3 w-full">
+                                        {topThreePurchases.map((expense, index) => (
+                                            <div key={index} className="flex items-center justify-between p-4 m-2 bg-blue-100 rounded-xl shadow-md border-[1px]">
+                                                <div className="flex items-center">
+                                                    <div className="flex items-center justify-center w-10 h-10 text-black rounded-full text-1xl border font-bold">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div className="ml-4 " >
+                                                        <p className="text-xl">{new Date(expense.date).toLocaleDateString()}</p>
+                                                        <p className="text-lg ">{expense.vendorName}</p>
+                                                        <p className="text-2xl font-semibold">${expense.amount.toFixed(2)}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Most Popular Vendors Section */}
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]">
+                                    <div className="flex items-center mb-4">
+                                        <h2 className="text-2xl font-bold mr-2">Top Vendors</h2>
+                                        <div className="relative group">
+
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col w-full gap-4">
+                                        {mostPopularVendors.slice(0, 4).map((vendor, index) => (
+                                            <div key={vendor.vendorName} className="flex items-center justify-between p-4 m-2 rounded-full shadow-md border-[1px] bg-white text-[#001320]  w-full">
+                                                <div className="flex items-center">
+                                                    <div className="ml-4">
+                                                        <p className="text-xl font-bold">{vendor.vendorName}</p>
+                                                        <p className="text-lg">${vendor.amount.toFixed(2)}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center justify-center w-10 h-10 bg-[#001320] text-white  rounded-full text-xl font-bold ml-4">
+                                                    {index + 1}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
                             </div>
+
                         </div>
                     </div>
                 </section>
