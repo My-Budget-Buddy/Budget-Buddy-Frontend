@@ -4,19 +4,27 @@ import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
 import { useAppSelector } from "../../../util/redux/hooks";
 import { updateBudgets, updateSpendingBudget } from "../../../util/redux/budgetSlice";
 import { useDispatch } from "react-redux";
-import { getSpendingBudget, getTotalFundsAvailable } from "./requests/summaryRequests";
+import { createMonthlySummary, getMonthlySummary } from "./requests/summaryRequests";
 import { BudgetRowProps } from "../../../types/budgetInterfaces";
 import { updateBuckets } from "../../../util/redux/bucketSlice";
 import { getBuckets } from "./requests/bucketRequests";
 import { getBudgetsByMonthYear } from "./requests/budgetRequests";
 import { getCompleteBudgets } from "./util/transactionsCalculator";
-import { getCurrentMonthYear } from "../../../util/util";
 import { updateUserId } from "../../../util/redux/userSlice";
 import { formatCurrency } from "../../../util/helpers";
 import { useTranslation } from "react-i18next";
+import { getTotalAvailableFunds } from "./requests/accountRequests";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
+};
+
+type MonthlySummary = {
+    summaryId: number;
+    userId?: string | null;
+    projectedIncome?: number;
+    monthYear?: string;
+    totalBudgetAmount?: number;
 };
 
 const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }) => {
@@ -26,6 +34,11 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     const dispatch = useDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
     const [totalFundsAvailable, setTotalFundsAvailable] = useState(0);
+    const [monthlySummary, setMonthlySummary] = useState<MonthlySummary>({
+        summaryId: 0,
+        userId: null,
+        totalBudgetAmount: 0
+    });
     const selectedMonthString = budgets.selectedMonthString;
     const selectedYear = budgets.selectedYear;
 
@@ -54,14 +67,14 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
         (async () => {
             const transformedBuckets = await getBuckets();
             dispatch(updateBuckets(transformedBuckets));
-            const transformedBudgets: BudgetRowProps[] = await getBudgetsByMonthYear(getCurrentMonthYear());
+            const transformedBudgets: BudgetRowProps[] = await getBudgetsByMonthYear(budgets.monthYear);
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
             const completeBudgets = await getCompleteBudgets(transformedBudgets);
             dispatch(updateBudgets(completeBudgets));
 
             const totalReserved = Math.round((budgets.totalReserved + buckets.totalReserved) * 100) / 100;
 
-            const grossFundsAvailable = await getTotalFundsAvailable();
+            const grossFundsAvailable = await getTotalAvailableFunds();
             setTotalFundsAvailable(Math.round((grossFundsAvailable - totalReserved) * 100) / 100);
             //Also, dispatch userId.
             // TODO Move this to a more sensible location.
@@ -72,12 +85,23 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
 
     useEffect(() => {
         (async () => {
-            const spendingBudget = await getSpendingBudget(getCurrentMonthYear());
-            console.log("spending budget:", spendingBudget);
+            let monthlySummary = await getMonthlySummary(budgets.monthYear);
+
+            // Create a new monthlySummary for the month if one doesn't already exist
+            if (monthlySummary === undefined) {
+                const newMonthlySummary = {
+                    userId: 1,
+                    projectedIncome: 0,
+                    monthYear: budgets.monthYear,
+                    totalBudgetAmount: 0
+                };
+                monthlySummary = await createMonthlySummary(newMonthlySummary);
+            }
             //Based on transformedBudgets, return new completeTransformedBudgets which includes the Actual Spent field
-            dispatch(updateSpendingBudget(spendingBudget));
+            setMonthlySummary(monthlySummary);
+            dispatch(updateSpendingBudget(monthlySummary.totalBudgetAmount));
         })();
-    }, [isSending]);
+    }, [isSending, budgets.monthYear]);
 
     return (
         <>
@@ -122,7 +146,10 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">
                             {selectedMonthString} {selectedYear} {t("budgets.spending-budget")}{" "}
-                            <EditSpendingBudgetModal />
+                            <EditSpendingBudgetModal
+                                summaryId={monthlySummary.summaryId}
+                                totalBudgetAmount={monthlySummary.totalBudgetAmount}
+                            />
                         </div>
                         <div className="text-lg">{formatCurrency(budgets.spendingBudget)}</div>
                     </div>

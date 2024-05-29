@@ -1,11 +1,29 @@
+import { getAccountByID } from "../../../Tax/taxesAPI";
+
 //TODO Use real account type
 type Account = {
-    accountId: number;
+    id: number;
     userId: number;
-    accountType: string;
-    balance: number;
+    type: string;
+    currentBalance: number;
 };
 
+export async function getTotalAvailableFunds(): Promise<number> {
+    return getAccountByID().then((res) => {
+        const accounts = res.data;
+        return accounts.reduce((sum: number, account: Account) => {
+            if (account.type !== "CREDIT") {
+                //TODO Use real account types. This will likely be a hardcoded list to check against.
+                sum += account.currentBalance;
+            } else {
+                sum -= account.currentBalance;
+            }
+            return sum;
+        }, 0);
+    });
+}
+
+/*
 async function getAllAccounts(): Promise<Account[]> {
     // Mock data
     return [
@@ -25,3 +43,4 @@ export async function getTotalAvailableFunds(): Promise<number> {
         return sum;
     }, 0);
 }
+*/
