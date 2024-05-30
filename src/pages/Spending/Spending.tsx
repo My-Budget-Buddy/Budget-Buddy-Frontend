@@ -124,7 +124,7 @@ const Spending: React.FC = () => {
                     const transactionDate = new Date(transaction.date);
                     const amount = transaction.amount;
 
-                    if (transactionDate >= startOfThisYear) {
+                    if (transactionDate >= startOfThisYear && transaction.category !== "Income") {
                         thisYearSpending += amount; // Total spending this year
                     }
 
@@ -338,9 +338,9 @@ const Spending: React.FC = () => {
                 <section className="h-screen ">
                     {/* Title for the page */}
                     {/* <div className="mb-4 ml-3"> */}
-                        <Title>{t("spending.title")}</Title>
-                        {/* <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2> */}
-                        {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
+                    <Title>{t("spending.title")}</Title>
+                    {/* <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2> */}
+                    {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
                         <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
                     {/* </div> */}
                     <div className="flex justify-between gap-x-4 w-full m-2">
