@@ -8,7 +8,7 @@ import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading
 
 const Profile: React.FC = () => {
     const { t } = useTranslation();
-    const { jwt, profile, setProfile } = useAuthentication();
+    const { jwt, profile, setProfile, logout } = useAuthentication();
 
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -122,6 +122,7 @@ const Profile: React.FC = () => {
                     <Button type="submit" >{t("nav.save")}</Button>
 
                 </ModalHeading>
+                <Button type="button" secondary onClick={() => logout()}>{t("nav.logout")}</Button>
             </Form>
         </div>
     );
