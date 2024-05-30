@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { AuthenticationProvider } from "../contexts/AuthenticationContext";
 import LandingHeader from "../components/LandingHeader";
+import LandingFooter from "../components/LandingFooter.tsx";
 
 const LandingLayout: React.FC = () => {
     return (
@@ -9,11 +10,12 @@ const LandingLayout: React.FC = () => {
                 <LandingHeader />
 
                 <main className="min-h-full w-full">
-                    <div className="relative isolate px-6 pt-14 lg:px-8">
+                    <div className="relative isolate ">
                         <Outlet />
                     </div>
                 </main>
                 {/*<FooterComponent/>*/}
+                <LandingFooter />
             </div>
         </AuthenticationProvider>
     );

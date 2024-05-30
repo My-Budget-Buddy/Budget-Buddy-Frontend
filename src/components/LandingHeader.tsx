@@ -14,7 +14,6 @@ const navItems = [
 
 const LandingHeader = () => {
     const { jwt, logout } = useAuthentication();
-
     const [mobileExpanded, setMobileExpanded] = useState(false);
 
     const authenticatedItems = [
@@ -27,7 +26,7 @@ const LandingHeader = () => {
     ];
 
     return (
-        <Header basic showMobileOverlay={mobileExpanded}>
+        <Header basic showMobileOverlay={mobileExpanded} className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div className="usa-nav-container">
                 <div className="usa-navbar w-full flex justify-between">
                     <Link to="/">
