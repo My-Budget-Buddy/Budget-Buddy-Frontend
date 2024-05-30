@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading, Title } from "@trussworks/react-uswds";
+import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading } from "@trussworks/react-uswds";
 import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
 import Languages from "./Settings/Languages";
@@ -18,13 +18,12 @@ const NavBar = () => {
         email: "",
         id: 0
     });
-    const [name, setName] = useState<string | null>(null)
 
     const fetchUserInfo = async () => {
         try {
             getUserInformationAPI().then((response) => {
                 const user = response.data;
-                let updatedUser = { ...profile };
+                const updatedUser = { ...profile };
                 user.firstName ? (updatedUser.firstName = user.firstName) : (updatedUser.firstName = "");
                 user.lastName ? (updatedUser.lastName = user.lastName) : (updatedUser.lastName = "");
                 setProfile({
@@ -33,7 +32,6 @@ const NavBar = () => {
                     email: user.email,
                     id: user.id
                 });
-                setName(updatedUser.firstName)
             });
         } catch (error) {
             console.log("There was an error fetching user information: ", error);
@@ -77,7 +75,7 @@ const NavBar = () => {
         {
             title: t("nav.profile"),
             icon: Icon.Person,
-            component: <Profile profile={profile} setProfile={setProfile} fetchUserInfo={fetchUserInfo} setName={setName} />
+            component: <Profile profile={profile} setProfile={setProfile} fetchUserInfo={fetchUserInfo} />
         },
         {
             title: t("nav.languages"),
@@ -87,22 +85,31 @@ const NavBar = () => {
     ];
 
     return (
-        <div className="nav-container bg-base-lighter px-6 h-screen min-w-64 max-w-64">
-            <div className="flex flex-col items-center">
-                <Link to="/">
-                    <Title className="font-semibold text-center">{t("app-name")}</Title>
-                </Link>
-                <div className="flex flex-row items-center gap-4 mt-4">
-                    <h3>{name ? `${t("nav.greeting")}, ${name}` : `${t("nav.greeting")}`}</h3>
-                    <ModalToggleButton
-                        modalRef={modalRef}
-                        opener
-                        className="usa-button--unstyled"
-                        id="no-focus"
-                        onClick={fetchUserInfo}
+        <div className="nav-container px-6 h-screen min-w-64 max-w-min-w-64 flex flex-col pt-6 bg-neutral-800">
+            <Link to="/" className="">
+                <h2 className="font-semibold text-center text-2xl text-white">{t("app-name")}</h2>
+            </Link>
+            <div className="flex flex-col items-center gap-6 mt-8">
+                {pages.map((pages) => (
+                    <Link
+                        to={pages.path}
+                        className="w-full usa-button usa-button--base min-w-full text-left items-center"
+                        key={pages.path}
                     >
-                        <Icon.Settings style={{ fontSize: "1.4rem" }} />
-                    </ModalToggleButton>
+                        {pages.icon} {pages.title}
+                    </Link>
+                ))}
+            </div>
+
+            {/* Profile Information + Settings Button */}
+            <div className="border-t border-t-neutral-700 w-full mt-auto pb-8">
+                <div className="py-2" />
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex flex-col">
+                        <p className="text-lg font-bold text-white">{`${profile.firstName} ${profile.lastName}`}</p>
+                        <p className="text-sm text-neutral-400">{`${profile.email}`}</p>
+                    </div>
+                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={fetchUserInfo}><Icon.Settings className="text-blue-500" /></ModalToggleButton>
                     <Modal
                         ref={modalRef}
                         id="settings-modal"
@@ -119,9 +126,8 @@ const NavBar = () => {
                                         {settingOptions.map((option, idx) => (
                                             <li
                                                 key={idx}
-                                                className={`usa-sidenav__item px-4 py-3 w-40 flex items-center ${
-                                                    sideNav === `${option.title}` ? "usa-current" : ""
-                                                }`}
+                                                className={`usa-sidenav__item px-4 py-3 w-40 flex items-center ${sideNav === `${option.title}` ? "usa-current" : ""
+                                                    }`}
                                             >
                                                 <option.icon className="mr-2" fontSize={"small"} />
                                                 <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
@@ -136,17 +142,6 @@ const NavBar = () => {
                         </div>
                     </Modal>
                 </div>
-            </div>
-            <div className="flex flex-col items-center gap-6 mt-14">
-                {pages.map((pages) => (
-                    <Link
-                        to={pages.path}
-                        className="w-full usa-button min-w-full text-left items-center"
-                        key={pages.path}
-                    >
-                        {pages.icon} {pages.title}
-                    </Link>
-                ))}
             </div>
         </div>
     );

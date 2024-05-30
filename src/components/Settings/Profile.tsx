@@ -14,22 +14,19 @@ type SetProfileType = (profile: ProfileType) => void;
 
 type FetchUserInfoType = () => Promise<void>;
 
-type SetNameType = (name: string) => void;
-
 interface ProfileProps {
     profile: ProfileType;
     setProfile: SetProfileType;
     fetchUserInfo: FetchUserInfoType;
-    setName: SetNameType;
 }
 
-const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo, setName })=> {
+const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }) => {
     const { t } = useTranslation();
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [passwordError, setPasswordError] = useState<Boolean | string>('')
+    const [passwordError, setPasswordError] = useState<boolean | string>('')
 
-    useEffect(()=> {
+    useEffect(() => {
         fetchUserInfo()
         setPasswordError('')
     }, [])
@@ -37,27 +34,26 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo, 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         evt.preventDefault();
         const { name, value } = evt.target;
-        setProfile({...profile, [name]: value})
+        setProfile({ ...profile, [name]: value })
     }
 
     const handleSubmit = (evt: any) => {
         evt.preventDefault()
         try {
             updateUserInfo(profile)
-            setName(profile.firstName)
             const confirmPassword = evt.currentTarget.elements["confirm-password"].value;
             const fields = {
                 username: profile.email,
                 password: evt.currentTarget.elements["new-password"].value
             };
-            if (confirmPassword === fields.password && confirmPassword !== ''){
+            if (confirmPassword === fields.password && confirmPassword !== '') {
                 updateUserPassword(fields)
                 evt.currentTarget.reset()
                 setPasswordError(false)
-            }else if (confirmPassword !== fields.password){
+            } else if (confirmPassword !== fields.password) {
                 setPasswordError(true)
                 return
-            }else{
+            } else {
                 return
             }
         } catch (error) {
@@ -66,7 +62,7 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo, 
     }
 
 
-    return ( 
+    return (
         <div className="flex w-full justify-center h-[80vh] overflow-y-auto">
             <Form onSubmit={handleSubmit} className="w-9/12">
                 <ModalHeading> {t("nav.profile")}
@@ -89,44 +85,44 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo, 
                         onChange={handleChange}
                     />
                     <Label htmlFor="email">{t("auth.email")}</Label>
-                    <TextInput 
-                        id="email" 
-                        name="email" 
-                        type="text" 
+                    <TextInput
+                        id="email"
+                        name="email"
+                        type="text"
                         autoComplete="email"
                         value={profile.email}
-                        disabled 
+                        disabled
                     />
-                    {passwordError===false && <Alert type="success" heading="Success" headingLevel="h4">
+                    {passwordError === false && <Alert type="success" heading="Success" headingLevel="h4">
                         Password has been updated
                     </Alert>}
-                    {passwordError===true && <Alert type="error" heading="Error updating password" headingLevel="h4">
+                    {passwordError === true && <Alert type="error" heading="Error updating password" headingLevel="h4">
                         Passwords do not match
                     </Alert>}
                     <Label htmlFor="new-password">{t("nav.new-password")}</Label>
                     <InputGroup>
-                        <TextInput 
-                            id="new-password" 
-                            name="new-password" 
+                        <TextInput
+                            id="new-password"
+                            name="new-password"
                             type={showNewPassword ? "text" : "password"}
                         />
-                        <InputSuffix onClick={()=> setShowNewPassword(!showNewPassword)}>
-                            {showNewPassword ? <Icon.VisibilityOff /> : <Icon.Visibility/>}
+                        <InputSuffix onClick={() => setShowNewPassword(!showNewPassword)}>
+                            {showNewPassword ? <Icon.VisibilityOff /> : <Icon.Visibility />}
                         </InputSuffix>
                     </InputGroup>
                     <Label htmlFor="confirm-password">{t("nav.confirm-password")}</Label>
                     <InputGroup>
                         <TextInput id="confirm-password" name="confirm-password" type={showConfirmPassword ? "text" : "password"} />
-                        <InputSuffix onClick={()=> setShowConfirmPassword(!showConfirmPassword)}>
-                            {showConfirmPassword ? <Icon.VisibilityOff/> : <Icon.Visibility/>}
+                        <InputSuffix onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                            {showConfirmPassword ? <Icon.VisibilityOff /> : <Icon.Visibility />}
                         </InputSuffix>
                     </InputGroup>
                     <Button type="submit" >{t("nav.save")}</Button>
-                
+
                 </ModalHeading>
             </Form>
         </div>
     );
 }
- 
+
 export default Profile;

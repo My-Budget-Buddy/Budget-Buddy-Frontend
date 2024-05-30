@@ -7,7 +7,7 @@ const AppLayout: React.FC = () => {
         <AuthenticationProvider>
             <div className="layout-container flex">
                 <NavBar />
-                <main className="main-content px-14 w-full h-screen overflow-y-scroll">
+                <main className="main-content px-14 w-full h-screen overflow-y-auto">
                     <Outlet />
                 </main>
             </div>
