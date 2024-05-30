@@ -52,7 +52,14 @@ interface TransactionType {
 interface MonthlyTransactionType {
     date: string;
     total: number;
+    // transactions: transactionChartType[];
 }
+
+// interface transactionChartType {
+//     category: string;
+//     vendorName: string;
+//     amount: number;
+// }
 
 const Dashboard: React.FC = () => {
     const modalRef = useRef<ModalRef>(null);
@@ -156,8 +163,6 @@ const Dashboard: React.FC = () => {
             try {
                 getCurrentMonthTransactionsAPI()
                 .then((res) => {
-
-                
                 const monthlyTransactions = res.data;
                 const today = new Date
                 const totalSpentPerDay: MonthlyTransactionType[] = [];
@@ -166,13 +171,14 @@ const Dashboard: React.FC = () => {
                     const dateString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${i
                         .toString()
                         .padStart(2, "0")}`;
-                    totalSpentPerDay.push({ date: dateString, total: 0 });
+                    totalSpentPerDay.push({ date: dateString, total: 0});
                 }
                 monthlyTransactions.forEach((transaction: TransactionType) => {
                     const transactionDate = transaction.date;
                     const idx = totalSpentPerDay.findIndex((day) => day.date === transactionDate);
                     if (idx !== -1) {
                         totalSpentPerDay[idx].total += transaction.amount;
+                        // totalSpentPerDay[idx].transactions.push({category: transaction.category, vendorName: transaction.vendorName, amount: transaction.amount})
                         runningTotal += transaction.amount;
                     }
                 });
@@ -188,7 +194,7 @@ const Dashboard: React.FC = () => {
         };
         fetchMonthlyTransactions();
     }, []);
-
+console.log("monthlyTransactions:", monthlyTransactions)
     //---- budgets gauge ----
     useEffect(() => {
         const fetchBudgets = async () => {
@@ -237,9 +243,11 @@ const Dashboard: React.FC = () => {
                                 data: monthlyTransactions.map((transaction) => transaction.total),
                                 yAxisKey: "rightAxisId",
                                 // area: true,
-                                color: "#005ea2"
+                                color: "#005ea2",
+                                label: "Amount spent",
                             }
                         ]}
+                        slotProps={{ legend: { hidden: true } }}
                         grid={{ horizontal: true }}
                         height={300}
                         leftAxis={null}
@@ -427,7 +435,7 @@ const Dashboard: React.FC = () => {
                             >
                                 <p>{budget.category}</p>
                                 <p> 
-                                    <span className={`${budget.spentAmount > budget.totalAmount ? "text-[#b50909] font-bold" : (budget.spentAmount > budget.totalAmount/2 ? "text-[#e5a000]" : "text-[#00a91c]")}`}>{formatCurrency(budget.spentAmount)}</span> <span className={`${budget.spentAmount === budget.totalAmount && "text-[#00a91c]"}`}>/ {formatCurrency(budget.totalAmount)}</span>
+                                    <span className={`${budget.spentAmount > budget.totalAmount ? "text-[#b50909] font-bold" : (budget.spentAmount > budget.totalAmount/2 ? "text-[#e5a000]" : "text-[#00a91c]")}`}>{formatCurrency(budget.spentAmount)}</span> <span className={`${budget.spentAmount >= budget.totalAmount && "text-[#b50909] font-bold"}`}>/ {formatCurrency(budget.totalAmount)}</span>
                                 </p>
                             </div>
                         ))}
