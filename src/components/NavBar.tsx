@@ -83,47 +83,51 @@ const NavBar = () => {
             </div>
 
             {/* Profile Information + Settings Button */}
-            <div className="border-t border-t-[#73b3e7] w-full mt-auto pb-8">
-                <div className="py-2" />
-                <div className="flex items-center justify-between w-full">
-                    <div className="flex flex-col">
-                        <p className="text-lg font-bold text-white">{`${profile?.firstName} ${profile?.lastName}`}</p>
-                        <p className="text-sm text-neutral-200">{`${profile?.email}`}</p>
-                    </div>
-                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled"><Icon.Settings className="text-[#d9e8f6]" /></ModalToggleButton>
-                    <Modal
-                        ref={modalRef}
-                        id="settings-modal"
-                        aria-labelledby="modal-1-heading"
-                        aria-describedby="modal-1-description"
-                        isLarge
-                        className="h-[90vh]"
-                    >
-                        <div className="flex justify-center bg-white w-full max-w-2xl rounded-2xl">
-                            <div className="flex flex-col">
-                                <ModalHeading className="mb-6">{t("nav.settings")}</ModalHeading>
-                                <div className="flex">
-                                    <ul className="usa-sidenav">
-                                        {settingOptions.map((option, idx) => (
-                                            <li
-                                                key={idx}
-                                                className={`usa-sidenav__item px-4 py-3 w-40 flex items-center ${sideNav === `${option.title}` ? "usa-current" : ""
-                                                    }`}
-                                            >
-                                                <option.icon className="mr-2" fontSize={"small"} />
-                                                <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
-                                                    {option.title}
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                            {settingOptions.find((option) => option.title === sideNav)?.component}
+            {profile && (
+                <div className="border-t border-t-[#73b3e7] w-full mt-auto pb-8">
+                    <div className="py-2" />
+                    <div className="flex items-center justify-between w-full">
+                        <div className="flex flex-col">
+                            {profile.firstName && (
+                                <p className="text-lg font-bold text-white">{`${profile.firstName} ${profile?.lastName ?? ""}`}</p>
+                            )}
+                            <p className="text-sm text-neutral-200">{`${profile.email}`}</p>
                         </div>
-                    </Modal>
+                        <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled"><Icon.Settings className="text-[#d9e8f6]" /></ModalToggleButton>
+                        <Modal
+                            ref={modalRef}
+                            id="settings-modal"
+                            aria-labelledby="modal-1-heading"
+                            aria-describedby="modal-1-description"
+                            isLarge
+                            className="h-[90vh]"
+                        >
+                            <div className="flex justify-center bg-white w-full max-w-2xl rounded-2xl">
+                                <div className="flex flex-col">
+                                    <ModalHeading className="mb-6">{t("nav.settings")}</ModalHeading>
+                                    <div className="flex">
+                                        <ul className="usa-sidenav">
+                                            {settingOptions.map((option, idx) => (
+                                                <li
+                                                    key={idx}
+                                                    className={`usa-sidenav__item px-4 py-3 w-40 flex items-center ${sideNav === `${option.title}` ? "usa-current" : ""
+                                                        }`}
+                                                >
+                                                    <option.icon className="mr-2" fontSize={"small"} />
+                                                    <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
+                                                        {option.title}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                                {settingOptions.find((option) => option.title === sideNav)?.component}
+                            </div>
+                        </Modal>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };
