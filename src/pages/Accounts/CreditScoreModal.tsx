@@ -14,6 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 interface CreditScoreModalProps {
     totalDebt: number;
@@ -25,8 +26,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const [creditColor, setCreditColor] = useState<string | null>(null);
     const [creditScore, setCreditScore] = useState<number>(0);
     const { t } = useTranslation();
-
-    const url = "http://localhost:8125/api/credit/score/1";
+    const { jwt } = useAuthentication();
 
     // returns the color of the gauge based on the credit score
     const getCreditColor = (creditScore: number): string => {
@@ -37,8 +37,8 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     };
 
     useEffect(() => {
-        // TODO: update this to use the users information + the gateway service + headers for Auth
-        fetch(url)
+        if (!jwt) return; // to prevent an unnecessary 401
+        fetch("https://api.skillstorm-congo.com/api/credit/score", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(t("accounts.error-credit-score"));
@@ -47,7 +47,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
             })
             .then((data: { creditScore: number }) => setCreditScore(data.creditScore))
             .catch((err: Error) => setError(err.message));
-    }, []);
+    }, [jwt, t]);
 
     useEffect(() => {
         let score = 300;

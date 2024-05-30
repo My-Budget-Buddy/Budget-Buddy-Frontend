@@ -35,7 +35,10 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     }, []);
 
     useEffect(() => {
-        console.log(jwt);
+        console.log("[authcontext jwt:]", jwt);
+        if (jwt) {
+            Cookies.set("jwt", jwt);
+        }
     }, [jwt]);
 
     const logout = () => {

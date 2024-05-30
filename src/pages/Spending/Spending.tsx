@@ -1,19 +1,15 @@
-
-
 import { Button, Icon, Table } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
-
 import { AxisConfig, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { styled } from "@mui/material/styles";
 import { LineChart } from "@mui/x-charts/LineChart";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-
+import { getTransactionByUserId } from "../../utils/transactionService";
 
 //define the type for months
 
@@ -46,7 +42,6 @@ type SpendingCategory = {
 const Spending: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [mostPopularVendors, setMostPopularVendors] = useState<{ vendorName: string; amount: number }[]>([]);
     const [spendingCategories, setSpendingCategories] = useState<SpendingCategory[]>([]);
@@ -58,15 +53,15 @@ const Spending: React.FC = () => {
 
     //colors for each category
     const categoryColors: { [key in TransactionCategory]: string } = {
-        [TransactionCategory.GROCERIES]: "#4F81BD",  // Cool Blue
-        [TransactionCategory.ENTERTAINMENT]: "#1E3A8A",  // Dark Blue
-        [TransactionCategory.DINING]: "#4BC0C0",  // Cool Teal
-        [TransactionCategory.TRANSPORTATION]: "#60A5FA",  // Light Blue
-        [TransactionCategory.HEALTHCARE]: "#6B7280",  // Cool Gray
-        [TransactionCategory.LIVING_EXPENSES]: "#1e4d4d",  // Sea Green
-        [TransactionCategory.SHOPPING]: "#87CEEB",  // Sky Blue
-        [TransactionCategory.INCOME]: "#9CA3AF",  // Medium Gray
-        [TransactionCategory.MISC]: "#CBD5E1"  // Light Gray Blue
+        [TransactionCategory.GROCERIES]: "#4F81BD", // Cool Blue
+        [TransactionCategory.ENTERTAINMENT]: "#1E3A8A", // Dark Blue
+        [TransactionCategory.DINING]: "#4BC0C0", // Cool Teal
+        [TransactionCategory.TRANSPORTATION]: "#60A5FA", // Light Blue
+        [TransactionCategory.HEALTHCARE]: "#6B7280", // Cool Gray
+        [TransactionCategory.LIVING_EXPENSES]: "#1e4d4d", // Sea Green
+        [TransactionCategory.SHOPPING]: "#87CEEB", // Sky Blue
+        [TransactionCategory.INCOME]: "#9CA3AF", // Medium Gray
+        [TransactionCategory.MISC]: "#CBD5E1" // Light Gray Blue
     };
 
     //starting state for spending data. set all months to zero
@@ -106,8 +101,10 @@ const Spending: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
-                const transactions = response.data;
+                // const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
+                // const transactions = response.data;
+
+                const transactions = await getTransactionByUserId(1);
                 setTransactions(transactions);
 
                 const now = new Date();
@@ -121,7 +118,7 @@ const Spending: React.FC = () => {
                 let lastWeekDeposits = 0;
                 let thisYearSpending = 0;
 
-                transactions.forEach(transaction => {
+                transactions.forEach((transaction) => {
                     const transactionDate = new Date(transaction.date);
                     const amount = transaction.amount;
 
@@ -239,18 +236,18 @@ const Spending: React.FC = () => {
     // -----BAR CHART------
     // prepare data for the bar chart
     const chartData = [
-        { month: t('spending.month.january'), spending: spendingData.january, earned: earnedData.january },
-        { month: t('spending.month.february'), spending: spendingData.february, earned: earnedData.february },
-        { month: t('spending.month.march'), spending: spendingData.march, earned: earnedData.march },
-        { month: t('spending.month.april'), spending: spendingData.april, earned: earnedData.april },
-        { month: t('spending.month.may'), spending: spendingData.may, earned: earnedData.may },
-        { month: t('spending.month.june'), spending: spendingData.june, earned: earnedData.june },
-        { month: t('spending.month.july'), spending: spendingData.july, earned: earnedData.july },
-        { month: t('spending.month.august'), spending: spendingData.august, earned: earnedData.august },
-        { month: t('spending.month.september'), spending: spendingData.september, earned: earnedData.september },
-        { month: t('spending.month.october'), spending: spendingData.october, earned: earnedData.october },
-        { month: t('spending.month.november'), spending: spendingData.november, earned: earnedData.november },
-        { month: t('spending.month.december'), spending: spendingData.december, earned: earnedData.december }
+        { month: t("spending.month.january"), spending: spendingData.january, earned: earnedData.january },
+        { month: t("spending.month.february"), spending: spendingData.february, earned: earnedData.february },
+        { month: t("spending.month.march"), spending: spendingData.march, earned: earnedData.march },
+        { month: t("spending.month.april"), spending: spendingData.april, earned: earnedData.april },
+        { month: t("spending.month.may"), spending: spendingData.may, earned: earnedData.may },
+        { month: t("spending.month.june"), spending: spendingData.june, earned: earnedData.june },
+        { month: t("spending.month.july"), spending: spendingData.july, earned: earnedData.july },
+        { month: t("spending.month.august"), spending: spendingData.august, earned: earnedData.august },
+        { month: t("spending.month.september"), spending: spendingData.september, earned: earnedData.september },
+        { month: t("spending.month.october"), spending: spendingData.october, earned: earnedData.october },
+        { month: t("spending.month.november"), spending: spendingData.november, earned: earnedData.november },
+        { month: t("spending.month.december"), spending: spendingData.december, earned: earnedData.december }
     ];
 
 
@@ -271,13 +268,13 @@ const Spending: React.FC = () => {
             <thead>
                 <tr>
                     <th scope="col" className="px-4 py-3">
-                        {t('spending.category')}
+                        {t("spending.category")}
                     </th>
                     <th scope="col" className="px-4 py-3">
-                        {t('spending.percentageOfAnnualSpending')}
+                        {t("spending.percentageOfAnnualSpending")}
                     </th>
                     <th scope="col" className="px-4 py-3">
-                        {t('spending.amount')}
+                        {t("spending.amount")}
                     </th>
                 </tr>
             </thead>
@@ -298,17 +295,10 @@ const Spending: React.FC = () => {
         </>
     );
 
-
     //to get the top three purchases
     const topThreePurchases = [...transactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
 
-
-
-
-
-
-
-
+    // ----GRAPH CUSTOMIZATIONS----
 
     //for text in the center of the pie chart
     const StyledText = styled("text")(({ theme }) => ({
@@ -331,7 +321,7 @@ const Spending: React.FC = () => {
         const { width, height, left, top } = useDrawingArea();
         return (
             <StyledText x={left + width / 2} y={top + height / 2 - 10}>
-                <Line1 dy="-1.0em">{t('spending.totalSpent')}</Line1>
+                <Line1 dy="-1.0em">{t("spending.totalSpent")}</Line1>
                 <Line2 x={left + width / 2} dy="1.2em">
                     ${totalSpent.toLocaleString()}
                 </Line2>
@@ -339,38 +329,65 @@ const Spending: React.FC = () => {
         );
     }
 
-
-
     return (
         <div className="min-w-screen mt-10">
             <div className="flex-1">
                 <section className="h-screen ">
                     {/* Title for the page */}
                     <div className="mb-4 ml-3">
-                        <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t('spending.title')}</h2>
+                        <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2>
                         {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
                         <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
                     </div>
                     <div className="flex justify-between gap-x-4 w-full m-2">
                         {[
-                            { details: t('spending.spentThisWeek'), price: currentWeekSpending, percentage: spendingWeekChange, icon: Icon.AttachMoney, bgColor: "bg-red-500" },
-                            { details: t('spending.depositedThisWeek'), price: currentWeekDeposits, percentage: depositsWeekChange, icon: Icon.CreditCard, bgColor: "bg-green-500" },
-                            { details: t('spending.totalSpent'), price: currentYearSpending, percentage: 0, icon: Icon.Api, bgColor: "bg-blue-500" }
+                            {
+                                details: t("spending.spentThisWeek"),
+                                price: currentWeekSpending,
+                                percentage: spendingWeekChange,
+                                icon: Icon.AttachMoney,
+                                bgColor: "bg-red-500"
+                            },
+                            {
+                                details: t("spending.depositedThisWeek"),
+                                price: currentWeekDeposits,
+                                percentage: depositsWeekChange,
+                                icon: Icon.CreditCard,
+                                bgColor: "bg-green-500"
+                            },
+                            {
+                                details: t("spending.totalSpent"),
+                                price: currentYearSpending,
+                                percentage: 0,
+                                icon: Icon.Api,
+                                bgColor: "bg-blue-500"
+                            }
                         ].map((card, index) => (
                             <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex">
                                 <div className="flex-1 flex items-center">
                                     <div>
-                                        <card.icon className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`} />
+                                        <card.icon
+                                            className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`}
+                                        />
                                         <p className="text-bold pt-5 text-3xl">${card.price.toLocaleString()}</p>
                                         <p className="text-light pt-1 text-xl">{card.details}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start justify-end">
-                                    <span className={`text-2xl font-light ${card.percentage >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                    <span
+                                        className={`text-2xl font-light ${card.percentage >= 0 ? "text-green-500" : "text-red-500"
+                                            }`}
+                                    >
                                         {card.percentage >= 0 ? (
-                                            <Icon.ArrowDropUp className="inline-block mb-1" style={{ fontSize: "2rem" }} />
+                                            <Icon.ArrowDropUp
+                                                className="inline-block mb-1"
+                                                style={{ fontSize: "2rem" }}
+                                            />
                                         ) : (
-                                            <Icon.ArrowDropDown className="inline-block mb-1" style={{ fontSize: "2rem" }} />
+                                            <Icon.ArrowDropDown
+                                                className="inline-block mb-1"
+                                                style={{ fontSize: "2rem" }}
+                                            />
                                         )}
                                         {Math.abs(card.percentage).toFixed(2)}%
                                     </span>
@@ -379,20 +396,16 @@ const Spending: React.FC = () => {
                         ))}
                     </div>
 
-
-
                     {/* Full-width row */}
                     <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
                         <div className="mb-4 ml-3 flex w-full justify-between items-center">
-                            <h2 className="text-3xl p-5 pl-8 text-bold">{t('spending.graphTitle')}</h2>
+                            <h2 className="text-3xl p-5 pl-8 text-bold">{t("spending.graphTitle")}</h2>
                             <div>
-
                                 <Link to="/dashboard/spending/May" className="mr-3 pr-8">
                                     <Button type="button" className="ml-3">
-                                        {t('spending.seeCurrentMonth')}
+                                        {t("spending.seeCurrentMonth")}
                                     </Button>
                                 </Link>
-
                             </div>
                         </div>
                         <div className="flex items-center mb-2 justify-start w-full">
@@ -405,14 +418,14 @@ const Spending: React.FC = () => {
                                     {
                                         data: earnedValues,
                                         color: "#BCC3CB",
-                                        label: t('spending.earned')
+                                        label: t("spending.earned")
                                         // area: true,
                                         //stack: "total"
                                     },
                                     {
                                         data: spendingValues,
                                         color: "#1f78b4",
-                                        label: t('spending.spendings')
+                                        label: t("spending.spendings")
                                         //area: true,
                                         //stack: "total"
                                     }
@@ -428,7 +441,6 @@ const Spending: React.FC = () => {
                     {/* Second row with two columns */}
                     <div className="flex pt-1 gap-3">
                         <div className="flex flex-col justify-center items-center flex-2 p-2 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
-
                             {spendingCategories.length > 0 ? (
                                 <div className="relative w-full h-full sm:h-300 sm:ml-10">
                                     <PieChart
@@ -470,13 +482,17 @@ const Spending: React.FC = () => {
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center w-full h-full text-xl">
-                                    {t('spending.no-data')}
-                                    <Button type="button" onClick={() => navigate('/dashboard/transactions')} className="mt-4">
-                                        {t('transactions.add-transaction')}
+                                    {t("spending.no-data")}
+                                    <Button
+                                        type="button"
+                                        onClick={() => navigate("/dashboard/transactions")}
+                                        className="mt-4"
+                                    >
+                                        {t("transactions.add-transaction")}
                                     </Button>
                                 </div>
                             )}
-                            < div className="w-full">
+                            <div className="w-full">
                                 <Table bordered={false} className="w-full">
                                     {categoryExpenses}
                                 </Table>
@@ -485,93 +501,127 @@ const Spending: React.FC = () => {
                         {/* section for more insights -> top expenses..and?? */}
 
                         <div className="flex flex-col justify-center gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
-
-
                             {/* Top Categories components */}
                             <div className="w-full m-1 p-4 rounded-xl shadow-md border-l-8 border-gray-500 bg-white text-gray-800">
                                 <p className="text-xl">
-                                    {t('spending.topCategories')} <span className="font-bold">{topThreePercentage}%</span> {t('spending.spendingYear')}.
+                                    {t("spending.topCategories")}{" "}
+                                    <span className="font-bold">{topThreePercentage}%</span>{" "}
+                                    {t("spending.spendingYear")}.
                                 </p>
                             </div>
 
-
-                            {[...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 1).map((category, index) => (
-                                <div key={index} className="w-full m-2 p-7 rounded-xl shadow-md border-[1px] flex items-center" style={{ backgroundColor: category.color }}>
-                                    <div className="flex flex-col items-start">
-                                        <div className="flex items-center">
-                                            <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-xl font-bold mr-3">
-                                                1
+                            {[...spendingCategories]
+                                .sort((a, b) => b.value - a.value)
+                                .slice(0, 1)
+                                .map((category, index) => (
+                                    <div
+                                        key={index}
+                                        className="w-full m-2 p-7 rounded-xl shadow-md border-[1px] flex items-center"
+                                        style={{ backgroundColor: category.color }}
+                                    >
+                                        <div className="flex flex-col items-start">
+                                            <div className="flex items-center">
+                                                <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-xl font-bold mr-3">
+                                                    1
+                                                </div>
+                                                <p className="text-white text-bold text-2xl mb-1">
+                                                    {" "}
+                                                    {t("spending.top-category")}
+                                                </p>
                                             </div>
-                                            <p className="text-white text-bold text-2xl mb-1"> {t('spending.top-category')}</p>
+
+                                            <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl">
+                                                {" "}
+                                                {t("spending.youSpent")}{" "}
+                                                <span className="text-2xl font-bold">{category.displayName}</span>{" "}
+                                                {t("spending.thisYear")}.
+                                            </p>
                                         </div>
-
-                                        <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl"> {t('spending.youSpent')} <span className="text-2xl font-bold">{category.displayName}</span>  {t('spending.thisYear')}.</p>
-                                    </div>
-                                    <div className="flex flex-col items-end">
-                                        <category.icon className="text-white rounded-xl p-[5px] text-5xl" />
-                                        <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
-                                    </div>
-                                </div>
-                            ))}
-
-                            <div className="flex justify-between gap-x-4 w-full m-2">
-                                {[...spendingCategories].sort((a, b) => b.value - a.value).slice(1, 3).map((category, index) => (
-                                    <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex" style={{ backgroundColor: category.color }}>
-                                        <div className="flex-1 flex items-center justify-between">
-                                            <div>
-                                                <category.icon className="text-white rounded-xl p-[5px] text-4xl" />
-                                                <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
-                                                <p className="text-white text-light pt-1 text-xl">{category.displayName}</p>
-                                            </div>
-                                            <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-2xl font-bold ml-4 mb-20">
-                                                {index + 2}
-                                            </div>
+                                        <div className="flex flex-col items-end">
+                                            <category.icon className="text-white rounded-xl p-[5px] text-5xl" />
+                                            <p className="text-white text-bold pt-5 text-3xl">
+                                                ${category.value.toLocaleString()}
+                                            </p>
                                         </div>
                                     </div>
                                 ))}
+
+                            <div className="flex justify-between gap-x-4 w-full m-2">
+                                {[...spendingCategories]
+                                    .sort((a, b) => b.value - a.value)
+                                    .slice(1, 3)
+                                    .map((category, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex"
+                                            style={{ backgroundColor: category.color }}
+                                        >
+                                            <div className="flex-1 flex items-center justify-between">
+                                                <div>
+                                                    <category.icon className="text-white rounded-xl p-[5px] text-4xl" />
+                                                    <p className="text-white text-bold pt-5 text-3xl">
+                                                        ${category.value.toLocaleString()}
+                                                    </p>
+                                                    <p className="text-white text-light pt-1 text-xl">
+                                                        {category.displayName}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-2xl font-bold ml-4 mb-20">
+                                                    {index + 2}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                             </div>
 
                             <div className="flex flex-col md:flex-row justify-between w-full min-h-[30rem] gap-x-4 m-2">
-
                                 {/* Top Purchases Section */}
                                 <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-md border-[1px] w-full ">
-
-
                                     <div className="flex flex-col gap-y-4 w-full">
-                                        <h2 className="text-2xl font-bold mr-2 mb-2 text-center"> {t('spending.topPurchases')}</h2>
+                                        <h2 className="text-2xl font-bold mr-2 mb-2 text-center">
+                                            {" "}
+                                            {t("spending.topPurchases")}
+                                        </h2>
                                         {topThreePurchases.map((expense, index) => (
-                                            <div key={index} className="flex items-center justify-between p-4 m-2 bg-blue-100 rounded-xl shadow-md border-[1px]">
+                                            <div
+                                                key={index}
+                                                className="flex items-center justify-between p-4 m-2 bg-blue-100 rounded-xl shadow-md border-[1px]"
+                                            >
                                                 <div className="flex items-center">
                                                     <div className="flex items-center justify-center w-10 h-10 text-black rounded-full text-1xl border font-bold">
                                                         {index + 1}
                                                     </div>
-                                                    <div className="ml-4 " >
-                                                        <p className="text-xl">{new Date(expense.date).toLocaleDateString()}</p>
+                                                    <div className="ml-4 ">
+                                                        <p className="text-xl">
+                                                            {new Date(expense.date).toLocaleDateString()}
+                                                        </p>
                                                         <p className="text-lg ">{expense.vendorName}</p>
-                                                        <p className="text-2xl font-semibold">${expense.amount.toFixed(2)}</p>
+                                                        <p className="text-2xl font-semibold">
+                                                            ${expense.amount.toFixed(2)}
+                                                        </p>
                                                     </div>
                                                 </div>
-
                                             </div>
-
                                         ))}
-
-
                                     </div>
                                 </div>
 
                                 {/* Most Popular Vendors Section */}
                                 <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]  ">
                                     <div className="flex items-center mb-4">
-                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2"> {t('spending.top-vendors')}</h2>
-                                        <div className="relative group">
-
-                                        </div>
+                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2">
+                                            {" "}
+                                            {t("spending.top-vendors")}
+                                        </h2>
+                                        <div className="relative group"></div>
                                     </div>
 
                                     <div className="flex flex-col w-full gap-4">
                                         {mostPopularVendors.slice(0, 4).map((vendor, index) => (
-                                            <div key={vendor.vendorName} className="flex items-center justify-between p-4 m-2 rounded-full shadow-md border-[1px] bg-white text-[#0A5CBA]  w-full">
+                                            <div
+                                                key={vendor.vendorName}
+                                                className="flex items-center justify-between p-4 m-2 rounded-full shadow-md border-[1px] bg-white text-[#0A5CBA]  w-full"
+                                            >
                                                 <div className="flex items-center">
                                                     <div className="ml-4">
                                                         <p className="text-xl font-bold">{vendor.vendorName}</p>
@@ -585,7 +635,6 @@ const Spending: React.FC = () => {
                                         ))}
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>

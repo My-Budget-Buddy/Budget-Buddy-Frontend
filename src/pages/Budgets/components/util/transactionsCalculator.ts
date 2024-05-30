@@ -1,7 +1,8 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
-import { getTransactionsThing } from "../../../Tax/taxesAPI";
+import Cookies from "js-cookie";
 
 // TODO Given a list of transactions, return budget totals
+const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
 
 export async function getCompleteBudgets(transformedBudgets: BudgetRowProps[]) {
     const date = transformedBudgets[0].monthYear;
@@ -27,7 +28,7 @@ function getSumForCategory(categorizedTransactions: { [key: string]: Transaction
 // e.g. "{GROCERIES: [{Transaction1}, {Transaction2}], "SHOPPING": [...]}
 export async function getCategoriesTransactionsMap(monthYear: string) {
     // TODO We currently have no way of querying userID
-    const transactions = await getTransactions(1, monthYear);
+    const transactions = await getTransactions(monthYear);
     const mapOfTransactionsByCategory = mapTransactionsToCategories(transactions);
     return mapOfTransactionsByCategory;
 }
@@ -42,38 +43,31 @@ function mapTransactionsToCategories(transactions: Transaction[]) {
     }, {});
 }
 
-// async function getTransactions(userid: number, date: string) {
-//     //TODO Wait for backend team to update on final endpoint
-//     try {
-//         const response = await fetch(`${endpoint}/transactions/${date}/user/${userid}`, {
-//             method: "GET",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             credentials: "include"
-//         });
+async function getTransactions(date: string) {
+    const jwtCookie = Cookies.get("jwt") as string;
 
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status} ${response.statusText}`);
-//         }
-
-//         const data = await response.json();
-//         console.log("data:", data);
-//         return data;
-//     } catch (error) {
-//         console.error("Failed to fetch user data:", error);
-//         throw error;
-//     }
-// }
-
-async function getTransactions(userid: number, date: string): Promise<Transaction[]> {
     //TODO Wait for backend team to update on final endpoint
+    try {
+        const response = await fetch(`${endpoint}/transactions/${date}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
+            },
+            credentials: "include"
+        });
 
-    return getTransactionsThing(date, userid).then((res) => {
-        const data = res.data;
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
         console.log("data:", data);
         return data;
-    });
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
 }
 
 interface Transaction {

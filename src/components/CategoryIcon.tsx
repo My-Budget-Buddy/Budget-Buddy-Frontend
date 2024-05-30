@@ -13,6 +13,17 @@ export const categoryIcons: { [key in TransactionCategory]: React.ElementType } 
     [TransactionCategory.INCOME]: Icon.TrendingUp,
     [TransactionCategory.MISC]: Icon.MoreHoriz
 };
+export const categoryColors: { [key in TransactionCategory]: string } = {
+    [TransactionCategory.GROCERIES]: "#90c8f4",
+    [TransactionCategory.ENTERTAINMENT]: "#e5d23a",
+    [TransactionCategory.DINING]: "#6ed198",
+    [TransactionCategory.TRANSPORTATION]: "#af98f9",
+    [TransactionCategory.HEALTHCARE]: "#fd6d6d",
+    [TransactionCategory.LIVING_EXPENSES]: "#5a7ffa",
+    [TransactionCategory.SHOPPING]: "#fe992b",
+    [TransactionCategory.INCOME]: "#f7b7e5",
+    [TransactionCategory.MISC]: "#dce2e1"
+};
 
 interface CategoryIconProps {
     category: TransactionCategory;

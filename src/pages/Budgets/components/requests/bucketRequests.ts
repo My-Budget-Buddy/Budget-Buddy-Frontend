@@ -1,14 +1,16 @@
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
+import Cookies from "js-cookie";
 
-export async function getBuckets() {
-    //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/user/1`;
+export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/user`;
+    const jwtCookie = Cookies.get("jwt") as string;
     try {
         console.log("getting... ");
         const response = await fetch(endpoint, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             credentials: "include"
         });
@@ -18,14 +20,8 @@ export async function getBuckets() {
         }
 
         const buckets: RawBucket[] = await response.json();
-        console.log(buckets);
-
         const transformedBuckets = transformBuckets(buckets);
-
-        // Update redux store
         return transformedBuckets;
-
-        // Call from redux store
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;
@@ -33,13 +29,15 @@ export async function getBuckets() {
 }
 
 export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/add`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/add`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
     try {
         const response = await fetch(endpoint, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             body: JSON.stringify(bucket)
         });
@@ -47,23 +45,24 @@ export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSe
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
-
         const data: RawBucketToSend = await response.json();
         return data;
     } catch (error) {
-        console.error("Failed to create bucket:", error);
+        console.error("Failed to fetch user data:", error);
         throw error;
     }
 }
 
 export async function putBucket(bucket: RawBucketToSend, id: number): Promise<RawBucketToSend> {
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/update/${id}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/update/${id}`;
+    const jwtCookie = Cookies.get("jwt") as string;
 
     try {
         const response = await fetch(endpoint, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             body: JSON.stringify(bucket)
         });
@@ -75,19 +74,20 @@ export async function putBucket(bucket: RawBucketToSend, id: number): Promise<Ra
         const data: RawBucketToSend = await response.json();
         return data;
     } catch (error) {
-        console.error("Failed to create bucket:", error);
+        console.error("Failed to fetch user data:", error);
         throw error;
     }
 }
 
 export async function deleteBucket(id: number) {
-    //TODO Wait for backend team to update on final endpoint
-    const endpoint = `${import.meta.env.VITE_ENDPOINT_URL}/buckets/delete/${id}`;
+    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/delete/${id}`;
+    const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: jwtCookie
             },
             credentials: "include"
         });
@@ -95,8 +95,6 @@ export async function deleteBucket(id: number) {
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
-
-        // Call from redux store
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;

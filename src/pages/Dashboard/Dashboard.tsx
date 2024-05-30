@@ -12,6 +12,7 @@ import { getBudgetsByMonthYear } from "../Budgets/components/requests/budgetRequ
 import { getCompleteBudgets } from "../Budgets/components/util/transactionsCalculator";
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
+import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "../Tax/taxesAPI";
 
 interface InitialAccountType {
     id: number;
@@ -87,10 +88,12 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchAccounts = async () => {
             try {
-                const response = await axios.get("http://localhost:8125/accounts/1", {
-                    // withCredentials: true,
-                });
-                const accounts = response.data;
+                getAccountByID()
+                .then((res) => {
+                    const accounts = res.data;
+                
+                //const accounts = response.data;
+                console.log("accounts: ", accounts);
                 setAccounts(accounts);
                 let allAccounts: AllAccountsType[] = accounts.reduce(
                     (prev: AllAccountsType[], account: InitialAccountType) => {
@@ -123,6 +126,7 @@ const Dashboard: React.FC = () => {
                     []
                 );
                 setAllAccounts(allAccounts);
+            })
             } catch (err) {
                 console.log("There was an error fetching account data: ", err);
             }
@@ -135,10 +139,11 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get("http://localhost:8125/transactions/recentTransactions/1", {
-                    // withCredentials: true,
-                });
-                setRecentTransactions(response.data);
+                getRecentTransactionsAPI()
+                .then((res) => {
+                    setRecentTransactions(res.data);
+                })
+                
             } catch (err) {
                 console.log("There was an error fetching recent tranactions: ", err);
             }
@@ -151,11 +156,12 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const fetchMonthlyTransactions = async () => {
             try {
-                const response = await axios.get("http://localhost:8125/transactions/currentMonthTransactions/1", {
-                    // withCredentials: true,
-                });
-                const monthlyTransactions = response.data;
-                const today = new Date();
+                getCurrentMonthTransactionsAPI()
+                .then((res) => {
+
+                
+                const monthlyTransactions = res.data;
+                const today = new Date
                 const totalSpentPerDay: MonthlyTransactionType[] = [];
                 let runningTotal = 0;
                 for (let i = 1; i <= today.getDate(); i++) {
@@ -177,12 +183,15 @@ const Dashboard: React.FC = () => {
                 }
                 setMonthlyTransactions(totalSpentPerDay);
                 setMonthlySpend(runningTotal);
+            })
             } catch (err) {
                 console.log("There was an error fetching monthly tranactions: ", err);
             }
         };
         fetchMonthlyTransactions();
     }, []);
+    console.log("===============================");
+    console.log("this is a test", monthlyTransactions);
 
     //---- budgets gauge ----
     useEffect(() => {
