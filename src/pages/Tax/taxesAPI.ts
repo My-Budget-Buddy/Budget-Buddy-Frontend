@@ -63,8 +63,8 @@ interface W2StateR{
     "federalIncomeTaxWithheld": number,
     "stateIncomeTaxWithheld": number,
     "socialSecurityTaxWithheld": number,
-    "medicareTaxWithheld": number,
-    "imageKey": any
+    "medicareTaxWithheld": number
+    
 };
 
 
@@ -104,6 +104,25 @@ interface UserType {
     username: string;
     password: string;
 }
+
+interface deductionsToSend{
+    id?: any,
+    taxReturn?: any,
+    deduction?: any,
+    deductionName?:any,
+    amountSpent?: any,
+    netDeduction?: any
+}
+
+interface deductionsReceieved{
+    dedid?: any,
+    dedtaxReturn?: any,
+    deddeduction?: any,
+    deddeductionName?:any,
+    dedamountSpent?: any,
+    dednetDeduction?: any
+}
+
 
 export const createTaxReturn = (initTaxReturn: initReturn) => {
     // console.log("////////////////////////////////");
@@ -214,7 +233,7 @@ export const deleteAccountAPI = (accountId: number) => {
     return apiClient.delete(`/accounts/${accountId}`);
 };
 
-export const createW2API = (w2payload: Omit<W2State, "w2id">[]) => {
+export const createW2API = (w2payload: Omit<W2State, "w2id">[], id :number | undefined) => {
     const result: W2StateR[] = [];
     for (const payload of w2payload) {
         const mappedPayload: W2StateR = {
@@ -227,13 +246,14 @@ export const createW2API = (w2payload: Omit<W2State, "w2id">[]) => {
             federalIncomeTaxWithheld: payload.w2federalIncomeTaxWithheld,
             stateIncomeTaxWithheld: payload.w2stateIncomeTaxWithheld,
             socialSecurityTaxWithheld: payload.w2socialSecurityTaxWithheld,
-            medicareTaxWithheld: payload.w2medicareTaxWithheld,
-            imageKey: undefined
+            medicareTaxWithheld: payload.w2medicareTaxWithheld
+            
         };
         result.push(mappedPayload);
     }
+    console.log(result);
 
-    return apiClient.post(`/taxes/w2s?taxReturnId=1`, result);
+    return apiClient.post(`/taxes/w2s?taxReturnId=${id}`, result);
 };
 
 export const createTaxReturnAPI = (taxPayload: Omit<taxReturn, "id">) => {
@@ -277,11 +297,12 @@ export const addOtherIncomeAPI = (payload: otherIncome) => {
         netBusinessIncome: payload.oinetBusinessIncome,
         additionalIncome: payload.oiadditionalIncome
     };
+    console.log(actual_payload);
     return apiClient.post(`/taxes/other-income`, actual_payload);
 };
 
-export const getOtherIncomeAPI = () => {
-    return apiClient.get(`/taxes/other-income/1`);
+export const getOtherIncomeAPI = (id :any) => {
+    return apiClient.get(`/taxes/other-income/${id}`);
 };
 
 export const deleteTaxReturn = (id: number | undefined) => {
@@ -300,4 +321,18 @@ export const updateUserPassword = (updatedUserPassword : UserType) => {
     return apiClient.put(`/auth/update/password`, updatedUserPassword)
 }
 
+export const getDeductionsByTaxReturn = (id : any) => {
+    return apiClient.get(`/taxes/taxreturns/${id}/deductions`)
+}
 
+export const SaveDeductionsByTaxReturn = (id : any, payload : deductionsReceieved) => {
+    const payloadToSend  : deductionsToSend = {
+        id : payload.dedid,
+        taxReturn : payload.dedtaxReturn,
+        deduction : payload.deddeduction,
+        deductionName : payload.deddeductionName,
+        amountSpent : payload.dedamountSpent,
+        netDeduction : payload.dednetDeduction
+    }
+    return apiClient.post(`/taxes/taxreturns/${id}/deductions`, payloadToSend)
+}
