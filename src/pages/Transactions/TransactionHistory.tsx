@@ -781,6 +781,9 @@ function TransactionHistory() {
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
                                     <div>{formatDate(currentTransaction.date)}</div>
                                 </div>
+                                <Button type="button" onClick={() => { infoRef.current?.toggleModal(); modalRef.current?.toggleModal(); }}>
+                                    {t("transactions.edit-transaction")}
+                                </Button>
                             </div>
                         </div>
                         <div className="border-t border-black my-4"></div>
