@@ -1,32 +1,20 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
-import { Gauge, gaugeClasses } from "@mui/x-charts";
-import {
-    Modal,
-    ModalRef,
-    ButtonGroup,
-    ModalFooter,
-    ModalHeading,
-    ModalToggleButton,
-    Alert
-} from "@trussworks/react-uswds";
-import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useAuthentication } from "../../contexts/AuthenticationContext";
+import React, { useEffect, useState } from "react";
+import { Gauge, gaugeClasses } from "@mui/x-charts";
+import { Modal, ModalRef, ButtonGroup, ModalFooter, ModalHeading, ModalToggleButton } from "@trussworks/react-uswds";
 
 interface CreditScoreModalProps {
     totalDebt: number;
 }
 
 const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
-    const modalRef = useRef<ModalRef>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [creditColor, setCreditColor] = useState<string | null>(null);
-    const [creditScore, setCreditScore] = useState<number>(0);
     const { t } = useTranslation();
-    const { jwt } = useAuthentication();
+
+    const modalRef = useRef<ModalRef>(null);
+
+    const [creditColor, setCreditColor] = useState<string | null>(null);
+    const [creditScore, setCreditScore] = useState<number>(571); // initial credit score based of assumptions
 
     // returns the color of the gauge based on the credit score
     const getCreditColor = (creditScore: number): string => {
@@ -36,19 +24,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         else return "#b20202";
     };
 
-    useEffect(() => {
-        if (!jwt) return; // to prevent an unnecessary 401
-        fetch("https://api.skillstorm-congo.com/api/credit/score", { headers: { Authorization: `Bearer ${jwt}` } })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(t("accounts.error-credit-score"));
-                }
-                return res.json();
-            })
-            .then((data: { creditScore: number }) => setCreditScore(data.creditScore))
-            .catch((err: Error) => setError(err.message));
-    }, [jwt, t]);
-
+    // calculates the credit score based on the total debt
     useEffect(() => {
         let score = 300;
         if (totalDebt > 50000) {
@@ -59,6 +35,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         // Increase creditScore by score
         setCreditScore((prevCreditScore) => prevCreditScore + score);
     }, [totalDebt]);
+
     // sets the color of the gauge based on the credit score
     useEffect(() => {
         setCreditColor(getCreditColor(creditScore));
@@ -80,11 +57,6 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
                     <ModalHeading id="credit-score-modal-heading" className="pb-4">
                         {t("accounts.credit-score-report")}
                     </ModalHeading>
-                    {error && (
-                        <Alert type="error" headingLevel="h4">
-                            {error}
-                        </Alert>
-                    )}
                     <div className="flex justify-center items-center h-full py-4">
                         <Gauge
                             width={400}
