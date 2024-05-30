@@ -8,7 +8,6 @@ const LandingLayout: React.FC = () => {
         <AuthenticationProvider>
             <div className="layout-container">
                 <LandingHeader />
-
                 <main className="min-h-dvh l w-full ">
                     <div className="relative isolate ">
                         <Outlet />

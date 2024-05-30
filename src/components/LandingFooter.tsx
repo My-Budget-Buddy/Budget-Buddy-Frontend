@@ -4,8 +4,10 @@ import logoImg from "../assets/vecteezy_vector-finance-logo-template-accounting-
 
 const Footer: React.FC = () => {
     return (
+
+
         <footer className="usa-footer usa-footer--slim bg-white shadow-md w-full z-50">
-            <div className="grid-container usa-footer__return-to-top">
+            <div className="grid-container usa-footer__return-to-top" style={{ backgroundColor: 'transparent' }}>
                 <a href="#" aria-label="Return to top" className="usa-footer__return-to-top-link">
                     <svg
                         className="usa-icon"
@@ -70,7 +72,7 @@ const Footer: React.FC = () => {
                 </div>
             </div>
             <div className="usa-footer__secondary-section">
-                <div className="grid-container">
+                <div className="grid-container bg-transparent">
                     <div className="usa-footer__logo grid-row grid-gap-2">
                         <div className="grid-col-auto">
                             <img className="usa-footer__logo-img" src={logoImg} alt="BudgetBuddy Logo" />
@@ -82,6 +84,8 @@ const Footer: React.FC = () => {
                 </div>
             </div>
         </footer>
+
+
     );
 };
 

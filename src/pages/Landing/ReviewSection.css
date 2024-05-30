@@ -1,0 +1,28 @@
+.review-section .slick-prev,
+.review-section .slick-next {
+    z-index: 1;
+}
+
+.review-section .slick-dots li button:before {
+    color: #005ea2;
+}
+
+.review-section .slick-dots li.slick-active button:before {
+    opacity: 1;
+    color: #003a68;
+}
+
+.review-section .slick-slide {
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+}
+
+.review-section .slick-center {
+    opacity: 1;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
