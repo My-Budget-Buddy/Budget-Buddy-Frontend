@@ -41,6 +41,8 @@ type SpendingCategory = {
     icon: React.ElementType;
 };
 
+
+
 const Spending: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -197,6 +199,7 @@ const Spending: React.FC = () => {
                 //map category spending to an array with colors
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
+                    displayName: t(category),
                     value: categorySpending[category]!,
                     color: categoryColors[category],
                     icon: categoryIcons[category]
@@ -223,7 +226,7 @@ const Spending: React.FC = () => {
         };
 
         fetchTransactions();
-    }, []);
+    }, [t]);
 
     const calculatePercentageChange = (current: number, previous: number) => {
         if (previous === 0) return 0; // handle division by zero
@@ -236,18 +239,18 @@ const Spending: React.FC = () => {
     // -----BAR CHART------
     // prepare data for the bar chart
     const chartData = [
-        { month: t('spending.one-month'), spending: spendingData.january, earned: earnedData.january },
-        { month: t('spending.two-month'), spending: spendingData.february, earned: earnedData.february },
-        { month: t('spending.three-month'), spending: spendingData.march, earned: earnedData.march },
-        { month: t('spending.four-month'), spending: spendingData.april, earned: earnedData.april },
-        { month: t('spending.five-month'), spending: spendingData.may, earned: earnedData.may },
-        { month: t('spending.six-month'), spending: spendingData.june, earned: earnedData.june },
-        { month: t('spending.seven-month'), spending: spendingData.july, earned: earnedData.july },
-        { month: t('spending.eight-month'), spending: spendingData.august, earned: earnedData.august },
-        { month: t('spending.nine-month'), spending: spendingData.september, earned: earnedData.september },
-        { month: t('spending.ten-month'), spending: spendingData.october, earned: earnedData.october },
-        { month: t('spending.eleven-month'), spending: spendingData.november, earned: earnedData.november },
-        { month: t('spending.twelve-month'), spending: spendingData.december, earned: earnedData.december }
+        { month: t('spending.january'), spending: spendingData.january, earned: earnedData.january },
+        { month: t('spending.february'), spending: spendingData.february, earned: earnedData.february },
+        { month: t('spending.march'), spending: spendingData.march, earned: earnedData.march },
+        { month: t('spending.april'), spending: spendingData.april, earned: earnedData.april },
+        { month: t('spending.may'), spending: spendingData.may, earned: earnedData.may },
+        { month: t('spending.june'), spending: spendingData.june, earned: earnedData.june },
+        { month: t('spending.july'), spending: spendingData.july, earned: earnedData.july },
+        { month: t('spending.august'), spending: spendingData.august, earned: earnedData.august },
+        { month: t('spending.september'), spending: spendingData.september, earned: earnedData.september },
+        { month: t('spending.october'), spending: spendingData.october, earned: earnedData.october },
+        { month: t('spending.november'), spending: spendingData.november, earned: earnedData.november },
+        { month: t('spending.december'), spending: spendingData.december, earned: earnedData.december }
     ];
 
     const categories = chartData.map((d) => d.month);
@@ -259,8 +262,7 @@ const Spending: React.FC = () => {
     const totalSpent = Object.values(spendingData).reduce((acc, curr) => acc + curr, 0);
     const topThreeCategories = [...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 3);
     const topThreeTotal = topThreeCategories.reduce((sum, category) => sum + category.value, 0);
-    const topThreePercentage = ((topThreeTotal / totalSpent) * 100).toFixed(2);
-
+    const topThreePercentage = totalSpent === 0 ? "0.00" : ((topThreeTotal / totalSpent) * 100).toFixed(2);
     // ----TABLES-----
     //category expenses table
     const categoryExpenses = (
@@ -283,7 +285,7 @@ const Spending: React.FC = () => {
                     <tr key={category.name} style={{ padding: "15px" }}>
                         <th scope="row" style={{ padding: "15px" }}>
                             <CategoryIcon category={category.name} color={category.color} />
-                            {category.name}
+                            {category.displayName}
                         </th>
                         <td style={{ padding: "15px" }}>
                             {((category.value / spendingValues.reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%
@@ -504,49 +506,54 @@ const Spending: React.FC = () => {
                     <div className="flex pt-1 gap-3">
                         <div className="flex flex-col justify-center items-center flex-2 p-2 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
 
-                            <h2></h2>
-                            <div className="relative w-full h-full sm:h-300 sm:ml-10 ">
-                                <PieChart
-                                    series={[
-                                        {
-                                            data: spendingCategories.map((d) => ({
-                                                label: d.name,
-                                                id: d.name,
-                                                value: d.value,
-                                                color: d.color
-                                            })),
-                                            innerRadius: "48%",
-                                            outerRadius: "95%",
-                                            paddingAngle: 1,
-                                            cornerRadius: 3,
-                                            startAngle: -180,
-                                            endAngle: 180,
-                                            cx: "50%",
-                                            cy: "50%",
-                                            arcLabel: (item) => `${item.label}`,
-
-                                            arcLabelMinAngle: 20,
-
-                                            valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
-                                        }
-                                    ]}
-                                    slotProps={{
-                                        legend: { hidden: true }
-                                    }}
-                                    sx={{
-                                        width: "100%",
-                                        height: "100%",
-                                        [`& .${pieArcLabelClasses.root}`]: {
-                                            fill: "white",
-                                            fontWeight: "bold"
-                                        }
-                                    }}
-                                >
-                                    <PieCenterLabel totalSpent={totalSpent} />
-                                </PieChart>
-
-                            </div>
-                            <div className="w-full">
+                            {spendingCategories.length > 0 ? (
+                                <div className="relative w-full h-full sm:h-300 sm:ml-10">
+                                    <PieChart
+                                        series={[
+                                            {
+                                                data: spendingCategories.map((d) => ({
+                                                    label: d.displayName,
+                                                    id: d.name,
+                                                    value: d.value,
+                                                    color: d.color
+                                                })),
+                                                innerRadius: "48%",
+                                                outerRadius: "95%",
+                                                paddingAngle: 1,
+                                                cornerRadius: 3,
+                                                startAngle: -180,
+                                                endAngle: 180,
+                                                cx: "50%",
+                                                cy: "50%",
+                                                arcLabel: (item) => `${item.label}`,
+                                                arcLabelMinAngle: 20,
+                                                valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
+                                            }
+                                        ]}
+                                        slotProps={{
+                                            legend: { hidden: true }
+                                        }}
+                                        sx={{
+                                            width: "100%",
+                                            height: "100%",
+                                            [`& .${pieArcLabelClasses.root}`]: {
+                                                fill: "white",
+                                                fontWeight: "bold"
+                                            }
+                                        }}
+                                    >
+                                        <PieCenterLabel totalSpent={totalSpent} />
+                                    </PieChart>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center w-full h-full text-xl">
+                                    {t('spending.no-data')}
+                                    <Button type="button" onClick={() => navigate('/dashboard/transactions')} className="mt-4">
+                                        {t('transactions.add-transaction')}
+                                    </Button>
+                                </div>
+                            )}
+                            < div className="w-full">
                                 <Table bordered={false} className="w-full">
                                     {categoryExpenses}
                                 </Table>
@@ -572,10 +579,10 @@ const Spending: React.FC = () => {
                                             <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-xl font-bold mr-3">
                                                 1
                                             </div>
-                                            <p className="text-white text-bold text-2xl mb-1"> TOP CATEGORY</p>
+                                            <p className="text-white text-bold text-2xl mb-1"> {t('spending.top-category')}</p>
                                         </div>
 
-                                        <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl"> {t('spending.youSpent')} <span className="text-2xl font-bold">{category.name}</span>  {t('spending.thisYear')}.</p>
+                                        <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl"> {t('spending.youSpent')} <span className="text-2xl font-bold">{category.displayName}</span>  {t('spending.thisYear')}.</p>
                                     </div>
                                     <div className="flex flex-col items-end">
                                         <category.icon className="text-white rounded-xl p-[5px] text-5xl" />
@@ -591,7 +598,7 @@ const Spending: React.FC = () => {
                                             <div>
                                                 <category.icon className="text-white rounded-xl p-[5px] text-4xl" />
                                                 <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
-                                                <p className="text-white text-light pt-1 text-xl">{category.name}</p>
+                                                <p className="text-white text-light pt-1 text-xl">{category.displayName}</p>
                                             </div>
                                             <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-2xl font-bold ml-4 mb-20">
                                                 {index + 2}
@@ -633,7 +640,7 @@ const Spending: React.FC = () => {
                                 {/* Most Popular Vendors Section */}
                                 <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]  ">
                                     <div className="flex items-center mb-4">
-                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2">Top Vendors</h2>
+                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2"> {t('spending.top-vendors')}</h2>
                                         <div className="relative group">
 
                                         </div>
@@ -661,8 +668,8 @@ const Spending: React.FC = () => {
                         </div>
                     </div>
                 </section>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

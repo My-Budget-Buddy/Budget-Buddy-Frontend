@@ -13,6 +13,7 @@ import CategoryIcon from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
 import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
 
 //define the type for months
 type Month =
@@ -29,6 +30,9 @@ type Month =
     | "november"
     | "december";
 
+
+
+
 const SpendingMonth: React.FC = () => {
     const { t } = useTranslation();
     const { month } = useParams<{ month: Month }>(); //get month parameter from url
@@ -44,6 +48,7 @@ const SpendingMonth: React.FC = () => {
     const [currentMonthSpending, setCurrentMonthSpending] = useState(0);
     const [previousMonthSpending, setPreviousMonthSpending] = useState(0);
 
+
     //colors for categories
     const categoryColors: { [key in TransactionCategory]: string } = {
         [TransactionCategory.GROCERIES]: "#B0C4DE",
@@ -56,6 +61,20 @@ const SpendingMonth: React.FC = () => {
         [TransactionCategory.INCOME]: "#778899",
         [TransactionCategory.MISC]: "#D3D3D3"
     };
+
+    // capitalize first letter of the month
+    const capitalizeFirstLetter = (string: string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
+    // translated month
+    const getTranslatedMonth = (month: Month) => {
+        const translatedMonth = t(`spending.${month}`);
+        return capitalizeFirstLetter(translatedMonth);
+    };
+
+
+    const translatedMonth = getTranslatedMonth(lowercaseMonth);
 
     //-----MONTH ROUTING---
     const monthNames: Month[] = [
@@ -72,6 +91,8 @@ const SpendingMonth: React.FC = () => {
         "november",
         "december"
     ];
+
+
 
     const getPreviousMonth = (month: Month) => {
         const index = monthNames.indexOf(month);
@@ -208,6 +229,7 @@ const SpendingMonth: React.FC = () => {
                 //prepare category data for pie chart
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
+                    displayName: t(category),
                     value: categorySpending[category]!,
                     color: categoryColors[category]
                 }));
@@ -233,7 +255,7 @@ const SpendingMonth: React.FC = () => {
         };
 
         fetchTransactions();
-    }, [month]);
+    }, [month, t]);
 
     //total spending for the month
     const totalSpending = transactions.reduce(
@@ -241,8 +263,12 @@ const SpendingMonth: React.FC = () => {
         0
     );
     const spendingDifference = currentMonthSpending - previousMonthSpending;
-    const percentageChange = Math.abs((spendingDifference / previousMonthSpending) * 100).toFixed(2);
+    const percentageChange = totalSpending === 0 ? "0.00" : Math.abs((spendingDifference / previousMonthSpending) * 100).toFixed(2);
     const isSpendingIncreased = spendingDifference > 0;
+
+
+
+
 
     //category expenses table
     const categoryExpenses = (
@@ -253,6 +279,9 @@ const SpendingMonth: React.FC = () => {
                     <th scope="col">{t('spending.percentageOfMonthlySpending')}</th>
                     <th scope="col">{t('spending.amount')}</th>
 
+                    <th scope="col">{t('spending.category')}</th>
+                    <th scope="col">{t('spending.percent-monthly')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -260,7 +289,7 @@ const SpendingMonth: React.FC = () => {
                     <tr key={category.name} style={{ padding: "20px" }}>
                         <th scope="row" style={{ padding: "20px" }}>
                             <CategoryIcon category={category.name} color={category.color} />
-                            {category.name}
+                            {category.displayName}
                         </th>
                         <td style={{ padding: "20px" }}>{((category.value / totalSpending) * 100).toFixed(2)}%</td>
                         <td style={{ padding: "20px" }}>${category.value.toFixed(2)}</td>
@@ -359,6 +388,7 @@ const SpendingMonth: React.FC = () => {
         return (
             <StyledText x={left + width / 2} y={top + height / 2 - 10}>
                 <Line1 dy="-1.0em">{t('spending.totalSpentWeek')}</Line1>
+                <Line1 dy="-1.0em">{t('spending.totalSpent')}</Line1>
                 <Line2 x={left + width / 2} dy="1.2em">
                     ${totalSpending.toFixed(2)}
                 </Line2>
@@ -371,13 +401,11 @@ const SpendingMonth: React.FC = () => {
         navigate(`/dashboard/spending/${selectedMonth}`);
     };
 
-    const capitalizeFirstLetter = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    };
+
 
     const monthOptions = monthNames.map((month) => ({
         value: month,
-        label: capitalizeFirstLetter(month)
+        label: getTranslatedMonth(month)
     }));
 
     return (
@@ -393,6 +421,10 @@ const SpendingMonth: React.FC = () => {
 
 
 
+                        <Title className="ml-3">
+                            {" "}
+                            {translatedMonth} {t('spending.spendings')}
+                        </Title>
                         <div className="flex items-center">
                             <p className="text-5xl pl-2 font-semibold">${currentMonthSpending.toFixed(2)}</p>
                             <div className="flex items-center ml-5">
@@ -408,11 +440,7 @@ const SpendingMonth: React.FC = () => {
                                             style={{ fontSize: "2rem" }}
                                         />
                                     )}
-                                    {percentageChange}% {t('spending.from')} {capitalizeFirstLetter(
-                                        monthNames[
-                                        getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
-                                        ]
-                                    )}
+                                    {percentageChange}% {t('spending.from')} {getTranslatedMonth(getPreviousMonth(lowercaseMonth))}
                                 </p>
                             </div>
                         </div>
@@ -430,111 +458,135 @@ const SpendingMonth: React.FC = () => {
                             </div>
 
                             <div className="flex items-center gap-4 bg-transparent p-4 pr-10">
-                                <Select
-                                    id="month-select"
-                                    name="month-select"
-                                    defaultValue={lowercaseMonth}
-                                    onChange={handleMonthChange}
-                                    style={{
-                                        padding: "0.5rem",
-                                        width: "10rem",
-                                        backgroundColor: "transparent",
-                                        border: "1px solid black",
-                                        borderRadius: "4px",
-                                        appearance: "none"
-                                    }}
-                                >
-                                    {monthOptions.map((option) => (
-                                        <option key={option.value} value={option.value}>
-                                            {t(`spending.month.${option.label}`)}
-                                        </option>
-                                    ))}
+                                <div className=" bg-gray-100 p-4 m-2 min-h-[30rem] rounded-md flex flex-col justify-center items-center shadow-lg">
+                                    <div className="flex items-center mb-4 justify-start w-full">
+                                        <Link to="/dashboard/spending" className="mr-3">
+                                            <Button type="button" className="ml-3">
+                                                {t('spending.back-overview')}
+                                            </Button>
+                                        </Link>
+                                        <div className="flex items-center gap-4 bg-transparent p-4">
+                                            <Select
+                                                id="month-select"
+                                                name="month-select"
+                                                defaultValue={lowercaseMonth}
+                                                onChange={handleMonthChange}
+                                                style={{
+                                                    padding: "0.5rem",
+                                                    width: "10rem",
+                                                    backgroundColor: "transparent",
+                                                    border: "1px solid black",
+                                                    borderRadius: "4px",
+                                                    appearance: "none"
+                                                }}
+                                            >
+                                                {monthOptions.map((option) => (
+                                                    <option key={option.value} value={option.value}>
+                                                        {t(`spending.month.${option.label}`)}
+                                                    </option>
+                                                ))}
 
-                                </Select>
-                            </div>
-                        </div>
+                                            </Select>
+                                        </div>
+                                    </div>
 
-                        <div className="flex items-center mb-2 justify-start w-full">
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        scaleType: "band",
-                                        data: weeklyData.map((d) => `${t('spending.week')} ${d.week}`),
-                                        categoryGapRatio: 0.5
-                                    } as AxisConfig<"band">
-                                ]}
-                                series={[
-                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: t('spending.earnings') },
-                                    { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: t('spending.spendings') }
-                                ]}
+                                    <div className="flex items-center mb-2 justify-start w-full">
+                                        <BarChart
+                                            xAxis={[
+                                                {
+                                                    scaleType: "band",
+                                                    data: weeklyData.map((d) => `${t('spending.week')} ${d.week}`),
+                                                    categoryGapRatio: 0.5
+                                                } as AxisConfig<"band">
+                                            ]}
+                                            series={[
+                                                { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: t('spending.earnings') },
+                                                { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: t('spending.spendings') }
+                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: t('spending.earned') },
+                                                { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: t('spending.spendings') }
+                                            ]}
 
-                                grid={{ horizontal: true }}
-                                width={1400}
-                                height={400}
-                            />
+                                            grid={{ horizontal: true }}
+                                            width={1400}
+                                            height={400}
+                                        />
+                                    </div>
+
+
+                                </div>
+
+                                {/* Second row with two columns */}
+                                <div className="flex">
+                                    <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
+
+                                        {spendingCategories.length > 0 ? (
+                                            <div className="relative w-full h-full" style={{ minHeight: '600px', minWidth: '600px' }}>
+                                                <PieChart
+                                                    series={[
+                                                        {
+                                                            data: spendingCategories.map((d) => ({
+                                                                label: d.displayName,
+                                                                id: d.name,
+                                                                value: d.value,
+                                                                icon: CategoryIcon,
+                                                                color: d.color
+                                                            })),
+                                                            innerRadius: "48%",
+                                                            outerRadius: "95%",
+                                                            paddingAngle: 1,
+                                                            cornerRadius: 3,
+                                                            startAngle: -180,
+                                                            endAngle: 180,
+                                                            cx: "50%",
+                                                            cy: "50%",
+                                                            arcLabel: (item) => `${item.label}`,
+
+                                                            arcLabelMinAngle: 15,
+
+                                                            valueFormatter: (v, { dataIndex }) => {
+                                                                return `$ ${v.value} `;
+                                                            }
+                                                        }
+                                                    ]}
+                                                    slotProps={{
+                                                        legend: { hidden: true }
+                                                    }}
+                                                    sx={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        [`& .${pieArcLabelClasses.root}`]: {
+                                                            fill: "white",
+                                                            fontWeight: "bold"
+                                                        },
+                                                        [`.${legendClasses.root}`]: {
+                                                            transform: "translate(2px, 0)"
+                                                        }
+                                                    }}
+                                                >
+                                                    <PieCenterLabel totalSpending={totalSpending} />
+                                                </PieChart>
+                                            </div>
+
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center w-full h-full text-xl">
+                                                {t('spending.no-data')}
+                                                <Button type="button" onClick={() => navigate('/dashboard/transactions')} className="mt-4">
+                                                    {t('transactions.add-transaction')}
+                                                </Button>
+                                            </div>
+                                        )}
+
+                                        <div className="w-full">
+                                            <Table bordered={false} className="w-full">
+                                                {categoryExpenses}
+                                            </Table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     </div>
-
-                    {/* Second row with two columns */}
-                    <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px]">
-                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-2/4 md:h-3/4 lg:w-full lg:h-full lg:-m-4 pt-10">
-                                <PieChart
-                                    series={[
-                                        {
-                                            data: spendingCategories.map((d) => ({
-                                                label: d.name,
-                                                id: d.name,
-                                                value: d.value,
-                                                icon: CategoryIcon,
-                                                color: d.color
-                                            })),
-                                            innerRadius: "48%",
-                                            outerRadius: "95%",
-                                            paddingAngle: 1,
-                                            cornerRadius: 3,
-                                            startAngle: -180,
-                                            endAngle: 180,
-                                            cx: "50%",
-                                            cy: "50%",
-                                            arcLabel: (item) => `${item.label}`,
-
-                                            arcLabelMinAngle: 15,
-
-                                            valueFormatter: (v, { dataIndex }) => {
-                                                return `$ ${v.value} `;
-                                            }
-                                        }
-                                    ]}
-                                    slotProps={{
-                                        legend: { hidden: true }
-                                    }}
-                                    sx={{
-                                        width: "100%",
-                                        height: "100%",
-                                        [`& .${pieArcLabelClasses.root}`]: {
-                                            fill: "white",
-                                            fontWeight: "bold"
-                                        },
-                                        [`.${legendClasses.root}`]: {
-                                            transform: "translate(2px, 0)"
-                                        }
-                                    }}
-                                >
-                                    <PieCenterLabel totalSpending={totalSpending} />
-                                </PieChart>
-                            </div>
-                            <div className="w-full">
-                                <Table bordered={false} className="w-full">
-                                    {categoryExpenses}
-                                </Table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-    );
+                    );
 };
 
-export default SpendingMonth;
+                    export default SpendingMonth;
