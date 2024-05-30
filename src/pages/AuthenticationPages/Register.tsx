@@ -1,4 +1,4 @@
-import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer } from "@trussworks/react-uswds";
+import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer, Title } from "@trussworks/react-uswds";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -64,7 +64,7 @@ const Register: React.FC = () => {
                 <Grid row className="flex-justify-center">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
                         <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest shadow-lg rounded-lg margin-bottom-4">
-                            <h1 className="margin-bottom-0">{t("auth.register")}</h1>
+                            <Title className="margin-bottom-0">{t("auth.register")}</Title>
                             <Form onSubmit={handleSubmit} className="min-w-full">
                                 <Fieldset legend={t("auth.register-desc")} legendStyle="default">
                                     <Label htmlFor="email">{t("auth.email")}</Label>
