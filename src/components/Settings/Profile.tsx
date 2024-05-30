@@ -100,7 +100,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })
                         Passwords do not match
                     </Alert>}
                     <Label htmlFor="new-password">{t("nav.new-password")}</Label>
-                    <InputGroup>
+                    <InputGroup className="unstyled-input-group">
                         <TextInput
                             id="new-password"
                             name="new-password"
@@ -109,9 +109,9 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })
                         <InputSuffix onClick={() => setShowNewPassword(!showNewPassword)}>
                             {showNewPassword ? <Icon.VisibilityOff /> : <Icon.Visibility />}
                         </InputSuffix>
-                    </InputGroup>
+                    </InputGroup >
                     <Label htmlFor="confirm-password">{t("nav.confirm-password")}</Label>
-                    <InputGroup>
+                    <InputGroup className="unstyled-input-group">
                         <TextInput id="confirm-password" name="confirm-password" type={showConfirmPassword ? "text" : "password"} />
                         <InputSuffix onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                             {showConfirmPassword ? <Icon.VisibilityOff /> : <Icon.Visibility />}
