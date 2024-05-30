@@ -515,9 +515,17 @@ function TransactionHistory() {
                                 }
                             ]}
                             height={300}
+                            onAxisClick={(_event, params) => {
+                                if (params) {
+                                    setCurrentTransaction(filteredTransactions[params.dataIndex]);
+                                    if (!infoRef.current?.modalIsOpen)
+                                        infoRef.current?.toggleModal();
+                                }
+                            }}
                             onItemClick={(_event, params) => {
                                 setCurrentTransaction(filteredTransactions[params.dataIndex]);
-                                infoRef.current?.toggleModal();
+                                if (!infoRef.current?.modalIsOpen)
+                                    infoRef.current?.toggleModal();
                             }}
                             yAxis={[
                                 {
