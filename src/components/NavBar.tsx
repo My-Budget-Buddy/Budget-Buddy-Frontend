@@ -7,6 +7,7 @@ import Profile from "./Settings/Profile";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import RequestPageOutlinedIcon from "@mui/icons-material/RequestPageOutlined";
 import { getUserInformationAPI } from "../pages/Tax/taxesAPI";
+import buddyLogo from "../images/bb-3-dark.png"
 
 const NavBar = () => {
     const { t } = useTranslation();
@@ -85,15 +86,16 @@ const NavBar = () => {
     ];
 
     return (
-        <div className="nav-container px-6 h-screen min-w-64 max-w-min-w-64 flex flex-col pt-6 bg-neutral-800">
+        <div className="nav-container bg-[#005ea2] px-6 h-screen min-w-64 max-w-min-w-64 flex flex-col pt-6">
             <Link to="/" className="">
-                <h2 className="font-semibold text-center text-2xl text-white">{t("app-name")}</h2>
+                <img src={buddyLogo} className="w-44 ml-4"></img>
+                {/*<h2 className="font-semibold text-center text-2xl text-white">{t("app-name")}</h2>*/}
             </Link>
             <div className="flex flex-col items-center gap-6 mt-8">
                 {pages.map((pages) => (
                     <Link
                         to={pages.path}
-                        className="w-full usa-button usa-button--base min-w-full text-left items-center"
+                        className="w-full usa-button min-w-full text-left items-center"
                         key={pages.path}
                     >
                         {pages.icon} {pages.title}
@@ -102,14 +104,14 @@ const NavBar = () => {
             </div>
 
             {/* Profile Information + Settings Button */}
-            <div className="border-t border-t-neutral-700 w-full mt-auto pb-8">
+            <div className="border-t border-t-[#73b3e7] w-full mt-auto pb-8">
                 <div className="py-2" />
                 <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col">
                         <p className="text-lg font-bold text-white">{`${profile.firstName} ${profile.lastName}`}</p>
-                        <p className="text-sm text-neutral-400">{`${profile.email}`}</p>
+                        <p className="text-sm text-neutral-200">{`${profile.email}`}</p>
                     </div>
-                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={fetchUserInfo}><Icon.Settings className="text-blue-500" /></ModalToggleButton>
+                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={fetchUserInfo}><Icon.Settings className="text-[#d9e8f6]" /></ModalToggleButton>
                     <Modal
                         ref={modalRef}
                         id="settings-modal"
