@@ -14,7 +14,7 @@ import { updateUserId } from "../../../util/redux/userSlice";
 import { formatCurrency } from "../../../util/helpers";
 import { useTranslation } from "react-i18next";
 import { getTotalAvailableFunds } from "./requests/accountRequests";
-import { Icon } from "@trussworks/react-uswds";
+import { Icon, Title } from "@trussworks/react-uswds";
 
 type CustomComponentProps = {
     hideAdditionalInfo?: boolean;
@@ -101,34 +101,31 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
     return (
         <>
             <div className="flex flex-row justify-between w-full">
-                <div className="flex flex-col items-center justify-around ml-8" hidden={hideAdditionalInfo}>
-                    <div className="text-2xl font-bold flex flex-row">
-                        {t("budgets.total-funds")}
+                <div className="flex flex-col items-center" hidden={hideAdditionalInfo}>
+                    <div className="text-2xl font-bold flex flex-row items-center">
+                        <Title>{t("budgets.total-funds")}</Title>
                         <span
                             onMouseEnter={() => setShowTooltip(true)}
                             onMouseLeave={() => setShowTooltip(false)}
-                            className="relative text-sm align-middle ml-1"
+                            className="relative text-sm"
                         >
-                            <Icon.Help />
+                            <Icon.Help className="mt-4"/>
                             {/* Render tooltip conditionally */}
                             {showTooltip && (
-                                <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-80 text-sm">
+                                <div className="absolute left-8 top-4 bg-gray-200 p-2 rounded shadow-md w-80 text-sm">
                                     {"= (Checkings + Savings) - (Credits + Reserved)"}
                                 </div>
                             )}
                         </span>
                     </div>
-                    <div style={{ color: totalFundsAvailable >= 0 ? "green" : "red" }} className=" text-6xl  font-bold">
+                    <div style={{ color: totalFundsAvailable >= 0 ? "green" : "red" }} className="flex h-full items-center text-6xl font-bold">
                         {formatCurrency(totalFundsAvailable)}
                     </div>
                     <div></div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                    <div className="text-2xl mt-4 font-bold">
-                        {t("budgets.left-to-spend")} {selectedMonthString} {selectedYear}
-                    </div>
-
+                    <Title>{t("budgets.left-to-spend")} {selectedMonthString} {selectedYear}</Title>
                     <Gauge
                         width={400}
                         height={200}
@@ -154,15 +151,14 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                     </div>
                 </div>
 
-                <div className="flex flex-col justify-around mr-8" hidden={hideAdditionalInfo}>
+                <div className="flex flex-col items-center" hidden={hideAdditionalInfo}>
                     <div className="flex flex-col items-center">
-                        <div className="text-2xl font-bold">
-                            {selectedMonthString} {selectedYear} {t("budgets.spending-budget")}{" "}
+                        <Title>{selectedMonthString} {selectedYear} {t("budgets.spending-budget")}{" "}
                             <EditSpendingBudgetModal
                                 summaryId={monthlySummary.summaryId}
                                 totalBudgetAmount={monthlySummary.totalBudgetAmount}
                             />
-                        </div>
+                        </Title>
                         <div className="text-lg">{formatCurrency(budgets.spendingBudget)}</div>
                     </div>
                     <div className="flex flex-col items-center">
