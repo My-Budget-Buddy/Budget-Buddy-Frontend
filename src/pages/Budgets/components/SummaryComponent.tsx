@@ -113,7 +113,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                             {/* Render tooltip conditionally */}
                             {showTooltip && (
                                 <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-80 text-sm">
-                                    {"= (Checkings + Savings) - (Credits + Reserved)"}
+                                    {"This is the total money you have across your checking and savings accounts, minus any debts and money reserved from your Savings Buckets."}
                                 </div>
                             )}
                         </span>
@@ -147,7 +147,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                                 fill: gaugeColor
                             }
                         }}
-                        // ...
+                    // ...
                     />
                     <div className="bg-slate-200 p-1 px-2 rounded-lg font-bold">
                         {t("budgets.of")} {formatCurrency(budgets.spendingBudget)}
