@@ -11,6 +11,8 @@ import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CategoryIcon from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
+import { useTranslation } from 'react-i18next';
+
 
 //define the type for months
 type Month =
@@ -28,6 +30,7 @@ type Month =
     | "december";
 
 const SpendingMonth: React.FC = () => {
+    const { t } = useTranslation();
     const { month } = useParams<{ month: Month }>(); //get month parameter from url
     const lowercaseMonth = month?.toLowerCase() as Month; //need to make the month name lowercase
     const navigate = useNavigate();
@@ -201,6 +204,7 @@ const SpendingMonth: React.FC = () => {
                         vendorSpending[transaction.vendorName] += transaction.amount;
                     }
                 });
+
                 //prepare category data for pie chart
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
@@ -245,9 +249,10 @@ const SpendingMonth: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Category</th>
-                    <th scope="col">% of Monthly Spending</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.category')}</th>
+                    <th scope="col">{t('spending.percentageOfMonthlySpending')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -272,9 +277,9 @@ const SpendingMonth: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Category</th>
+                    <th scope="col">{t('spending.category')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
 
-                    <th scope="col">Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -295,9 +300,10 @@ const SpendingMonth: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.date')}</th>
+                    <th scope="col">{t('spending.vendor')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -352,7 +358,7 @@ const SpendingMonth: React.FC = () => {
         const { width, height, left, top } = useDrawingArea();
         return (
             <StyledText x={left + width / 2} y={top + height / 2 - 10}>
-                <Line1 dy="-1.0em">TOTAL SPENT</Line1>
+                <Line1 dy="-1.0em">{t('spending.totalSpentWeek')}</Line1>
                 <Line2 x={left + width / 2} dy="1.2em">
                     ${totalSpending.toFixed(2)}
                 </Line2>
@@ -378,14 +384,17 @@ const SpendingMonth: React.FC = () => {
         <div className="min-w-screen">
             <div className="flex-1">
                 <section className="h-screen">
+
                     {/* Title for the page */}
                     <div className="mb-6">
-                        <Title className="ml-3">
-                            {" "}
-                            {lowercaseMonth.charAt(0).toUpperCase() + lowercaseMonth.slice(1)} Spending
-                        </Title>
+                        <h2 className="ml-3 py-4 pt-10 text-bold text-3xl opacity-70">
+                            {t(`spending.month.${lowercaseMonth}`)} {t('spending.spending')}
+                        </h2>
+
+
+
                         <div className="flex items-center">
-                            <p className="text-6xl font-semibold">${currentMonthSpending.toFixed(2)}</p>
+                            <p className="text-5xl pl-2 font-semibold">${currentMonthSpending.toFixed(2)}</p>
                             <div className="flex items-center ml-5">
                                 <p
                                     className={`text-2xl font-semibold ${isSpendingIncreased ? "text-red-600" : "text-green-600"
@@ -399,8 +408,7 @@ const SpendingMonth: React.FC = () => {
                                             style={{ fontSize: "2rem" }}
                                         />
                                     )}
-                                    {percentageChange}% from{" "}
-                                    {capitalizeFirstLetter(
+                                    {percentageChange}% {t('spending.from')} {capitalizeFirstLetter(
                                         monthNames[
                                         getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
                                         ]
@@ -409,16 +417,19 @@ const SpendingMonth: React.FC = () => {
                             </div>
                         </div>
                     </div>
-
                     {/* Full-width row */}
-                    <div className=" bg-gray-100 p-4 m-2 min-h-[30rem] rounded-md flex flex-col justify-center items-center shadow-lg">
-                        <div className="flex items-center mb-4 justify-start w-full">
-                            <Link to="/dashboard/spending" className="mr-3">
-                                <Button type="button" className="ml-3">
-                                    Back to Annual Spending Overview
-                                </Button>
-                            </Link>
+                    <div className=" p-4 m-2 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
+                        <div className="flex items-center justify-between w-full mb-4 pl-6">
                             <div className="flex items-center gap-4 bg-transparent p-4">
+                                <Link to="/dashboard/spending" className="mr-3">
+                                    <Button type="button" className="ml-3">
+                                        {t('spending.backToAnnualSpendingOverview')}
+                                    </Button>
+                                </Link>
+
+                            </div>
+
+                            <div className="flex items-center gap-4 bg-transparent p-4 pr-10">
                                 <Select
                                     id="month-select"
                                     name="month-select"
@@ -435,36 +446,39 @@ const SpendingMonth: React.FC = () => {
                                 >
                                     {monthOptions.map((option) => (
                                         <option key={option.value} value={option.value}>
-                                            {option.label}
+                                            {t(`spending.month.${option.label}`)}
                                         </option>
                                     ))}
+
                                 </Select>
                             </div>
                         </div>
+
                         <div className="flex items-center mb-2 justify-start w-full">
                             <BarChart
                                 xAxis={[
                                     {
                                         scaleType: "band",
-                                        data: weeklyData.map((d) => `Week ${d.week}`),
+                                        data: weeklyData.map((d) => `${t('spending.week')} ${d.week}`),
                                         categoryGapRatio: 0.5
                                     } as AxisConfig<"band">
                                 ]}
                                 series={[
-                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: "Earnings" },
-                                    { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: "Spendings" }
+                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: t('spending.earnings') },
+                                    { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: t('spending.spendings') }
                                 ]}
+
                                 grid={{ horizontal: true }}
                                 width={1400}
                                 height={400}
                             />
                         </div>
                     </div>
+
                     {/* Second row with two columns */}
                     <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
-                            <h2></h2>
-                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-2/4 md:h-3/4 lg:w-full lg:h-full lg:-m-4">
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px]">
+                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-2/4 md:h-3/4 lg:w-full lg:h-full lg:-m-4 pt-10">
                                 <PieChart
                                     series={[
                                         {
@@ -513,34 +527,6 @@ const SpendingMonth: React.FC = () => {
                             <div className="w-full">
                                 <Table bordered={false} className="w-full">
                                     {categoryExpenses}
-                                </Table>
-                            </div>
-                        </div>
-                        {/* section for more insights -> top expenses..and?? */}
-
-                        <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md">
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
-                                <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
-                                <Table bordered={false} className="w-full">
-                                    {topPurchases}
-                                </Table>
-                            </div>
-
-                            {/* Top Categories Table */}
-
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
-                                <h2 className="text-2xl mb-4 mt-1">Top Spending Categories</h2>
-                                <Table bordered={false} className="w-full">
-                                    {topExpenses}
-                                </Table>
-                            </div>
-
-                            {/* Most Popular Vendors Table */}
-
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
-                                <h2 className="text-2xl mb-4 mt-1">Top Spending Locations</h2>
-                                <Table bordered={false} className="w-full">
-                                    {popularVendorsTable}
                                 </Table>
                             </div>
                         </div>

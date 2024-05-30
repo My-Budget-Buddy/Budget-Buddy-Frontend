@@ -116,7 +116,7 @@
       "vendor": "Vendor",
       "earned": "Earned",
       "spendings": "Spendings",
-      "totalSpent": "Total spent",
+      "totalSpent": "Annual total spent",
       "from": "from",
       "one-month": "January",
       "two-month": "February",
@@ -129,9 +129,48 @@
       "nine-month": "September",
       "ten-month": "October",
       "eleven-month": "Novemeber",
-      "twelve-month": "December"
+      "twelve-month": "December",
+      "totalSpentWeek": "Total spent",
+      "monthSpending": "{{month}} Spending",
+      "percentageOfMonthlySpending": "% of Monthly Spending",
+      "backToAnnualSpendingOverview": "Back to Annual Spending Overview",
+      "week": "Week",
+      "earnings": "Earnings",
+      "spending": "Spending",
+      "month": {
+        "January": "January",
+        "February": "February",
+        "March": "March",
+        "April": "April",
+        "May": "May",
+        "June": "June",
+        "July": "July",
+        "August": "August",
+        "September": "September",
+        "October": "October",
+        "November": "November",
+        "December": "December",
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
+      }
     },
+
+
+
+
+
     "transactions": {
+
       "title": "Transactions",
       "clear-filters": "Clear Filters",
       "sort-by-date": "Sort by date",

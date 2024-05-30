@@ -14,7 +14,10 @@ import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
 import { useTranslation } from 'react-i18next';
 
+
+
 //define the type for months
+
 type Month =
     | "january"
     | "february"
@@ -417,14 +420,12 @@ const Spending: React.FC = () => {
         <div className="min-w-screen mt-10">
             <div className="flex-1">
                 <section className="h-screen ">
-
                     {/* Title for the page */}
                     <div className="mb-4 ml-3">
                         <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t('spending.title')}</h2>
                         {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
                         <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
                     </div>
-
                     <div className="flex justify-between gap-x-4 w-full m-2">
                         {[
                             { details: t('spending.spentThisWeek'), price: currentWeekSpending, percentage: spendingWeekChange, icon: Icon.AttachMoney, bgColor: "bg-red-500" },

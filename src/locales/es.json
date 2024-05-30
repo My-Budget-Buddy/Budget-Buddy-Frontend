@@ -129,9 +129,50 @@
       "nine-month": "Septiembre",
       "ten-month": "Octubre",
       "eleven-month": "Noviembre",
-      "twelve-month": "Diciembre"
+      "twelve-month": "Diciembre",
+      "totalSpentWeek": "Total gastado",
+      "percentageOfMonthlySpending": "% de gastos mensuales",
+      "earnings": "Ingresos",
+      "backToAnnualSpendingOverview": "Regresar a Resumen de Gastos Anuales",
+      "week": "Semana",
+      "spending": "Gastos",
+      "month": {
+        "January": "Enero",
+
+        "February": "Febrero",
+        "March": "Marzo",
+        "April": "Abril",
+        "May": "Mayo",
+        "June": "Junio",
+        "July": "Julio",
+        "August": "Agosto",
+        "September": "Septiembre",
+        "October": "Octubre",
+        "November": "Noviembre",
+        "December": "Diciembre",
+        "january": "Enero",
+        "february": "Febrero",
+        "march": "Marzo",
+        "april": "Abril",
+        "may": "Mayo",
+        "june": "Junio",
+        "july": "Julio",
+        "august": "Agosto",
+        "september": "Septiembre",
+        "october": "Octubre",
+        "november": "Noviembre",
+        "december": "Diciembre"
+      }
+
     },
+
+
+
+
+
     "transactions": {
+
+
       "title": "Transacciones",
       "clear-filters": "Limpiar filtros",
       "sort-by-date": "Ordenar por fecha",
