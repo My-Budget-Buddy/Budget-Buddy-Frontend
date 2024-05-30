@@ -8,13 +8,15 @@ interface Authorization {
     jwt: string | null;
     setJwt: Dispatch<SetStateAction<string | null>>;
     logout: () => void;
+    isAuthenticated: boolean;
 }
 
 const AuthenticationContext = createContext<Authorization>({
     loading: true,
     jwt: null,
     setJwt: () => {},
-    logout: () => {}
+    logout: () => {},
+    isAuthenticated: false
 });
 
 export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
@@ -22,6 +24,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
 
     const [loading, setLoading] = useState(true);
     const [jwt, setJwt] = useState<string | null>(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     // check for an existing JWT in the user's cookies and sync it to state
     useEffect(() => {
@@ -40,11 +43,28 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
         }
     }, [jwt]);
 
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
     const logout = () => {
         setJwt(null);
         Cookies.remove("jwt");
 
         navigate("/");
+    };
+    const checkAuth = async () => {
+        // Implement the logic to check if the JWT is valid
+        try {
+            const response = await fetch("/api/auth/validate-token");
+            if (response.ok) {
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+            }
+        } catch (error) {
+            setIsAuthenticated(false);
+        }
     };
 
     return (
