@@ -18,6 +18,7 @@ const NavBar = () => {
         email: "",
         id: 0
     });
+    const [name, setName] = useState<string | null>(null)
 
     const fetchUserInfo = async () => {
         try {
@@ -32,6 +33,7 @@ const NavBar = () => {
                     email: user.email,
                     id: user.id
                 });
+                setName(updatedUser.firstName)
             });
         } catch (error) {
             console.log("There was an error fetching user information: ", error);
@@ -75,7 +77,7 @@ const NavBar = () => {
         {
             title: t("nav.profile"),
             icon: Icon.Person,
-            component: <Profile profile={profile} setProfile={setProfile} fetchUserInfo={fetchUserInfo} />
+            component: <Profile profile={profile} setProfile={setProfile} fetchUserInfo={fetchUserInfo} setName={setName} />
         },
         {
             title: t("nav.languages"),
@@ -91,7 +93,7 @@ const NavBar = () => {
                     <Title className="font-semibold text-center">{t("app-name")}</Title>
                 </Link>
                 <div className="flex flex-row items-center gap-4 mt-4">
-                    <h3>{t("nav.greeting")}, [Name]</h3>
+                    <h3>{name ? `${t("nav.greeting")}, ${name}` : `${t("nav.greeting")}`}</h3>
                     <ModalToggleButton
                         modalRef={modalRef}
                         opener

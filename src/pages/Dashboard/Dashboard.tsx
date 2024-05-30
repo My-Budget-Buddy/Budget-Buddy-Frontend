@@ -92,7 +92,6 @@ const Dashboard: React.FC = () => {
                     const accounts = res.data;
                 
                 //const accounts = response.data;
-                console.log("accounts: ", accounts);
                 setAccounts(accounts);
                 let allAccounts: AllAccountsType[] = accounts.reduce(
                     (prev: AllAccountsType[], account: InitialAccountType) => {
@@ -189,8 +188,6 @@ const Dashboard: React.FC = () => {
         };
         fetchMonthlyTransactions();
     }, []);
-    console.log("===============================");
-    console.log("this is a test", monthlyTransactions);
 
     //---- budgets gauge ----
     useEffect(() => {
@@ -219,7 +216,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className="flex flex-col flex-wrap ">
-            <h1>{t("dashboard.welcome")} [add user name]</h1>
+            <h1>{t("dashboard.welcome")}</h1>
             <div className="flex">
                 <div
                     id="chart-container"

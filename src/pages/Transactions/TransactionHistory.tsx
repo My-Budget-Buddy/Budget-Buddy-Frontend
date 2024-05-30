@@ -159,7 +159,9 @@ function TransactionHistory() {
 
         sortedTransactions = sortedTransactions.sort((a, b) => {
             if (sortOrder === "amount") {
-                return sortDirection === "asc" ? a.amount - b.amount : b.amount - a.amount;
+                return sortDirection === "asc"
+                    ? a.amount * (a.category === "Income" ? 1 : -1) - b.amount * (b.category === "Income" ? 1 : -1)
+                    : b.amount * (b.category === "Income" ? 1 : -1) - a.amount * (a.category === "Income" ? 1 : -1);
             } else {
                 return sortDirection === "asc"
                     ? new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -321,8 +323,8 @@ function TransactionHistory() {
                             value={sortDirection}
                             onChange={(e) => setSortDirection(e.target.value)}
                         >
-                            <option value="asc">{t("transactions.ascending")}</option>
                             <option value="desc">{t("transactions.descending")}</option>
+                            <option value="asc">{t("transactions.ascending")}</option>
                         </select>
                         <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
                             {t("transactions.add-transaction")}
@@ -443,9 +445,8 @@ function TransactionHistory() {
                     </div>
                 )}
 
-                <CardGroup>
+                <CardGroup className="">
                     <Card gridLayout={{ col: 8 }}>
-                        <CardHeader></CardHeader>
                         <CardBody>
                             {filteredTransactions.length === 0 ? (
                                 <div className="text-center">
@@ -579,19 +580,19 @@ function TransactionHistory() {
                                     {
                                         colorMap: {
                                             type: "continuous",
-                                            // thresholds: [-0.0, 0.0],
-                                            min: transactions.reduce(
-                                                (prev, cur) => (prev.amount < cur.amount ? prev : cur),
-                                                { ...transactions[0], amount: Number.MAX_VALUE }
+                                            min: transactions.reduce((prev, cur) =>
+                                                prev.amount < cur.amount ? prev : cur
                                             ).amount,
-                                            max: transactions.reduce(
-                                                (prev, cur) => (prev.amount > cur.amount ? prev : cur),
-                                                { ...transactions[0], amount: Number.MIN_VALUE }
+                                            max: transactions.reduce((prev, cur) =>
+                                                prev.amount > cur.amount ? prev : cur
                                             ).amount,
-                                            color: ["#ff5722", "#009688"]
-                                        }
+                                            color: ["#ff9800", "#4caf50"]
+                                        },
+                                        valueFormatter: (val) => formatCurrency(val)
                                     }
                                 ]}
+                                margin={{ left: 100 }}
+                                grid={{ horizontal: true }}
                             />
                         </CardBody>
                     </Card>

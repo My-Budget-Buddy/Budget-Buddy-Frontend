@@ -57,7 +57,7 @@ const Transactions: React.FC = () => {
     const [showDateFilter, setShowDateFilter] = useState<boolean>(false);
 
     const [sortOrder, setSortOrder] = useState<string>("date");
-    const [sortDirection, setSortDirection] = useState<string>("asc");
+    const [sortDirection, setSortDirection] = useState<string>("dsc");
 
     const [newTransaction, setNewTransaction] = useState<Omit<Transaction, "transactionId">>({
         userId: 1,
@@ -98,7 +98,9 @@ const Transactions: React.FC = () => {
 
         sortedTransactions = sortedTransactions.sort((a, b) => {
             if (sortOrder === "amount") {
-                return sortDirection === "asc" ? a.amount - b.amount : b.amount - a.amount;
+                return sortDirection === "asc"
+                    ? a.amount * (a.category === "Income" ? 1 : -1) - b.amount * (b.category === "Income" ? 1 : -1)
+                    : b.amount * (b.category === "Income" ? 1 : -1) - a.amount * (a.category === "Income" ? 1 : -1);
             } else {
                 return sortDirection === "asc"
                     ? new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -229,8 +231,8 @@ const Transactions: React.FC = () => {
                         value={sortDirection}
                         onChange={(e) => setSortDirection(e.target.value)}
                     >
-                        <option value="asc">{t("transactions.ascending")}</option>
                         <option value="desc">{t("transactions.descending")}</option>
+                        <option value="asc">{t("transactions.ascending")}</option>
                     </select>
                     <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
                         {t("transactions.add-transaction")}
@@ -535,7 +537,6 @@ const Transactions: React.FC = () => {
                                 name="vendorName"
                                 type="text"
                                 onChange={handleInputChange}
-                                disabled
                                 required
                             />
                             <Label htmlFor="transaction-amount">{t("transactions-table.amount")}</Label>
