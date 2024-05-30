@@ -48,64 +48,14 @@ function TransactionHistory() {
     const { t } = useTranslation();
     const transactionsInit: Transaction[] = [
         {
-            transactionId: 10,
-            date: "2021-10-01",
-            vendorName: "Hot dog breakfast",
+            transactionId: -1,
+            date: "1973-01-01",
+            vendorName: Name,
             category: TransactionCategory.DINING,
             amount: 2.33,
-            description: "One hot dog",
-            accountId: 1,
-            userId: 1
-        },
-        {
-            transactionId: 11,
-            date: "2023-10-11",
-            vendorName: "Hot dog wating for train",
-            category: TransactionCategory.DINING,
-            amount: 4.66,
-            description: "Anywhere from 1 to 2 hot dogs",
-            accountId: 2,
-            userId: 1
-        },
-        {
-            transactionId: 12,
-            date: "2023-10-11",
-            vendorName: "Hot dog at lunch",
-            category: TransactionCategory.DINING,
-            amount: 9.33,
-            description: "Sometimes I don't even eat lunch, I just blow through it",
-            accountId: 1,
-            userId: 1
-        },
-        {
-            transactionId: 13,
-            date: "2023-10-12",
-            vendorName: "Hot dog breakfast",
-            category: TransactionCategory.DINING,
-            amount: 2.33,
-            description: "Definitely a hot dog",
-            accountId: 3,
-            userId: 1
-        },
-        {
-            transactionId: 14,
-            date: "2023-10-12",
-            vendorName: "Hot dog wating for train",
-            category: TransactionCategory.DINING,
-            amount: 4.66,
-            description: "Yeah 2 hot dogs",
-            accountId: 1,
-            userId: 1
-        },
-        {
-            transactionId: 15,
-            date: "2023-10-12",
-            vendorName: "Hot dog at lunch",
-            category: TransactionCategory.DINING,
-            amount: 9.33,
-            description: "I don't skip lunch",
-            accountId: 2,
-            userId: 1
+            description: "",
+            accountId: -1,
+            userId: -1
         }
     ];
 
