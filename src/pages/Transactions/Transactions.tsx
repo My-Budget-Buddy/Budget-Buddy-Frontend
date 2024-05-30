@@ -417,11 +417,10 @@ const Transactions: React.FC = () => {
                                                     </Button>
                                                 </td>
                                                 <td
-                                                    className={`text-right ${
-                                                        transaction.category === TransactionCategory.INCOME
-                                                            ? "text-green-500"
-                                                            : "text-red-500"
-                                                    }`}
+                                                    className={`text-right ${transaction.category === TransactionCategory.INCOME
+                                                        ? "text-green-500"
+                                                        : "text-red-500"
+                                                        }`}
                                                 >
                                                     {formatCurrency(transaction.amount)}
                                                 </td>
