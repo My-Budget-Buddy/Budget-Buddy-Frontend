@@ -4,11 +4,12 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { AxisConfig, legendClasses, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
+//import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CategoryIcon from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
 import { useTranslation } from "react-i18next";
+import { getTransactionByUserId } from "../../utils/transactionService";
 
 //define the type for months
 type Month =
@@ -129,8 +130,12 @@ const SpendingMonth: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
-                const transactions = response.data;
+                // const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
+                //const transactions = response.data;
+
+                const transactions = await getTransactionByUserId(1);
+                setTransactions(transactions);
+
                 const currentMonthIndex = getMonthIndex(lowercaseMonth);
 
                 const previousMonthIndex = currentMonthIndex === 0 ? 11 : currentMonthIndex - 1;
