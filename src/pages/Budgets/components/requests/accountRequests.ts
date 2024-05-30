@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+const url = "https://api.skillstorm-congo.com";
 
 type Account = {
     id: number;
@@ -27,7 +28,7 @@ export async function getTotalAvailableFunds(): Promise<number> {
 }
 
 async function getAllAccounts(): Promise<Account[]> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/accounts`;
+    const endpoint = `${url}/accounts`;
     const jwtCookie = Cookies.get("jwt") as string;
 
     try {
