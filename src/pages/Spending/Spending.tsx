@@ -194,6 +194,7 @@ const Spending: React.FC = () => {
                 //map category spending to an array with colors
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
+                    displayName: t(category),
                     value: categorySpending[category]!,
                     color: categoryColors[category],
                     icon: categoryIcons[category]
@@ -220,7 +221,7 @@ const Spending: React.FC = () => {
         };
 
         fetchTransactions();
-    }, []);
+    }, [t]);
 
     const calculatePercentageChange = (current: number, previous: number) => {
         if (previous === 0) return 0; // handle division by zero
@@ -280,7 +281,7 @@ const Spending: React.FC = () => {
                     <tr key={category.name} style={{ padding: "15px" }}>
                         <th scope="row" style={{ padding: "15px" }}>
                             <CategoryIcon category={category.name} color={category.color} />
-                            {category.name}
+                            {category.displayName}
                         </th>
                         <td style={{ padding: "15px" }}>
                             {((category.value / spendingValues.reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%
@@ -509,7 +510,7 @@ const Spending: React.FC = () => {
                                     series={[
                                         {
                                             data: spendingCategories.map((d) => ({
-                                                label: d.name,
+                                                label: d.displayName,
                                                 id: d.name,
                                                 value: d.value,
                                                 color: d.color
@@ -571,10 +572,10 @@ const Spending: React.FC = () => {
                                             <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-xl font-bold mr-3">
                                                 1
                                             </div>
-                                            <p className="text-white text-bold text-2xl mb-1"> TOP CATEGORY</p>
+                                            <p className="text-white text-bold text-2xl mb-1"> {t('spending.top-category')}</p>
                                         </div>
 
-                                        <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl"> {t('spending.youSpent')} <span className="text-2xl font-bold">{category.name}</span>  {t('spending.thisYear')}.</p>
+                                        <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl"> {t('spending.youSpent')} <span className="text-2xl font-bold">{category.displayName}</span>  {t('spending.thisYear')}.</p>
                                     </div>
                                     <div className="flex flex-col items-end">
                                         <category.icon className="text-white rounded-xl p-[5px] text-5xl" />
@@ -590,7 +591,7 @@ const Spending: React.FC = () => {
                                             <div>
                                                 <category.icon className="text-white rounded-xl p-[5px] text-4xl" />
                                                 <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
-                                                <p className="text-white text-light pt-1 text-xl">{category.name}</p>
+                                                <p className="text-white text-light pt-1 text-xl">{category.displayName}</p>
                                             </div>
                                             <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-2xl font-bold ml-4 mb-20">
                                                 {index + 2}
@@ -632,7 +633,7 @@ const Spending: React.FC = () => {
                                 {/* Most Popular Vendors Section */}
                                 <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]  ">
                                     <div className="flex items-center mb-4">
-                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2">Top Vendors</h2>
+                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2"> {t('spending.top-vendors')}</h2>
                                         <div className="relative group">
 
                                         </div>

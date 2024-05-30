@@ -129,7 +129,10 @@
       "nine-month": "September",
       "ten-month": "October",
       "eleven-month": "Novemeber",
-      "twelve-month": "December"
+      "twelve-month": "December",
+      "top-vendors": "Top Vendors",
+      "top-category": "TOP CATEGORY",
+      "back-overview": "Back to Annual Spending Overview"
     },
     "transactions": {
       "title": "Transactions",

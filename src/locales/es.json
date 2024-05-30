@@ -129,7 +129,10 @@
       "nine-month": "Septiembre",
       "ten-month": "Octubre",
       "eleven-month": "Noviembre",
-      "twelve-month": "Diciembre"
+      "twelve-month": "Diciembre",
+      "top-vendors": "Principales Proveedores",
+      "top-category": "CATEGORÍA SUPERIOR",
+      "back-overview": "Volver al Resumen de Gastos Anuales"
     },
     "transactions": {
       "title": "Transacciones",
