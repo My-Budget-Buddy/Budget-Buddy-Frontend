@@ -1,10 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 
-import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
+
+import { Button, Icon, Table } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
-import { BarChart } from "@mui/x-charts/BarChart";
-import { AxisConfig, BarItemIdentifier, DefaultizedPieValueType, legendClasses, useDrawingArea } from "@mui/x-charts";
+
+import { AxisConfig, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { styled } from "@mui/material/styles";
 import { LineChart } from "@mui/x-charts/LineChart";
@@ -35,6 +34,7 @@ type Month =
 // define the type for spending categories
 
 type SpendingCategory = {
+    displayName: any;
     name: TransactionCategory;
     value: number;
     color: string;
@@ -46,7 +46,7 @@ type SpendingCategory = {
 const Spending: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [showTooltip, setShowTooltip] = useState(false);
+
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [mostPopularVendors, setMostPopularVendors] = useState<{ vendorName: string; amount: number }[]>([]);
     const [spendingCategories, setSpendingCategories] = useState<SpendingCategory[]>([]);
@@ -298,95 +298,17 @@ const Spending: React.FC = () => {
         </>
     );
 
-    //top three expense categories table
-    const topExpenses = (
-        <>
-            <thead>
-                <tr>
-                    <th scope="col">{t('spending.category')}</th>
-                    <th scope="col">{t('spending.amount')}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {topThreeCategories.map((category) => (
-                    <tr key={category.name}>
-                        <th scope="row">
-                            <CategoryIcon category={category.name} color={category.color} />
-                            {category.name}
-                        </th>
-
-                        <td>${category.value.toFixed(2)}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </>
-    );
 
     //to get the top three purchases
     const topThreePurchases = [...transactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
-    const topPurchaseTotal = topThreePurchases.reduce((sum, expense) => sum + expense.amount, 0);
-    const topPurchasePercentage = ((topPurchaseTotal / totalSpent) * 100).toFixed(2);
 
 
-    // top purchases cards
-    const topPurchases = topThreePurchases.map((expense, index) => (
-        <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex flex-col items-center m-2">
-            <p className="text-xl font-bold">{new Date(expense.date).toLocaleDateString()}</p>
-            <p className="text-lg">{expense.vendorName}</p>
-            <p className="text-2xl font-semibold">${expense.amount.toFixed(2)}</p>
-        </div>
-    ));
 
 
-    // top three purchases table
-    // const topPurchases = (
-    //     <>
-    //         <thead>
-    //             <tr>
-    //                 <th scope="col">{t('spending.date')}</th>
-    //                 <th scope="col">{t('spending.vendor')}</th>
-    //                 <th scope="col">{t('spending.amount')}</th>
-    //             </tr>
-    //         </thead>
-    //         <tbody>
-    //             {topThreePurchases.map((expense) => (
-    //                 <tr>
-    //                     <td>{new Date(expense.date).toLocaleDateString()}</td>
-    //                     <td>{expense.vendorName}</td>
-    //                     <td>${expense.amount.toFixed(2)}</td>
-    //                 </tr>
-    //             ))}
-    //         </tbody>
-    //     </>
-    // );
 
-    //top 5 vendors table
-    const popularVendorsTable = (
-        <>
-            <thead>
-                <tr>
-                    <th scope="col">{t('spending.vendor')}</th>
-                    <th scope="col">{t('spending.amount')}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {mostPopularVendors.map((vendor) => (
-                    <tr key={vendor.vendorName}>
-                        <th scope="row">{vendor.vendorName}</th>
-                        <td>${vendor.amount.toFixed(2)}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </>
-    );
 
-    // ----GRAPH CUSTOMIZATIONS----
-    //click on the bar in the bar chart to go to a specific month
-    const handleItemClick = (event: React.MouseEvent<SVGElement>, barItemIdentifier: BarItemIdentifier) => {
-        const { dataIndex } = barItemIdentifier;
-        const month = categories[dataIndex];
-        navigate(`/dashboard/spending/${month}`);
-    };
+
+
 
     //for text in the center of the pie chart
     const StyledText = styled("text")(({ theme }) => ({
@@ -395,11 +317,11 @@ const Spending: React.FC = () => {
         dominantBaseline: "central"
     }));
 
-    const Line1 = styled("tspan")(({ theme }) => ({
+    const Line1 = styled("tspan")(({ }) => ({
         fontSize: 20
     }));
 
-    const Line2 = styled("tspan")(({ theme }) => ({
+    const Line2 = styled("tspan")(({ }) => ({
         fontSize: 35,
         fontWeight: "bold",
         dy: "1.6em" // controls the spacing between the lines
