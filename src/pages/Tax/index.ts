@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 
 const apiClient = axios.create({
     // hiding the URL in the .env file
-    baseURL: `/dunce`,
+    baseURL: `https://api.skillstorm-congo.com`,
     headers: {
         'Content-Type': 'application/json',
       }
