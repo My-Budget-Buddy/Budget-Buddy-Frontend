@@ -38,6 +38,8 @@ type SpendingCategory = {
     icon: React.ElementType;
 };
 
+
+
 const Spending: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -257,8 +259,7 @@ const Spending: React.FC = () => {
     const totalSpent = Object.values(spendingData).reduce((acc, curr) => acc + curr, 0);
     const topThreeCategories = [...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 3);
     const topThreeTotal = topThreeCategories.reduce((sum, category) => sum + category.value, 0);
-    const topThreePercentage = ((topThreeTotal / totalSpent) * 100).toFixed(2);
-
+    const topThreePercentage = totalSpent === 0 ? "0.00" : ((topThreeTotal / totalSpent) * 100).toFixed(2);
     // ----TABLES-----
     //category expenses table
     const categoryExpenses = (
@@ -504,49 +505,54 @@ const Spending: React.FC = () => {
                     <div className="flex pt-1 gap-3">
                         <div className="flex flex-col justify-center items-center flex-2 p-2 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
 
-                            <h2></h2>
-                            <div className="relative w-full h-full sm:h-300 sm:ml-10 ">
-                                <PieChart
-                                    series={[
-                                        {
-                                            data: spendingCategories.map((d) => ({
-                                                label: d.displayName,
-                                                id: d.name,
-                                                value: d.value,
-                                                color: d.color
-                                            })),
-                                            innerRadius: "48%",
-                                            outerRadius: "95%",
-                                            paddingAngle: 1,
-                                            cornerRadius: 3,
-                                            startAngle: -180,
-                                            endAngle: 180,
-                                            cx: "50%",
-                                            cy: "50%",
-                                            arcLabel: (item) => `${item.label}`,
-
-                                            arcLabelMinAngle: 20,
-
-                                            valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
-                                        }
-                                    ]}
-                                    slotProps={{
-                                        legend: { hidden: true }
-                                    }}
-                                    sx={{
-                                        width: "100%",
-                                        height: "100%",
-                                        [`& .${pieArcLabelClasses.root}`]: {
-                                            fill: "white",
-                                            fontWeight: "bold"
-                                        }
-                                    }}
-                                >
-                                    <PieCenterLabel totalSpent={totalSpent} />
-                                </PieChart>
-
-                            </div>
-                            <div className="w-full">
+                            {spendingCategories.length > 0 ? (
+                                <div className="relative w-full h-full sm:h-300 sm:ml-10">
+                                    <PieChart
+                                        series={[
+                                            {
+                                                data: spendingCategories.map((d) => ({
+                                                    label: d.displayName,
+                                                    id: d.name,
+                                                    value: d.value,
+                                                    color: d.color
+                                                })),
+                                                innerRadius: "48%",
+                                                outerRadius: "95%",
+                                                paddingAngle: 1,
+                                                cornerRadius: 3,
+                                                startAngle: -180,
+                                                endAngle: 180,
+                                                cx: "50%",
+                                                cy: "50%",
+                                                arcLabel: (item) => `${item.label}`,
+                                                arcLabelMinAngle: 20,
+                                                valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
+                                            }
+                                        ]}
+                                        slotProps={{
+                                            legend: { hidden: true }
+                                        }}
+                                        sx={{
+                                            width: "100%",
+                                            height: "100%",
+                                            [`& .${pieArcLabelClasses.root}`]: {
+                                                fill: "white",
+                                                fontWeight: "bold"
+                                            }
+                                        }}
+                                    >
+                                        <PieCenterLabel totalSpent={totalSpent} />
+                                    </PieChart>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center w-full h-full text-xl">
+                                    {t('spending.no-data')}
+                                    <Button type="button" onClick={() => navigate('/dashboard/transactions')} className="mt-4">
+                                        {t('transactions.add-transaction')}
+                                    </Button>
+                                </div>
+                            )}
+                            < div className="w-full">
                                 <Table bordered={false} className="w-full">
                                     {categoryExpenses}
                                 </Table>
@@ -661,8 +667,8 @@ const Spending: React.FC = () => {
                         </div>
                     </div>
                 </section>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

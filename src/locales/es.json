@@ -133,7 +133,8 @@
       "top-vendors": "Principales Proveedores",
       "top-category": "CATEGORÍA SUPERIOR",
       "back-overview": "Volver al Resumen de Gastos Anuales",
-      "percent-monthly": "% Del Gasto Mensual"
+      "percent-monthly": "% Del Gasto Mensual",
+      "no-data": "No hay nada que mostrar. Agregue algunas transacciones para comenzar."
     },
     "transactions": {
       "title": "Transacciones",

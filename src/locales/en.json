@@ -133,7 +133,8 @@
       "top-vendors": "Top Vendors",
       "top-category": "TOP CATEGORY",
       "back-overview": "Back to Annual Spending Overview",
-      "percent-monthly": "% Of Monthly Spending"
+      "percent-monthly": "% Of Monthly Spending",
+      "no-data": "No data to display. Add some transactions to get started."
     },
     "transactions": {
       "title": "Transactions",
