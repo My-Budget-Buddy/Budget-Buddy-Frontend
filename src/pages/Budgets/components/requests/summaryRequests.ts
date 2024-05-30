@@ -1,4 +1,5 @@
 import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../../../Tax/taxesAPI";
+const url = "https://api.skillstorm-congo.com";
 
 export async function getMonthlySummary(monthYear: string): Promise<MonthlySummary> {
     return getMonthlySummaryAPI(monthYear).then((res) => {
@@ -40,7 +41,7 @@ export async function updateSpendingBudgetFor(id: string, monthYear: string, amo
 async function putBucket(summary: BudgetSummary, id: string) {
     //This should only run after getSummaryFor(summary.monthYear) is run, which populates that monthyear with a budget summary if it doesn't exist.
     // But theoretically the endpoint should work without anything on the database too.
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/summarys/${id}`;
+    const endpoint = `${url}/summarys/${id}`;
 
     try {
         const response = await fetch(endpoint, {

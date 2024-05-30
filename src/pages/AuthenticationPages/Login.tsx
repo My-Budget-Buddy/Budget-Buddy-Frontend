@@ -3,12 +3,15 @@ import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate } from "react-router-dom";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { useDispatch } from "react-redux";
+import { setAuthenticated } from "../../util/redux/authSlice";
 
 const Login: React.FC = () => {
     const { t } = useTranslation();
     const { jwt, loading, setJwt } = useAuthentication();
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,6 +35,7 @@ const Login: React.FC = () => {
             const data = await res.json();
 
             setJwt(data.jwt);
+            dispatch(setAuthenticated(true));
         } else {
             if (res.headers.get("content-type")?.includes("text/plain")) {
                 setError(await res.text());
@@ -101,7 +105,9 @@ const Login: React.FC = () => {
                                 type="button"
                                 outline
                                 className="width-full"
-                                onClick={() => window.location.replace("http://localhost:8125/auth/login/oauth2")}
+                                onClick={() =>
+                                    window.location.replace("https://api.skillstorm-congo.com/auth/login/oauth2")
+                                }
                             >
                                 {t("auth.google")}
                             </Button>

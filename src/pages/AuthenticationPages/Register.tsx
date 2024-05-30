@@ -106,7 +106,14 @@ const Register: React.FC = () => {
                                 <div className="border-t-[1px] border-[#dfe1e2] w-full" />
                             </div>
 
-                            <Button type="button" outline className="width-full">
+                            <Button
+                                type="button"
+                                outline
+                                className="width-full"
+                                onClick={() =>
+                                    window.location.replace("https://api.skillstorm-congo.com/auth/login/oauth2")
+                                }
+                            >
                                 {t("auth.google")}
                             </Button>
                         </div>

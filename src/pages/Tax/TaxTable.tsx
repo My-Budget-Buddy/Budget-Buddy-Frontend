@@ -1,5 +1,7 @@
 import {
+
    Table
+
 } from '@trussworks/react-uswds';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,12 +12,14 @@ import { setAllTaxReturns } from './TaxReturnSlice';
 import { RootState } from '../../util/redux/store';
 import { taxReturn } from './TaxReturnSlice';
 import { useAuthentication } from '../../contexts/AuthenticationContext';
+import { useTranslation } from 'react-i18next';
 
 const DisplayTaxTables: React.FC = () => {
   const { jwt } = useAuthentication();
   const nav = useNavigate();
   const dispatch = useDispatch();
-  
+  const { t } = useTranslation();
+
   useEffect(() => {
     getTaxReturnByUserId()
       .then((res) => {
@@ -23,6 +27,7 @@ const DisplayTaxTables: React.FC = () => {
       })
       .catch((err) => console.error(err));
   }, [jwt]);
+
 
     const allTaxReturns = useSelector((state: RootState) => state.taxReturn.taxReturns);
 
@@ -80,11 +85,12 @@ const DisplayTaxTables: React.FC = () => {
 
   const redirectToEditView = (id : number | undefined) => {
     nav(`/dashboard/tax/${id}/w2/0`);
+
   };
 
-  const handleDelete = (id:number | undefined) => {
+  const handleDelete = (id: number | undefined) => {
     deleteTaxReturn(id);
-};
+  };
 
 
 
@@ -100,62 +106,66 @@ const DisplayTaxTables: React.FC = () => {
           <TaxNav />
         </div>
         <div>
-          <h2>Tax Forms</h2>
-          <Table fullWidth fixed striped>
-            <thead>
-              <tr>
-                <th>Filing Status</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Year</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentYearTaxReturns.map((data, index) => (
-                <tr key={index}>
-                  <td>{data.filingStatus}</td>
-                  <td>{data.firstName}</td>
-                  <td>{data.lastName}</td>
-                  <td>{data.year}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="usa-button usa-button--primary" onClick={() => redirectToEditView(data.id)}>Edit</button>
-                      <button className="usa-button usa-button--secondary"onClick={() => handleDelete(data.id)}>Delete</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
 
-          <h2>Tax Form Archives</h2>
-          <Table fullWidth fixed striped>
-            <thead>
-              <tr>
-                <th>Filing Status</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Year</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {archivedTaxReturns.map((data, index) => (
-                <tr key={index}>
-                  <td>{data.filingStatus}</td>
-                  <td>{data.firstName}</td>
-                  <td>{data.lastName}</td>
-                  <td>{data.year}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="usa-button usa-button--primary">View</button>
-                    </div>
-                  </td>
+          <div className="shadow-md border-[1px] p-10">
+            <h2 className="text-3xl font-semibold">{t("tax.tax-forms")}</h2>
+            <Table fullWidth fixed>
+              <thead>
+                <tr>
+                  <th>{t("tax.filing-status")}</th>
+                  <th>{t("tax.first-name")}</th>
+                  <th>{t("tax.last-name")}</th>
+                  <th>{t("tax.year")}</th>
+                  <th>{t("tax.actions")}</th>
+
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {currentYearTaxReturns.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.filingStatus}</td>
+                    <td>{data.firstName}</td>
+                    <td>{data.lastName}</td>
+                    <td>{data.year}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <Button type="button" onClick={redirectToEditView} unstyled><Icon.Edit /></Button>
+                        <Button type="button" onClick={() => handleDelete(data.id)} unstyled><Icon.Delete /></Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+
+            <h2 className="text-3xl font-semibold mt-10">{t("tax.tax-form-archives")}</h2>
+            <Table fullWidth fixed>
+              <thead>
+                <tr>
+                  <th>{t("tax.filing-status")}</th>
+                  <th>{t("tax.first-name")}</th>
+                  <th>{t("tax.last-name")}</th>
+                  <th>{t("tax.year")}</th>
+                  <th>{t("tax.actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {archivedTaxReturns.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.filingStatus}</td>
+                    <td>{data.firstName}</td>
+                    <td>{data.lastName}</td>
+                    <td>{data.year}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <button className="usa-button usa-button--primary">{t("tax.view")}</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
       </div>
     </>

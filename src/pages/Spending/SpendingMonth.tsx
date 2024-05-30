@@ -26,6 +26,9 @@ type Month =
     | "november"
     | "december";
 
+
+
+
 const SpendingMonth: React.FC = () => {
     const { t } = useTranslation();
     const { month } = useParams<{ month: Month }>(); //get month parameter from url
@@ -44,6 +47,7 @@ const SpendingMonth: React.FC = () => {
 
     const [currentMonthSpending, setCurrentMonthSpending] = useState(0);
     const [previousMonthSpending, setPreviousMonthSpending] = useState(0);
+
 
     //colors for categories
     const categoryColors: { [key in TransactionCategory]: string } = {
@@ -84,6 +88,11 @@ const SpendingMonth: React.FC = () => {
         "november",
         "december"
     ];
+
+    const getPreviousMonth = (month: Month) => {
+        const index = monthNames.indexOf(month);
+        return index === 0 ? monthNames[11] : monthNames[index - 1];
+    };
 
     //get week number
     const getWeekNumber = (date: Date) => {
@@ -131,7 +140,8 @@ const SpendingMonth: React.FC = () => {
         const fetchTransactions = async () => {
             try {
                 // const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
-                //const transactions = response.data;
+
+                // const transactions = response.data;
 
                 const transactions = await getTransactionByUserId(1);
                 setTransactions(transactions);
@@ -235,6 +245,10 @@ const SpendingMonth: React.FC = () => {
         totalSpending === 0 ? "0.00" : Math.abs((spendingDifference / previousMonthSpending) * 100).toFixed(2);
     const isSpendingIncreased = spendingDifference > 0;
 
+
+
+
+
     //category expenses table
     const categoryExpenses = (
         <>
@@ -267,11 +281,12 @@ const SpendingMonth: React.FC = () => {
         dominantBaseline: "central"
     }));
 
-    const Line1 = styled("tspan")(({}) => ({
+    const Line1 = styled("tspan")(({ }) => ({
         fontSize: 20
     }));
 
-    const Line2 = styled("tspan")(({}) => ({
+    const Line2 = styled("tspan")(({ }) => ({
+
         fontSize: 35,
         fontWeight: "bold",
         dy: "1.6em" // controls the spacing between the lines
@@ -303,6 +318,7 @@ const SpendingMonth: React.FC = () => {
         <div className="min-w-screen">
             <div className="flex-1">
                 <section className="h-screen">
+
                     {/* Title for the page */}
                     <div className="mb-6">
                         <h2 className="ml-3 py-4 pt-10 text-bold text-3xl opacity-70">
@@ -313,9 +329,8 @@ const SpendingMonth: React.FC = () => {
                             <p className="text-5xl pl-2 font-semibold">${currentMonthSpending.toFixed(2)}</p>
                             <div className="flex items-center ml-5">
                                 <p
-                                    className={`text-2xl font-semibold ${
-                                        isSpendingIncreased ? "text-red-600" : "text-green-600"
-                                    }`}
+                                    className={`text-2xl font-semibold ${isSpendingIncreased ? "text-red-600" : "text-green-600"
+                                        }`}
                                 >
                                     {isSpendingIncreased ? (
                                         <Icon.ArrowDropUp className="inline-block mr-1" style={{ fontSize: "2rem" }} />
@@ -326,11 +341,9 @@ const SpendingMonth: React.FC = () => {
                                         />
                                     )}
                                     {percentageChange}% {t("spending.from")}{" "}
-                                    {capitalizeFirstLetter(
-                                        monthNames[
-                                            getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
-                                        ]
-                                    )}
+
+                                    {t(
+                                        `spending.month.${getPreviousMonth(lowercaseMonth)}`)}
                                 </p>
                             </div>
                         </div>
@@ -366,6 +379,7 @@ const SpendingMonth: React.FC = () => {
                                             {t(`spending.month.${option.label}`)}
                                         </option>
                                     ))}
+
                                 </Select>
                             </div>
                         </div>
@@ -391,11 +405,14 @@ const SpendingMonth: React.FC = () => {
                                         label: t("spending.spendings")
                                     }
                                 ]}
+
                                 grid={{ horizontal: true }}
                                 width={1400}
                                 height={400}
                             />
                         </div>
+
+
                     </div>
 
                     {/* Second row with two columns */}

@@ -121,25 +121,15 @@
       "spendings": "Gastos",
       "totalSpent": "Gasto Total",
       "from": "de",
-      "one-month": "Enero",
-      "two-month": "Febrero",
-      "three-month": "Marzo",
-      "four-month": "Abril",
-      "five-month": "Mayo",
-      "six-month": "Junio",
-      "seven-month": "Julio",
-      "eight-month": "Agosto",
-      "nine-month": "Septiembre",
-      "ten-month": "Octubre",
-      "eleven-month": "Noviembre",
-      "twelve-month": "Diciembre",
       "totalSpentWeek": "Total gastado",
-      "percentageOfMonthlySpending": "% de gastos mensuales",
+      "percentageOfMonthlySpending": "% De Gastos Mensuales",
       "earnings": "Ingresos",
       "backToAnnualSpendingOverview": "Regresar a Resumen de Gastos Anuales",
       "week": "Semana",
       "spending": "Gastos",
       "top-category": "Categoría de Gastos",
+      "top-vendors": "Principales Proveedores",
+      "no-data": "No hay nada que mostrar. Agregue algunas transacciones para comenzar.",
       "month": {
         "January": "Enero",
         "February": "Febrero",
@@ -167,6 +157,7 @@
         "december": "Diciembre"
       }
     },
+
     "transactions": {
       "title": "Transacciones",
       "clear-filters": "Limpiar filtros",
@@ -199,10 +190,23 @@
       "account": "Cuenta",
       "history": "Todas las {{val}} transacciones",
       "spent": "Gastado",
+      "earned": "Ganado",
       "summary": "Resumen"
     },
     "tax": {
-      "title": "Impuestos"
+      "title": "Impuestos",
+      "tax-forms": "Formularios de impuesto",
+      "tax-form-archives": "Archivos de formularios de impuestos",
+      "filing-status": "Estado civil",
+      "first-name": "Nombre de pila",
+      "last-name": "Apellido",
+      "year": "Año",
+      "actions": "Acciones",
+      "file-taxes": "Presentar impuestos",
+      "estimate-refund": "Reembolso estimado",
+      "document-checklist": "Lista de documentos",
+      "refund-planning": "Planificación de reembolsos",
+      "view": "Vista"
     },
     "checking": "Cuentas Corrientes",
     "savings": "Ahorros",
