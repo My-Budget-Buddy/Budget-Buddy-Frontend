@@ -7,6 +7,7 @@ import Dashboard from "../pages/Dashboard/Dashboard.tsx";
 import Accounts from "../pages/Accounts/Accounts.tsx";
 import Budgets from "../pages/Budgets/Budgets.tsx";
 import Tax from "../pages/Tax/Tax.tsx";
+import TaxResults from "../pages/Tax/TaxResults.tsx";
 import TransactionHistory from "../pages/Transactions/TransactionHistory.tsx";
 import Transactions from "../pages/Transactions/Transactions.tsx";
 import Spending from "../pages/Spending/Spending.tsx";
@@ -41,6 +42,7 @@ export const router = createBrowserRouter(
                 <Route path={"tax"} element={<Tax />} />
                 <Route path={"tax/:returnId"} element={<Tax />} />
                 <Route path={"tax/:returnId/:formType/:formId"} element={<TaxEditView />} />
+                <Route path={"tax/:returnId/results"} element={<TaxResults />} />
             </Route>
         </Route>
     )
