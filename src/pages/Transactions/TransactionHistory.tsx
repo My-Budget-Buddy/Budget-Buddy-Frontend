@@ -12,7 +12,7 @@ import {
     Select,
     Table,
     TextInput,
-    Textarea, 
+    Textarea,
     Title
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
@@ -49,7 +49,7 @@ function TransactionHistory() {
             date: "1973-01-01",
             vendorName: Name,
             category: TransactionCategory.DINING,
-            amount: 2.33,
+            amount: 0.0,
             description: "",
             accountId: -1,
             userId: -1
