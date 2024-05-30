@@ -1,36 +1,115 @@
-import { Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
-import { useState } from "react";
+import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { updateUserInfo, updateUserPassword } from "../../pages/Tax/taxesAPI";
 
-const Profile = () => {
+interface ProfileType {
+    firstName: string;
+    lastName: string;
+    email: string;
+    id: number;
+}
+
+type SetProfileType = (profile: ProfileType) => void;
+
+type FetchUserInfoType = () => Promise<void>;
+
+type SetNameType = (name: string) => void;
+
+interface ProfileProps {
+    profile: ProfileType;
+    setProfile: SetProfileType;
+    fetchUserInfo: FetchUserInfoType;
+    setName: SetNameType;
+}
+
+const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo, setName })=> {
     const { t } = useTranslation();
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordError, setPasswordError] = useState<Boolean | string>('')
+
+    useEffect(()=> {
+        fetchUserInfo()
+        setPasswordError('')
+    }, [])
+
+    const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        evt.preventDefault();
+        const { name, value } = evt.target;
+        setProfile({...profile, [name]: value})
+    }
+
+    const handleSubmit = (evt: any) => {
+        evt.preventDefault()
+        try {
+            updateUserInfo(profile)
+            setName(profile.firstName)
+            const confirmPassword = evt.currentTarget.elements["confirm-password"].value;
+            const fields = {
+                username: profile.email,
+                password: evt.currentTarget.elements["new-password"].value
+            };
+            if (confirmPassword === fields.password && confirmPassword !== ''){
+                updateUserPassword(fields)
+                evt.currentTarget.reset()
+                setPasswordError(false)
+            }else if (confirmPassword !== fields.password){
+                setPasswordError(true)
+                return
+            }else{
+                return
+            }
+        } catch (error) {
+            console.log("There was an error updating profile infromation: ", error)
+        }
+    }
+
 
     return ( 
         <div className="flex w-full justify-center h-[80vh] overflow-y-auto">
-            <Form onSubmit={() => {}} className="w-9/12">
+            <Form onSubmit={handleSubmit} className="w-9/12">
                 <ModalHeading> {t("nav.profile")}
-                    <Label htmlFor="first-name" >{t("nav.first-name")}</Label>
+                    <Label htmlFor="firstName" >{t("nav.first-name")}</Label>
                     <TextInput
-                        id="first-name"
-                        name="first-name"
+                        id="firstName"
+                        name="firstName"
                         type="text"
                         autoComplete="first-name"
+                        value={profile.firstName}
+                        onChange={handleChange}
                     />
-                    <Label htmlFor="last-name">{t("nav.last-name")}</Label>
+                    <Label htmlFor="lastName">{t("nav.last-name")}</Label>
                     <TextInput
-                        id="last-name"
-                        name="last-name"
+                        id="lastName"
+                        name="lastName"
                         type="text"
                         autoComplete="last-name"
+                        value={profile.lastName}
+                        onChange={handleChange}
                     />
                     <Label htmlFor="email">{t("auth.email")}</Label>
-                    <TextInput id="email" name="email" type="text" autoComplete="email" disabled />
-
+                    <TextInput 
+                        id="email" 
+                        name="email" 
+                        type="text" 
+                        autoComplete="email"
+                        value={profile.email}
+                        disabled 
+                    />
+                    {passwordError===false && <Alert type="success" heading="Success" headingLevel="h4">
+                        Password has been updated
+                    </Alert>}
+                    {passwordError===true && <Alert type="error" heading="Error updating password" headingLevel="h4">
+                        Passwords do not match
+                    </Alert>}
                     <Label htmlFor="new-password">{t("nav.new-password")}</Label>
                     <InputGroup>
-                        <TextInput id="new-password" name="new-password" type={showNewPassword ? "text" : "password"} />
+                        <TextInput 
+                            id="new-password" 
+                            name="new-password" 
+                            type={showNewPassword ? "text" : "password"}
+                        />
                         <InputSuffix onClick={()=> setShowNewPassword(!showNewPassword)}>
                             {showNewPassword ? <Icon.VisibilityOff /> : <Icon.Visibility/>}
                         </InputSuffix>
@@ -42,7 +121,7 @@ const Profile = () => {
                             {showConfirmPassword ? <Icon.VisibilityOff/> : <Icon.Visibility/>}
                         </InputSuffix>
                     </InputGroup>
-                    <Button type="submit">{t("nav.save")}</Button>
+                    <Button type="submit" >{t("nav.save")}</Button>
                 
                 </ModalHeading>
             </Form>

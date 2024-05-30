@@ -19,7 +19,7 @@ import {
     Textarea
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useMatch } from "react-router-dom";
 import { Account, Transaction, TransactionCategory } from "../../types/models";
 import {
@@ -130,7 +130,7 @@ function TransactionHistory() {
     const [showDateFilter, setShowDateFilter] = useState<boolean>(false);
 
     const [sortOrder, setSortOrder] = useState<string>("date");
-    const [sortDirection, setSortDirection] = useState<string>("asc");
+    const [sortDirection, setSortDirection] = useState<string>("dsc");
 
     const [newTransaction, setNewTransaction] = useState<Omit<Transaction, "transactionId">>({
         userId: 1,
@@ -159,7 +159,9 @@ function TransactionHistory() {
 
         sortedTransactions = sortedTransactions.sort((a, b) => {
             if (sortOrder === "amount") {
-                return sortDirection === "asc" ? a.amount - b.amount : b.amount - a.amount;
+                return sortDirection === "asc"
+                    ? a.amount * (a.category === "Income" ? 1 : -1) - b.amount * (b.category === "Income" ? 1 : -1)
+                    : b.amount * (b.category === "Income" ? 1 : -1) - a.amount * (a.category === "Income" ? 1 : -1);
             } else {
                 return sortDirection === "asc"
                     ? new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -321,8 +323,8 @@ function TransactionHistory() {
                             value={sortDirection}
                             onChange={(e) => setSortDirection(e.target.value)}
                         >
-                            <option value="asc">{t("transactions.ascending")}</option>
                             <option value="desc">{t("transactions.descending")}</option>
+                            <option value="asc">{t("transactions.ascending")}</option>
                         </select>
                         <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
                             {t("transactions.add-transaction")}
@@ -443,17 +445,19 @@ function TransactionHistory() {
                     </div>
                 )}
 
-                <CardGroup>
+                <CardGroup className="">
                     <Card gridLayout={{ col: 8 }}>
-                        <CardHeader></CardHeader>
                         <CardBody>
                             {filteredTransactions.length === 0 ? (
                                 <div className="text-center">
                                     <p className="text-lg">
                                         {t("transactions.no-transactions")}
                                         <br />
-                                        Click <span className="font-bold text-blue-600">Add Transaction</span> to start
-                                        making transactions
+                                        <Trans
+                                            i18nKey={"transactions.click-add"}
+                                            components={{ 1: <span className="font-bold text-blue-600" /> }}
+                                            values={{ val: t("transactions.add-transaction") }}
+                                        />
                                     </p>
                                 </div>
                             ) : (
@@ -464,7 +468,7 @@ function TransactionHistory() {
                                             <th>{t("transactions-table.name")}</th>
                                             <th>{t("transactions-table.category")}</th>
                                             <th>{t("transactions-table.actions")}</th>
-                                            <th>{t("transactions-table.amount")}</th>
+                                            <th className="text-right">{t("transactions-table.amount")}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -499,7 +503,15 @@ function TransactionHistory() {
                                                         <Icon.Delete />
                                                     </Button>
                                                 </td>
-                                                <td>{formatCurrency(transaction.amount)}</td>
+                                                <td
+                                                    className={`text-right ${
+                                                        transaction.category === TransactionCategory.INCOME
+                                                            ? "text-green-500"
+                                                            : "text-red-500"
+                                                    }`}
+                                                >
+                                                    {formatCurrency(transaction.amount)}
+                                                </td>
                                                 <td>
                                                     <ModalToggleButton
                                                         type="button"
@@ -524,7 +536,12 @@ function TransactionHistory() {
                         <CardHeader>{t("transactions.summary")}</CardHeader>
                         <CardBody>
                             {t("transactions.spent")}:{" "}
-                            {formatCurrency(filteredTransactions.reduce((sum, cur) => sum + Number(cur.amount), 0.0))}
+                            {formatCurrency(
+                                filteredTransactions.reduce(
+                                    (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? -1 : 1),
+                                    0.0
+                                )
+                            )}
                             <hr />
                             {t("transactions.amount")}: {filteredTransactions.length}
                             <hr />
@@ -532,7 +549,10 @@ function TransactionHistory() {
                                 series={[
                                     {
                                         data: filteredTransactions.map((transaction) => {
-                                            return transaction.amount;
+                                            return (
+                                                Number(transaction.amount) *
+                                                (transaction.category === "Income" ? 1 : -1)
+                                            );
                                         }),
                                         valueFormatter: (v) => {
                                             return formatCurrency(String(v), true);
@@ -556,12 +576,30 @@ function TransactionHistory() {
                                     setCurrentTransaction(filteredTransactions[params.dataIndex]);
                                     infoRef.current?.toggleModal();
                                 }}
+                                yAxis={[
+                                    {
+                                        colorMap: {
+                                            type: "continuous",
+                                            min: transactions.reduce((prev, cur) =>
+                                                prev.amount < cur.amount ? prev : cur
+                                            ).amount,
+                                            max: transactions.reduce((prev, cur) =>
+                                                prev.amount > cur.amount ? prev : cur
+                                            ).amount,
+                                            color: ["#ff9800", "#4caf50"]
+                                        },
+                                        valueFormatter: (val) => formatCurrency(val)
+                                    }
+                                ]}
+                                margin={{ left: 100 }}
+                                grid={{ horizontal: true }}
                             />
                         </CardBody>
                     </Card>
                 </CardGroup>
             </div>
             <Modal ref={modalRef} id="note-modal" isLarge>
+                <ModalHeading className="text-center mb-4">{t("transactions.edit-transaction")}</ModalHeading>
                 <Form onSubmit={handleSubmit} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
@@ -735,6 +773,9 @@ function TransactionHistory() {
 
             {/* Detailed Info Transaction Modal */}
             <Modal ref={infoRef} id="transaction-info-modal" isLarge>
+                <ModalHeading className="text-center mb-6">
+                    {t("transactions.transaction-detailed-information")}
+                </ModalHeading>
                 {currentTransaction && (
                     <div className="flex flex-col justify-center bg-white w-full max-w-xl rounded-2xl">
                         <div className="flex justify-between items-center mb-6">
