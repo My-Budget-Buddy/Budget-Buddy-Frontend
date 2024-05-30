@@ -195,7 +195,19 @@
       "summary": "Summary"
     },
     "tax": {
-      "title": "Tax"
+      "title": "Tax",
+      "tax-forms": "Tax Forms",
+      "tax-form-archives": "Tax Form Archives",
+      "filing-status": "Filing Status",
+      "first-name": "First Name",
+      "last-name": "Last Name",
+      "year": "Year",
+      "actions": "Actions",
+      "file-taxes": "File Taxes",
+      "estimate-refund": "Estimate Refund",
+      "document-checklist": "Document Checklist",
+      "refund-planning": "Refund Planning",
+      "view": "View"
     },
     "checking": "Checkings",
     "savings": "Savings",
