@@ -193,7 +193,7 @@
       "description": "Description",
       "submit": "Submit",
       "account": "Account",
-      "history": "All {{val}} transactions",
+      "history": "All {{val}} Transactions",
       "spent": "Spent",
       "earned": "Earned",
       "summary": "Summary"
