@@ -122,7 +122,7 @@ const Profile: React.FC = () => {
                     <Button type="submit" >{t("nav.save")}</Button>
 
                 </ModalHeading>
-                <Button type="button" secondary onClick={() => logout()}>{t("nav.logout")}</Button>
+                <Button type="button" secondary onClick={() => logout()}>{t("auth.logout")}</Button>
             </Form>
         </div>
     );

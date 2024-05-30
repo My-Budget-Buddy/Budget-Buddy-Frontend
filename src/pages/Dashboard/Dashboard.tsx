@@ -12,6 +12,7 @@ import { getCompleteBudgets } from "../Budgets/components/util/transactionsCalcu
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "../Tax/taxesAPI";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 interface InitialAccountType {
     id: number;
@@ -75,6 +76,7 @@ const Dashboard: React.FC = () => {
     const [budgetGaugeTotal, setBudgetGaugeTotal] = useState(0);
     const [budgetGaugeSpent, setBudgetGaugeSpent] = useState(0);
     const dispatch = useDispatch();
+    const { profile } = useAuthentication();
 
     // ---Calculate net cash---
     useEffect(() => {
@@ -221,7 +223,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className="flex flex-col flex-wrap ">
-            <Title>{t("dashboard.welcome")}</Title>
+            <Title>{t("dashboard.welcome")}{profile?.firstName && `, ${profile.firstName}`}</Title>
             <div className="flex items-start">
                 <div
                     id="chart-container"
