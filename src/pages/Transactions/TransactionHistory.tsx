@@ -1,9 +1,5 @@
 import {
     Button,
-    Card,
-    CardBody,
-    CardGroup,
-    CardHeader,
     Form,
     Icon,
     InputGroup,
@@ -242,7 +238,7 @@ function TransactionHistory() {
 
     return (
         <>
-            <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
+            <div className="min-w-screen min-h-screen flex flex-col gap-6">
                 <div className="flex justify-between items-center bg-transparent p-4 ">
                     <h1>{t("transactions.history", { val: Name })}</h1>
                     <div className="flex gap-4">
@@ -398,151 +394,149 @@ function TransactionHistory() {
                         </div>
                     </div>
                 )}
-
-                <CardGroup className="">
-                    <Card gridLayout={{ col: 8 }}>
-                        <CardBody>
-                            {filteredTransactions.length === 0 ? (
-                                <div className="text-center">
-                                    <p className="text-lg">
-                                        {t("transactions.no-transactions")}
-                                        <br />
-                                        <Trans
-                                            i18nKey={"transactions.click-add"}
-                                            components={{ 1: <span className="font-bold text-blue-600" /> }}
-                                            values={{ val: t("transactions.add-transaction") }}
-                                        />
-                                    </p>
-                                </div>
-                            ) : (
-                                <Table bordered={false} fullWidth={true}>
-                                    <thead>
-                                        <tr>
-                                            <th>{t("transactions-table.date")}</th>
-                                            <th>{t("transactions-table.name")}</th>
-                                            <th>{t("transactions-table.category")}</th>
-                                            <th>{t("transactions-table.actions")}</th>
-                                            <th className="text-right">{t("transactions-table.amount")}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredTransactions.map((transaction: Transaction, index: number) => (
-                                            <tr key={index}>
-                                                <td>{formatDate(transaction.date)}</td>
-                                                <td>{transaction.vendorName}</td>
-                                                <td>
-                                                    <CategoryIcon
-                                                        category={transaction.category}
-                                                        color={categoryColors[transaction.category]}
-                                                    />
-                                                    {t(transaction.category)}
-                                                </td>
-                                                <td>
-                                                    <ModalToggleButton
-                                                        type={"button"}
-                                                        className="usa-button--unstyled"
-                                                        modalRef={modalRef}
-                                                        onClick={() => {
-                                                            setCurrentTransaction(filteredTransactions[index]);
-                                                        }}
-                                                    >
-                                                        <Icon.Edit />
-                                                    </ModalToggleButton>
-                                                    <Button
-                                                        type={"button"}
-                                                        onClick={() => handleDelete(transaction.transactionId)}
-                                                        className="usa-button--unstyled"
-                                                    >
-                                                        <Icon.Delete />
-                                                    </Button>
-                                                </td>
-                                                <td
-                                                    className={`text-right ${transaction.category === TransactionCategory.INCOME
-                                                        ? "text-green-500"
-                                                        : "text-red-500"
-                                                        }`}
+                <div className="flex">
+                    <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-2/3">
+                        {filteredTransactions.length === 0 ? (
+                            <div className="text-center">
+                                <p className="text-lg">
+                                    {t("transactions.no-transactions")}
+                                    <br />
+                                    <Trans
+                                        i18nKey={"transactions.click-add"}
+                                        components={{ 1: <span className="font-bold text-blue-600" /> }}
+                                        values={{ val: t("transactions.add-transaction") }}
+                                    />
+                                </p>
+                            </div>
+                        ) : (
+                            <Table bordered={false} fullWidth={true}>
+                                <thead>
+                                    <tr>
+                                        <th>{t("transactions-table.date")}</th>
+                                        <th>{t("transactions-table.name")}</th>
+                                        <th>{t("transactions-table.category")}</th>
+                                        <th>{t("transactions-table.actions")}</th>
+                                        <th className="text-right">{t("transactions-table.amount")}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredTransactions.map((transaction: Transaction, index: number) => (
+                                        <tr key={index}>
+                                            <td>{formatDate(transaction.date)}</td>
+                                            <td>{transaction.vendorName}</td>
+                                            <td>
+                                                <CategoryIcon
+                                                    category={transaction.category}
+                                                    color={categoryColors[transaction.category]}
+                                                />
+                                                {t(transaction.category)}
+                                            </td>
+                                            <td>
+                                                <ModalToggleButton
+                                                    type={"button"}
+                                                    className="usa-button--unstyled"
+                                                    modalRef={modalRef}
+                                                    onClick={() => {
+                                                        setCurrentTransaction(filteredTransactions[index]);
+                                                    }}
                                                 >
-                                                    {formatCurrency(transaction.amount)}
-                                                </td>
-                                                <td>
-                                                    <ModalToggleButton
-                                                        type="button"
-                                                        className="usa-button--unstyled"
-                                                        modalRef={infoRef}
-                                                        onClick={() => {
-                                                            setCurrentTransaction(filteredTransactions[index]);
-                                                        }}
-                                                    >
-                                                        <Icon.NavigateNext />
-                                                    </ModalToggleButton>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            )}
-                        </CardBody>
-                    </Card>
-                    <Card gridLayout={{ col: 4 }}>
-                        <CardHeader>{t("transactions.summary")}</CardHeader>
-                        <CardBody>
-                            {spent >= 0.0 ? t("transactions.spent") : t("transactions.earned")}:{" "}
-                            <span className={spent >= 0.0
-                                ? "text-red-500"
-                                : "text-green-500"
-                            }>{formatCurrency(Math.abs(spent))}</span>
-                            <hr />
-                            {t("transactions.amount")}: {filteredTransactions.length}
-                            <hr />
-                            <BarChart
-                                series={[
-                                    {
-                                        data: filteredTransactions.map((transaction) => {
-                                            return (
-                                                Number(transaction.amount)
-                                            );
-                                        }),
-                                        valueFormatter: (v) => {
-                                            return formatCurrency(String(v), true);
-                                        }
+                                                    <Icon.Edit />
+                                                </ModalToggleButton>
+                                                <Button
+                                                    type={"button"}
+                                                    onClick={() => handleDelete(transaction.transactionId)}
+                                                    className="usa-button--unstyled"
+                                                >
+                                                    <Icon.Delete />
+                                                </Button>
+                                            </td>
+                                            <td
+                                                className={`text-right ${transaction.category === TransactionCategory.INCOME
+                                                    ? "text-green-500"
+                                                    : "text-red-500"
+                                                    }`}
+                                            >
+                                                {formatCurrency(transaction.amount)}
+                                            </td>
+                                            <td>
+                                                <ModalToggleButton
+                                                    type="button"
+                                                    className="usa-button--unstyled"
+                                                    modalRef={infoRef}
+                                                    onClick={() => {
+                                                        setCurrentTransaction(filteredTransactions[index]);
+                                                    }}
+                                                >
+                                                    <Icon.NavigateNext />
+                                                </ModalToggleButton>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+                    </div>
+                    <div className="p-4 mt-4 m-2 rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-1/3">
+                        <h1>{t("transactions.summary")}</h1>
+                        {spent >= 0.0 ? t("transactions.spent") : t("transactions.earned")}:{" "}
+                        <span className={spent >= 0.0
+                            ? "text-red-500"
+                            : "text-green-500"
+                        }>{formatCurrency(Math.abs(spent))}</span>
+                        <hr />
+                        {t("transactions.amount")}: {filteredTransactions.length}
+                        <hr />
+                        <BarChart
+                            series={[
+                                {
+                                    data: filteredTransactions.map((transaction) => {
+                                        return (
+                                            Number(transaction.amount)
+                                        );
+                                    }),
+                                    valueFormatter: (v) => {
+                                        return formatCurrency(String(v), true);
                                     }
-                                ]}
-                                xAxis={[
-                                    {
-                                        scaleType: "band",
-                                        data: filteredTransactions.map((_transaction, index) => {
-                                            return index;
-                                        }),
-                                        valueFormatter: (v) => {
-                                            return formatDate(filteredTransactions[v].date);
-                                        }
+                                }
+                            ]}
+                            xAxis={[
+                                {
+                                    scaleType: "band",
+                                    data: filteredTransactions.map((_transaction, index) => {
+                                        return index;
+                                    }),
+                                    valueFormatter: (v) => {
+                                        return formatDate(filteredTransactions[v].date);
+                                    },
+                                    colorMap: {
+                                        type: "ordinal",
+                                        colors: filteredTransactions.map(transaction => (transaction.category === "Income" ? "#81c784" : "#ef5350"))
                                     }
-                                ]}
-                                height={300}
-                                onItemClick={(_event, params) => {
+                                }
+                            ]}
+                            height={300}
+                            onAxisClick={(_event, params) => {
+                                if (params) {
                                     setCurrentTransaction(filteredTransactions[params.dataIndex]);
+                                    if (!infoRef.current?.modalIsOpen)
+                                        infoRef.current?.toggleModal();
+                                }
+                            }}
+                            onItemClick={(_event, params) => {
+                                setCurrentTransaction(filteredTransactions[params.dataIndex]);
+                                if (!infoRef.current?.modalIsOpen)
                                     infoRef.current?.toggleModal();
-                                }}
-                                yAxis={[
-                                    {
-                                        colorMap: {
-                                            type: "ordinal",
-                                            values: filteredTransactions.map(transaction => {
-                                                return (
-                                                    Number(transaction.amount)
-                                                );
-                                            }),
-                                            colors: filteredTransactions.map(transaction => (transaction.category === "Income" ? "#81c784" : "#ef5350"))
-                                        },
-                                        valueFormatter: (val) => formatCurrency(val)
-                                    }
-                                ]}
-                                margin={{ left: 100 }}
-                                grid={{ horizontal: true }}
-                            />
-                        </CardBody>
-                    </Card>
-                </CardGroup>
+                            }}
+                            yAxis={[
+                                {
+                                    valueFormatter: (val) => formatCurrency(val)
+                                }
+                            ]}
+                            margin={{ left: 100 }}
+                            grid={{ horizontal: true }}
+                        />
+                    </div>
+                </div>
             </div>
             <Modal ref={modalRef} id="note-modal" isLarge aria-labelledby="Edit modal" aria-describedby="Edit modal">
                 <ModalHeading className="text-center mb-4">{t("transactions.edit-transaction")}</ModalHeading>
