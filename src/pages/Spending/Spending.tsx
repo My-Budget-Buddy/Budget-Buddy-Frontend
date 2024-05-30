@@ -12,8 +12,13 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
+import { useTranslation } from 'react-i18next';
+
+import { deleteTransaction, getTransactionByUserId, getAccountsByUserId, createTransaction, updateTransaction, validateTransaction } from '../../utils/transactionService';
+
 
 //define the type for months
+
 type Month =
     | "january"
     | "february"
@@ -29,8 +34,7 @@ type Month =
     | "december";
 
 // define the type for spending categories
-//this is for icons on the pie chart
-//but it's not working. so maybe go back to the way it was before
+
 type SpendingCategory = {
     name: TransactionCategory;
     value: number;
@@ -38,24 +42,32 @@ type SpendingCategory = {
     icon: React.ElementType;
 };
 
+
+
 const Spending: React.FC = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [showTooltip, setShowTooltip] = useState(false);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [mostPopularVendors, setMostPopularVendors] = useState<{ vendorName: string; amount: number }[]>([]);
     const [spendingCategories, setSpendingCategories] = useState<SpendingCategory[]>([]);
+    const [currentWeekSpending, setCurrentWeekSpending] = useState<number>(0);
+    const [previousWeekSpending, setPreviousWeekSpending] = useState<number>(0);
+    const [currentWeekDeposits, setCurrentWeekDeposits] = useState<number>(0);
+    const [previousWeekDeposits, setPreviousWeekDeposits] = useState<number>(0);
+    const [currentYearSpending, setCurrentYearSpending] = useState<number>(0);
 
     //colors for each category
     const categoryColors: { [key in TransactionCategory]: string } = {
-        [TransactionCategory.GROCERIES]: "#90c8f4",
-        [TransactionCategory.ENTERTAINMENT]: "#e5d23a",
-        [TransactionCategory.DINING]: "#6ed198",
-        [TransactionCategory.TRANSPORTATION]: "#af98f9",
-        [TransactionCategory.HEALTHCARE]: "#fd6d6d",
-        [TransactionCategory.LIVING_EXPENSES]: "#5a7ffa",
-        [TransactionCategory.SHOPPING]: "#fe992b",
-        [TransactionCategory.INCOME]: "#f7b7e5",
-        [TransactionCategory.MISC]: "#dce2e1"
+        [TransactionCategory.GROCERIES]: "#4F81BD",  // Cool Blue
+        [TransactionCategory.ENTERTAINMENT]: "#1E3A8A",  // Dark Blue
+        [TransactionCategory.DINING]: "#4BC0C0",  // Cool Teal
+        [TransactionCategory.TRANSPORTATION]: "#60A5FA",  // Light Blue
+        [TransactionCategory.HEALTHCARE]: "#6B7280",  // Cool Gray
+        [TransactionCategory.LIVING_EXPENSES]: "#1e4d4d",  // Sea Green
+        [TransactionCategory.SHOPPING]: "#87CEEB",  // Sky Blue
+        [TransactionCategory.INCOME]: "#9CA3AF",  // Medium Gray
+        [TransactionCategory.MISC]: "#CBD5E1"  // Light Gray Blue
     };
 
     //starting state for spending data. set all months to zero
@@ -95,11 +107,52 @@ const Spending: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
-                console.log(response.data);
-                const transactions = response.data;
+                // const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
+                // const transactions = response.data;
+
+                const transactions = await getTransactionByUserId(1);
                 setTransactions(transactions);
-                console.log("Fetched transactions:", transactions);
+
+                const now = new Date();
+                const startOfThisWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                const startOfLastWeek = new Date(new Date(startOfThisWeek).setDate(startOfThisWeek.getDate() - 7));
+                const startOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+                let thisWeekSpending = 0;
+                let lastWeekSpending = 0;
+                let thisWeekDeposits = 0;
+                let lastWeekDeposits = 0;
+                let thisYearSpending = 0;
+
+                transactions.forEach(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    const amount = transaction.amount;
+
+                    if (transactionDate >= startOfThisYear) {
+                        thisYearSpending += amount; // Total spending this year
+                    }
+
+                    if (transactionDate >= startOfThisWeek) {
+                        if (transaction.category === "Income") {
+                            thisWeekDeposits += amount;
+                        } else {
+                            thisWeekSpending += amount;
+                        }
+                    } else if (transactionDate >= startOfLastWeek && transactionDate < startOfThisWeek) {
+                        if (transaction.category === "Income") {
+                            lastWeekDeposits += amount;
+                        } else {
+                            lastWeekSpending += amount;
+                        }
+                    }
+                });
+
+                setCurrentWeekSpending(thisWeekSpending);
+                setPreviousWeekSpending(lastWeekSpending);
+                setCurrentWeekDeposits(thisWeekDeposits);
+                setPreviousWeekDeposits(lastWeekDeposits);
+                setCurrentYearSpending(thisYearSpending);
+
                 const updatedSpendingData: Record<Month, number> = { ...spendingData };
                 const updatedEarnedData: Record<Month, number> = { ...earnedData };
 
@@ -149,10 +202,13 @@ const Spending: React.FC = () => {
                 //map category spending to an array with colors
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
+                    displayName: t(category),
                     value: categorySpending[category]!,
                     color: categoryColors[category],
                     icon: categoryIcons[category]
                 }));
+
+
 
                 //to get the top five vendors
                 const popularVendors = Object.keys(vendorSpending)
@@ -173,24 +229,33 @@ const Spending: React.FC = () => {
         };
 
         fetchTransactions();
-    }, []);
+    }, [t]);
+
+    const calculatePercentageChange = (current: number, previous: number) => {
+        if (previous === 0) return 0; // handle division by zero
+        return ((current - previous) / previous) * 100;
+    };
+
+    const spendingWeekChange = calculatePercentageChange(currentWeekSpending, previousWeekSpending);
+    const depositsWeekChange = calculatePercentageChange(currentWeekDeposits, previousWeekDeposits);
 
     // -----BAR CHART------
     // prepare data for the bar chart
     const chartData = [
-        { month: "January", spending: spendingData.january, earned: earnedData.january },
-        { month: "February", spending: spendingData.february, earned: earnedData.february },
-        { month: "March", spending: spendingData.march, earned: earnedData.march },
-        { month: "April", spending: spendingData.april, earned: earnedData.april },
-        { month: "May", spending: spendingData.may, earned: earnedData.may },
-        { month: "June", spending: spendingData.june, earned: earnedData.june },
-        { month: "July", spending: spendingData.july, earned: earnedData.july },
-        { month: "August", spending: spendingData.august, earned: earnedData.august },
-        { month: "September", spending: spendingData.september, earned: earnedData.september },
-        { month: "October", spending: spendingData.october, earned: earnedData.october },
-        { month: "November", spending: spendingData.november, earned: earnedData.november },
-        { month: "December", spending: spendingData.december, earned: earnedData.december }
+        { month: t('spending.month.january'), spending: spendingData.january, earned: earnedData.january },
+        { month: t('spending.month.february'), spending: spendingData.february, earned: earnedData.february },
+        { month: t('spending.month.march'), spending: spendingData.march, earned: earnedData.march },
+        { month: t('spending.month.april'), spending: spendingData.april, earned: earnedData.april },
+        { month: t('spending.month.may'), spending: spendingData.may, earned: earnedData.may },
+        { month: t('spending.month.june'), spending: spendingData.june, earned: earnedData.june },
+        { month: t('spending.month.july'), spending: spendingData.july, earned: earnedData.july },
+        { month: t('spending.month.august'), spending: spendingData.august, earned: earnedData.august },
+        { month: t('spending.month.september'), spending: spendingData.september, earned: earnedData.september },
+        { month: t('spending.month.october'), spending: spendingData.october, earned: earnedData.october },
+        { month: t('spending.month.november'), spending: spendingData.november, earned: earnedData.november },
+        { month: t('spending.month.december'), spending: spendingData.december, earned: earnedData.december }
     ];
+
 
     const categories = chartData.map((d) => d.month);
     const spendingValues = chartData.map((d) => d.spending);
@@ -201,8 +266,7 @@ const Spending: React.FC = () => {
     const totalSpent = Object.values(spendingData).reduce((acc, curr) => acc + curr, 0);
     const topThreeCategories = [...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 3);
     const topThreeTotal = topThreeCategories.reduce((sum, category) => sum + category.value, 0);
-    const topThreePercentage = ((topThreeTotal / totalSpent) * 100).toFixed(2);
-
+    const topThreePercentage = totalSpent === 0 ? "0.00" : ((topThreeTotal / totalSpent) * 100).toFixed(2);
     // ----TABLES-----
     //category expenses table
     const categoryExpenses = (
@@ -210,13 +274,13 @@ const Spending: React.FC = () => {
             <thead>
                 <tr>
                     <th scope="col" className="px-4 py-3">
-                        Category
+                        {t('spending.category')}
                     </th>
                     <th scope="col" className="px-4 py-3">
-                        % of Annual Spending
+                        {t('spending.percentageOfAnnualSpending')}
                     </th>
                     <th scope="col" className="px-4 py-3">
-                        Amount
+                        {t('spending.amount')}
                     </th>
                 </tr>
             </thead>
@@ -225,7 +289,7 @@ const Spending: React.FC = () => {
                     <tr key={category.name} style={{ padding: "15px" }}>
                         <th scope="row" style={{ padding: "15px" }}>
                             <CategoryIcon category={category.name} color={category.color} />
-                            {category.name}
+                            {category.displayName}
                         </th>
                         <td style={{ padding: "15px" }}>
                             {((category.value / spendingValues.reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%
@@ -242,9 +306,8 @@ const Spending: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Category</th>
-
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.category')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -267,35 +330,46 @@ const Spending: React.FC = () => {
     const topPurchaseTotal = topThreePurchases.reduce((sum, expense) => sum + expense.amount, 0);
     const topPurchasePercentage = ((topPurchaseTotal / totalSpent) * 100).toFixed(2);
 
+
+    // top purchases cards
+    const topPurchases = topThreePurchases.map((expense, index) => (
+        <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex flex-col items-center m-2">
+            <p className="text-xl font-bold">{new Date(expense.date).toLocaleDateString()}</p>
+            <p className="text-lg">{expense.vendorName}</p>
+            <p className="text-2xl font-semibold">${expense.amount.toFixed(2)}</p>
+        </div>
+    ));
+
+
     // top three purchases table
-    const topPurchases = (
-        <>
-            <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {topThreePurchases.map((expense) => (
-                    <tr>
-                        <td>{new Date(expense.date).toLocaleDateString()}</td>
-                        <td>{expense.vendorName}</td>
-                        <td>${expense.amount.toFixed(2)}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </>
-    );
+    // const topPurchases = (
+    //     <>
+    //         <thead>
+    //             <tr>
+    //                 <th scope="col">{t('spending.date')}</th>
+    //                 <th scope="col">{t('spending.vendor')}</th>
+    //                 <th scope="col">{t('spending.amount')}</th>
+    //             </tr>
+    //         </thead>
+    //         <tbody>
+    //             {topThreePurchases.map((expense) => (
+    //                 <tr>
+    //                     <td>{new Date(expense.date).toLocaleDateString()}</td>
+    //                     <td>{expense.vendorName}</td>
+    //                     <td>${expense.amount.toFixed(2)}</td>
+    //                 </tr>
+    //             ))}
+    //         </tbody>
+    //     </>
+    // );
 
     //top 5 vendors table
     const popularVendorsTable = (
         <>
             <thead>
                 <tr>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.vendor')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -338,178 +412,152 @@ const Spending: React.FC = () => {
         const { width, height, left, top } = useDrawingArea();
         return (
             <StyledText x={left + width / 2} y={top + height / 2 - 10}>
-                <Line1 dy="-1.0em">TOTAL SPENT</Line1>
+                <Line1 dy="-1.0em">{t('spending.totalSpent')}</Line1>
                 <Line2 x={left + width / 2} dy="1.2em">
-                    ${totalSpent.toFixed(2)}
+                    ${totalSpent.toLocaleString()}
                 </Line2>
             </StyledText>
         );
     }
 
-    //put icons in the pie chart instead of word label
-    //THIS ISN'T WORKING!!!!!! TRY AGAIN LATER.
-    const calculateCentroid = (startAngle: any, endAngle: any, innerRadius: any, outerRadius: any) => {
-        const angle = (startAngle + endAngle) / 2;
-        const radians = (angle * Math.PI) / 180;
-        const x = ((outerRadius + innerRadius) / 2) * Math.cos(radians);
-        const y = ((outerRadius + innerRadius) / 2) * Math.sin(radians);
-        return { x, y };
-    };
 
-    const CustomLabel = ({
-        x,
-        y,
-        icon: IconComponent,
-        label
-    }: {
-        x: number;
-        y: number;
-        icon: React.ElementType;
-        label: string;
-    }) => (
-        <foreignObject x={x} y={y} width="100" height="30">
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <IconComponent style={{ marginRight: 4 }} />
-                <span>{label}</span>
-            </div>
-        </foreignObject>
-    );
-
-    const calculateAngles = (data: SpendingCategory[]) => {
-        let startAngle = 0;
-        return data.map((d: { value: any }) => {
-            const value = d.value;
-            const angle = (value / totalSpent) * 360;
-            const endAngle = startAngle + angle;
-            const result = { ...d, startAngle, endAngle }; //this ensures that name, value, color and icon are retained
-            startAngle = endAngle;
-            return result;
-        });
-    };
-
-    const dataWithAngles = calculateAngles(spendingCategories);
 
     return (
-        <div className="min-w-screen">
+        <div className="min-w-screen mt-10">
             <div className="flex-1">
-                <section className="h-screen">
+                <section className="h-screen ">
                     {/* Title for the page */}
-
-                    <div className="mb-4">
-                        <Title className="ml-3">Spending Overview</Title>
-                        <p className="text-6xl font-semibold">${totalSpent.toFixed(2)}</p>
+                    <div className="mb-4 ml-3">
+                        <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t('spending.title')}</h2>
+                        {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
+                        <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
+                    </div>
+                    <div className="flex justify-between gap-x-4 w-full m-2">
+                        {[
+                            { details: t('spending.spentThisWeek'), price: currentWeekSpending, percentage: spendingWeekChange, icon: Icon.AttachMoney, bgColor: "bg-red-500" },
+                            { details: t('spending.depositedThisWeek'), price: currentWeekDeposits, percentage: depositsWeekChange, icon: Icon.CreditCard, bgColor: "bg-green-500" },
+                            { details: t('spending.totalSpent'), price: currentYearSpending, percentage: 0, icon: Icon.Api, bgColor: "bg-blue-500" }
+                        ].map((card, index) => (
+                            <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex">
+                                <div className="flex-1 flex items-center">
+                                    <div>
+                                        <card.icon className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`} />
+                                        <p className="text-bold pt-5 text-3xl">${card.price.toLocaleString()}</p>
+                                        <p className="text-light pt-1 text-xl">{card.details}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start justify-end">
+                                    <span className={`text-2xl font-light ${card.percentage >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                        {card.percentage >= 0 ? (
+                                            <Icon.ArrowDropUp className="inline-block mb-1" style={{ fontSize: "2rem" }} />
+                                        ) : (
+                                            <Icon.ArrowDropDown className="inline-block mb-1" style={{ fontSize: "2rem" }} />
+                                        )}
+                                        {Math.abs(card.percentage).toFixed(2)}%
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
-                    {/* Full-width row */}
-                    <div className="p-4 m-2 min-h-[30rem] rounded-md flex flex-col justify-center items-center border-4 border-gray-100 shadow-lg">
-                        <div className="flex items-center mb-4 justify-start w-full">
-                            <Link to="/dashboard/spending/May" className="mr-3">
-                                <Button type="button" className="ml-3">
-                                    See Current Month
-                                </Button>
-                            </Link>
-                            <span
-                                onMouseEnter={() => setShowTooltip(true)}
-                                onMouseLeave={() => setShowTooltip(false)}
-                                className="relative"
-                            >
-                                <Icon.Help style={{ color: "#74777A", fontSize: "1.7rem", marginRight: "0.8rem" }} />
-                                {/* render tooltip conditionally */}
-                                {showTooltip && (
-                                    <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-60">
-                                        Click on any bar in the chart to view detailed spending for that month.
-                                    </div>
-                                )}
-                            </span>
-                        </div>
 
+
+                    {/* Full-width row */}
+                    <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
+                        <div className="mb-4 ml-3 flex w-full justify-between items-center">
+                            <h2 className="text-3xl p-5 pl-8 text-bold">{t('spending.graphTitle')}</h2>
+                            <div>
+
+                                <Link to="/dashboard/spending/May" className="mr-3 pr-8">
+                                    <Button type="button" className="ml-3">
+                                        {t('spending.seeCurrentMonth')}
+                                    </Button>
+                                </Link>
+
+                            </div>
+                        </div>
                         <div className="flex items-center mb-2 justify-start w-full">
                             <LineChart
                                 xAxis={[
                                     { scaleType: "band", data: categories, categoryGapRatio: 0.5 } as AxisConfig<"band">
                                 ]}
+
                                 series={[
                                     {
                                         data: earnedValues,
                                         color: "#BCC3CB",
-                                        label: "Earned"
+                                        label: t('spending.earned')
                                         // area: true,
                                         //stack: "total"
                                     },
                                     {
                                         data: spendingValues,
                                         color: "#1f78b4",
-                                        label: "Spendings"
+                                        label: t('spending.spendings')
                                         //area: true,
                                         //stack: "total"
                                     }
                                 ]}
                                 grid={{ horizontal: true }}
-                                width={1300}
+                                width={1400}
                                 height={400}
-                                //onItemClick={handleItemClick} //this lets you click on the bars
+                            //onItemClick={handleItemClick} //this lets you click on the bars
                             />
                         </div>
                     </div>
+
                     {/* Second row with two columns */}
-                    <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 shadow-lg">
-                            <h2></h2>
-                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full lg:-m-2">
-                                <PieChart
-                                    series={[
-                                        {
-                                            data: spendingCategories.map((d) => ({
-                                                label: d.name,
-                                                id: d.name,
-                                                value: d.value,
-                                                color: d.color
-                                            })),
-                                            innerRadius: "48%",
-                                            outerRadius: "95%",
-                                            paddingAngle: 1,
-                                            cornerRadius: 3,
-                                            startAngle: -180,
-                                            endAngle: 180,
-                                            cx: "50%",
-                                            cy: "50%",
-                                            arcLabel: (item) => `${item.label}`,
+                    <div className="flex pt-1 gap-3">
+                        <div className="flex flex-col justify-center items-center flex-2 p-2 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
 
-                                            arcLabelMinAngle: 20,
-
-                                            valueFormatter: (v) => `$ ${v.value}`
-                                        }
-                                    ]}
-                                    slotProps={{
-                                        legend: { hidden: true }
-                                    }}
-                                    sx={{
-                                        width: "100%",
-                                        height: "100%",
-                                        [`& .${pieArcLabelClasses.root}`]: {
-                                            fill: "white",
-                                            fontWeight: "bold"
-                                        }
-                                    }}
-                                >
-                                    <PieCenterLabel totalSpent={totalSpent} />
-                                </PieChart>
-                                {/*
-                                {dataWithAngles.map((d, index) => {
-                                    const { x, y } = calculateCentroid(d.startAngle, d.endAngle, 48, 95);
-                                    return (
-                                        <CustomLabel
-                                            key={index}
-                                            x={x}
-                                            y={y}
-                                    icon={d.icon}   
-                                            label={`${((d.value / totalSpent) * 100).toFixed(0)}%`}
-                                        />
-                                    );
-                                })}
-                                */}
-                            </div>
-                            <div className="w-full">
+                            {spendingCategories.length > 0 ? (
+                                <div className="relative w-full h-full sm:h-300 sm:ml-10">
+                                    <PieChart
+                                        series={[
+                                            {
+                                                data: spendingCategories.map((d) => ({
+                                                    label: d.displayName,
+                                                    id: d.name,
+                                                    value: d.value,
+                                                    color: d.color
+                                                })),
+                                                innerRadius: "48%",
+                                                outerRadius: "95%",
+                                                paddingAngle: 1,
+                                                cornerRadius: 3,
+                                                startAngle: -180,
+                                                endAngle: 180,
+                                                cx: "50%",
+                                                cy: "50%",
+                                                arcLabel: (item) => `${item.label}`,
+                                                arcLabelMinAngle: 20,
+                                                valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
+                                            }
+                                        ]}
+                                        slotProps={{
+                                            legend: { hidden: true }
+                                        }}
+                                        sx={{
+                                            width: "100%",
+                                            height: "100%",
+                                            [`& .${pieArcLabelClasses.root}`]: {
+                                                fill: "white",
+                                                fontWeight: "bold"
+                                            }
+                                        }}
+                                    >
+                                        <PieCenterLabel totalSpent={totalSpent} />
+                                    </PieChart>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center w-full h-full text-xl">
+                                    {t('spending.no-data')}
+                                    <Button type="button" onClick={() => navigate('/dashboard/transactions')} className="mt-4">
+                                        {t('transactions.add-transaction')}
+                                    </Button>
+                                </div>
+                            )}
+                            < div className="w-full">
                                 <Table bordered={false} className="w-full">
                                     {categoryExpenses}
                                 </Table>
@@ -517,52 +565,115 @@ const Spending: React.FC = () => {
                         </div>
                         {/* section for more insights -> top expenses..and?? */}
 
-                        <div className="flex flex-col justify-center items-center flex-1 m-4 rounded-md w-10/12 min-h-[30rem] ">
-                            {/* Top Purchases Table */}
+                        <div className="flex flex-col justify-center gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
-                                <h2 className="text-2xl mb-2">Top Three Individual Expenses</h2>
-                                <h2 className="mb-3 text-4x1  text-center">
-                                    Your top 3 purchases accounted for
-                                    <span className="text-3xl font-bold text-blue-600">
-                                        {" "}
-                                        {topPurchasePercentage}%{" "}
-                                    </span>{" "}
-                                    of your spending this year.
-                                </h2>
-                                <Table bordered={false} className="w-full">
-                                    {topPurchases}
-                                </Table>
+
+                            {/* Top Categories components */}
+                            <div className="w-full m-1 p-4 rounded-xl shadow-md border-l-8 border-gray-500 bg-white text-gray-800">
+                                <p className="text-xl">
+                                    {t('spending.topCategories')} <span className="font-bold">{topThreePercentage}%</span> {t('spending.spendingYear')}.
+                                </p>
                             </div>
 
-                            {/* Top Categories Table */}
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-md border-4 border-gray-100 shadow-md w-full">
-                                <h2 className="text-2xl mb- mt-1">Top Spending Categories</h2>
-                                <h2 className="mb-3 text-4x1  text-center">
-                                    Your top 3 spending categories accounted for
-                                    <span className="text-3xl font-bold text-blue-600"> {topThreePercentage}% </span> of
-                                    your spending this year.
-                                </h2>
+                            {[...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 1).map((category, index) => (
+                                <div key={index} className="w-full m-2 p-7 rounded-xl shadow-md border-[1px] flex items-center" style={{ backgroundColor: category.color }}>
+                                    <div className="flex flex-col items-start">
+                                        <div className="flex items-center">
+                                            <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-xl font-bold mr-3">
+                                                1
+                                            </div>
+                                            <p className="text-white text-bold text-2xl mb-1"> {t('spending.top-category')}</p>
+                                        </div>
 
-                                <Table bordered={false} className="w-full">
-                                    {topExpenses}
-                                </Table>
+                                        <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl"> {t('spending.youSpent')} <span className="text-2xl font-bold">{category.displayName}</span>  {t('spending.thisYear')}.</p>
+                                    </div>
+                                    <div className="flex flex-col items-end">
+                                        <category.icon className="text-white rounded-xl p-[5px] text-5xl" />
+                                        <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="flex justify-between gap-x-4 w-full m-2">
+                                {[...spendingCategories].sort((a, b) => b.value - a.value).slice(1, 3).map((category, index) => (
+                                    <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex" style={{ backgroundColor: category.color }}>
+                                        <div className="flex-1 flex items-center justify-between">
+                                            <div>
+                                                <category.icon className="text-white rounded-xl p-[5px] text-4xl" />
+                                                <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
+                                                <p className="text-white text-light pt-1 text-xl">{category.displayName}</p>
+                                            </div>
+                                            <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-2xl font-bold ml-4 mb-20">
+                                                {index + 2}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
-                            {/* Most Popular Vendors Table */}
+                            <div className="flex flex-col md:flex-row justify-between w-full min-h-[30rem] gap-x-4 m-2">
 
-                            <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 rounded-md border-4 border-gray-100 shadow-md w-full">
-                                <h2 className="text-2xl mb-2 mt-1">Top Spending Locations</h2>
-                                <Table bordered={false} className="w-full">
-                                    {popularVendorsTable}
-                                </Table>
+                                {/* Top Purchases Section */}
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-md border-[1px] w-full ">
+
+
+                                    <div className="flex flex-col gap-y-4 w-full">
+                                        <h2 className="text-2xl font-bold mr-2 mb-2 text-center"> {t('spending.topPurchases')}</h2>
+                                        {topThreePurchases.map((expense, index) => (
+                                            <div key={index} className="flex items-center justify-between p-4 m-2 bg-blue-100 rounded-xl shadow-md border-[1px]">
+                                                <div className="flex items-center">
+                                                    <div className="flex items-center justify-center w-10 h-10 text-black rounded-full text-1xl border font-bold">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div className="ml-4 " >
+                                                        <p className="text-xl">{new Date(expense.date).toLocaleDateString()}</p>
+                                                        <p className="text-lg ">{expense.vendorName}</p>
+                                                        <p className="text-2xl font-semibold">${expense.amount.toFixed(2)}</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        ))}
+
+
+                                    </div>
+                                </div>
+
+                                {/* Most Popular Vendors Section */}
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]  ">
+                                    <div className="flex items-center mb-4">
+                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2"> {t('spending.top-vendors')}</h2>
+                                        <div className="relative group">
+
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col w-full gap-4">
+                                        {mostPopularVendors.slice(0, 4).map((vendor, index) => (
+                                            <div key={vendor.vendorName} className="flex items-center justify-between p-4 m-2 rounded-full shadow-md border-[1px] bg-white text-[#0A5CBA]  w-full">
+                                                <div className="flex items-center">
+                                                    <div className="ml-4">
+                                                        <p className="text-xl font-bold">{vendor.vendorName}</p>
+                                                        <p className="text-lg">${vendor.amount.toFixed(2)}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center justify-center w-10 h-10 bg-[#0A5CBA] text-white  rounded-full text-xl font-bold ml-4">
+                                                    {index + 1}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
                             </div>
+
                         </div>
                     </div>
                 </section>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
