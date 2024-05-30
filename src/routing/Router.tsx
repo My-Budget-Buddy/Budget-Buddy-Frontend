@@ -1,7 +1,6 @@
 import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import LandingLayout from "../layouts/LandingLayout.tsx";
 import AppLayout from "../layouts/AppLayout.tsx";
-
 import LandingPage from "../pages/Landing/LandingPage.tsx";
 import Dashboard from "../pages/Dashboard/Dashboard.tsx";
 import Accounts from "../pages/Accounts/Accounts.tsx";
@@ -15,24 +14,36 @@ import SpendingMonth from "../pages/Spending/SpendingMonth.tsx";
 import Login from "../pages/AuthenticationPages/Login.tsx";
 import Register from "../pages/AuthenticationPages/Register.tsx";
 import ErrorPage from "../pages/Misc/ErrorPage.tsx";
-
 import TaxEditView from "../pages/Tax/TaxEditView.tsx";
-
-import { loadBudgets } from "./loaders.ts";
-
+import { ProtectedRoute } from "./ProtectedRoute.tsx";
+import Root from "../pages/Root.tsx";
 export const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route errorElement={<ErrorPage />}>
+        <Route element={<Root />} errorElement={<ErrorPage />}>
             <Route path="/" element={<LandingLayout />} errorElement={<ErrorPage />}>
                 <Route index element={<LandingPage />} />
                 <Route path={"login"} element={<Login />} />
                 <Route path={"register"} element={<Register />} />
                 {/*Private Routes*/}
             </Route>
-            <Route path={"/dashboard"} element={<AppLayout />}>
-                <Route index element={<Dashboard />} />
+            <Route
+                path={"/dashboard"}
+                element={
+                    <ProtectedRoute>
+                        <AppLayout />
+                    </ProtectedRoute>
+                }
+            >
+                <Route
+                    index
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path={"accounts"} element={<Accounts />} />
-                <Route path={"budgets"} element={<Budgets />} loader={loadBudgets} />
+                <Route path={"budgets"} element={<Budgets />} />
                 <Route path={"spending"} element={<Spending />} />
                 <Route path={"spending/:month"} element={<SpendingMonth />} />
 
