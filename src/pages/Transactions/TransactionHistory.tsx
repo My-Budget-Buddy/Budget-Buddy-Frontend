@@ -12,7 +12,8 @@ import {
     Select,
     Table,
     TextInput,
-    Textarea
+    Textarea, 
+    Title
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -239,9 +240,9 @@ function TransactionHistory() {
     return (
         <>
             <div className="min-w-screen min-h-screen flex flex-col gap-6">
-                <div className="flex justify-between items-center bg-transparent p-4 ">
-                    <h1>{t("transactions.history", { val: Name })}</h1>
-                    <div className="flex gap-4">
+                <div className="flex justify-between items-center bg-transparent">
+                    <Title>{t("transactions.history", { val: Name })}</Title>
+                    <div className="flex gap-4 mt-4">
                         <Button
                             type="button"
                             className="usa-button--secondary"

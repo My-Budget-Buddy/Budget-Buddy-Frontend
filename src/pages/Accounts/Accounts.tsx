@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 import { deleteAccountAPI } from "../Tax/taxesAPI";
 
@@ -69,7 +70,6 @@ const Accounts: React.FC = () => {
 
     return (
         <>
-            <Title>{t("accounts.title")}</Title>
 
             <GridContainer>
                 {error && (
@@ -81,17 +81,17 @@ const Accounts: React.FC = () => {
 
             {/* Net Cash Section */}
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
-                <div className="flex items-center space-x-2 mb-6">
-                    <h2 className="text-3xl font-semibold">{t("accounts.net-cash")}</h2>
+                <div className="flex items-center space-x-2">
+                    <Title>{t("accounts.net-cash")}</Title>
                     <span
                         onMouseEnter={() => setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
                         className="relative"
                     >
-                        <Icon.Help />
+                        <Icon.Help className="mt-4"/>
                         {/* Render tooltip conditionally */}
                         {showTooltip && (
-                            <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-40">
+                            <div className="absolute left-8 top-4 bg-gray-200 p-2 rounded shadow-md w-40">
                                 {t("accounts.net-desc")}
                             </div>
                         )}
@@ -169,7 +169,7 @@ const Accounts: React.FC = () => {
             </section>
 
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-semibold">{t("accounts.view-accounts")}</h2>
+                <Title>{t("accounts.view-accounts")}</Title>
                 <AccountModal onAccountAdded={handleAccountAdded} />
             </div>
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
@@ -250,7 +250,10 @@ const Accounts: React.FC = () => {
                         {
                             title: (
                                 <div className="flex space-x-2">
-                                    <Icon.AccountBalance /> <p>{t("accounts.savings")}</p>
+                                    <SavingsOutlinedIcon
+                                                            fontSize="small"
+                                                            className="mr-2"
+                                                        /> <p>{t("accounts.savings")}</p>
                                 </div>
                             ),
                             content: (
@@ -285,7 +288,7 @@ const Accounts: React.FC = () => {
                         {
                             title: (
                                 <div className="flex space-x-2">
-                                    <Icon.AccountBalance /> <p>{t("accounts.investment")}</p>
+                                    <Icon.TrendingUp /> <p>{t("accounts.investment")}</p>
                                 </div>
                             ),
                             content: (
@@ -322,7 +325,7 @@ const Accounts: React.FC = () => {
             </section>
             <section className="pb-5 mb-5">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-3xl font-semibold">{t("accounts.view-credit-score")}</h2>
+                    <Title>{t("accounts.view-credit-score")}</Title>
                     <CreditScoreModal totalDebt={debts} />
                 </div>
                 <div className="flex justify-center py-5">
