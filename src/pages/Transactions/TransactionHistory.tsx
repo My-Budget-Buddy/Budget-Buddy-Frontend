@@ -507,6 +507,10 @@ function TransactionHistory() {
                                     }),
                                     valueFormatter: (v) => {
                                         return formatDate(filteredTransactions[v].date);
+                                    },
+                                    colorMap: {
+                                        type: "ordinal",
+                                        colors: filteredTransactions.map(transaction => (transaction.category === "Income" ? "#81c784" : "#ef5350"))
                                     }
                                 }
                             ]}
@@ -517,15 +521,6 @@ function TransactionHistory() {
                             }}
                             yAxis={[
                                 {
-                                    colorMap: {
-                                        type: "ordinal",
-                                        values: filteredTransactions.map(transaction => {
-                                            return (
-                                                Number(transaction.amount)
-                                            );
-                                        }),
-                                        colors: filteredTransactions.map(transaction => (transaction.category === "Income" ? "#81c784" : "#ef5350"))
-                                    },
                                     valueFormatter: (val) => formatCurrency(val)
                                 }
                             ]}
