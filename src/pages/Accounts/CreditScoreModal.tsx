@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Gauge, gaugeClasses } from "@mui/x-charts";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Modal, ModalRef, ButtonGroup, ModalFooter, ModalHeading, ModalToggleButton } from "@trussworks/react-uswds";
 
 interface CreditScoreModalProps {
@@ -10,11 +11,11 @@ interface CreditScoreModalProps {
 
 const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const { t } = useTranslation();
+    const { jwt } = useAuthentication();
 
     const modalRef = useRef<ModalRef>(null);
 
     const [creditColor, setCreditColor] = useState<string | null>(null);
-    const [creditScore, setCreditScore] = useState<number>(571); // initial credit score based of assumptions
 
     // returns the color of the gauge based on the credit score
     const getCreditColor = (creditScore: number): string => {
@@ -24,22 +25,21 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         else return "#b20202";
     };
 
-    // calculates the credit score based on the total debt
-    useEffect(() => {
+    const creditScore = useMemo(() => {
+        if (!jwt) return 0;
+
+        const initialScore = 571;
         let score = 300;
         if (totalDebt > 50000) {
             score -= (totalDebt - 50000) / 1000;
         }
+
         score = Math.max(score, 0);
+        const res = initialScore + score;
+        setCreditColor(getCreditColor(res));
 
-        // Increase creditScore by score
-        setCreditScore((prevCreditScore) => prevCreditScore + score);
-    }, [totalDebt]);
-
-    // sets the color of the gauge based on the credit score
-    useEffect(() => {
-        setCreditColor(getCreditColor(creditScore));
-    }, [creditScore]);
+        return res;
+    }, [totalDebt, jwt]);
 
     return (
         <>
