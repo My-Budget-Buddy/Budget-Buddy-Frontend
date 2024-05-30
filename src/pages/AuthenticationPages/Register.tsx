@@ -6,16 +6,13 @@ import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
-
     const { t } = useTranslation();
     const { jwt, loading } = useAuthentication();
-
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         setError(null);
 
         // @ts-expect-error untyped form elements
@@ -27,8 +24,6 @@ const Register: React.FC = () => {
             // @ts-expect-error untyped form elements
             password: e.currentTarget.elements.password.value
         };
-
-         
 
         const res = await fetch("http://localhost:8125/auth/register", {
             method: "POST",
@@ -52,7 +47,6 @@ const Register: React.FC = () => {
     return (
         <main>
             <GridContainer className="usa-section">
-                {/* Error Alert */}
                 <Grid row className="flex-justify-center margin-bottom-205">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
                         {error && (
@@ -63,10 +57,9 @@ const Register: React.FC = () => {
                     </Grid>
                 </Grid>
 
-                {/* Main Form Content */}
                 <Grid row className="flex-justify-center">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
-                        <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
+                        <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest shadow-lg rounded-lg margin-bottom-4">
                             <h1 className="margin-bottom-0">{t("auth.register")}</h1>
                             <Form onSubmit={handleSubmit} className="min-w-full">
                                 <Fieldset legend={t("auth.register-desc")} legendStyle="default">
@@ -97,11 +90,10 @@ const Register: React.FC = () => {
                                         {showPassword ? t("auth.hide") : t("auth.show")}
                                     </button>
 
-                                    <Button type="submit">{t("auth.register")}</Button>
+                                    <Button type="submit" className="width-full margin-top-3">{t("auth.register")}</Button>
                                 </Fieldset>
                             </Form>
 
-                            {/* separator */}
                             <div className="flex justify-center items-center my-8">
                                 <div className="border-t-[1px] border-[#dfe1e2] w-full" />
                                 <p className="px-3 text-neutral-400">OR</p>

@@ -14,9 +14,9 @@ const features = [
         image: budgetImg
     },
     {
-        title: "Transactions",
+        title: "Stay On Top Of Your Spending",
         description:
-            "Monitor your spending with BudgetBuddy's detailed transaction tracking. Easily view and categorize your expenses to gain insights into your financial habits",
+            "Monitor your spending with BudgetBuddy's detailed transaction tracking. Easily view and categorize your expenses to gain insights into your financial habits to see where your money is going and how to improve",
         icon: Icon.Insights,
         image: transactionsImg
     },
@@ -32,34 +32,30 @@ const features = [
 export default function LandingPage() {
     return (
         <>
-            <div className="relative w-full py-32 sm:py-48 lg:py-56 flex items-center">
-                <div className="absolute inset-0 w-full">
-                    <img src={heroBg} alt="Hero" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black opacity-50"></div>
-                </div>
-                <div className="relative bg-opacity-80 backdrop-blur-sm rounded-lg shadow-lg max-w-xl p-8 mx-6 lg:mx-8">
-                    <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-                        Welcome to BudgetBuddy
-                    </h1>
-                    <p className="mt-6 text-lg leading-8 text-gray-400">
-                        BudgetBuddy helps you track spending, manage budgets, and achieve financial goals with ease.
-                        Make every dollar count with BudgetBuddy.
-                    </p>
-                    <div className="mt-10 flex items-center gap-x-6">
-                        <Link to="/dashboard" className="usa-button">
-                            Get Started
-                        </Link>
+            <section className="usa-hero custom-hero" aria-label="Introduction">
+                <div className="relative w-full h-screen flex items-center">
+                    <div className="absolute inset-0">
+                        <img src={heroBg} alt="Hero" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                    </div>
+                    <div className="relative usa-hero__callout max-w-2xl p-8 mx-6 lg:mx-8 bg-opacity-80 backdrop-blur-sm rounded-lg shadow-lg text-left">
+                        <h1 className="usa-hero__heading text-4xl font-bold tracking-tight text-accent-cool sm:text-6xl">
+                            <span className="usa-hero__heading--alt">BudgetBuddy:</span>
+                            Your Personal Finance Assistant
+                        </h1>
+                        <p className="mt-6 text-lg leading-8 text-gray-100">
+                            BudgetBuddy helps you track spending, manage budgets, and achieve financial goals with ease. Make every dollar count with BudgetBuddy.
+                        </p>
+                        <div className="mt-10 flex justify-start">
+                            <Link to="/dashboard" className="usa-button">
+                                Get Started
+                            </Link>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-16">
-                <div className="mx-auto max-w-2xl lg:text-center">
-
-                    <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        Your Personal Guide to Smarter Spending
-                    </p>
-                </div>
                 <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
                     {features.map((feature, index) => (
                         <div key={feature.title} className={`flex flex-col lg:flex-row items-center gap-x-8 mb-16 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>

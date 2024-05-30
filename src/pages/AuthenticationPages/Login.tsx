@@ -1,5 +1,4 @@
 import Cookies from "js-cookie";
-
 import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer } from "@trussworks/react-uswds";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,16 +7,13 @@ import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
-
     const { t } = useTranslation();
     const { jwt, loading, setJwt } = useAuthentication();
-
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         setError(null);
 
         const fields = {
@@ -36,7 +32,6 @@ const Login: React.FC = () => {
 
         if (res.ok) {
             await res.json();
-
             const jwtCookie = Cookies.get("jwt");
             if (jwtCookie) {
                 setJwt(jwtCookie);
@@ -58,7 +53,6 @@ const Login: React.FC = () => {
     return (
         <main>
             <GridContainer className="usa-section">
-                {/* Error Alert */}
                 <Grid row className="flex-justify-center margin-bottom-205">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
                         {error && (
@@ -69,10 +63,9 @@ const Login: React.FC = () => {
                     </Grid>
                 </Grid>
 
-                {/* Main Form Content */}
                 <Grid row className="flex-justify-center">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
-                        <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest margin-bottom-4">
+                        <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest shadow-lg rounded-lg margin-bottom-4">
                             <h1 className="margin-bottom-0">{t("auth.login")}</h1>
                             <Form onSubmit={handleSubmit} className="min-w-full">
                                 <Fieldset legend={t("auth.login-desc")} legendStyle="default">
@@ -96,11 +89,10 @@ const Login: React.FC = () => {
                                         {showPassword ? t("auth.hide") : t("auth.show")}
                                     </button>
 
-                                    <Button type="submit">{t("auth.login")}</Button>
+                                    <Button type="submit" className="width-full margin-top-3">{t("auth.login")}</Button>
                                 </Fieldset>
                             </Form>
 
-                            {/* separator */}
                             <div className="flex justify-center items-center my-8">
                                 <div className="border-t-[1px] border-[#dfe1e2] w-full" />
                                 <p className="px-3 text-neutral-400">OR</p>
