@@ -234,18 +234,18 @@ const Spending: React.FC = () => {
     // -----BAR CHART------
     // prepare data for the bar chart
     const chartData = [
-        { month: t('spending.one-month'), spending: spendingData.january, earned: earnedData.january },
-        { month: t('spending.two-month'), spending: spendingData.february, earned: earnedData.february },
-        { month: t('spending.three-month'), spending: spendingData.march, earned: earnedData.march },
-        { month: t('spending.four-month'), spending: spendingData.april, earned: earnedData.april },
-        { month: t('spending.five-month'), spending: spendingData.may, earned: earnedData.may },
-        { month: t('spending.six-month'), spending: spendingData.june, earned: earnedData.june },
-        { month: t('spending.seven-month'), spending: spendingData.july, earned: earnedData.july },
-        { month: t('spending.eight-month'), spending: spendingData.august, earned: earnedData.august },
-        { month: t('spending.nine-month'), spending: spendingData.september, earned: earnedData.september },
-        { month: t('spending.ten-month'), spending: spendingData.october, earned: earnedData.october },
-        { month: t('spending.eleven-month'), spending: spendingData.november, earned: earnedData.november },
-        { month: t('spending.twelve-month'), spending: spendingData.december, earned: earnedData.december }
+        { month: t('spending.january'), spending: spendingData.january, earned: earnedData.january },
+        { month: t('spending.february'), spending: spendingData.february, earned: earnedData.february },
+        { month: t('spending.march'), spending: spendingData.march, earned: earnedData.march },
+        { month: t('spending.april'), spending: spendingData.april, earned: earnedData.april },
+        { month: t('spending.may'), spending: spendingData.may, earned: earnedData.may },
+        { month: t('spending.june'), spending: spendingData.june, earned: earnedData.june },
+        { month: t('spending.july'), spending: spendingData.july, earned: earnedData.july },
+        { month: t('spending.august'), spending: spendingData.august, earned: earnedData.august },
+        { month: t('spending.september'), spending: spendingData.september, earned: earnedData.september },
+        { month: t('spending.october'), spending: spendingData.october, earned: earnedData.october },
+        { month: t('spending.november'), spending: spendingData.november, earned: earnedData.november },
+        { month: t('spending.december'), spending: spendingData.december, earned: earnedData.december }
     ];
 
     const categories = chartData.map((d) => d.month);

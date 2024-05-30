@@ -11,6 +11,7 @@ import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CategoryIcon from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
+import { useTranslation } from 'react-i18next';
 
 //define the type for months
 type Month =
@@ -28,6 +29,7 @@ type Month =
     | "december";
 
 const SpendingMonth: React.FC = () => {
+    const { t } = useTranslation();
     const { month } = useParams<{ month: Month }>(); //get month parameter from url
     const lowercaseMonth = month?.toLowerCase() as Month; //need to make the month name lowercase
     const navigate = useNavigate();
@@ -69,6 +71,10 @@ const SpendingMonth: React.FC = () => {
         "november",
         "december"
     ];
+
+    const getTranslatedMonth = (month: Month) => t(month);
+
+    const translatedMonth = getTranslatedMonth(lowercaseMonth);
 
     const getPreviousMonth = (month: Month) => {
         const index = monthNames.indexOf(month);
@@ -204,6 +210,7 @@ const SpendingMonth: React.FC = () => {
                 //prepare category data for pie chart
                 const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
                     name: category,
+                    displayName: t(category),
                     value: categorySpending[category]!,
                     color: categoryColors[category]
                 }));
@@ -229,7 +236,7 @@ const SpendingMonth: React.FC = () => {
         };
 
         fetchTransactions();
-    }, [month]);
+    }, [month, t]);
 
     //total spending for the month
     const totalSpending = transactions.reduce(
@@ -245,9 +252,9 @@ const SpendingMonth: React.FC = () => {
         <>
             <thead>
                 <tr>
-                    <th scope="col">Category</th>
-                    <th scope="col">% of Monthly Spending</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">{t('spending.category')}</th>
+                    <th scope="col">{t('spending.percent-monthly')}</th>
+                    <th scope="col">{t('spending.amount')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -255,7 +262,7 @@ const SpendingMonth: React.FC = () => {
                     <tr key={category.name} style={{ padding: "20px" }}>
                         <th scope="row" style={{ padding: "20px" }}>
                             <CategoryIcon category={category.name} color={category.color} />
-                            {category.name}
+                            {category.displayName}
                         </th>
                         <td style={{ padding: "20px" }}>{((category.value / totalSpending) * 100).toFixed(2)}%</td>
                         <td style={{ padding: "20px" }}>${category.value.toFixed(2)}</td>
@@ -352,7 +359,7 @@ const SpendingMonth: React.FC = () => {
         const { width, height, left, top } = useDrawingArea();
         return (
             <StyledText x={left + width / 2} y={top + height / 2 - 10}>
-                <Line1 dy="-1.0em">TOTAL SPENT</Line1>
+                <Line1 dy="-1.0em">{t('spending.totalSpent')}</Line1>
                 <Line2 x={left + width / 2} dy="1.2em">
                     ${totalSpending.toFixed(2)}
                 </Line2>
@@ -371,7 +378,7 @@ const SpendingMonth: React.FC = () => {
 
     const monthOptions = monthNames.map((month) => ({
         value: month,
-        label: capitalizeFirstLetter(month)
+        label: capitalizeFirstLetter(getTranslatedMonth(month))
     }));
 
     return (
@@ -382,7 +389,7 @@ const SpendingMonth: React.FC = () => {
                     <div className="mb-6">
                         <Title className="ml-3">
                             {" "}
-                            {lowercaseMonth.charAt(0).toUpperCase() + lowercaseMonth.slice(1)} Spending
+                            {translatedMonth} {t('spending.spendings')}
                         </Title>
                         <div className="flex items-center">
                             <p className="text-6xl font-semibold">${currentMonthSpending.toFixed(2)}</p>
@@ -399,12 +406,7 @@ const SpendingMonth: React.FC = () => {
                                             style={{ fontSize: "2rem" }}
                                         />
                                     )}
-                                    {percentageChange}% from{" "}
-                                    {capitalizeFirstLetter(
-                                        monthNames[
-                                        getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
-                                        ]
-                                    )}
+                                    {percentageChange}% {t('spending.from')} {capitalizeFirstLetter(getTranslatedMonth(getPreviousMonth(lowercaseMonth)))}
                                 </p>
                             </div>
                         </div>
@@ -415,7 +417,7 @@ const SpendingMonth: React.FC = () => {
                         <div className="flex items-center mb-4 justify-start w-full">
                             <Link to="/dashboard/spending" className="mr-3">
                                 <Button type="button" className="ml-3">
-                                    Back to Annual Spending Overview
+                                    {t('spending.back-overview')}
                                 </Button>
                             </Link>
                             <div className="flex items-center gap-4 bg-transparent p-4">
@@ -451,8 +453,8 @@ const SpendingMonth: React.FC = () => {
                                     } as AxisConfig<"band">
                                 ]}
                                 series={[
-                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: "Earnings" },
-                                    { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: "Spendings" }
+                                    { data: weeklyData.map((d) => d.earning), color: "#cbd5e8", label: t('spending.earned') },
+                                    { data: weeklyData.map((d) => d.spending), color: "#1f78b4", label: t('spending.spendings') }
                                 ]}
                                 grid={{ horizontal: true }}
                                 width={1400}
@@ -469,7 +471,7 @@ const SpendingMonth: React.FC = () => {
                                     series={[
                                         {
                                             data: spendingCategories.map((d) => ({
-                                                label: d.name,
+                                                label: d.displayName,
                                                 id: d.name,
                                                 value: d.value,
                                                 icon: CategoryIcon,
