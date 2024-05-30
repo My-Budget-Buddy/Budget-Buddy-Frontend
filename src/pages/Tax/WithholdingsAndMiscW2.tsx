@@ -1,12 +1,9 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
-import { setW2Info } from "./W2Slice";
-import { Button, Fieldset, Form, FormGroup, Label, Table, TextInput } from "@trussworks/react-uswds";
-import { setTaxReturnInfo } from "./TaxReturnSlice";
-import {W2State} from "./W2Slice"
+import { Button, FormGroup, Table, TextInput } from "@trussworks/react-uswds";
 import { deductions } from "./deductionsSlice";
-import { createW2API, findW2sByTaxReturnIdAPI } from "./taxesAPI";
+import { findW2sByTaxReturnIdAPI } from "./taxesAPI";
 import { setDeductionsInfo } from "./deductionsSlice";
 
 const WithholdingsAndMiscW2: React.FC = () => {

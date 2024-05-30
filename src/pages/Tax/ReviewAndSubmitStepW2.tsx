@@ -1,7 +1,7 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
-import { W2State, setW2Info } from "./W2Slice";
+import { W2State } from "./W2Slice";
 import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, Grid, GridContainer } from "@trussworks/react-uswds";
 import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
 import { createTaxReturnAPI, findAllDeductionsByTaxReturnAPI, findW2sByTaxReturnIdAPI } from "./taxesAPI";

@@ -35,7 +35,11 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         }
 
         score = Math.max(score, 0);
-        const res = initialScore + score;
+        let res = initialScore + score;
+
+        // Limit the maximum value of res to 850
+        res = Math.min(res, 850);
+
         setCreditColor(getCreditColor(res));
 
         return res;

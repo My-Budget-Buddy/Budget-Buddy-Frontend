@@ -7,6 +7,7 @@ import { createTaxReturn } from "./taxesAPI";
 import { RootState } from "../../util/redux/store";
 import { setTaxReturnInfo } from "./TaxReturnSlice";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const TaxNav: React.FC = () => {
     interface initReturn {
@@ -16,6 +17,7 @@ const TaxNav: React.FC = () => {
     const taxReturnInfo = useSelector((state: RootState) => state.taxReturn);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const starterblock: initReturn = {
         year: 2024,
@@ -79,13 +81,13 @@ const TaxNav: React.FC = () => {
     };
 
     return (
-        <div style={containerStyle}>
+        <div style={containerStyle} className=" rounded-lg shadow-lg">
             <div style={iconsContainerStyle}>
                 <div style={toolStyle}>
                     <button style={iconButtonStyle} onClick={() => handleIconClick("File Taxes")}>
                         <div style={{ ...iconStyle, backgroundImage: `url(${taxImage})` }}></div>
                     </button>
-                    <div style={labelStyle}>File Taxes</div>
+                    <div style={labelStyle}>{t("tax.file-taxes")}</div>
                 </div>
                 <div style={toolStyle}>
                     <button style={iconButtonStyle} onClick={() => handleIconClick("Estimate Refund")}>
@@ -96,7 +98,7 @@ const TaxNav: React.FC = () => {
                             }}
                         ></div>
                     </button>
-                    <div style={labelStyle}>Estimate Refund</div>
+                    <div style={labelStyle}>{t("tax.estimate-refund")}</div>
                 </div>
                 <div style={toolStyle}>
                     <button style={iconButtonStyle} onClick={() => handleIconClick("Document Checklist")}>
@@ -107,7 +109,7 @@ const TaxNav: React.FC = () => {
                             }}
                         ></div>
                     </button>
-                    <div style={labelStyle}>Document Checklist</div>
+                    <div style={labelStyle}>{t("tax.document-checklist")}</div>
                 </div>
                 <div style={toolStyle}>
                     <button style={iconButtonStyle} onClick={() => handleIconClick("Refund Planning")}>
@@ -118,7 +120,7 @@ const TaxNav: React.FC = () => {
                             }}
                         ></div>
                     </button>
-                    <div style={labelStyle}>Refund Planning</div>
+                    <div style={labelStyle}>{t("tax.refund-planning")}</div>
                 </div>
             </div>
         </div>

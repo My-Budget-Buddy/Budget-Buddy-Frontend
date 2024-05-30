@@ -144,9 +144,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                                         id="account-num"
                                         name="account-num"
                                         type="text"
-                                        pattern="\d{9}"
-                                        maxLength={9}
+                                        pattern="\d*"
+                                        minLength={8}
                                         required
+                                        title="Account number must be at least digits"
                                     />
                                 </div>
 

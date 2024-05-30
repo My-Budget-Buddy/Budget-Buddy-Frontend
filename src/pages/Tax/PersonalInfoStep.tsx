@@ -1,10 +1,10 @@
-import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
 import { Button, Fieldset, FormGroup, Grid, GridContainer, Select, TextInput } from "@trussworks/react-uswds";
 import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
-import { deleteTaxReturn, getTaxReturnById, updateTaxReturnAPI } from "./taxesAPI";
+import { getTaxReturnById, updateTaxReturnAPI } from "./taxesAPI";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 const PersonalInfoStep: React.FC = () => {
@@ -252,7 +252,9 @@ const PersonalInfoStep: React.FC = () => {
                 </Grid>
                 </GridContainer>
             </div>
+            <div className="m-5">
             <Button type="button" onClick = {() => handleSave(taxReturnInfo, taxReturnInfo.id)}>Save</Button>
+            </div>
         </>
         
     );

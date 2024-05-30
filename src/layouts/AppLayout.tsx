@@ -1,6 +1,5 @@
 import NavBar from "../components/NavBar";
 import { Outlet } from "react-router-dom";
-import { AuthenticationProvider } from "../contexts/AuthenticationContext.tsx";
 
 const AppLayout: React.FC = () => {
     return (
