@@ -119,28 +119,18 @@
       "vendor": "Vendor",
       "earned": "Earned",
       "spendings": "Spendings",
-      "totalSpent": "Annual total spent",
+      "totalSpent": "Annual Total Spent",
       "from": "from",
-      "one-month": "January",
-      "two-month": "February",
-      "three-month": "March",
-      "four-month": "April",
-      "five-month": "May",
-      "six-month": "June",
-      "seven-month": "July",
-      "eight-month": "August",
-      "nine-month": "September",
-      "ten-month": "October",
-      "eleven-month": "Novemeber",
-      "twelve-month": "December",
       "totalSpentWeek": "Total spent",
       "monthSpending": "{{month}} Spending",
-      "percentageOfMonthlySpending": "% of Monthly Spending",
+      "percentageOfMonthlySpending": "% Of Monthly Spending",
       "backToAnnualSpendingOverview": "Back to Annual Spending Overview",
       "week": "Week",
       "top-category": "Top Category",
       "earnings": "Earnings",
       "spending": "Spending",
+      "top-vendors": "Top Vendors",
+      "no-data": "No data to display. Add some transactions to get started.",
 
       "month": {
         "January": "January",
@@ -169,6 +159,7 @@
         "december": "December"
       }
     },
+
     "transactions": {
       "title": "Transactions",
       "clear-filters": "Clear Filters",

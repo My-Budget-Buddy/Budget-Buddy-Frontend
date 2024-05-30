@@ -5,5 +5,8 @@
   "[json]": {
     "editor.tabSize": 2,
     "prettier.tabWidth": 2
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   }
 }
