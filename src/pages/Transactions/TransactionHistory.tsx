@@ -12,7 +12,7 @@ import {
     Select,
     Table,
     TextInput,
-    Textarea, 
+    Textarea,
     Title
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
@@ -49,7 +49,7 @@ function TransactionHistory() {
             date: "1973-01-01",
             vendorName: Name,
             category: TransactionCategory.DINING,
-            amount: 2.33,
+            amount: 0.0,
             description: "",
             accountId: -1,
             userId: -1
@@ -241,7 +241,7 @@ function TransactionHistory() {
         <>
             <div className="min-w-screen min-h-screen flex flex-col gap-6">
                 <div className="flex justify-between items-center bg-transparent">
-                    <Title>{t("transactions.history", { val: Name })}</Title>
+                    <Title><Trans i18nKey={"transactions.history"} components={{ 1: <i className="text-blue-700" /> }} values={{ val: Name }} /></Title>
                     <div className="flex gap-4 mt-4">
                         <Button
                             type="button"
