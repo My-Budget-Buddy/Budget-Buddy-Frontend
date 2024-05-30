@@ -353,7 +353,7 @@ const Transactions: React.FC = () => {
 
             <div className="flex">
                 <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-screen">
-                    <h1>{t("transactions.list-of-transactions")}</h1>
+                    <h1 className="px-4">{t("transactions.list-of-transactions")}</h1>
                     {filteredTransactions.length === 0 ? (
                         <div className="text-center">
                             <p className="text-lg">
