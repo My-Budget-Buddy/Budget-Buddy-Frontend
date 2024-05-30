@@ -1,8 +1,9 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import Cookies from "js-cookie";
+const url = "https://api.skillstorm-congo.com";
 
 // TODO Given a list of transactions, return budget totals
-const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
+const endpoint = `${url}/budgets`;
 
 export async function getCompleteBudgets(transformedBudgets: BudgetRowProps[]) {
     const date = transformedBudgets[0].monthYear;

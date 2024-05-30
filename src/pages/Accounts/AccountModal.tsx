@@ -38,6 +38,12 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        let routingNum = null;
+        if (showRoutingNumberInput) {
+            //@ts-expect-error elements aren't typed
+            routingNum = e.currentTarget.elements["routing-num"].value as number;
+        }
+
         const fields = {
             //@ts-expect-error elements aren't typed
             type: e.currentTarget.elements["account-type"].value as string,
@@ -45,8 +51,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
             institution: e.currentTarget.elements["account-name"].value as string,
             //@ts-expect-error elements aren't typed
             accountNumber: e.currentTarget.elements["account-num"].value as number,
-            //@ts-expect-error elements aren't typed
-            routingNumber: e.currentTarget.elements["routing-num"].value as number,
+            routingNumber: routingNum,
             //@ts-expect-error elements aren't typed
             investmentRate: e.currentTarget.elements["interest-rate"].value as number,
             //@ts-expect-error elements aren't typed
@@ -55,7 +60,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
         e.currentTarget.reset();
 
-        fetch("http://localhost:8125/accounts", {
+        fetch("https://api.skillstorm-congo.com/accounts", {
             method: "POST",
             headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
             body: JSON.stringify(fields)

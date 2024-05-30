@@ -25,7 +25,11 @@ const Register: React.FC = () => {
             password: e.currentTarget.elements.password.value
         };
 
-        const res = await fetch("http://localhost:8125/auth/register", {
+        if (confirmPassword !== fields.password) {
+            return;
+        }
+
+        const res = await fetch("https://api.skillstorm-congo.com/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fields)
@@ -90,7 +94,9 @@ const Register: React.FC = () => {
                                         {showPassword ? t("auth.hide") : t("auth.show")}
                                     </button>
 
-                                    <Button type="submit" className="width-full margin-top-3">{t("auth.register")}</Button>
+                                    <Button type="submit" className="width-full margin-top-3">
+                                        {t("auth.register")}
+                                    </Button>
                                 </Fieldset>
                             </Form>
 
@@ -100,7 +106,14 @@ const Register: React.FC = () => {
                                 <div className="border-t-[1px] border-[#dfe1e2] w-full" />
                             </div>
 
-                            <Button type="button" outline className="width-full">
+                            <Button
+                                type="button"
+                                outline
+                                className="width-full"
+                                onClick={() =>
+                                    window.location.replace("https://api.skillstorm-congo.com/auth/login/oauth2")
+                                }
+                            >
                                 {t("auth.google")}
                             </Button>
                         </div>

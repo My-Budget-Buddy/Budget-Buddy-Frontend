@@ -10,7 +10,7 @@ import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 
-import { deleteAccountAPI, getAccountByID } from "../Tax/taxesAPI";
+import { deleteAccountAPI } from "../Tax/taxesAPI";
 
 const Accounts: React.FC = () => {
     const { t } = useTranslation();
@@ -23,10 +23,8 @@ const Accounts: React.FC = () => {
     const handleDelete = (accountId: number): void => {
         deleteAccountAPI(accountId)
             .then((res) => {
-                // if (!res.ok) {
-                //     throw new Error("Error deleting account");
-                // }
-                setAccounts((prevAccounts) => prevAccounts?.filter((acc) => acc.id !== accountId) || null);
+                if (res.status >= 200 && res.status < 300)
+                    setAccounts((prevAccounts) => prevAccounts?.filter((acc) => acc.id !== accountId) || null);
             })
             .catch((err: Error) => setError(err.message));
     };
@@ -35,7 +33,7 @@ const Accounts: React.FC = () => {
     useEffect(() => {
         if (!jwt) return; // to prevent an unnecessary 401
 
-        fetch("http://localhost:8125/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
+        fetch("https://api.skillstorm-congo.com/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (res.ok) {
                     return res.json().then((data: Account[]) => {
@@ -49,7 +47,7 @@ const Accounts: React.FC = () => {
                 }
             })
             .catch((err: Error) => setError(err.message));
-    }, [jwt, t]);
+    }, [jwt]);
 
     const handleAccountAdded = (newAccount: Account) => {
         setAccounts((prevAccounts) => (prevAccounts ? [...prevAccounts, newAccount] : [newAccount]));

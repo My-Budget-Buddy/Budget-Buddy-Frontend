@@ -1,12 +1,10 @@
-import Cookies from "js-cookie";
 import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer } from "@trussworks/react-uswds";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 
 const Login: React.FC = () => {
-    const navigate = useNavigate();
     const { t } = useTranslation();
     const { jwt, loading, setJwt } = useAuthentication();
     const [error, setError] = useState<string | null>(null);
@@ -23,7 +21,7 @@ const Login: React.FC = () => {
             password: e.currentTarget.elements.password.value
         };
 
-        const res = await fetch("http://localhost:8125/auth/login", {
+        const res = await fetch("https://api.skillstorm-congo.com/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fields),
@@ -31,12 +29,9 @@ const Login: React.FC = () => {
         });
 
         if (res.ok) {
-            await res.json();
-            const jwtCookie = Cookies.get("jwt");
-            if (jwtCookie) {
-                setJwt(jwtCookie);
-                navigate("/dashboard");
-            }
+            const data = await res.json();
+
+            setJwt(data.jwt);
         } else {
             if (res.headers.get("content-type")?.includes("text/plain")) {
                 setError(await res.text());
@@ -46,6 +41,7 @@ const Login: React.FC = () => {
         return;
     };
 
+    // navigate to dashboard if jwt exists
     if (jwt && !loading) {
         return <Navigate to="/dashboard" />;
     }
@@ -89,7 +85,9 @@ const Login: React.FC = () => {
                                         {showPassword ? t("auth.hide") : t("auth.show")}
                                     </button>
 
-                                    <Button type="submit" className="width-full margin-top-3">{t("auth.login")}</Button>
+                                    <Button type="submit" className="width-full margin-top-3">
+                                        {t("auth.login")}
+                                    </Button>
                                 </Fieldset>
                             </Form>
 
@@ -103,7 +101,9 @@ const Login: React.FC = () => {
                                 type="button"
                                 outline
                                 className="width-full"
-                                onClick={() => window.location.replace("http://localhost:8125/auth/login/oauth2")}
+                                onClick={() =>
+                                    window.location.replace("https://api.skillstorm-congo.com/auth/login/oauth2")
+                                }
                             >
                                 {t("auth.google")}
                             </Button>
