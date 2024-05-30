@@ -3,7 +3,6 @@ import { Transaction } from '../../types/models';
 import { W2State } from './W2Slice';
 import { taxReturn } from './TaxReturnSlice';
 import { otherIncome } from './otherIncomeSlice';
-import createApiClient from './index';
 interface initReturn {
     year: number;
     userId: number;
@@ -43,12 +42,12 @@ type NewMonthlySummary = {
     totalBudgetAmount: number;
 };
 
-type Account = {
-    id: number;
-    userId: number;
-    type: string;
-    currentBalance: number;
-};
+// type Account = {
+//     id: number;
+//     userId: number;
+//     type: string;
+//     currentBalance: number;
+// };
 
 interface W2StateR{
     "state": string,
@@ -106,8 +105,8 @@ interface UserType {
 
 
 export const createTaxReturn = (initTaxReturn: initReturn) => {
-    console.log("////////////////////////////////");
-    console.log(initTaxReturn);
+    // console.log("////////////////////////////////");
+    // console.log(initTaxReturn);
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 };
 
@@ -115,10 +114,10 @@ export const getTaxReturnById = (taxReturnId: number) => {
     return apiClient.get(`/taxes/taxreturns/${taxReturnId}`);
 };
 
-export const getTaxReturnByUserId = (jwt: string | null, userId : number) => {
+export const getTaxReturnByUserId = () => {
     
-    console.log("////////////////////////////////");
-    console.log(jwt);
+    // console.log("////////////////////////////////");
+    // console.log(jwt);
     return apiClient.get(`/taxes/taxreturns`);
 }
 
@@ -136,12 +135,12 @@ export const getBudgetsMonthyear = ( monthyear: string) => {
     return apiClient.get(`/budgets/monthyear/${monthyear}`);
   };
 
-export const getTransactionsThing = (date: string, userid: number) => {
-    return apiClient.get(`/budgets/transactions/${date}/user/${userid}`);
+export const getTransactionsThing = (date: string) => {
+    return apiClient.get(`/budgets/transactions/${date}`);
 };
 
 export const getBudgetsTransactionsMonthyear = (monthyear: string) => {
-    return apiClient.get(`/budgets/transactions/${monthyear}/user/1`);
+    return apiClient.get(`/budgets/transactions/${monthyear}`);
 };
 
 export const getMonthlySummaryAPI = (monthyear: string) => {
@@ -172,11 +171,13 @@ export const updateBudgetAPI = (id: number, budget: RawBudgetToSend) => {
     return apiClient.put(`/budgets/${id}`, budget);
 }
 
-export const getTransactionByUserIdAPI = (userId: number) => {
+export const getTransactionByUserIdAPI = (id : number) => {
+    console.log(id);
     return apiClient.get(`/transactions`);
 }
 
-export const getAccountsByUserIdAPI = (userId:number) => {
+export const getAccountsByUserIdAPI = (id : number) => {
+    console.log(id);
     return apiClient.get(`/accounts`);
 }
 
@@ -293,5 +294,5 @@ export const updateUserInfo = (profile : ProfileType) => {
 export const updateUserPassword = (updatedUserPassword : UserType) => {
     return apiClient.put(`/auth/update/password`, updatedUserPassword)
 }
-;
+
 

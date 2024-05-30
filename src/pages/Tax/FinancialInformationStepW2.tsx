@@ -1,10 +1,8 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
-import { setW2Info } from "./W2Slice";
 import { otherIncome, setOtherIncomeInfo } from "./otherIncomeSlice";
-import { Button, Fieldset, Form, FormGroup, Grid, GridContainer, Label, TextInput } from "@trussworks/react-uswds";
-import { setTaxReturnInfo } from "./TaxReturnSlice";
+import { Button, FormGroup, Grid, GridContainer, TextInput } from "@trussworks/react-uswds";
 import { addOtherIncomeAPI, getOtherIncomeAPI } from "./taxesAPI";
 const FinancialInformationStepW2: React.FC = () => {
 

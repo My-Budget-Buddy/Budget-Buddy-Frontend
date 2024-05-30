@@ -1,4 +1,3 @@
-import { W2State } from "./W2Slice";
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface taxReturn{

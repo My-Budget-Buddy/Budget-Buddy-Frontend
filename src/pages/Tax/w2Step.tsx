@@ -2,8 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
 import { setW2Info } from "./W2Slice";
-import { Button, Fieldset, Form, FormGroup, Grid, GridContainer, Label, Table, TextInput } from "@trussworks/react-uswds";
-import { setTaxReturnInfo } from "./TaxReturnSlice";
+import { Button, FormGroup, Grid, GridContainer, Table, TextInput } from "@trussworks/react-uswds";
 import {W2State} from "./W2Slice"
 import { createW2API, findW2sByTaxReturnIdAPI } from "./taxesAPI";
 
@@ -129,8 +128,10 @@ const WwStep: React.FC = () => {
                         </tr>
                     ))}
                 </tbody>
+                <div className="m-5">
                 <Button type="button" onClick={handleAddClick}>Add</Button>
             <Button type="button" onClick={handleSubmit}>Submit</Button>
+            </div>
             </Table>
            
             </Grid>
