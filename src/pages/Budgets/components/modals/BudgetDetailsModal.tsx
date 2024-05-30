@@ -112,8 +112,7 @@ const BudgetDetailsModal: React.FC<BudgetDetailsProps> = ({
                                     <td>{transaction.date}</td>
                                     <td>{transaction.vendorName}</td>
                                     <td>
-                                        <Icon.AttachMoney />
-                                        {transaction.amount}
+                                        {formatCurrency(transaction.amount)}
                                     </td>
                                 </tr>
                             ))}
