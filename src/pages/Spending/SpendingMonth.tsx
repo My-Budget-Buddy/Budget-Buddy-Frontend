@@ -46,6 +46,7 @@ const SpendingMonth: React.FC = () => {
     const [currentMonthSpending, setCurrentMonthSpending] = useState(0);
     const [previousMonthSpending, setPreviousMonthSpending] = useState(0);
 
+
     //colors for categories
     const categoryColors: { [key in TransactionCategory]: string } = {
         [TransactionCategory.GROCERIES]: "#B0C4DE",
@@ -261,6 +262,10 @@ const SpendingMonth: React.FC = () => {
     const spendingDifference = currentMonthSpending - previousMonthSpending;
     const percentageChange = totalSpending === 0 ? "0.00" : Math.abs((spendingDifference / previousMonthSpending) * 100).toFixed(2);
     const isSpendingIncreased = spendingDifference > 0;
+
+
+
+
 
     //category expenses table
     const categoryExpenses = (
@@ -483,7 +488,7 @@ const SpendingMonth: React.FC = () => {
                         <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
 
                             {spendingCategories.length > 0 ? (
-                                <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-2/4 md:h-3/4 lg:w-full lg:h-full lg:-m-4">
+                                <div className="relative w-full h-full" style={{ minHeight: '600px', minWidth: '600px' }}>
                                     <PieChart
                                         series={[
                                             {
