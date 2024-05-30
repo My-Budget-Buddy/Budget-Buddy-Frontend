@@ -192,7 +192,7 @@ const Transactions: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
+        <div className="min-w-screen min-h-screen flex flex-col gap-6">
             <div className="flex justify-between items-center bg-transparent p-4 ">
                 <h1>{t("transactions.title")}</h1>
                 <div className="flex gap-4">
