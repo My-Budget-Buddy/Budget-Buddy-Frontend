@@ -5,7 +5,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    isAuthenticated: false
+    isAuthenticated: true
 };
 
 export const authSlice = createSlice({

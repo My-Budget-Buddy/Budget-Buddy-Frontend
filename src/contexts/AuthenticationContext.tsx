@@ -48,6 +48,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     const logout = () => {
         setJwt(null);
         Cookies.remove("jwt");
+        window.location.reload(); // Force window refresh
     };
 
     return (

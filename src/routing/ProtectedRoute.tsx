@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
+    console.log("isAuthenticated: ", isAuthenticated);
     if (isAuthenticated) {
         return <>{children}</>;
     } else {

@@ -15,42 +15,43 @@ import Register from "../pages/AuthenticationPages/Register.tsx";
 import ErrorPage from "../pages/Misc/ErrorPage.tsx";
 import TaxEditView from "../pages/Tax/TaxEditView.tsx";
 import { ProtectedRoute } from "./ProtectedRoute.tsx";
+import Root from "../pages/Root.tsx";
 export const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route errorElement={<ErrorPage />}>
+        <Route element={<Root />} errorElement={<ErrorPage />}>
             <Route path="/" element={<LandingLayout />} errorElement={<ErrorPage />}>
                 <Route index element={<LandingPage />} />
                 <Route path={"login"} element={<Login />} />
                 <Route path={"register"} element={<Register />} />
                 {/*Private Routes*/}
+            </Route>
+            <Route
+                path={"/dashboard"}
+                element={
+                    <ProtectedRoute>
+                        <AppLayout />
+                    </ProtectedRoute>
+                }
+            >
                 <Route
-                    path={"/dashboard"}
+                    index
                     element={
                         <ProtectedRoute>
-                            <AppLayout />
+                            <Dashboard />
                         </ProtectedRoute>
                     }
-                >
-                    <Route
-                        index
-                        element={
-                            <ProtectedRoute>
-                                <Dashboard />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route path={"accounts"} element={<Accounts />} />
-                    <Route path={"budgets"} element={<Budgets />} />
-                    <Route path={"spending"} element={<Spending />} />
-                    <Route path={"spending/:month"} element={<SpendingMonth />} />
+                />
+                <Route path={"accounts"} element={<Accounts />} />
+                <Route path={"budgets"} element={<Budgets />} />
+                <Route path={"spending"} element={<Spending />} />
+                <Route path={"spending/:month"} element={<SpendingMonth />} />
 
-                    <Route path={"transactions"} element={<Transactions />} />
-                    <Route path={"transactions/:id"} element={<TransactionHistory />} />
+                <Route path={"transactions"} element={<Transactions />} />
+                <Route path={"transactions/:id"} element={<TransactionHistory />} />
 
-                    <Route path={"tax"} element={<Tax />} />
-                    <Route path={"tax/:returnId"} element={<Tax />} />
-                    <Route path={"tax/:returnId/:formType/:formId"} element={<TaxEditView />} />
-                </Route>
+                <Route path={"tax"} element={<Tax />} />
+                <Route path={"tax/:returnId"} element={<Tax />} />
+                <Route path={"tax/:returnId/:formType/:formId"} element={<TaxEditView />} />
             </Route>
         </Route>
     )
