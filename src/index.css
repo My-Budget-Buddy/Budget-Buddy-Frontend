@@ -19,6 +19,8 @@ input[type="number"],
 input[type="date"],
 input[type="password"],
 input[type="email"],
+#new-password,
+#confirm-password,
 textarea {
     border: 1px solid #d1d5d9;
     border-radius: 4px;
@@ -34,4 +36,8 @@ input[type="date"]:focus,
 textarea:focus {
     border-color: #0071bc;
     outline: none;
+}
+.unstyled-input-group{
+  /* all: initial !important; */
+  border: none !important;
 }
