@@ -35,6 +35,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     }, []);
 
     useEffect(() => {
+      
         if (jwt) {
             Cookies.set("jwt", jwt);
         }

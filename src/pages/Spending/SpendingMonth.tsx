@@ -89,7 +89,6 @@ const SpendingMonth: React.FC = () => {
         "december"
     ];
 
-
     const getPreviousMonth = (month: Month) => {
         const index = monthNames.indexOf(month);
         return index === 0 ? monthNames[11] : monthNames[index - 1];
@@ -141,6 +140,7 @@ const SpendingMonth: React.FC = () => {
         const fetchTransactions = async () => {
             try {
                 // const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
+
                 // const transactions = response.data;
 
                 const transactions = await getTransactionByUserId(1);
@@ -286,6 +286,7 @@ const SpendingMonth: React.FC = () => {
     }));
 
     const Line2 = styled("tspan")(({ }) => ({
+
         fontSize: 35,
         fontWeight: "bold",
         dy: "1.6em" // controls the spacing between the lines
@@ -340,6 +341,7 @@ const SpendingMonth: React.FC = () => {
                                         />
                                     )}
                                     {percentageChange}% {t("spending.from")}{" "}
+
                                     {t(
                                         `spending.month.${getPreviousMonth(lowercaseMonth)}`)}
                                 </p>
