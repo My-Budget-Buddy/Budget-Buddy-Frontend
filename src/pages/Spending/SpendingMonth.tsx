@@ -241,8 +241,10 @@ const SpendingMonth: React.FC = () => {
         0
     );
     const spendingDifference = currentMonthSpending - previousMonthSpending;
-    const percentageChange =
-        totalSpending === 0 ? "0.00" : Math.abs((spendingDifference / previousMonthSpending) * 100).toFixed(2);
+    const percentageChange = previousMonthSpending === 0
+        ? "0.00"
+        : Math.abs((spendingDifference / previousMonthSpending) * 100).toFixed(2);
+
     const isSpendingIncreased = spendingDifference > 0;
 
 

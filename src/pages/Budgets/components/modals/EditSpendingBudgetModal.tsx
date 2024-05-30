@@ -67,7 +67,7 @@ const EditSpendingBudgetModal: React.FC<MonthlySummary> = ({ summaryId, totalBud
 
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
+            <ModalToggleButton modalRef={modalRef} opener onClick={handleModalOpen}>
                 <Icon.Edit />
             </ModalToggleButton>
 

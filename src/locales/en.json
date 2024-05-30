@@ -15,7 +15,8 @@
       "confirm-password": "Confirm Password",
       "to-register": "Don't have an account?",
       "to-login": "Already have an account?",
-      "username": "Username"
+      "username": "Username",
+      "logout": "Log out"
     },
     "intlDateTime": "{{val, datetime}}",
     "locale": "en-US",
@@ -185,6 +186,8 @@
       "category": "Category",
       "actions": "Actions",
       "amount": "Amount",
+      "sum": "Sum",
+      "total-transactions": "Total transactions",
       "view-history": "View History",
       "vendor-name": "Vendor Name",
       "description": "Description",

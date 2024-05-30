@@ -13,7 +13,8 @@ import {
     Form,
     Select,
     Textarea,
-    ModalHeading
+    ModalHeading,
+    Title
 } from "@trussworks/react-uswds";
 import { useNavigate } from "react-router-dom";
 import { Transaction, TransactionCategory, Account } from "../../types/models";
@@ -193,9 +194,9 @@ const Transactions: React.FC = () => {
 
     return (
         <div className="min-w-screen min-h-screen flex flex-col gap-6">
-            <div className="flex justify-between items-center bg-transparent p-4 ">
-                <h1>{t("transactions.title")}</h1>
-                <div className="flex gap-4">
+            <div className="flex justify-between items-center bg-transparent">
+                <Title>{t("transactions.title")}</Title>
+                <div className="flex gap-4 align-end mt-4">
                     <Button
                         type="button"
                         className="usa-button--secondary"
@@ -393,19 +394,19 @@ const Transactions: React.FC = () => {
                                             <Button
                                                 type="button"
                                                 className="usa-button--unstyled"
-                                                onClick={() => handleDelete(transaction.transactionId)}
-                                            >
-                                                <Icon.Delete />
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                className="usa-button--unstyled"
                                                 onClick={() => {
                                                     setEditTransaction(transaction);
                                                     editRef.current?.toggleModal();
                                                 }}
                                             >
                                                 <Icon.Edit />
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                onClick={() => handleDelete(transaction.transactionId)}
+                                            >
+                                                <Icon.Delete />
                                             </Button>
                                         </td>
                                         <td

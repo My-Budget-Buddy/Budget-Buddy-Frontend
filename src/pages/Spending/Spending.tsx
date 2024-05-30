@@ -1,4 +1,4 @@
-import { Button, Icon, Table } from "@trussworks/react-uswds";
+import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
 import { AxisConfig, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
@@ -124,7 +124,7 @@ const Spending: React.FC = () => {
                     const transactionDate = new Date(transaction.date);
                     const amount = transaction.amount;
 
-                    if (transactionDate >= startOfThisYear) {
+                    if (transactionDate >= startOfThisYear && transaction.category !== "Income") {
                         thisYearSpending += amount; // Total spending this year
                     }
 
@@ -333,15 +333,16 @@ const Spending: React.FC = () => {
     }
 
     return (
-        <div className="min-w-screen mt-10">
+        <div className="min-w-screen">
             <div className="flex-1">
                 <section className="h-screen ">
                     {/* Title for the page */}
-                    <div className="mb-4 ml-3">
-                        <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2>
-                        {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
+                    {/* <div className="mb-4 ml-3"> */}
+                    <Title>{t("spending.title")}</Title>
+                    {/* <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2> */}
+                    {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
                         <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
-                    </div>
+                    {/* </div> */}
                     <div className="flex justify-between gap-x-4 w-full m-2">
                         {[
                             {
