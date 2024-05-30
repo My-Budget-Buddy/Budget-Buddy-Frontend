@@ -30,6 +30,9 @@
       "confirm-password": "Confirm Password",
       "save": "Save"
     },
+    "welcomePage": {
+      "title": "Home"
+    },
     "dashboard": {
       "title": "Dashboard",
       "welcome": "Welcome",
@@ -181,9 +184,11 @@
       "ascending": "Ascending",
       "descending": "Descending",
       "no-transactions": "No transactions found",
-      "click-add": "Click Add Transaction to start making transactions",
+      "click-add": "Click <1>{{val}}</1> to start making transactions",
       "create-transaction": "Create transaction",
       "list-of-transactions": "List of Transactions",
+      "transaction-detailed-information": "Transaction Detailed Information",
+      "edit-transaction": "Edit Transaction",
       "date": "Date",
       "name": "Name",
       "category": "Category",

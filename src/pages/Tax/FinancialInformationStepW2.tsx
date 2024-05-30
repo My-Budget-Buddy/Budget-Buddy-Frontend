@@ -50,7 +50,7 @@ const FinancialInformationStepW2: React.FC = () => {
             }
             dispatch(setOtherIncomeInfo(mapped_res));
         });
-      });
+      }, []);
 
       const handleSave = () => {
         addOtherIncomeAPI(otherIncomeState);

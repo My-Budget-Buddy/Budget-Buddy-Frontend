@@ -26,8 +26,6 @@ const EditSpendingBudgetModal: React.FC<MonthlySummary> = ({ summaryId, totalBud
     const budgetsStore = useAppSelector((store) => store.budgets);
     const selectedMonthString = budgetsStore.selectedMonthString;
     const selectedYear = budgetsStore.selectedYear;
-    //const spendingBudget = budgetsStore.spendingBudget;
-    const curMonthYear = budgetsStore.monthYear;
 
     const [formData, setFormData] = useState({
         summaryId: summaryId,
@@ -39,15 +37,6 @@ const EditSpendingBudgetModal: React.FC<MonthlySummary> = ({ summaryId, totalBud
     const dispatch = useAppDispatch();
     const isSending = useAppSelector((state) => state.simpleFormStatus.isSending);
 
-    const userId = useAppSelector((state) => state.user.userId);
-    /*
-    async function sendUpdatedBudget(updatedSummary: MonthlySummary) {
-        // Sets buttons to 'waiting', prevent closing
-        dispatch(setIsSending(true));
-        await updateSpendingBudgetFor(userId, curMonthYear, formData.data.value);
-        dispatch(setIsSending(false));
-    }
-*/
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         dispatch(setIsSending(true));

@@ -1,70 +1,110 @@
 import { Link } from "react-router-dom";
 import { Icon } from "@trussworks/react-uswds";
+import budgetImg from "../../assets/budgets/Mar-Business_11.jpg";
+import taxImg from "../../assets/taxes/Wavy_Tech-03_Single-12.jpg";
+import transactionsImg from "../../assets/transactions/20943914.jpg";
+import heroBg from "../../assets/hero.jpg";
+import "./LandingPage.css";
+import ReviewSection from "./ReviewSection.tsx";
 
 const features = [
     {
         title: "Budgeting",
-        description:
-            "Take control of your finances with BudgetBuddy's effective budget management. Set spending limits for different categories and track your progress to stay on budget.",
-        icon: Icon.Assessment
+        description: `
+            <ul class="feature-list">
+                <li><b>Effective Budget Management:</b> Take control of your finances with BudgetBuddy's robust budget management tools.</li>
+                <li><b>Spending Limits:</b> Set spending limits for different categories to ensure you stay on track.</li>
+                <li><b>Progress Tracking:</b> Monitor your budget performance and adjust as needed to meet your financial goals.</li>
+                <li><b>Comprehensive Insights:</b> Gain a holistic view of your spending habits and make informed decisions.</li>
+                <li><b>User-Friendly Interface:</b> Enjoy a seamless and intuitive budgeting experience with our easy-to-use tools.</li>
+            </ul>
+        `,
+        icon: Icon.Assessment,
+        image: budgetImg
     },
     {
-        title: "Transactions",
-        description:
-            "Monitor your spending with BudgetBuddy's detailed transaction tracking. Easily view and categorize your expenses to gain insights into your financial habits",
-        icon: Icon.Insights
+        title: "Stay On Top Of Your Spending",
+        description: `
+            <ul class="feature-list">
+                <li><b>Detailed Monitoring:</b> Effortlessly track and categorize your expenses.</li>
+                <li><b>Insightful Visualization:</b> Use interactive charts and tables to visualize your spending patterns over time.</li>
+                <li><b>Vendor Tracking:</b> Identify your top vendors and see where most of your money is going.</li>
+                <li><b>Spending Categories:</b> Pinpoint your highest spending categories and discover areas for improvement.</li>
+                <li><b>User-Friendly Interface:</b> Enjoy a simple, visually intuitive, and engaging way to manage your finances.</li>
+            </ul>
+        `,
+        icon: Icon.Insights,
+        image: transactionsImg
     },
     {
         title: "Tax Filing",
-        description:
-            "Simplify your tax season with BudgetBuddy's seamless tax filing. File your taxes directly within the app and esnure accuracy and compliance with ease.",
-        icon: Icon.AttachMoney
+        description: `
+            <ul class="feature-list">
+                <li><b>Seamless Tax Filing:</b> File your taxes directly within the BudgetBuddy app.</li>
+                <li><b>Income Documentation:</b> Easily add W-2 and 1099 forms to document your income.</li>
+                <li><b>Accurate Calculations:</b> The app calculates your refund or tax due with precision.</li>
+                <li><b>User-Friendly Interface:</b> Navigate through the tax filing process with ease and confidence.</li>
+                <li><b>Compliance and Accuracy:</b> Ensure your tax filings are compliant with the latest regulations and accurate.</li>
+            </ul>
+        `,
+        icon: Icon.AttachMoney,
+        image: taxImg
     }
 ];
+
 
 export default function LandingPage() {
     return (
         <>
-            <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                        Welcome to, BudgetBuddy
-                    </h1>
-                    <p className="mt-6 text-lg leading-8 text-gray-600">
-                        BudgetBuddy helps you track spending, manage budgets, and achieve financial goals with ease.
-                        Make every dollar count with BudgetBuddy.
-                    </p>
-                    <div className="mt-10 flex items-center justify-center gap-x-6">
-                        <Link to="/dashboard" className="usa-button">
-                            Get Started
-                        </Link>
+            <section className="usa-hero custom-hero" aria-label="Introduction">
+                <div className="relative w-full h-screen flex items-center">
+                    <div className="absolute inset-0">
+                        <img src={heroBg} alt="Hero" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                    </div>
+                    <div className="relative usa-hero__callout max-w-2xl p-8 mx-6 lg:mx-8 bg-opacity-80 backdrop-blur-sm rounded-lg shadow-lg text-left">
+                        <h1 className="usa-hero__heading text-4xl font-bold tracking-tight text-accent-cool sm:text-6xl">
+                            <span className="usa-hero__heading--alt">BudgetBuddy:</span> Your Personal Finance Assistant
+                        </h1>
+                        <p className="mt-6 text-lg leading-8 text-gray-100">
+                            BudgetBuddy helps you track spending, manage budgets, and achieve financial goals with ease. Make every dollar count with BudgetBuddy.
+                        </p>
+                        <div className="mt-10 flex justify-start">
+                            <Link to="/dashboard" className="usa-button">
+                                Get Started
+                            </Link>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                <div className="mx-auto max-w-2xl lg:text-center">
-                    <h2 className="text-base font-semibold">Spend Smarter</h2>
-                    <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        Your Personal Guide to Smarter Spending
-                    </p>
-                </div>
+            <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-16">
                 <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-                    <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-                        {features.map((feature) => (
-                            <div key={feature.title} className="flex flex-col">
-                                <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                                    <feature.icon className="h-5 w-5 flex-none text-[#005ea2]" aria-hidden="true" />
-                                    {feature.title}
-                                </dt>
-                                <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
-                                    <p className="flex-auto">{feature.description}</p>
-                                </dd>
+                    {features.map((feature, index) => (
+                        <div
+                            key={feature.title}
+                            className={`flex flex-col lg:flex-row items-center gap-x-8 mb-16 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
+                        >
+                            {feature.image && (
+                                <div className="w-full lg:w-1/2 mb-4 lg:mb-0">
+                                    <img src={feature.image} alt={feature.title} className="w-full h-full object-cover rounded-lg" />
+                                </div>
+                            )}
+                            <div className="w-full lg:w-1/2">
+                                <div className="flex items-center gap-x-4 mb-4 lg:mb-0">
+                                    <feature.icon className="h-16 w-16 text-[#005ea2]" style={{ fontSize: 40 }} aria-hidden="true" />
+                                    <h2 className="text-4xl font-semibold leading-8 text-gray-900">{feature.title}</h2>
+                                </div>
+                                <div className="mt-4">
+                                    <div className="text-xl leading-8 text-gray-600" dangerouslySetInnerHTML={{ __html: feature.description }}></div>
+                                </div>
                             </div>
-                        ))}
-                    </dl>
+                        </div>
+                    ))}
                 </div>
             </div>
+            <ReviewSection />
+
         </>
     );
 }
