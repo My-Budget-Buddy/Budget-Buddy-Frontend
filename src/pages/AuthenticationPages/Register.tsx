@@ -45,7 +45,7 @@ const Register: React.FC = () => {
     }
 
     return (
-        <main>
+        <main className="bg-gray-200 padding-y-8">
             <GridContainer className="usa-section">
                 <Grid row className="flex-justify-center margin-bottom-205">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>

@@ -4,7 +4,7 @@ import logoImg from "../assets/vecteezy_vector-finance-logo-template-accounting-
 
 const Footer: React.FC = () => {
     return (
-        <footer className="usa-footer usa-footer--slim">
+        <footer className="usa-footer usa-footer--slim bg-white shadow-md w-full z-50">
             <div className="grid-container usa-footer__return-to-top">
                 <a href="#" aria-label="Return to top" className="usa-footer__return-to-top-link">
                     <svg

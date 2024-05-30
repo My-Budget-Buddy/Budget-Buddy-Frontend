@@ -9,7 +9,7 @@ const LandingLayout: React.FC = () => {
             <div className="layout-container">
                 <LandingHeader />
 
-                <main className="min-h-full w-full">
+                <main className="min-h-dvh l w-full ">
                     <div className="relative isolate ">
                         <Outlet />
                     </div>
