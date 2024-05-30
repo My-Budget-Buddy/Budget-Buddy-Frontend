@@ -464,7 +464,7 @@ const SpendingMonth: React.FC = () => {
                     <div className="flex">
                         <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md border-4 border-gray-100 bg-white shadow-lg">
                             <h2></h2>
-                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full lg:-m-4">
+                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-2/4 md:h-3/4 lg:w-full lg:h-full lg:-m-4">
                                 <PieChart
                                     series={[
                                         {

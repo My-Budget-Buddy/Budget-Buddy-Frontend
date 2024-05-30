@@ -233,18 +233,18 @@ const Spending: React.FC = () => {
     // -----BAR CHART------
     // prepare data for the bar chart
     const chartData = [
-        { month: "January", spending: spendingData.january, earned: earnedData.january },
-        { month: "February", spending: spendingData.february, earned: earnedData.february },
-        { month: "March", spending: spendingData.march, earned: earnedData.march },
-        { month: "April", spending: spendingData.april, earned: earnedData.april },
-        { month: "May", spending: spendingData.may, earned: earnedData.may },
-        { month: "June", spending: spendingData.june, earned: earnedData.june },
-        { month: "July", spending: spendingData.july, earned: earnedData.july },
-        { month: "August", spending: spendingData.august, earned: earnedData.august },
-        { month: "September", spending: spendingData.september, earned: earnedData.september },
-        { month: "October", spending: spendingData.october, earned: earnedData.october },
-        { month: "November", spending: spendingData.november, earned: earnedData.november },
-        { month: "December", spending: spendingData.december, earned: earnedData.december }
+        { month: t('spending.one-month'), spending: spendingData.january, earned: earnedData.january },
+        { month: t('spending.two-month'), spending: spendingData.february, earned: earnedData.february },
+        { month: t('spending.three-month'), spending: spendingData.march, earned: earnedData.march },
+        { month: t('spending.four-month'), spending: spendingData.april, earned: earnedData.april },
+        { month: t('spending.five-month'), spending: spendingData.may, earned: earnedData.may },
+        { month: t('spending.six-month'), spending: spendingData.june, earned: earnedData.june },
+        { month: t('spending.seven-month'), spending: spendingData.july, earned: earnedData.july },
+        { month: t('spending.eight-month'), spending: spendingData.august, earned: earnedData.august },
+        { month: t('spending.nine-month'), spending: spendingData.september, earned: earnedData.september },
+        { month: t('spending.ten-month'), spending: spendingData.october, earned: earnedData.october },
+        { month: t('spending.eleven-month'), spending: spendingData.november, earned: earnedData.november },
+        { month: t('spending.twelve-month'), spending: spendingData.december, earned: earnedData.december }
     ];
 
     const categories = chartData.map((d) => d.month);
@@ -403,7 +403,7 @@ const Spending: React.FC = () => {
         const { width, height, left, top } = useDrawingArea();
         return (
             <StyledText x={left + width / 2} y={top + height / 2 - 10}>
-                <Line1 dy="-1.0em">TOTAL SPENT</Line1>
+                <Line1 dy="-1.0em">{t('spending.totalSpent')}</Line1>
                 <Line2 x={left + width / 2} dy="1.2em">
                     ${totalSpent.toLocaleString()}
                 </Line2>
@@ -501,9 +501,10 @@ const Spending: React.FC = () => {
 
                     {/* Second row with two columns */}
                     <div className="flex pt-1 gap-3">
-                        <div className="flex flex-col justify-center items-center flex-2 p-4 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px]">
+                        <div className="flex flex-col justify-center items-center flex-2 p-2 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
+
                             <h2></h2>
-                            <div className="relative w-full h-full sm:w-1/2 sm:h-1/2 md:w-3/4 md:h-3/4 lg:w-full lg:h-full lg:-m-2">
+                            <div className="relative w-full h-full sm:h-300 sm:ml-10 ">
                                 <PieChart
                                     series={[
                                         {
@@ -525,7 +526,7 @@ const Spending: React.FC = () => {
 
                                             arcLabelMinAngle: 20,
 
-                                            valueFormatter: (v) => `$ ${v.value}`
+                                            valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
                                         }
                                     ]}
                                     slotProps={{
@@ -552,26 +553,28 @@ const Spending: React.FC = () => {
                         </div>
                         {/* section for more insights -> top expenses..and?? */}
 
-                        <div className="flex flex-col justify-center items-center flex-1 w-10/12 min-h-[30rem] ">
+                        <div className="flex flex-col justify-center gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
 
 
                             {/* Top Categories components */}
-
-                            <div className="w-full m-2 p-6 rounded-xl shadow-md border-[1px]">
+                            <div className="w-full m-1 p-4 rounded-xl shadow-md border-l-8 border-gray-500 bg-white text-gray-800">
                                 <p className="text-xl">
-                                    Your top three categories accounted for <span className="font-bold">{topThreePercentage}%</span> of your spending this year.
+                                    {t('spending.topCategories')} <span className="font-bold">{topThreePercentage}%</span> {t('spending.spendingYear')}.
                                 </p>
                             </div>
 
 
                             {[...spendingCategories].sort((a, b) => b.value - a.value).slice(0, 1).map((category, index) => (
-                                <div key={index} className="w-full m-2 p-6 rounded-xl shadow-md border-[1px] flex items-center" style={{ backgroundColor: category.color }}>
-                                    <div className="flex-1 flex items-center">
-                                        <div>
-
-                                            <p className="text-white text-light pt-1 text-xl">You spent the most on <span className="text-2xl font-bold">{category.name}</span> this year.</p>
-
+                                <div key={index} className="w-full m-2 p-7 rounded-xl shadow-md border-[1px] flex items-center" style={{ backgroundColor: category.color }}>
+                                    <div className="flex flex-col items-start">
+                                        <div className="flex items-center">
+                                            <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-xl font-bold mr-3">
+                                                1
+                                            </div>
+                                            <p className="text-white text-bold text-2xl mb-1"> TOP CATEGORY</p>
                                         </div>
+
+                                        <p className="text-white flex-wrap mt-2 max-w-[90%] text-light pt-1 text-xl"> {t('spending.youSpent')} <span className="text-2xl font-bold">{category.name}</span>  {t('spending.thisYear')}.</p>
                                     </div>
                                     <div className="flex flex-col items-end">
                                         <category.icon className="text-white rounded-xl p-[5px] text-5xl" />
@@ -583,11 +586,14 @@ const Spending: React.FC = () => {
                             <div className="flex justify-between gap-x-4 w-full m-2">
                                 {[...spendingCategories].sort((a, b) => b.value - a.value).slice(1, 3).map((category, index) => (
                                     <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex" style={{ backgroundColor: category.color }}>
-                                        <div className="flex-1 flex items-center">
+                                        <div className="flex-1 flex items-center justify-between">
                                             <div>
                                                 <category.icon className="text-white rounded-xl p-[5px] text-4xl" />
                                                 <p className="text-white text-bold pt-5 text-3xl">${category.value.toLocaleString()}</p>
                                                 <p className="text-white text-light pt-1 text-xl">{category.name}</p>
+                                            </div>
+                                            <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-2xl font-bold ml-4 mb-20">
+                                                {index + 2}
                                             </div>
                                         </div>
                                     </div>
@@ -597,11 +603,11 @@ const Spending: React.FC = () => {
                             <div className="flex flex-col md:flex-row justify-between w-full min-h-[30rem] gap-x-4 m-2">
 
                                 {/* Top Purchases Section */}
-                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl w-full shadow-md border-[1px]">
-                                    <div className="p-4 rounded-lg mb-4 w-full text-center">
-                                        <p className="text-lg text-gray-700">Your top 3 purchases accounted for <span className="font-bold text-blue-600">4.64%</span> of your spending this year.</p>
-                                    </div>
-                                    <div className="flex flex-col gap-y-3 w-full">
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-md border-[1px] w-full ">
+
+
+                                    <div className="flex flex-col gap-y-4 w-full">
+                                        <h2 className="text-2xl font-bold mr-2 mb-2 text-center"> {t('spending.topPurchases')}</h2>
                                         {topThreePurchases.map((expense, index) => (
                                             <div key={index} className="flex items-center justify-between p-4 m-2 bg-blue-100 rounded-xl shadow-md border-[1px]">
                                                 <div className="flex items-center">
@@ -614,15 +620,19 @@ const Spending: React.FC = () => {
                                                         <p className="text-2xl font-semibold">${expense.amount.toFixed(2)}</p>
                                                     </div>
                                                 </div>
+
                                             </div>
+
                                         ))}
+
+
                                     </div>
                                 </div>
 
                                 {/* Most Popular Vendors Section */}
-                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]">
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]  ">
                                     <div className="flex items-center mb-4">
-                                        <h2 className="text-2xl font-bold mr-2">Top Vendors</h2>
+                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2">Top Vendors</h2>
                                         <div className="relative group">
 
                                         </div>
@@ -630,14 +640,14 @@ const Spending: React.FC = () => {
 
                                     <div className="flex flex-col w-full gap-4">
                                         {mostPopularVendors.slice(0, 4).map((vendor, index) => (
-                                            <div key={vendor.vendorName} className="flex items-center justify-between p-4 m-2 rounded-full shadow-md border-[1px] bg-white text-[#001320]  w-full">
+                                            <div key={vendor.vendorName} className="flex items-center justify-between p-4 m-2 rounded-full shadow-md border-[1px] bg-white text-[#0A5CBA]  w-full">
                                                 <div className="flex items-center">
                                                     <div className="ml-4">
                                                         <p className="text-xl font-bold">{vendor.vendorName}</p>
                                                         <p className="text-lg">${vendor.amount.toFixed(2)}</p>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center justify-center w-10 h-10 bg-[#001320] text-white  rounded-full text-xl font-bold ml-4">
+                                                <div className="flex items-center justify-center w-10 h-10 bg-[#0A5CBA] text-white  rounded-full text-xl font-bold ml-4">
                                                     {index + 1}
                                                 </div>
                                             </div>
