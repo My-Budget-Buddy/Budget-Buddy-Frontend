@@ -67,7 +67,7 @@ const SpendingMonth: React.FC = () => {
 
     // translated month
     const getTranslatedMonth = (month: Month) => {
-        const translatedMonth = t(`spending.${month}`);
+        const translatedMonth = t(`${month}`);
         return capitalizeFirstLetter(translatedMonth);
     };
 

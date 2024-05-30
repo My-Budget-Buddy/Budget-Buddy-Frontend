@@ -135,8 +135,10 @@
       "percentageOfMonthlySpending": "% of Monthly Spending",
       "backToAnnualSpendingOverview": "Back to Annual Spending Overview",
       "week": "Week",
+      "top-category": "Top Category",
       "earnings": "Earnings",
       "spending": "Spending",
+
       "month": {
         "January": "January",
         "February": "February",
