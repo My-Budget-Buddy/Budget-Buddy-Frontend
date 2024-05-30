@@ -194,7 +194,19 @@
       "summary": "Resumen"
     },
     "tax": {
-      "title": "Impuestos"
+      "title": "Impuestos",
+      "tax-forms": "Formularios de impuesto",
+      "tax-form-archives": "Archivos de formularios de impuestos",
+      "filing-status": "Estado civil",
+      "first-name": "Nombre de pila",
+      "last-name": "Apellido",
+      "year": "Año",
+      "actions": "Acciones",
+      "file-taxes": "Presentar impuestos",
+      "estimate-refund": "Reembolso estimado",
+      "document-checklist": "Lista de documentos",
+      "refund-planning": "Planificación de reembolsos",
+      "view": "Vista"
     },
     "checking": "Cuentas Corrientes",
     "savings": "Ahorros",
