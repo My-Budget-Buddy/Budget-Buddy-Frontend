@@ -65,3 +65,10 @@ export interface Transaction {
     /** YYYY-MM-DD format */
     date: string;
 }
+
+export interface User {
+    id: number;
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+}

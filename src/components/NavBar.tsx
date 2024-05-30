@@ -1,43 +1,22 @@
-import { Link } from "react-router-dom";
-import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading } from "@trussworks/react-uswds";
-import { useTranslation } from "react-i18next";
-import { useRef, useState } from "react";
-import Languages from "./Settings/Languages";
 import Profile from "./Settings/Profile";
+import Languages from "./Settings/Languages";
+import buddyLogo from "../images/bb-3-dark.png"
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import RequestPageOutlinedIcon from "@mui/icons-material/RequestPageOutlined";
-import { getUserInformationAPI } from "../pages/Tax/taxesAPI";
-import buddyLogo from "../images/bb-3-dark.png"
+
+import { Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuthentication } from "../contexts/AuthenticationContext";
+import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading } from "@trussworks/react-uswds";
 
 const NavBar = () => {
     const { t } = useTranslation();
-    const modalRef = useRef<ModalRef>(null);
-    const [sideNav, setSideNav] = useState(t("nav.profile"));
-    const [profile, setProfile] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        id: 0
-    });
+    const { profile } = useAuthentication();
 
-    const fetchUserInfo = async () => {
-        try {
-            getUserInformationAPI().then((response) => {
-                const user = response.data;
-                const updatedUser = { ...profile };
-                user.firstName ? (updatedUser.firstName = user.firstName) : (updatedUser.firstName = "");
-                user.lastName ? (updatedUser.lastName = user.lastName) : (updatedUser.lastName = "");
-                setProfile({
-                    firstName: updatedUser.firstName,
-                    lastName: updatedUser.lastName,
-                    email: user.email,
-                    id: user.id
-                });
-            });
-        } catch (error) {
-            console.log("There was an error fetching user information: ", error);
-        }
-    };
+    const modalRef = useRef<ModalRef>(null);
+
+    const [sideNav, setSideNav] = useState(t("nav.profile"));
 
     const pages = [
         {
@@ -76,7 +55,7 @@ const NavBar = () => {
         {
             title: t("nav.profile"),
             icon: Icon.Person,
-            component: <Profile profile={profile} setProfile={setProfile} fetchUserInfo={fetchUserInfo} />
+            component: <Profile />
         },
         {
             title: t("nav.languages"),
@@ -108,10 +87,10 @@ const NavBar = () => {
                 <div className="py-2" />
                 <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col">
-                        <p className="text-lg font-bold text-white">{`${profile.firstName} ${profile.lastName}`}</p>
-                        <p className="text-sm text-neutral-200">{`${profile.email}`}</p>
+                        <p className="text-lg font-bold text-white">{`${profile?.firstName} ${profile?.lastName}`}</p>
+                        <p className="text-sm text-neutral-200">{`${profile?.email}`}</p>
                     </div>
-                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" onClick={fetchUserInfo}><Icon.Settings className="text-[#d9e8f6]" /></ModalToggleButton>
+                    <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled"><Icon.Settings className="text-[#d9e8f6]" /></ModalToggleButton>
                     <Modal
                         ref={modalRef}
                         id="settings-modal"
