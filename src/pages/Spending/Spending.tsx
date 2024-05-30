@@ -8,8 +8,10 @@ import { Link, useNavigate } from "react-router-dom";
 import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
 import { useTranslation } from "react-i18next";
+//import axios from "axios";
 
 import { getTransactionByUserId } from "../../utils/transactionService";
+
 
 //define the type for months
 
@@ -442,7 +444,7 @@ const Spending: React.FC = () => {
                     <div className="flex pt-1 gap-3">
                         <div className="flex flex-col justify-center items-center flex-2 p-2 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
                             {spendingCategories.length > 0 ? (
-                                <div className="relative w-full h-full sm:h-300 sm:ml-10">
+                                <div className="relative w-full h-full ml-12" style={{ minHeight: "610px", minWidth: "610px" }}>
                                     <PieChart
                                         series={[
                                             {

@@ -89,6 +89,12 @@ const SpendingMonth: React.FC = () => {
         "december"
     ];
 
+
+    const getPreviousMonth = (month: Month) => {
+        const index = monthNames.indexOf(month);
+        return index === 0 ? monthNames[11] : monthNames[index - 1];
+    };
+
     //get week number
     const getWeekNumber = (date: Date) => {
         const start = new Date(date.getFullYear(), 0, 1);
@@ -135,7 +141,7 @@ const SpendingMonth: React.FC = () => {
         const fetchTransactions = async () => {
             try {
                 // const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
-                //const transactions = response.data;
+                // const transactions = response.data;
 
                 const transactions = await getTransactionByUserId(1);
                 setTransactions(transactions);
@@ -334,11 +340,8 @@ const SpendingMonth: React.FC = () => {
                                         />
                                     )}
                                     {percentageChange}% {t("spending.from")}{" "}
-                                    {capitalizeFirstLetter(
-                                        monthNames[
-                                        getMonthIndex(lowercaseMonth) === 0 ? 11 : getMonthIndex(lowercaseMonth) - 1
-                                        ]
-                                    )}
+                                    {t(
+                                        `spending.month.${getPreviousMonth(lowercaseMonth)}`)}
                                 </p>
                             </div>
                         </div>
@@ -412,7 +415,7 @@ const SpendingMonth: React.FC = () => {
 
                     {/* Second row with two columns */}
                     <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md rounded-xl shadow-md border-[1px]">
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px]">
                             {spendingCategories.length > 0 ? (
                                 <div
                                     className="relative w-full h-full"
