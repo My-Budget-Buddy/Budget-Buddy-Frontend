@@ -1,7 +1,7 @@
-import { Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
+import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { updateUserInfo } from "../../pages/Tax/taxesAPI";
+import { updateUserInfo, updateUserPassword } from "../../pages/Tax/taxesAPI";
 
 interface ProfileType {
     firstName: string;
@@ -14,20 +14,24 @@ type SetProfileType = (profile: ProfileType) => void;
 
 type FetchUserInfoType = () => Promise<void>;
 
+type SetNameType = (name: string) => void;
+
 interface ProfileProps {
     profile: ProfileType;
     setProfile: SetProfileType;
     fetchUserInfo: FetchUserInfoType;
+    setName: SetNameType;
 }
 
-const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })=> {
+const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo, setName })=> {
     const { t } = useTranslation();
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordError, setPasswordError] = useState<Boolean | string>('')
 
-    // get profile infomration
     useEffect(()=> {
         fetchUserInfo()
+        setPasswordError('')
     }, [])
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +44,22 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
         evt.preventDefault()
         try {
             updateUserInfo(profile)
+            setName(profile.firstName)
+            const confirmPassword = evt.currentTarget.elements["confirm-password"].value;
+            const fields = {
+                username: profile.email,
+                password: evt.currentTarget.elements["new-password"].value
+            };
+            if (confirmPassword === fields.password && confirmPassword !== ''){
+                updateUserPassword(fields)
+                evt.currentTarget.reset()
+                setPasswordError(false)
+            }else if (confirmPassword !== fields.password){
+                setPasswordError(true)
+                return
+            }else{
+                return
+            }
         } catch (error) {
             console.log("There was an error updating profile infromation: ", error)
         }
@@ -77,10 +97,19 @@ const Profile : React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }
                         value={profile.email}
                         disabled 
                     />
-
+                    {passwordError===false && <Alert type="success" heading="Success" headingLevel="h4">
+                        Password has been updated
+                    </Alert>}
+                    {passwordError===true && <Alert type="error" heading="Error updating password" headingLevel="h4">
+                        Passwords do not match
+                    </Alert>}
                     <Label htmlFor="new-password">{t("nav.new-password")}</Label>
                     <InputGroup>
-                        <TextInput id="new-password" name="new-password" type={showNewPassword ? "text" : "password"} />
+                        <TextInput 
+                            id="new-password" 
+                            name="new-password" 
+                            type={showNewPassword ? "text" : "password"}
+                        />
                         <InputSuffix onClick={()=> setShowNewPassword(!showNewPassword)}>
                             {showNewPassword ? <Icon.VisibilityOff /> : <Icon.Visibility/>}
                         </InputSuffix>

@@ -1,7 +1,9 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import Cookies from "js-cookie";
+const url = "https://api.skillstorm-congo.com";
+
 export async function getBudgetsById() {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
+    const endpoint = `${url}/budgets`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {
@@ -28,7 +30,7 @@ export async function getBudgetsById() {
 }
 
 export async function getBudgetsByMonthYear(monthyear: string) {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/monthyear/${monthyear}`;
+    const endpoint = `${url}/budgets/monthyear/${monthyear}`;
     const jwtCookie = Cookies.get("jwt") as string;
 
     try {
@@ -56,7 +58,7 @@ export async function getBudgetsByMonthYear(monthyear: string) {
 }
 
 export async function createBudget(budget: RawBudgetToSend): Promise<RawBudgetToSend> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets`;
+    const endpoint = `${url}/budgets`;
     const jwtCookie = Cookies.get("jwt") as string;
 
     try {
@@ -82,7 +84,7 @@ export async function createBudget(budget: RawBudgetToSend): Promise<RawBudgetTo
 }
 
 export async function putBudget(budget: RawBudgetToSend, id: number): Promise<RawBudgetToSend> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/${id}`;
+    const endpoint = `${url}/budgets/${id}`;
     const jwtCookie = Cookies.get("jwt") as string;
 
     try {
@@ -108,7 +110,7 @@ export async function putBudget(budget: RawBudgetToSend, id: number): Promise<Ra
 }
 
 export async function deleteBudget(id: number) {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/${id}`;
+    const endpoint = `${url}/budgets/${id}`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {
@@ -130,7 +132,7 @@ export async function deleteBudget(id: number) {
 }
 
 export async function getTransactionsByMonthYear(monthyear: string) {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/budgets/transactions/${monthyear}`;
+    const endpoint = `${url}/budgets/transactions/${monthyear}`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {

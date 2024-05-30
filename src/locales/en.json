@@ -30,6 +30,9 @@
       "confirm-password": "Confirm Password",
       "save": "Save"
     },
+    "welcomePage": {
+      "title": "Home"
+    },
     "dashboard": {
       "title": "Dashboard",
       "welcome": "Welcome",
@@ -116,28 +119,18 @@
       "vendor": "Vendor",
       "earned": "Earned",
       "spendings": "Spendings",
-      "totalSpent": "Annual total spent",
+      "totalSpent": "Annual Total Spent",
       "from": "from",
-      "one-month": "January",
-      "two-month": "February",
-      "three-month": "March",
-      "four-month": "April",
-      "five-month": "May",
-      "six-month": "June",
-      "seven-month": "July",
-      "eight-month": "August",
-      "nine-month": "September",
-      "ten-month": "October",
-      "eleven-month": "Novemeber",
-      "twelve-month": "December",
       "totalSpentWeek": "Total spent",
       "monthSpending": "{{month}} Spending",
-      "percentageOfMonthlySpending": "% of Monthly Spending",
+      "percentageOfMonthlySpending": "% Of Monthly Spending",
       "backToAnnualSpendingOverview": "Back to Annual Spending Overview",
       "week": "Week",
       "top-category": "Top Category",
       "earnings": "Earnings",
       "spending": "Spending",
+      "top-vendors": "Top Vendors",
+      "no-data": "No data to display. Add some transactions to get started.",
 
       "month": {
         "January": "January",
@@ -166,6 +159,7 @@
         "december": "December"
       }
     },
+
     "transactions": {
       "title": "Transactions",
       "clear-filters": "Clear Filters",
@@ -181,9 +175,11 @@
       "ascending": "Ascending",
       "descending": "Descending",
       "no-transactions": "No transactions found",
-      "click-add": "Click Add Transaction to start making transactions",
+      "click-add": "Click <1>{{val}}</1> to start making transactions",
       "create-transaction": "Create transaction",
       "list-of-transactions": "List of Transactions",
+      "transaction-detailed-information": "Transaction Detailed Information",
+      "edit-transaction": "Edit Transaction",
       "date": "Date",
       "name": "Name",
       "category": "Category",

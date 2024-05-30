@@ -1,0 +1,15 @@
+.feature-list {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+}
+
+.feature-list li {
+    margin-bottom: 0.5rem;
+    font-size: 1.125rem; /* Adjust the font size as needed */
+    line-height: 1.75rem;
+}
+
+.feature-list li b {
+    color: #005ea2; /* Adjust the color as needed */
+}
