@@ -192,6 +192,7 @@
       "account": "Account",
       "history": "All {{val}} transactions",
       "spent": "Spent",
+      "earned": "Earned",
       "summary": "Summary"
     },
     "tax": {

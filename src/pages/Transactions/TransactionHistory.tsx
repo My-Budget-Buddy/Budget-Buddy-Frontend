@@ -114,6 +114,7 @@ function TransactionHistory() {
     const [current, setCurrent] = useState<number>(0);
     const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[current]);
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+    const [spent, setSpent] = useState<number>(0.0);
 
     const [selectedCategory, setSelectedCategory] = useState<string>("All Categories");
     const [selectedAccount, setSelectedAccount] = useState<string>("All Accounts");
@@ -170,6 +171,12 @@ function TransactionHistory() {
         });
 
         setFilteredTransactions(sortedTransactions);
+        setSpent(
+            sortedTransactions.reduce(
+                (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? -1 : 1),
+                0.0
+            )
+        );
     }, [
         selectedCategory,
         selectedAccount,
@@ -504,11 +511,10 @@ function TransactionHistory() {
                                                     </Button>
                                                 </td>
                                                 <td
-                                                    className={`text-right ${
-                                                        transaction.category === TransactionCategory.INCOME
-                                                            ? "text-green-500"
-                                                            : "text-red-500"
-                                                    }`}
+                                                    className={`text-right ${transaction.category === TransactionCategory.INCOME
+                                                        ? "text-green-500"
+                                                        : "text-red-500"
+                                                        }`}
                                                 >
                                                     {formatCurrency(transaction.amount)}
                                                 </td>
@@ -535,13 +541,11 @@ function TransactionHistory() {
                     <Card gridLayout={{ col: 4 }}>
                         <CardHeader>{t("transactions.summary")}</CardHeader>
                         <CardBody>
-                            {t("transactions.spent")}:{" "}
-                            {formatCurrency(
-                                filteredTransactions.reduce(
-                                    (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? -1 : 1),
-                                    0.0
-                                )
-                            )}
+                            {spent >= 0.0 ? t("transactions.spent") : t("transactions.earned")}:{" "}
+                            <span className={spent >= 0.0
+                                ? "text-red-500"
+                                : "text-green-500"
+                            }>{formatCurrency(Math.abs(spent))}</span>
                             <hr />
                             {t("transactions.amount")}: {filteredTransactions.length}
                             <hr />

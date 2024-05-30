@@ -190,6 +190,7 @@
       "account": "Cuenta",
       "history": "Todas las {{val}} transacciones",
       "spent": "Gastado",
+      "Earned": "Ganado",
       "summary": "Resumen"
     },
     "tax": {
