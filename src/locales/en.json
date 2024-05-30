@@ -186,6 +186,8 @@
       "category": "Category",
       "actions": "Actions",
       "amount": "Amount",
+      "sum": "Sum",
+      "total-transactions": "Total transactions",
       "view-history": "View History",
       "vendor-name": "Vendor Name",
       "description": "Description",

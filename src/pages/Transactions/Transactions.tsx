@@ -394,19 +394,19 @@ const Transactions: React.FC = () => {
                                             <Button
                                                 type="button"
                                                 className="usa-button--unstyled"
-                                                onClick={() => handleDelete(transaction.transactionId)}
-                                            >
-                                                <Icon.Delete />
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                className="usa-button--unstyled"
                                                 onClick={() => {
                                                     setEditTransaction(transaction);
                                                     editRef.current?.toggleModal();
                                                 }}
                                             >
                                                 <Icon.Edit />
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                onClick={() => handleDelete(transaction.transactionId)}
+                                            >
+                                                <Icon.Delete />
                                             </Button>
                                         </td>
                                         <td

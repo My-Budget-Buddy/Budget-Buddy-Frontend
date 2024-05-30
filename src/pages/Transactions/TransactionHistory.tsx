@@ -479,13 +479,25 @@ function TransactionHistory() {
                     </div>
                     <div className="p-4 mt-4 m-2 rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-1/3">
                         <h1>{t("transactions.summary")}</h1>
-                        {spent >= 0.0 ? t("transactions.spent") : t("transactions.earned")}:{" "}
-                        <span className={spent >= 0.0
-                            ? "text-red-500"
-                            : "text-green-500"
-                        }>{formatCurrency(Math.abs(spent))}</span>
+                        {t("transactions.total-transactions")}: {filteredTransactions.length}
                         <hr />
-                        {t("transactions.amount")}: {filteredTransactions.length}
+                        {`${t("transactions.spent")}: `}
+                        <span className={"text-red-500"}>{formatCurrency(filteredTransactions.reduce(
+                            (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? 0 : 1),
+                            0.0
+                        ))}
+                        </span>
+                        <hr />
+                        {`${t("transactions.earned")}: `}
+                        <span className={"text-green-500"}>{formatCurrency(filteredTransactions.reduce(
+                            (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? 1 : 0),
+                            0.0
+                        ))}
+                        </span>
+                        <hr />
+                        {`${t("transactions.sum")}: `}
+                        <span className={spent >= 0.0 ? "text-red-500" : "text-green-500"}>{formatCurrency(Math.abs(spent))}
+                        </span>
                         <hr />
                         <BarChart
                             series={[
