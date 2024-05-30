@@ -66,7 +66,7 @@ const Login: React.FC = () => {
                             <Form onSubmit={handleSubmit} className="min-w-full">
                                 <Fieldset legend={t("auth.login-desc")} legendStyle="default">
                                     <Label htmlFor="email">{t("auth.email")}</Label>
-                                    <TextInput id="email" name="email" type="text" autoComplete="email" required />
+                                    <TextInput id="email" name="email" type="email" autoComplete="email" required />
 
                                     <Label htmlFor="password">{t("auth.password")}</Label>
                                     <TextInput
