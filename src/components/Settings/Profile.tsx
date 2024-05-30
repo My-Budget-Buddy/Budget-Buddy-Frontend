@@ -1,53 +1,57 @@
-import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
-import { useEffect, useState } from "react";
+import type { User } from "../../types/models";
+
+import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { updateUserInfo, updateUserPassword } from "../../pages/Tax/taxesAPI";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { updateUserPassword } from "../../pages/Tax/taxesAPI";
+import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
 
-interface ProfileType {
-    firstName: string;
-    lastName: string;
-    email: string;
-    id: number;
-}
-
-type SetProfileType = (profile: ProfileType) => void;
-
-type FetchUserInfoType = () => Promise<void>;
-
-interface ProfileProps {
-    profile: ProfileType;
-    setProfile: SetProfileType;
-    fetchUserInfo: FetchUserInfoType;
-}
-
-const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo }) => {
+const Profile: React.FC = () => {
     const { t } = useTranslation();
+    const { jwt, profile, setProfile, logout } = useAuthentication();
+
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [passwordError, setPasswordError] = useState<boolean | string>('')
 
-    useEffect(() => {
-        fetchUserInfo()
-        setPasswordError('')
-    }, [])
-
-    const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-        evt.preventDefault();
-        const { name, value } = evt.target;
-        setProfile({ ...profile, [name]: value })
-    }
-
-    const handleSubmit = (evt: any) => {
+    const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault()
+
+        if (!profile) return; // profile should exist if the user is authenticated
+
+        const { id, email } = profile;
+
         try {
-            updateUserInfo(profile)
+            //@ts-expect-error elements aren't typed
             const confirmPassword = evt.currentTarget.elements["confirm-password"].value;
             const fields = {
                 username: profile.email,
-                password: evt.currentTarget.elements["new-password"].value
+                //@ts-expect-error elements aren't typed
+                password: evt.currentTarget.elements["new-password"].value,
+                //@ts-expect-error elements aren't typed
+                firstName: evt.currentTarget.elements["firstName"].value,
+                //@ts-expect-error elements aren't typed
+                lastName: evt.currentTarget.elements["lastName"].value
             };
+
+            // extract the first and last name fields, put the rest in an object called updatePasswordFields
+            const { firstName, lastName, ...updatePasswordFields } = fields;
+
+
+            // update the user Profile only if changes were made
+            if (firstName !== profile.firstName || lastName !== profile.lastName) {
+                fetch("https://api.skillstorm-congo.com/users", {
+                    method: "PUT",
+                    headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ id, email, firstName, lastName })
+                }).then((res) => {
+                    if (res.ok) return res.json().then((user: User) => setProfile(user))
+                    else console.log(`[profile -- updateProfile]: error updating profile (status = ${res.status})`)
+                }).catch((error) => console.log(`[profile -- updateProfile]: error => ${error}`))
+            }
+
             if (confirmPassword === fields.password && confirmPassword !== '') {
-                updateUserPassword(fields)
+                updateUserPassword(updatePasswordFields)
                 evt.currentTarget.reset()
                 setPasswordError(false)
             } else if (confirmPassword !== fields.password) {
@@ -72,8 +76,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })
                         name="firstName"
                         type="text"
                         autoComplete="first-name"
-                        value={profile.firstName}
-                        onChange={handleChange}
+                        defaultValue={profile?.firstName ?? undefined}
                     />
                     <Label htmlFor="lastName">{t("nav.last-name")}</Label>
                     <TextInput
@@ -81,8 +84,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })
                         name="lastName"
                         type="text"
                         autoComplete="last-name"
-                        value={profile.lastName}
-                        onChange={handleChange}
+                        defaultValue={profile?.lastName ?? undefined}
                     />
                     <Label htmlFor="email">{t("auth.email")}</Label>
                     <TextInput
@@ -90,7 +92,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })
                         name="email"
                         type="text"
                         autoComplete="email"
-                        value={profile.email}
+                        defaultValue={profile?.email}
                         disabled
                     />
                     {passwordError === false && <Alert type="success" heading="Success" headingLevel="h4">
@@ -120,6 +122,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile, fetchUserInfo })
                     <Button type="submit" >{t("nav.save")}</Button>
 
                 </ModalHeading>
+                <Button type="button" secondary onClick={() => logout()}>{t("auth.logout")}</Button>
             </Form>
         </div>
     );
