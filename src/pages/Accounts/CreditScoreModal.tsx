@@ -38,7 +38,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
 
     useEffect(() => {
         if (!jwt) return; // to prevent an unnecessary 401
-        fetch("http://localhost:8125/api/credit/score", { headers: { Authorization: `Bearer ${jwt}` } })
+        fetch("https://api.skillstorm-congo.com/api/credit/score", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(t("accounts.error-credit-score"));
@@ -47,7 +47,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
             })
             .then((data: { creditScore: number }) => setCreditScore(data.creditScore))
             .catch((err: Error) => setError(err.message));
-    }, [jwt]);
+    }, [jwt, t]);
 
     useEffect(() => {
         let score = 300;
