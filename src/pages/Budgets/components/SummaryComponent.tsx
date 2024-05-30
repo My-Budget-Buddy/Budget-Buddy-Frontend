@@ -154,7 +154,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                     </div>
                 </div>
 
-                <div className="flex flex-col justify-around mr-8" hidden={hideAdditionalInfo}>
+                <div className="flex flex-col justify-around mr-8 " hidden={hideAdditionalInfo}>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">
                             {selectedMonthString} {selectedYear} {t("budgets.spending-budget")}{" "}
