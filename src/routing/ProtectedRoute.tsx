@@ -1,16 +1,15 @@
-import { ReactNode, useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import { ReactNode } from "react";
+
 import { Navigate } from "react-router-dom";
-import { useAuthentication } from "../contexts/AuthenticationContext";
+import { useAppSelector } from "../util/redux/hooks";
 
 interface ProtectedRouteProps {
     children: ReactNode;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    // const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-    const { jwt } = useAuthentication();
-    if (jwt) {
+    const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
+    if (isAuthenticated) {
         return <>{children}</>;
     } else {
         return <Navigate to="/" replace />;

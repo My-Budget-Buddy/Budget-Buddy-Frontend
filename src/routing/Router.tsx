@@ -23,27 +23,34 @@ export const router = createBrowserRouter(
                 <Route path={"login"} element={<Login />} />
                 <Route path={"register"} element={<Register />} />
                 {/*Private Routes*/}
-            </Route>
-            <Route
-                path={"/dashboard"}
-                element={
-                    <ProtectedRoute>
-                        <AppLayout />
-                    </ProtectedRoute>
-                }
-            >
-                <Route index element={<Dashboard />} />
-                <Route path={"accounts"} element={<Accounts />} />
-                <Route path={"budgets"} element={<Budgets />} />
-                <Route path={"spending"} element={<Spending />} />
-                <Route path={"spending/:month"} element={<SpendingMonth />} />
+                <Route
+                    path={"/dashboard"}
+                    element={
+                        <ProtectedRoute>
+                            <AppLayout />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route
+                        index
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path={"accounts"} element={<Accounts />} />
+                    <Route path={"budgets"} element={<Budgets />} />
+                    <Route path={"spending"} element={<Spending />} />
+                    <Route path={"spending/:month"} element={<SpendingMonth />} />
 
-                <Route path={"transactions"} element={<Transactions />} />
-                <Route path={"transactions/:id"} element={<TransactionHistory />} />
+                    <Route path={"transactions"} element={<Transactions />} />
+                    <Route path={"transactions/:id"} element={<TransactionHistory />} />
 
-                <Route path={"tax"} element={<Tax />} />
-                <Route path={"tax/:returnId"} element={<Tax />} />
-                <Route path={"tax/:returnId/:formType/:formId"} element={<TaxEditView />} />
+                    <Route path={"tax"} element={<Tax />} />
+                    <Route path={"tax/:returnId"} element={<Tax />} />
+                    <Route path={"tax/:returnId/:formType/:formId"} element={<TaxEditView />} />
+                </Route>
             </Route>
         </Route>
     )
