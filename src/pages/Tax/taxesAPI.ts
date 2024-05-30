@@ -336,3 +336,7 @@ export const SaveDeductionsByTaxReturn = (id : any, payload : deductionsReceieve
     }
     return apiClient.post(`/taxes/taxreturns/${id}/deductions`, payloadToSend)
 }
+
+export const getCurrentRefundAPI = (id : any) => {
+    return apiClient.get(`/taxes/taxreturns/${id}/refund`)
+}
