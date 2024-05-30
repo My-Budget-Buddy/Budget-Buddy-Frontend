@@ -400,7 +400,7 @@ const SpendingMonth: React.FC = () => {
 
                     {/* Second row with two columns */}
                     <div className="flex">
-                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-md rounded-xl shadow-md border-[1px]">
+                        <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px]">
                             {spendingCategories.length > 0 ? (
                                 <div
                                     className="relative w-full h-full"
