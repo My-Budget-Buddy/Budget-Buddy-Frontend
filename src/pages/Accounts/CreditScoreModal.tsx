@@ -24,7 +24,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const modalRef = useRef<ModalRef>(null);
     const [error, setError] = useState<string | null>(null);
     const [creditColor, setCreditColor] = useState<string | null>(null);
-    const [creditScore, setCreditScore] = useState<number>(0);
+    const [creditScore, setCreditScore] = useState<number>(571);  // initial credit score based of assumptions
     const { t } = useTranslation();
     const { jwt } = useAuthentication();
 
@@ -36,19 +36,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         else return "#b20202";
     };
 
-    useEffect(() => {
-        if (!jwt) return; // to prevent an unnecessary 401
-        fetch("http://localhost:8125/api/credit/score", { headers: { Authorization: `Bearer ${jwt}` } })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(t("accounts.error-credit-score"));
-                }
-                return res.json();
-            })
-            .then((data: { creditScore: number }) => setCreditScore(data.creditScore))
-            .catch((err: Error) => setError(err.message));
-    }, [jwt]);
-
+    // calculates the credit score based on the total debt
     useEffect(() => {
         let score = 300;
         if (totalDebt > 50000) {
@@ -59,6 +47,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
         // Increase creditScore by score
         setCreditScore((prevCreditScore) => prevCreditScore + score);
     }, [totalDebt]);
+
     // sets the color of the gauge based on the credit score
     useEffect(() => {
         setCreditColor(getCreditColor(creditScore));
