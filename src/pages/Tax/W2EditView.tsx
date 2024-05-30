@@ -49,7 +49,8 @@ function W2EditView () {
 
     return(
         <>
-            <StepIndicator headingLevel="h4" ofText="of" stepText="Step">
+            <div className="flex flex-col items-center mt-5">
+            <StepIndicator headingLevel="h4" ofText="of" stepText="Step" counters="default">
                 {steps.map((step, index) => (
                 <StepIndicatorStep
                     key={index}
@@ -58,16 +59,11 @@ function W2EditView () {
                 />
                 ))}
             </StepIndicator>
-                    <Button type='button' onClick={handlePreviousStep} disabled={currentStep === 0}>
-                    Prev
-                    </Button>
-                    <Button type='button' onClick={handleNextStep} disabled={currentStep === steps.length - 1}>
-                    Next
-                    </Button>
+                   
             
                     {/* Render current step content based on currentStep state */}
                     {/* You can conditionally render content for each step */}
-                    <div className="bg-base-lightest">
+                    <div className="bg-base-lightest  border-4 border-gray-300 shadow-lg ">
                         {currentStep === 0 && <PersonalInfoStep />}
                         {currentStep === 1 && <WwStep />}
                         {currentStep === 2 && <FinancialInformationStepW2 />}
@@ -75,6 +71,15 @@ function W2EditView () {
                         {currentStep === 4 && <ReviewAndSubmitStepW2 />}
                         
                     </div>
+                    <div className="flex ">
+                    <Button type='button' onClick={handlePreviousStep} disabled={currentStep === 0}>
+                    Prev
+                    </Button>
+                    <Button type='button' onClick={handleNextStep} disabled={currentStep === steps.length - 1}>
+                    Next
+                    </Button>
+                    </div>
+                </div>
         </>
     )
 
