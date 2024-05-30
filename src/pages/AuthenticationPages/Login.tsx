@@ -101,7 +101,9 @@ const Login: React.FC = () => {
                                 type="button"
                                 outline
                                 className="width-full"
-                                onClick={() => window.location.replace("http://localhost:8125/auth/login/oauth2")}
+                                onClick={() =>
+                                    window.location.replace("https://api.skillstorm-congo.com/auth/login/oauth2")
+                                }
                             >
                                 {t("auth.google")}
                             </Button>
