@@ -1,4 +1,4 @@
-import { LineChart, Gauge } from "@mui/x-charts";
+import { LineChart, Gauge, gaugeClasses } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef, Title } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -193,7 +193,7 @@ const Dashboard: React.FC = () => {
         };
         fetchMonthlyTransactions();
     }, []);
-console.log("monthlyTransactions:", monthlyTransactions)
+    console.log("monthlyTransactions:", monthlyTransactions)
     //---- budgets gauge ----
     useEffect(() => {
         const fetchBudgets = async () => {
@@ -417,10 +417,10 @@ console.log("monthlyTransactions:", monthlyTransactions)
                             outerRadius="100%"
                             sx={() => ({
                                 [`& .${gaugeClasses.valueArc}`]: {
-                                  fill: [`${budgetGaugeSpent > budgetGaugeTotal ? "#b50909" : 
-                                  (budgetGaugeSpent > budgetGaugeTotal/2 ? "#e5a000" : "#00a91c")}`],
+                                    fill: [`${budgetGaugeSpent > budgetGaugeTotal ? "#b50909" :
+                                        (budgetGaugeSpent > budgetGaugeTotal / 2 ? "#e5a000" : "#00a91c")}`],
                                 }
-                              })}
+                            })}
                             text={({ value, valueMax }) => `$ ${value} / ${valueMax}`}
                         />
                     </div>
@@ -432,8 +432,8 @@ console.log("monthlyTransactions:", monthlyTransactions)
                                 className="grid-row flex-justify border-b border-black p-3 w-full"
                             >
                                 <p>{budget.category}</p>
-                                <p> 
-                                    <span className={`${budget.spentAmount > budget.totalAmount ? "text-[#b50909] font-bold" : (budget.spentAmount > budget.totalAmount/2 ? "text-[#e5a000]" : "text-[#00a91c]")}`}>{formatCurrency(budget.spentAmount)}</span> <span className={`${budget.spentAmount >= budget.totalAmount && "text-[#b50909] font-bold"}`}>/ {formatCurrency(budget.totalAmount)}</span>
+                                <p>
+                                    <span className={`${budget.spentAmount > budget.totalAmount ? "text-[#b50909] font-bold" : (budget.spentAmount > budget.totalAmount / 2 ? "text-[#e5a000]" : "text-[#00a91c]")}`}>{formatCurrency(budget.spentAmount)}</span> <span className={`${budget.spentAmount >= budget.totalAmount && "text-[#b50909] font-bold"}`}>/ {formatCurrency(budget.totalAmount)}</span>
                                 </p>
                             </div>
                         ))}
