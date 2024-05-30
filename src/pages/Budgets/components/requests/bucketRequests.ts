@@ -1,8 +1,9 @@
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 import Cookies from "js-cookie";
+const url = "https://api.skillstorm-congo.com";
 
 export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/user`;
+    const endpoint = `${url}/buckets/user`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
         console.log("getting... ");
@@ -29,7 +30,7 @@ export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
 }
 
 export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSend> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/add`;
+    const endpoint = `${url}/buckets/add`;
     const jwtCookie = Cookies.get("jwt") as string;
 
     try {
@@ -54,7 +55,7 @@ export async function postBucket(bucket: RawBucketToSend): Promise<RawBucketToSe
 }
 
 export async function putBucket(bucket: RawBucketToSend, id: number): Promise<RawBucketToSend> {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/update/${id}`;
+    const endpoint = `${url}/buckets/update/${id}`;
     const jwtCookie = Cookies.get("jwt") as string;
 
     try {
@@ -80,7 +81,7 @@ export async function putBucket(bucket: RawBucketToSend, id: number): Promise<Ra
 }
 
 export async function deleteBucket(id: number) {
-    const endpoint = `${import.meta.env.VITE_REACT_URL}/buckets/delete/${id}`;
+    const endpoint = `${url}/buckets/delete/${id}`;
     const jwtCookie = Cookies.get("jwt") as string;
     try {
         const response = await fetch(endpoint, {
