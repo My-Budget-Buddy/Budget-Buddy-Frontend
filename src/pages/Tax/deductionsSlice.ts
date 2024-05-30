@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface deductions{
     "dedid"?: number,
     "dedtaxReturn"?: number,
-    "deddeduction": number,
+    "deddeduction": any,
     "deddeductionName"?: string,
     "dedamountSpent": number,
     "dednetDeduction"?: number
