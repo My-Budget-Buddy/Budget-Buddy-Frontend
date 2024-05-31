@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthentication } from "../contexts/AuthenticationContext";
-import { Header, NavMenuButton, PrimaryNav, Title } from "@trussworks/react-uswds";
+import { Header, NavMenuButton, PrimaryNav } from "@trussworks/react-uswds";
+import logo from "../images/logo.png";
 
 const navItems = [
     <Link to="/login" className="usa-nav__link">
@@ -30,7 +31,7 @@ const LandingHeader = () => {
             <div className="usa-nav-container">
                 <div className="usa-navbar w-full flex justify-between">
                     <Link to="/">
-                        <Title>BudgetBuddy</Title>
+                        <img className="logo-img" src={logo} alt="logo" />
                     </Link>
 
                     <NavMenuButton label="Menu" onClick={() => setMobileExpanded((prev) => !prev)} />
