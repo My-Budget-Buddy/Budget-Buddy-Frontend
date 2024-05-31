@@ -48,8 +48,6 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
 
     useEffect(() => {
         if (jwt) {
-            Cookies.set("jwt", jwt);
-
             // make a network request to get profile information
             fetch("https://api.skillstorm-congo.com/users/user", { headers: { Authorization: `Bearer ${jwt}` } })
                 .then(res => {
