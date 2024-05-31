@@ -63,8 +63,10 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     }, [profile])
 
     const logout = () => {
+        Cookies.remove("jwt", {
+            domain: ".skillstorm-congo.com",
+        });
         setJwt(null);
-        Cookies.remove("jwt");
         window.location.reload(); // Force window refresh
     };
 
