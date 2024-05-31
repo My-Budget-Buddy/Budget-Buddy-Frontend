@@ -1,14 +1,16 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { RootState } from "../../util/redux/store";
-import { W2State, setW2Info } from "./W2Slice";
+import { W2State } from "./W2Slice";
 import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, Grid, GridContainer } from "@trussworks/react-uswds";
-import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
-import { createTaxReturnAPI, findAllDeductionsByTaxReturnAPI, findW2sByTaxReturnIdAPI } from "./taxesAPI";
-import { useNavigate } from "react-router-dom";
+//import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
+import { findAllDeductionsByTaxReturnAPI, findW2sByTaxReturnIdAPI } from "./taxesAPI";
+import { useNavigate, useParams } from "react-router-dom";
 import { deductions } from "./deductionsSlice";
 
 const ReviewAndSubmitStepW2: React.FC = () => {
+    const { returnId, formType, formId } = useParams();
+    console.log(returnId, formType, formId);
     const taxReturnInfo = useSelector((state: RootState) => state.taxReturn.taxReturn);
     const otherIncome = useSelector((state: RootState) => state.otherIncome);
     const [W2s, setW2s] = useState<W2State[]>([]);
@@ -17,7 +19,7 @@ const ReviewAndSubmitStepW2: React.FC = () => {
     const [currentDeductionIndex, setCurrentDeductionIndex] = useState(0);
     //const deductionsState = useSelector((state: RootState) => state.deductions);
 
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -70,28 +72,28 @@ const ReviewAndSubmitStepW2: React.FC = () => {
     };
 
     const handleSubmit = () => {
-        const taxReturnPayload: taxReturn = {
-            filingStatus: taxReturnInfo.filingStatus || "", // Provide a default value if undefined
-            year: taxReturnInfo.year || new Date().getFullYear(), // Example default to current year
-            userId: taxReturnInfo.userId || 0,
-            firstName: taxReturnInfo.firstName || "",
-            lastName: taxReturnInfo.lastName || "",
-            email: taxReturnInfo.email || "",
-            phoneNumber: taxReturnInfo.phoneNumber || "",
-            address: taxReturnInfo.address || "",
-            city: taxReturnInfo.city || "",
-            state: taxReturnInfo.state || "",
-            zip: taxReturnInfo.zip || "",
-            dateOfBirth: taxReturnInfo.dateOfBirth || "",
-            ssn: taxReturnInfo.ssn || "",
-        };
+        // const taxReturnPayload: taxReturn = {
+        //     filingStatus: taxReturnInfo.filingStatus || "", // Provide a default value if undefined
+        //     year: taxReturnInfo.year || new Date().getFullYear(), // Example default to current year
+        //     userId: taxReturnInfo.userId || 0,
+        //     firstName: taxReturnInfo.firstName || "",
+        //     lastName: taxReturnInfo.lastName || "",
+        //     email: taxReturnInfo.email || "",
+        //     phoneNumber: taxReturnInfo.phoneNumber || "",
+        //     address: taxReturnInfo.address || "",
+        //     city: taxReturnInfo.city || "",
+        //     state: taxReturnInfo.state || "",
+        //     zip: taxReturnInfo.zip || "",
+        //     dateOfBirth: taxReturnInfo.dateOfBirth || "",
+        //     ssn: taxReturnInfo.ssn || "",
+        // };
 
-        createTaxReturnAPI(taxReturnPayload)
-            .then(() => {
-                dispatch(setTaxReturnInfo(taxReturnPayload));
-            });
+        // createTaxReturnAPI(taxReturnPayload)
+        //     .then(() => {
+        //         dispatch(setTaxReturnInfo(taxReturnPayload));
+        //     });
 
-        navigate("/dashboard/tax");
+        navigate(`/dashboard/tax/${returnId}/results`);
     };
 
     return (

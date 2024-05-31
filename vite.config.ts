@@ -19,9 +19,9 @@ export default defineConfig(({ command, mode }) => {
             }
         },
         // Define global constants that will be replaced during the build process
-        define: {
-            // Define __APP_ENV__ as a global constant with the value of env.APP_ENV
-            __APP_ENV__: JSON.stringify(env.APP_ENV)
-        }
+        // define: {
+        //     // Define __APP_ENV__ as a global constant with the value of env.APP_ENV
+        //     __APP_ENV__: JSON.stringify(env.APP_ENV)
+        // }
     };
 });

@@ -4,13 +4,17 @@ import UsIcon from "../../images/us-icon.svg";
 import StateIcon from "../../images/state-icon.svg";
 import { formatCurrency } from "../../util/helpers";
 import Confetti from "react-confetti";
+import { getCurrentRefundAPI } from "./taxesAPI";
+import { useParams } from "react-router-dom";
 
-const mockRefunds = {
-    federalRefund: 1253,
-    stateRefund: 283
-};
+// const mockRefunds = {
+//     federalRefund: 1253,
+//     stateRefund: 283
+// };
 
 const TaxResults: React.FC = () => {
+    const { returnId } = useParams();
+    console.log(returnId);
     //const { t } = useTranslation();
     const [numConfetti, setNumConfetti] = useState(0);
     const [taxRefunds, setTaxRefunds] = useState({
@@ -21,10 +25,14 @@ const TaxResults: React.FC = () => {
     useEffect(() => {
         // pull tax refund data here
         // const refunds = INSERT GET REQUEST HERE (need current tax return id)
-        setTaxRefunds(mockRefunds); // set to refunds
-        if (mockRefunds.federalRefund + mockRefunds.stateRefund >= 0) {
-            setNumConfetti(200);
-        }
+        getCurrentRefundAPI(returnId)
+            .then((res) => {
+                setTaxRefunds(res.data); // set to refunds
+                if (res.data.federalRefund + res.data.stateRefund >= 0) {
+                    setNumConfetti(200);
+                }
+            })
+
     }, []);
 
     useEffect(() => {
@@ -58,9 +66,8 @@ const TaxResults: React.FC = () => {
                         <div className="h-1/2 flex flex-col justify-evenly items-center">
                             <div className="text-2xl font-bold">Your total refund</div>
                             <div
-                                className={`text-6xl font-bold ${
-                                    positiveRefundTotal ? "text-green-600" : "text-red-600"
-                                }`}
+                                className={`text-6xl font-bold ${positiveRefundTotal ? "text-green-600" : "text-red-600"
+                                    }`}
                             >
                                 {formatCurrency(taxRefunds.federalRefund + taxRefunds.stateRefund)}
                             </div>

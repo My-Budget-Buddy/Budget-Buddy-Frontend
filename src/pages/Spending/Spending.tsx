@@ -1,4 +1,4 @@
-import { Button, Icon, Table } from "@trussworks/react-uswds";
+import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
 import { AxisConfig, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
@@ -124,7 +124,7 @@ const Spending: React.FC = () => {
                     const transactionDate = new Date(transaction.date);
                     const amount = transaction.amount;
 
-                    if (transactionDate >= startOfThisYear) {
+                    if (transactionDate >= startOfThisYear && transaction.category !== "Income") {
                         thisYearSpending += amount; // Total spending this year
                     }
 
@@ -333,16 +333,17 @@ const Spending: React.FC = () => {
     }
 
     return (
-        <div className="min-w-screen mt-10">
+        <div className="min-w-screen">
             <div className="flex-1">
                 <section className="h-screen ">
                     {/* Title for the page */}
-                    <div className="mb-4 ml-3">
-                        <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2>
-                        {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
+                    {/* <div className="mb-4 ml-3"> */}
+                    <Title>{t("spending.title")}</Title>
+                    {/* <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2> */}
+                    {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
                         <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
-                    </div>
-                    <div className="flex justify-between gap-x-4 w-full m-2">
+                    {/* </div> */}
+                    <div className="flex justify-between gap-x-4 w-full m-0">
                         {[
                             {
                                 details: t("spending.spentThisWeek"),
@@ -402,7 +403,7 @@ const Spending: React.FC = () => {
                     </div>
 
                     {/* Full-width row */}
-                    <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
+                    <div className="p-4 mt-4 m-0 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
                         <div className="mb-4 ml-3 flex w-full justify-between items-center">
                             <h2 className="text-3xl p-5 pl-8 text-bold">{t("spending.graphTitle")}</h2>
                             <div>
@@ -445,7 +446,7 @@ const Spending: React.FC = () => {
 
                     {/* Second row with two columns */}
                     <div className="flex pt-1 gap-3">
-                        <div className="flex flex-col justify-center items-center flex-2 p-2 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
+                        <div className="flex flex-col justify-center items-center flex-2 p-2 m-0 mt-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
                             {spendingCategories.length > 0 ? (
 
                                 <div className="relative w-full h-full ml-12" style={{ minHeight: "610px", minWidth: "610px" }}>
@@ -468,7 +469,7 @@ const Spending: React.FC = () => {
                                                 cx: "50%",
                                                 cy: "50%",
                                                 arcLabel: (item) => `${item.label}`,
-                                                arcLabelMinAngle: 20,
+                                                arcLabelMinAngle: 40,
                                                 valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
                                             }
                                         ]}
@@ -507,12 +508,12 @@ const Spending: React.FC = () => {
                         </div>
                         {/* section for more insights -> top expenses..and?? */}
 
-                        <div className="flex flex-col justify-center gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
+                        <div className="flex flex-col justify-center mt-3 gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
                             {/* Top Categories components */}
-                            <div className="w-full m-1 p-4 rounded-xl shadow-md border-l-8 border-gray-500 bg-white text-gray-800">
+                            <div className="w-full m-1 p-4 rounded-xl shadow-md border-[0.5px] border-l-8 border-gray-500 bg-white text-gray-800">
                                 <p className="text-xl">
                                     {t("spending.topCategories")}{" "}
-                                    <span className="font-bold">{topThreePercentage}%</span>{" "}
+                                    <span className="font-bold text-2xl mx-2">{topThreePercentage}%</span>{" "}
                                     {t("spending.spendingYear")}.
                                 </p>
                             </div>
@@ -531,7 +532,7 @@ const Spending: React.FC = () => {
                                                 <div className="flex items-center justify-center w-10 h-10 border text-white rounded-full text-xl font-bold mr-3">
                                                     1
                                                 </div>
-                                                <p className="text-white text-bold text-2xl mb-1">
+                                                <p className="text-white text-bold text-2xl mt-2 mb-1">
                                                     {" "}
                                                     {t("spending.top-category")}
                                                 </p>
@@ -584,8 +585,8 @@ const Spending: React.FC = () => {
                             <div className="flex flex-col md:flex-row justify-between w-full min-h-[30rem] gap-x-4 m-2">
                                 {/* Top Purchases Section */}
                                 <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-md border-[1px] w-full ">
-                                    <div className="flex flex-col gap-y-4 w-full">
-                                        <h2 className="text-2xl font-bold mr-2 mb-2 text-center">
+                                    <div className="flex flex-col gap-y-7 w-full">
+                                        <h2 className="text-xl text-center">
                                             {" "}
                                             {t("spending.topPurchases")}
                                         </h2>
@@ -616,7 +617,7 @@ const Spending: React.FC = () => {
                                 {/* Most Popular Vendors Section */}
                                 <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]  ">
                                     <div className="flex items-center mb-4">
-                                        <h2 className="text-2xl font-bold text-[#0A5CBA] mr-2">
+                                        <h2 className="text-2xl text-[#0A5CBA] mr-2">
                                             {" "}
                                             {t("spending.top-vendors")}
                                         </h2>

@@ -3,34 +3,41 @@
 @tailwind utilities;
 
 #no-focus:focus {
-  outline: none;
+    outline: none;
 }
 #settings-modal > .usa-modal-overlay {
-  overflow-y: hidden;
+    overflow-y: hidden;
 }
 
 body {
-  font-family: 'Arial', sans-serif; /* Example font */
+    font-family: "Source Sans Pro Web", sans-serif; /* Example font */
 }
 
 /* Input field styling for all forms */
 input[type="text"],
 input[type="number"],
 input[type="date"],
+input[type="password"],
+input[type="email"],
+#new-password,
+#confirm-password,
 textarea {
-  border: 1px solid #d1d5d9;
-  border-radius: 4px;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
+    border: 1px solid #d1d5d9;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
 }
 
 input[type="text"]:focus,
 input[type="number"]:focus,
 input[type="date"]:focus,
 textarea:focus {
-  border-color: #0071bc;
-  outline: none;
+    border-color: #0071bc;
+    outline: none;
 }
-
+.unstyled-input-group{
+  /* all: initial !important; */
+  border: none !important;
+}

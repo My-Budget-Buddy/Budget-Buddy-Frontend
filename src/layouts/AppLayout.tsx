@@ -1,13 +1,13 @@
 import NavBar from "../components/NavBar";
 import { Outlet } from "react-router-dom";
-import { AuthenticationProvider } from "../contexts/AuthenticationContext.tsx";
+import { AuthenticationProvider } from "../contexts/AuthenticationContext";
 
 const AppLayout: React.FC = () => {
     return (
         <AuthenticationProvider>
             <div className="layout-container flex">
                 <NavBar />
-                <main className="main-content px-14 w-full h-screen overflow-y-scroll">
+                <main className="main-content px-14 w-full h-screen overflow-y-auto">
                     <Outlet />
                 </main>
             </div>

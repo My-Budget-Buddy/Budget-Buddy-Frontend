@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
     Button,
-    Card,
-    CardBody,
-    CardGroup,
-    CardHeader,
     Icon,
     InputGroup,
     InputPrefix,
@@ -17,7 +13,8 @@ import {
     Form,
     Select,
     Textarea,
-    ModalHeading
+    ModalHeading,
+    Title
 } from "@trussworks/react-uswds";
 import { useNavigate } from "react-router-dom";
 import { Transaction, TransactionCategory, Account } from "../../types/models";
@@ -196,10 +193,10 @@ const Transactions: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
-            <div className="flex justify-between items-center bg-transparent p-4 ">
-                <h1>{t("transactions.title")}</h1>
-                <div className="flex gap-4">
+        <div className="min-w-screen min-h-screen flex flex-col gap-6">
+            <div className="flex justify-between items-center bg-transparent">
+                <Title>{t("transactions.title")}</Title>
+                <div className="flex gap-4 align-end mt-4">
                     <Button
                         type="button"
                         className="usa-button--secondary"
@@ -355,94 +352,87 @@ const Transactions: React.FC = () => {
                 </div>
             )}
 
-            <div className="flex-grow overflow-auto" style={{ maxHeight: "calc(100vh - 250px)" }}>
-                <CardGroup>
-                    <Card gridLayout={{ col: 12 }} className="mr-5">
-                        <CardHeader className="flex justify-center mb-5">
-                            <h1>{t("transactions.list-of-transactions")}</h1>
-                        </CardHeader>
-                        <CardBody>
-                            {filteredTransactions.length === 0 ? (
-                                <div className="text-center">
-                                    <p className="text-lg">
-                                        {t("transactions.no-transactions")}
-                                        <br />
-                                        <Trans
-                                            i18nKey={"transactions.click-add"}
-                                            components={{ 1: <span className="font-bold text-blue-600" /> }}
-                                            values={{ val: t("transactions.add-transaction") }}
-                                        />
-                                    </p>
-                                </div>
-                            ) : (
-                                <Table fullWidth>
-                                    <thead>
-                                        <tr>
-                                            <th>{t("transactions-table.date")}</th>
-                                            <th>{t("transactions-table.name")}</th>
-                                            <th>{t("transactions-table.category")}</th>
-                                            <th>{t("transactions-table.actions")}</th>
-                                            <th className="text-right">{t("transactions-table.amount")}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredTransactions.map((transaction) => (
-                                            <tr key={transaction.transactionId}>
-                                                <td>{formatDate(transaction.date)}</td>
-                                                <td>{transaction.vendorName}</td>
-                                                <td>
-                                                    <CategoryIcon
-                                                        category={transaction.category}
-                                                        color={categoryColors[transaction.category]}
-                                                    />
-                                                    {t(transaction.category)}
-                                                </td>
-                                                <td>
-                                                    <Button
-                                                        type="button"
-                                                        className="usa-button--unstyled"
-                                                        onClick={() => handleDelete(transaction.transactionId)}
-                                                    >
-                                                        <Icon.Delete />
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        className="usa-button--unstyled"
-                                                        onClick={() => {
-                                                            setEditTransaction(transaction);
-                                                            editRef.current?.toggleModal();
-                                                        }}
-                                                    >
-                                                        <Icon.Edit />
-                                                    </Button>
-                                                </td>
-                                                <td
-                                                    className={`text-right ${
-                                                        transaction.category === TransactionCategory.INCOME
-                                                            ? "text-green-500"
-                                                            : "text-red-500"
-                                                    }`}
-                                                >
-                                                    {formatCurrency(transaction.amount)}
-                                                </td>
-                                                <td>
-                                                    <ModalToggleButton
-                                                        type="button"
-                                                        className="usa-button--unstyled"
-                                                        modalRef={infoRef}
-                                                        onClick={() => handleInfoOpen(transaction)}
-                                                    >
-                                                        <Icon.NavigateNext />
-                                                    </ModalToggleButton>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            )}
-                        </CardBody>
-                    </Card>
-                </CardGroup>
+            <div className="flex">
+                <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-screen">
+                    <h1 className="px-4">{t("transactions.list-of-transactions")}</h1>
+                    {filteredTransactions.length === 0 ? (
+                        <div className="text-center">
+                            <p className="text-lg">
+                                {t("transactions.no-transactions")}
+                                <br />
+                                <Trans
+                                    i18nKey={"transactions.click-add"}
+                                    components={{ 1: <span className="font-bold text-blue-600" /> }}
+                                    values={{ val: t("transactions.add-transaction") }}
+                                />
+                            </p>
+                        </div>
+                    ) : (
+                        <Table fullWidth>
+                            <thead>
+                                <tr>
+                                    <th>{t("transactions-table.date")}</th>
+                                    <th>{t("transactions-table.name")}</th>
+                                    <th>{t("transactions-table.category")}</th>
+                                    <th>{t("transactions-table.actions")}</th>
+                                    <th className="text-right">{t("transactions-table.amount")}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredTransactions.map((transaction) => (
+                                    <tr key={transaction.transactionId}>
+                                        <td>{formatDate(transaction.date)}</td>
+                                        <td>{transaction.vendorName}</td>
+                                        <td>
+                                            <CategoryIcon
+                                                category={transaction.category}
+                                                color={categoryColors[transaction.category]}
+                                            />
+                                            {t(transaction.category)}
+                                        </td>
+                                        <td>
+                                            <Button
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                onClick={() => {
+                                                    setEditTransaction(transaction);
+                                                    editRef.current?.toggleModal();
+                                                }}
+                                            >
+                                                <Icon.Edit />
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                onClick={() => handleDelete(transaction.transactionId)}
+                                            >
+                                                <Icon.Delete />
+                                            </Button>
+                                        </td>
+                                        <td
+                                            className={`text-right ${transaction.category === TransactionCategory.INCOME
+                                                ? "text-green-500"
+                                                : "text-red-500"
+                                                }`}
+                                        >
+                                            {formatCurrency(transaction.amount)}
+                                        </td>
+                                        <td>
+                                            <ModalToggleButton
+                                                type="button"
+                                                className="usa-button--unstyled"
+                                                modalRef={infoRef}
+                                                onClick={() => handleInfoOpen(transaction)}
+                                            >
+                                                <Icon.NavigateNext />
+                                            </ModalToggleButton>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    )}
+                </div>
             </div>
 
             <Modal

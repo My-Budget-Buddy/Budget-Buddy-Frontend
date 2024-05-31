@@ -135,7 +135,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                                 </div>
                             </div>
 
-                            <div className="flex flex-row gap-4">
+                            <div className={showRoutingNumberInput ? "flex flex-row gap-4" : ""}>
                                 <div>
                                     <Label htmlFor="account-num" requiredMarker>
                                         {t("accounts.account-number")}
@@ -144,9 +144,11 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                                         id="account-num"
                                         name="account-num"
                                         type="text"
-                                        pattern="\d{9}"
-                                        maxLength={9}
+                                        pattern="\d*"
+                                        minLength={8}
                                         required
+                                        title="Account number must be at least digits"
+                                        className="w-full min-w-full"
                                     />
                                 </div>
 

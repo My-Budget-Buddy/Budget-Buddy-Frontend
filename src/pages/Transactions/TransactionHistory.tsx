@@ -1,9 +1,5 @@
 import {
     Button,
-    Card,
-    CardBody,
-    CardGroup,
-    CardHeader,
     Form,
     Icon,
     InputGroup,
@@ -16,7 +12,8 @@ import {
     Select,
     Table,
     TextInput,
-    Textarea
+    Textarea, 
+    Title
 } from "@trussworks/react-uswds";
 import React, { useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -48,72 +45,22 @@ function TransactionHistory() {
     const { t } = useTranslation();
     const transactionsInit: Transaction[] = [
         {
-            transactionId: 10,
-            date: "2021-10-01",
-            vendorName: "Hot dog breakfast",
+            transactionId: -1,
+            date: "1973-01-01",
+            vendorName: Name,
             category: TransactionCategory.DINING,
             amount: 2.33,
-            description: "One hot dog",
-            accountId: 1,
-            userId: 1
-        },
-        {
-            transactionId: 11,
-            date: "2023-10-11",
-            vendorName: "Hot dog wating for train",
-            category: TransactionCategory.DINING,
-            amount: 4.66,
-            description: "Anywhere from 1 to 2 hot dogs",
-            accountId: 2,
-            userId: 1
-        },
-        {
-            transactionId: 12,
-            date: "2023-10-11",
-            vendorName: "Hot dog at lunch",
-            category: TransactionCategory.DINING,
-            amount: 9.33,
-            description: "Sometimes I don't even eat lunch, I just blow through it",
-            accountId: 1,
-            userId: 1
-        },
-        {
-            transactionId: 13,
-            date: "2023-10-12",
-            vendorName: "Hot dog breakfast",
-            category: TransactionCategory.DINING,
-            amount: 2.33,
-            description: "Definitely a hot dog",
-            accountId: 3,
-            userId: 1
-        },
-        {
-            transactionId: 14,
-            date: "2023-10-12",
-            vendorName: "Hot dog wating for train",
-            category: TransactionCategory.DINING,
-            amount: 4.66,
-            description: "Yeah 2 hot dogs",
-            accountId: 1,
-            userId: 1
-        },
-        {
-            transactionId: 15,
-            date: "2023-10-12",
-            vendorName: "Hot dog at lunch",
-            category: TransactionCategory.DINING,
-            amount: 9.33,
-            description: "I don't skip lunch",
-            accountId: 2,
-            userId: 1
+            description: "",
+            accountId: -1,
+            userId: -1
         }
     ];
 
     const [transactions, setTransactions] = useState<Array<Transaction>>(transactionsInit);
     const [accounts, setAccounts] = useState<Account[]>([]);
-    const [current, setCurrent] = useState<number>(0);
-    const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[current]);
+    const [currentTransaction, setCurrentTransaction] = useState<Transaction>(transactions[0]);
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+    const [spent, setSpent] = useState<number>(0.0);
 
     const [selectedCategory, setSelectedCategory] = useState<string>("All Categories");
     const [selectedAccount, setSelectedAccount] = useState<string>("All Accounts");
@@ -170,6 +117,12 @@ function TransactionHistory() {
         });
 
         setFilteredTransactions(sortedTransactions);
+        setSpent(
+            sortedTransactions.reduce(
+                (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? -1 : 1),
+                0.0
+            )
+        );
     }, [
         selectedCategory,
         selectedAccount,
@@ -233,16 +186,14 @@ function TransactionHistory() {
     };
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const { name, value, type } = event.target;
-        console.log(type);
-        if (type !== "number" || (type === "number" && (Number(value) || value === ""))) {
-            if (createRef.current?.modalIsOpen) setNewTransaction({ ...newTransaction, [name]: value });
-            if (modalRef.current?.modalIsOpen) {
-                setCurrentTransaction({
-                    ...currentTransaction,
-                    [name]: value
-                });
-            }
+        const { name, value } = event.target;
+        if (createRef.current?.modalIsOpen) setNewTransaction({ ...newTransaction, [name]: value });
+        if (modalRef.current?.modalIsOpen) {
+            setCurrentTransaction({
+                ...currentTransaction,
+                [name]: value
+            });
+
         }
     }
 
@@ -288,10 +239,10 @@ function TransactionHistory() {
 
     return (
         <>
-            <div className="min-h-screen pr-10 pl-10 flex flex-col gap-6">
-                <div className="flex justify-between items-center bg-transparent p-4 ">
-                    <h1>{t("transactions.history", { val: Name })}</h1>
-                    <div className="flex gap-4">
+            <div className="min-w-screen min-h-screen flex flex-col gap-6">
+                <div className="flex justify-between items-center bg-transparent">
+                    <Title>{t("transactions.history", { val: Name })}</Title>
+                    <div className="flex gap-4 mt-4">
                         <Button
                             type="button"
                             className="usa-button--secondary"
@@ -444,161 +395,163 @@ function TransactionHistory() {
                         </div>
                     </div>
                 )}
-
-                <CardGroup className="">
-                    <Card gridLayout={{ col: 8 }}>
-                        <CardBody>
-                            {filteredTransactions.length === 0 ? (
-                                <div className="text-center">
-                                    <p className="text-lg">
-                                        {t("transactions.no-transactions")}
-                                        <br />
-                                        <Trans
-                                            i18nKey={"transactions.click-add"}
-                                            components={{ 1: <span className="font-bold text-blue-600" /> }}
-                                            values={{ val: t("transactions.add-transaction") }}
-                                        />
-                                    </p>
-                                </div>
-                            ) : (
-                                <Table bordered={false} fullWidth={true}>
-                                    <thead>
-                                        <tr>
-                                            <th>{t("transactions-table.date")}</th>
-                                            <th>{t("transactions-table.name")}</th>
-                                            <th>{t("transactions-table.category")}</th>
-                                            <th>{t("transactions-table.actions")}</th>
-                                            <th className="text-right">{t("transactions-table.amount")}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredTransactions.map((transaction: Transaction, index: number) => (
-                                            <tr key={index}>
-                                                <td>{formatDate(transaction.date)}</td>
-                                                <td>{transaction.vendorName}</td>
-                                                <td>
-                                                    <CategoryIcon
-                                                        category={transaction.category}
-                                                        color={categoryColors[transaction.category]}
-                                                    />
-                                                    {t(transaction.category)}
-                                                </td>
-                                                <td>
-                                                    <ModalToggleButton
-                                                        type={"button"}
-                                                        className="usa-button--unstyled"
-                                                        modalRef={modalRef}
-                                                        onClick={() => {
-                                                            setCurrent(index);
-                                                            setCurrentTransaction(filteredTransactions[index]);
-                                                        }}
-                                                    >
-                                                        <Icon.Edit />
-                                                    </ModalToggleButton>
-                                                    <Button
-                                                        type={"button"}
-                                                        onClick={() => handleDelete(transaction.transactionId)}
-                                                        className="usa-button--unstyled"
-                                                    >
-                                                        <Icon.Delete />
-                                                    </Button>
-                                                </td>
-                                                <td
-                                                    className={`text-right ${
-                                                        transaction.category === TransactionCategory.INCOME
-                                                            ? "text-green-500"
-                                                            : "text-red-500"
-                                                    }`}
+                <div className="flex">
+                    <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-2/3">
+                        {filteredTransactions.length === 0 ? (
+                            <div className="text-center">
+                                <p className="text-lg">
+                                    {t("transactions.no-transactions")}
+                                    <br />
+                                    <Trans
+                                        i18nKey={"transactions.click-add"}
+                                        components={{ 1: <span className="font-bold text-blue-600" /> }}
+                                        values={{ val: t("transactions.add-transaction") }}
+                                    />
+                                </p>
+                            </div>
+                        ) : (
+                            <Table bordered={false} fullWidth={true}>
+                                <thead>
+                                    <tr>
+                                        <th>{t("transactions-table.date")}</th>
+                                        <th>{t("transactions-table.name")}</th>
+                                        <th>{t("transactions-table.category")}</th>
+                                        <th>{t("transactions-table.actions")}</th>
+                                        <th className="text-right">{t("transactions-table.amount")}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredTransactions.map((transaction: Transaction, index: number) => (
+                                        <tr key={index}>
+                                            <td>{formatDate(transaction.date)}</td>
+                                            <td>{transaction.vendorName}</td>
+                                            <td>
+                                                <CategoryIcon
+                                                    category={transaction.category}
+                                                    color={categoryColors[transaction.category]}
+                                                />
+                                                {t(transaction.category)}
+                                            </td>
+                                            <td>
+                                                <ModalToggleButton
+                                                    type={"button"}
+                                                    className="usa-button--unstyled"
+                                                    modalRef={modalRef}
+                                                    onClick={() => {
+                                                        setCurrentTransaction(filteredTransactions[index]);
+                                                    }}
                                                 >
-                                                    {formatCurrency(transaction.amount)}
-                                                </td>
-                                                <td>
-                                                    <ModalToggleButton
-                                                        type="button"
-                                                        className="usa-button--unstyled"
-                                                        modalRef={infoRef}
-                                                        onClick={() => {
-                                                            setCurrent(index);
-                                                            setCurrentTransaction(filteredTransactions[index]);
-                                                        }}
-                                                    >
-                                                        <Icon.NavigateNext />
-                                                    </ModalToggleButton>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            )}
-                        </CardBody>
-                    </Card>
-                    <Card gridLayout={{ col: 4 }}>
-                        <CardHeader>{t("transactions.summary")}</CardHeader>
-                        <CardBody>
-                            {t("transactions.spent")}:{" "}
-                            {formatCurrency(
-                                filteredTransactions.reduce(
-                                    (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? -1 : 1),
-                                    0.0
-                                )
-                            )}
-                            <hr />
-                            {t("transactions.amount")}: {filteredTransactions.length}
-                            <hr />
-                            <BarChart
-                                series={[
-                                    {
-                                        data: filteredTransactions.map((transaction) => {
-                                            return (
-                                                Number(transaction.amount) *
-                                                (transaction.category === "Income" ? 1 : -1)
-                                            );
-                                        }),
-                                        valueFormatter: (v) => {
-                                            return formatCurrency(String(v), true);
-                                        }
+                                                    <Icon.Edit />
+                                                </ModalToggleButton>
+                                                <Button
+                                                    type={"button"}
+                                                    onClick={() => handleDelete(transaction.transactionId)}
+                                                    className="usa-button--unstyled"
+                                                >
+                                                    <Icon.Delete />
+                                                </Button>
+                                            </td>
+                                            <td
+                                                className={`text-right ${transaction.category === TransactionCategory.INCOME
+                                                    ? "text-green-500"
+                                                    : "text-red-500"
+                                                    }`}
+                                            >
+                                                {formatCurrency(transaction.amount)}
+                                            </td>
+                                            <td>
+                                                <ModalToggleButton
+                                                    type="button"
+                                                    className="usa-button--unstyled"
+                                                    modalRef={infoRef}
+                                                    onClick={() => {
+                                                        setCurrentTransaction(filteredTransactions[index]);
+                                                    }}
+                                                >
+                                                    <Icon.NavigateNext />
+                                                </ModalToggleButton>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+                    </div>
+                    <div className="p-4 mt-4 m-2 rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-1/3">
+                        <h1>{t("transactions.summary")}</h1>
+                        {t("transactions.total-transactions")}: {filteredTransactions.length}
+                        <hr />
+                        {`${t("transactions.spent")}: `}
+                        <span className={"text-red-500"}>{formatCurrency(filteredTransactions.reduce(
+                            (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? 0 : 1),
+                            0.0
+                        ))}
+                        </span>
+                        <hr />
+                        {`${t("transactions.earned")}: `}
+                        <span className={"text-green-500"}>{formatCurrency(filteredTransactions.reduce(
+                            (sum, cur) => sum + Number(cur.amount) * (cur.category === "Income" ? 1 : 0),
+                            0.0
+                        ))}
+                        </span>
+                        <hr />
+                        {`${t("transactions.sum")}: `}
+                        <span className={spent >= 0.0 ? "text-red-500" : "text-green-500"}>{formatCurrency(Math.abs(spent))}
+                        </span>
+                        <hr />
+                        <BarChart
+                            series={[
+                                {
+                                    data: filteredTransactions.map((transaction) => {
+                                        return (
+                                            Number(transaction.amount)
+                                        );
+                                    }),
+                                    valueFormatter: (v) => {
+                                        return formatCurrency(String(v), true);
                                     }
-                                ]}
-                                xAxis={[
-                                    {
-                                        scaleType: "band",
-                                        data: filteredTransactions.map((_transaction, index) => {
-                                            return index;
-                                        }),
-                                        valueFormatter: (v) => {
-                                            return formatDate(filteredTransactions[v].date);
-                                        }
+                                }
+                            ]}
+                            xAxis={[
+                                {
+                                    scaleType: "band",
+                                    data: filteredTransactions.map((_transaction, index) => {
+                                        return index;
+                                    }),
+                                    valueFormatter: (v) => {
+                                        return formatDate(filteredTransactions[v].date);
+                                    },
+                                    colorMap: {
+                                        type: "ordinal",
+                                        colors: filteredTransactions.map(transaction => (transaction.category === "Income" ? "#81c784" : "#ef5350"))
                                     }
-                                ]}
-                                height={300}
-                                onItemClick={(_event, params) => {
-                                    setCurrent(params.dataIndex);
+                                }
+                            ]}
+                            height={300}
+                            onAxisClick={(_event, params) => {
+                                if (params) {
                                     setCurrentTransaction(filteredTransactions[params.dataIndex]);
+                                    if (!infoRef.current?.modalIsOpen)
+                                        infoRef.current?.toggleModal();
+                                }
+                            }}
+                            onItemClick={(_event, params) => {
+                                setCurrentTransaction(filteredTransactions[params.dataIndex]);
+                                if (!infoRef.current?.modalIsOpen)
                                     infoRef.current?.toggleModal();
-                                }}
-                                yAxis={[
-                                    {
-                                        colorMap: {
-                                            type: "continuous",
-                                            min: transactions.reduce((prev, cur) =>
-                                                prev.amount < cur.amount ? prev : cur
-                                            ).amount,
-                                            max: transactions.reduce((prev, cur) =>
-                                                prev.amount > cur.amount ? prev : cur
-                                            ).amount,
-                                            color: ["#ff9800", "#4caf50"]
-                                        },
-                                        valueFormatter: (val) => formatCurrency(val)
-                                    }
-                                ]}
-                                margin={{ left: 100 }}
-                                grid={{ horizontal: true }}
-                            />
-                        </CardBody>
-                    </Card>
-                </CardGroup>
+                            }}
+                            yAxis={[
+                                {
+                                    valueFormatter: (val) => formatCurrency(val)
+                                }
+                            ]}
+                            margin={{ left: 100 }}
+                            grid={{ horizontal: true }}
+                        />
+                    </div>
+                </div>
             </div>
-            <Modal ref={modalRef} id="note-modal" isLarge>
+            <Modal ref={modalRef} id="note-modal" isLarge aria-labelledby="Edit modal" aria-describedby="Edit modal">
                 <ModalHeading className="text-center mb-4">{t("transactions.edit-transaction")}</ModalHeading>
                 <Form onSubmit={handleSubmit} large>
                     <div className="grid grid-cols-6 gap-5">
@@ -772,7 +725,9 @@ function TransactionHistory() {
             </Modal>
 
             {/* Detailed Info Transaction Modal */}
-            <Modal ref={infoRef} id="transaction-info-modal" isLarge>
+            <Modal ref={infoRef} id="transaction-info-modal" isLarge
+                aria-describedby="info=transaction-form"
+                aria-labelledby="info-transaction-form-title" >
                 <ModalHeading className="text-center mb-6">
                     {t("transactions.transaction-detailed-information")}
                 </ModalHeading>
@@ -783,6 +738,9 @@ function TransactionHistory() {
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
                                     <div>{formatDate(currentTransaction.date)}</div>
                                 </div>
+                                <Button type="button" onClick={() => { infoRef.current?.toggleModal(); modalRef.current?.toggleModal(); }}>
+                                    {t("transactions.edit-transaction")}
+                                </Button>
                             </div>
                         </div>
                         <div className="border-t border-black my-4"></div>

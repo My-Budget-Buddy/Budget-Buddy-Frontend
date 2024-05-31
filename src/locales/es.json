@@ -15,7 +15,8 @@
       "confirm-password": "Confirmar contraseña",
       "to-register": "¿No tienes una cuenta?",
       "to-login": "¿Ya tienes una cuenta?",
-      "username": "Nombre de usuario."
+      "username": "Nombre de usuario.",
+      "logout": "Cerrar sesión"
     },
     "intlDateTime": "{{val, datetime}}",
     "locale": "es-MX",
@@ -183,6 +184,8 @@
       "category": "Categoría",
       "actions": "Acciones",
       "amount": "Cantidad",
+      "sum": "Suma",
+      "total-transactions": "Transacciones totales",
       "view-history": "Ver Historial",
       "vendor-name": "Nombre del Proveedor",
       "description": "Descripción",
@@ -190,10 +193,23 @@
       "account": "Cuenta",
       "history": "Todas las {{val}} transacciones",
       "spent": "Gastado",
+      "earned": "Ganado",
       "summary": "Resumen"
     },
     "tax": {
-      "title": "Impuestos"
+      "title": "Impuestos",
+      "tax-forms": "Formularios de impuesto",
+      "tax-form-archives": "Archivos de formularios de impuestos",
+      "filing-status": "Estado civil",
+      "first-name": "Nombre de pila",
+      "last-name": "Apellido",
+      "year": "Año",
+      "actions": "Acciones",
+      "file-taxes": "Presentar impuestos",
+      "estimate-refund": "Reembolso estimado",
+      "document-checklist": "Lista de documentos",
+      "refund-planning": "Planificación de reembolsos",
+      "view": "Vista"
     },
     "checking": "Cuentas Corrientes",
     "savings": "Ahorros",

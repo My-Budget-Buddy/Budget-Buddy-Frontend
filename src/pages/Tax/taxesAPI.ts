@@ -1,9 +1,10 @@
 import apiClient from "./index";
-import { Transaction } from "../../types/models";
-import { W2State } from "./W2Slice";
-import { taxReturn } from "./TaxReturnSlice";
-import { otherIncome } from "./otherIncomeSlice";
-import createApiClient from "./index";
+
+import { Transaction } from '../../types/models';
+import { W2State } from './W2Slice';
+import { taxReturn } from './TaxReturnSlice';
+import { otherIncome } from './otherIncomeSlice';
+
 interface initReturn {
     year: number;
     userId: number;
@@ -43,20 +44,29 @@ type NewMonthlySummary = {
     totalBudgetAmount: number;
 };
 
-interface W2StateR {
-    state: string;
-    id?: number;
-    taxReturnId: number;
-    year: number;
-    userId: number;
-    employer: string;
-    wages: number;
-    federalIncomeTaxWithheld: number;
-    stateIncomeTaxWithheld: number;
-    socialSecurityTaxWithheld: number;
-    medicareTaxWithheld: number;
-    imageKey: any;
-}
+
+// type Account = {
+//     id: number;
+//     userId: number;
+//     type: string;
+//     currentBalance: number;
+// };
+
+interface W2StateR{
+    "state": string,
+    "id"?: number,
+    "taxReturnId": number,
+    "year": number,
+    "userId": number,
+    "employer": string,
+    "wages": number,
+    "federalIncomeTaxWithheld": number,
+    "stateIncomeTaxWithheld": number,
+    "socialSecurityTaxWithheld": number,
+    "medicareTaxWithheld": number
+    
+};
+
 
 interface RawBucketToSend {
     // bucketId: number;
@@ -95,9 +105,28 @@ interface UserType {
     password: string;
 }
 
+interface deductionsToSend{
+    id?: any,
+    taxReturn?: any,
+    deduction?: any,
+    deductionName?:any,
+    amountSpent?: any,
+    netDeduction?: any
+}
+
+interface deductionsReceieved{
+    dedid?: any,
+    dedtaxReturn?: any,
+    deddeduction?: any,
+    deddeductionName?:any,
+    dedamountSpent?: any,
+    dednetDeduction?: any
+}
+
+
 export const createTaxReturn = (initTaxReturn: initReturn) => {
-    console.log("////////////////////////////////");
-    console.log(initTaxReturn);
+    // console.log("////////////////////////////////");
+    // console.log(initTaxReturn);
     return apiClient.post(`/taxes/taxreturns`, initTaxReturn);
 };
 
@@ -105,9 +134,12 @@ export const getTaxReturnById = (taxReturnId: number) => {
     return apiClient.get(`/taxes/taxreturns/${taxReturnId}`);
 };
 
-export const getTaxReturnByUserId = (jwt: string | null, userId: number) => {
-    console.log("////////////////////////////////");
-    console.log(jwt);
+
+export const getTaxReturnByUserId = () => {
+    
+    // console.log("////////////////////////////////");
+    // console.log(jwt);
+
     return apiClient.get(`/taxes/taxreturns`);
 };
 
@@ -125,12 +157,12 @@ export const getBudgetsMonthyear = (monthyear: string) => {
     return apiClient.get(`/budgets/monthyear/${monthyear}`);
 };
 
-export const getTransactionsThing = (date: string, userid: number) => {
-    return apiClient.get(`/budgets/transactions/${date}/user/${userid}`);
+export const getTransactionsThing = (date: string) => {
+    return apiClient.get(`/budgets/transactions/${date}`);
 };
 
 export const getBudgetsTransactionsMonthyear = (monthyear: string) => {
-    return apiClient.get(`/budgets/transactions/${monthyear}/user/1`);
+    return apiClient.get(`/budgets/transactions/${monthyear}`);
 };
 
 export const getMonthlySummaryAPI = (monthyear: string) => {
@@ -161,11 +193,15 @@ export const updateBudgetAPI = (id: number, budget: RawBudgetToSend) => {
     return apiClient.put(`/budgets/${id}`, budget);
 };
 
-export const getTransactionByUserIdAPI = (userId: number) => {
+export const getTransactionByUserIdAPI = (id : number) => {
+    console.log(id);
     return apiClient.get(`/transactions`);
 };
 
-export const getAccountsByUserIdAPI = (userId: number) => {
+
+export const getAccountsByUserIdAPI = (id : number) => {
+    console.log(id);
+
     return apiClient.get(`/accounts`);
 };
 
@@ -197,7 +233,7 @@ export const deleteAccountAPI = (accountId: number) => {
     return apiClient.delete(`/accounts/${accountId}`);
 };
 
-export const createW2API = (w2payload: Omit<W2State, "w2id">[]) => {
+export const createW2API = (w2payload: Omit<W2State, "w2id">[], id :number | undefined) => {
     const result: W2StateR[] = [];
     for (const payload of w2payload) {
         const mappedPayload: W2StateR = {
@@ -210,13 +246,14 @@ export const createW2API = (w2payload: Omit<W2State, "w2id">[]) => {
             federalIncomeTaxWithheld: payload.w2federalIncomeTaxWithheld,
             stateIncomeTaxWithheld: payload.w2stateIncomeTaxWithheld,
             socialSecurityTaxWithheld: payload.w2socialSecurityTaxWithheld,
-            medicareTaxWithheld: payload.w2medicareTaxWithheld,
-            imageKey: undefined
+            medicareTaxWithheld: payload.w2medicareTaxWithheld
+            
         };
         result.push(mappedPayload);
     }
+    console.log(result);
 
-    return apiClient.post(`/taxes/w2s?taxReturnId=1`, result);
+    return apiClient.post(`/taxes/w2s?taxReturnId=${id}`, result);
 };
 
 export const createTaxReturnAPI = (taxPayload: Omit<taxReturn, "id">) => {
@@ -260,11 +297,12 @@ export const addOtherIncomeAPI = (payload: otherIncome) => {
         netBusinessIncome: payload.oinetBusinessIncome,
         additionalIncome: payload.oiadditionalIncome
     };
+    console.log(actual_payload);
     return apiClient.post(`/taxes/other-income`, actual_payload);
 };
 
-export const getOtherIncomeAPI = () => {
-    return apiClient.get(`/taxes/other-income/1`);
+export const getOtherIncomeAPI = (id :any) => {
+    return apiClient.get(`/taxes/other-income/${id}`);
 };
 
 export const deleteTaxReturn = (id: number | undefined) => {
@@ -282,5 +320,23 @@ export const updateUserInfo = (profile : ProfileType) => {
 export const updateUserPassword = (updatedUserPassword : UserType) => {
     return apiClient.put(`/auth/update/password`, updatedUserPassword)
 }
-;
 
+export const getDeductionsByTaxReturn = (id : any) => {
+    return apiClient.get(`/taxes/taxreturns/${id}/deductions`)
+}
+
+export const SaveDeductionsByTaxReturn = (id : any, payload : deductionsReceieved) => {
+    const payloadToSend  : deductionsToSend = {
+        id : payload.dedid,
+        taxReturn : payload.dedtaxReturn,
+        deduction : payload.deddeduction,
+        deductionName : payload.deddeductionName,
+        amountSpent : payload.dedamountSpent,
+        netDeduction : payload.dednetDeduction
+    }
+    return apiClient.post(`/taxes/taxreturns/${id}/deductions`, payloadToSend)
+}
+
+export const getCurrentRefundAPI = (id : any) => {
+    return apiClient.get(`/taxes/taxreturns/${id}/refund`)
+}

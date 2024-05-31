@@ -1,14 +1,17 @@
-import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer } from "@trussworks/react-uswds";
+import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer, Title } from "@trussworks/react-uswds";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate } from "react-router-dom";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { useDispatch } from "react-redux";
+import { setAuthenticated } from "../../util/redux/authSlice";
 
 const Login: React.FC = () => {
     const { t } = useTranslation();
     const { jwt, loading, setJwt } = useAuthentication();
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,6 +35,7 @@ const Login: React.FC = () => {
             const data = await res.json();
 
             setJwt(data.jwt);
+            dispatch(setAuthenticated(true));
         } else {
             if (res.headers.get("content-type")?.includes("text/plain")) {
                 setError(await res.text());
@@ -62,11 +66,11 @@ const Login: React.FC = () => {
                 <Grid row className="flex-justify-center">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
                         <div className="bg-white padding-y-3 padding-x-5 border border-base-lightest shadow-lg rounded-lg margin-bottom-4">
-                            <h1 className="margin-bottom-0">{t("auth.login")}</h1>
+                            <Title className="margin-bottom-0">{t("auth.login")}</Title>
                             <Form onSubmit={handleSubmit} className="min-w-full">
                                 <Fieldset legend={t("auth.login-desc")} legendStyle="default">
                                     <Label htmlFor="email">{t("auth.email")}</Label>
-                                    <TextInput id="email" name="email" type="text" autoComplete="email" required />
+                                    <TextInput id="email" name="email" type="email" autoComplete="email" required />
 
                                     <Label htmlFor="password">{t("auth.password")}</Label>
                                     <TextInput
