@@ -22,7 +22,7 @@ const WwStep: React.FC = () => {
     const [lastId, setLastId] = useState<number>(0);
 
     useEffect(() => {
-        findW2sByTaxReturnIdAPI()
+        findW2sByTaxReturnIdAPI(returnId)
             .then((res) => {
                 const result: W2State[] = [];
                 for (const payload of res.data) {
@@ -126,7 +126,7 @@ const WwStep: React.FC = () => {
                                     <td>{item.w2employer}</td>
                                     <td>
                                         <Button type="button" onClick={() => handleEditClick(item)}>Edit</Button>
-                                        <Button type="button" onClick={() => handleDeleteClick(item.w2id)}>Delete</Button>
+                                        <Button type="button" secondary onClick={() => handleDeleteClick(item.w2id)}>Delete</Button>
                                     </td>
                                 </tr>
                             ))}

@@ -260,12 +260,12 @@ export const createTaxReturnAPI = (taxPayload: Omit<taxReturn, "id">) => {
     return apiClient.put(`/taxes/taxreturns`, taxPayload);
 };
 
-export const findW2sByTaxReturnIdAPI = () => {
-    return apiClient.get(`/taxes/w2s?taxReturnId=1`);
+export const findW2sByTaxReturnIdAPI = (id : any) => {
+    return apiClient.get(`/taxes/w2s?taxReturnId=${id}`);
 };
 
-export const findAllDeductionsByTaxReturnAPI = () => {
-    return apiClient.get(`/taxes/taxreturns/1/deductions`);
+export const findAllDeductionsByTaxReturnAPI = (id : any) => {
+    return apiClient.get(`/taxes/taxreturns/${id}/deductions`);
 };
 
 export const getBucketsAPI = () => {
