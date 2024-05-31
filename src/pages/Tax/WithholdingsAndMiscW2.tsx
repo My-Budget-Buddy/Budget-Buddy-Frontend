@@ -121,15 +121,17 @@ const WithholdingsAndMiscW2: React.FC = () => {
                             <td>{item.dedamountSpent}</td>
                             <td>
                                 <Button type="button" onClick={() => handleEditClick(item)}>Edit</Button>
-                                <Button type="button" onClick={() => handleDeleteClick(item.dedid)}>Delete</Button>
+                                <Button type="button" secondary onClick={() => handleDeleteClick(item.dedid)}>Delete</Button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
         </div>
-        <Button type="button" onClick={handleAddClick}>Add</Button>
-        <Button type="button" onClick={handleSubmit}>Submit</Button>
+        <div className="m-5">
+            <Button type="button" onClick={handleAddClick}>Add</Button>
+            <Button type="button" onClick={handleSubmit}>Submit</Button>
+        </div>
         {editingItem && (
 
             <div>
@@ -178,8 +180,9 @@ const WithholdingsAndMiscW2: React.FC = () => {
                 </FormGroup>
 
 
-
-                <Button type="button" onClick={() => handleSaveClick(deductionsState)}>Save</Button>
+                <div className="m-5">
+                    <Button type="button" onClick={() => handleSaveClick(deductionsState)}>Save</Button>
+                </div>
 
             </div>
 

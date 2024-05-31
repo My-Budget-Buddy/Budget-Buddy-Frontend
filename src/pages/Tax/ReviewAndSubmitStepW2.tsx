@@ -23,7 +23,7 @@ const ReviewAndSubmitStepW2: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        findW2sByTaxReturnIdAPI()
+        findW2sByTaxReturnIdAPI(returnId)
             .then((res) => {
                 const result: W2State[] = res.data.map((payload: any) => ({
                     w2id: payload.id,
@@ -41,7 +41,7 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                 }));
                 setW2s(result);
             });
-        findAllDeductionsByTaxReturnAPI()
+        findAllDeductionsByTaxReturnAPI(returnId)
             .then((res) => {
                 const dedResult: deductions[] = res.data.map((payload: any) => ({
                     dedid: payload.id,
@@ -150,6 +150,10 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                                         </CardHeader>
                                         <CardBody>
                                             <p>Long Term Capital Gains: {otherIncome.oilongTermCapitalGains}</p>
+                                            <p>Short Term Capital Gains: {otherIncome.oishortTermCapitalGains}</p>
+                                            <p>Other Invested Income: {otherIncome.oiotherInvestmentIncome}</p>
+                                            <p>Net Business Income: {otherIncome.oinetBusinessIncome}</p>
+                                            <p>Additional Income: {otherIncome.oiadditionalIncome}</p>
                                         </CardBody>
                                     </Card>
                                 </Grid>
