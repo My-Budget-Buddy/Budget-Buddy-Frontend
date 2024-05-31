@@ -434,8 +434,8 @@ const Dashboard: React.FC = () => {
                                 className="grid-row flex-justify border-b border-black p-3 w-full"
                             >
                                 <p>{budget.category}</p>
-                                <p>
-                                    <span className={`${budget.spentAmount > budget.totalAmount ? "text-[#b50909] font-bold" : (budget.spentAmount > budget.totalAmount / 2 ? "text-[#e5a000]" : "text-[#00a91c]")}`}>{formatCurrency(budget.spentAmount)}</span> <span className={`${budget.spentAmount >= budget.totalAmount && "text-[#b50909] font-bold"}`}>/ {formatCurrency(budget.totalAmount)}</span>
+                                <p> 
+                                    <span className={`${budget.spentAmount > budget.totalAmount ? "text-[#b50909] font-bold" : (budget.spentAmount > budget.totalAmount / 2 ? "text-[#e5a000]" : "text-[#00a91c]")}`}>{formatCurrency(budget.spentAmount)}</span> <span className={`${budget.spentAmount >= budget.totalAmount && budget.totalAmount && "text-[#b50909] font-bold"}`}>/ {formatCurrency(budget.totalAmount)}</span>
                                 </p>
                             </div>
                         ))}
