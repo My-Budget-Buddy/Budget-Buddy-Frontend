@@ -445,7 +445,7 @@ const SpendingMonth: React.FC = () => {
                                                 cy: "50%",
                                                 arcLabel: (item) => `${item.label}`,
 
-                                                arcLabelMinAngle: 15,
+                                                arcLabelMinAngle: 35,
 
                                                 valueFormatter: (v) => {
                                                     return `$ ${v.value} `;
