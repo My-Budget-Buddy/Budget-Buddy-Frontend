@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logoImg from "../assets/vecteezy_vector-finance-logo-template-accounting-logo-concept_24266232_72/logo-img.jpg";
+import footerLogo from "../images/footerLogo.png";
 
 const Footer: React.FC = () => {
     return (
@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
                 <div className="grid-container bg-transparent">
                     <div className="usa-footer__logo grid-row grid-gap-2">
                         <div className="grid-col-auto">
-                            <img className="usa-footer__logo-img" src={logoImg} alt="BudgetBuddy Logo" />
+                            <img className="usa-footer__logo-img" src={footerLogo} alt="BudgetBuddy Logo" />
                         </div>
                         <div className="grid-col-auto">
                             <p className="usa-footer__logo-heading">BudgetBuddy</p>
