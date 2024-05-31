@@ -137,6 +137,8 @@ const Transactions: React.FC = () => {
             alert(errors.join("\n"));
             return;
         }
+        if (!accounts.map((cur) => cur.id === newTransaction.accountId).find((cur) => cur == true))
+            newTransaction.accountId = accounts[0]?.id;
         try {
             const createdTransaction = await createTransaction(newTransaction);
             setTransactions([...transactions, createdTransaction]);

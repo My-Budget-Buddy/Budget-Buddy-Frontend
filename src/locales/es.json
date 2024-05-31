@@ -191,7 +191,7 @@
       "description": "Descripción",
       "submit": "Enviar",
       "account": "Cuenta",
-      "history": "Todas las {{val}} transacciones",
+      "history": "Todas las <1>{{val}}</1> Transacciones",
       "spent": "Gastado",
       "earned": "Ganado",
       "summary": "Resumen"
