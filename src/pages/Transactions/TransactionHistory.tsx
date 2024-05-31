@@ -30,6 +30,7 @@ import {
 import { formatCurrency, formatDate } from "../../util/helpers";
 import { BarChart } from "@mui/x-charts";
 import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";
+import { getAccountByID } from "../Tax/taxesAPI";
 
 // type TransactionTarget = EventTarget & {
 //     vendorName: HTMLInputElement;
@@ -81,7 +82,7 @@ function TransactionHistory() {
 
     const [newTransaction, setNewTransaction] = useState<Omit<Transaction, "transactionId">>({
         userId: 1,
-        accountId: 1,
+        accountId: -1,
         vendorName: Name,
         amount: 0,
         category: TransactionCategory.GROCERIES,
@@ -138,6 +139,9 @@ function TransactionHistory() {
     const handleCreateTransaction = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const errors = validateTransaction(newTransaction);
+        console.log(newTransaction);
+        if (!accounts.map((cur) => cur.id === newTransaction.accountId).find((cur) => cur == true))
+            newTransaction.accountId = accounts[0]?.id;
         if (errors.length > 0) {
             alert(errors.join("\n"));
             return;
@@ -617,7 +621,6 @@ function TransactionHistory() {
                                 <Select
                                     id={"transaction-account"}
                                     name={"accountId"}
-                                    value={currentTransaction.accountId}
                                     onChange={handleSelectChange}
                                     className="col-span-8"
                                 >
