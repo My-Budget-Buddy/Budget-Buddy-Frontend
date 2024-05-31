@@ -469,7 +469,7 @@ const Spending: React.FC = () => {
                                                 cx: "50%",
                                                 cy: "50%",
                                                 arcLabel: (item) => `${item.label}`,
-                                                arcLabelMinAngle: 40,
+                                                arcLabelMinAngle: 35,
                                                 valueFormatter: (v) => `$ ${v.value.toLocaleString()}`
                                             }
                                         ]}
