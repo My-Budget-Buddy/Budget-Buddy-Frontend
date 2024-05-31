@@ -28,7 +28,7 @@ const CreditScoreModal: React.FC<CreditScoreModalProps> = ({ totalDebt }) => {
     const creditScore = useMemo(() => {
         if (!jwt) return 0;
 
-        const initialScore = 571;
+        const initialScore = 471;
         let score = 300;
         if (totalDebt > 50000) {
             score -= (totalDebt - 50000) / 1000;
