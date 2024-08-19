@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { setAuthenticated } from "../util/redux/authSlice";
 import Cookies from "js-cookie";
+import ProtoOverlay from "../overlay/proto_overlay";
 
 const Root: React.FC = () => {
     //Check if authenticated
@@ -27,6 +28,7 @@ const Root: React.FC = () => {
 
     return (
         <>
+            <ProtoOverlay />
             <Outlet />
         </>
     );
