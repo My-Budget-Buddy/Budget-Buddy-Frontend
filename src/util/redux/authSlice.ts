@@ -14,6 +14,10 @@ export const authSlice = createSlice({
     reducers: {
         setAuthenticated: (state, action: PayloadAction<boolean>) => {
             state.isAuthenticated = action.payload;
+
+            if (import.meta.env.DEV) {
+                state.isAuthenticated = true;
+            }
         }
     }
 });
