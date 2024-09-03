@@ -66,7 +66,9 @@ export function webGLMain(canvas) {
         uniformLocations: {
             projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
             modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
-            viewportSize: gl.getUniformLocation(shaderProgram, "uViewportSize")
+            viewportSize: gl.getUniformLocation(shaderProgram, "uViewportSize"),
+            mousePos: gl.getUniformLocation(shaderProgram, "uMousePos"),
+            range: gl.getUniformLocation(shaderProgram, "uRange")
         }
     };
 
