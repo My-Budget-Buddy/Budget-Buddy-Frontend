@@ -30,20 +30,24 @@ export function webGLMain(canvas) {
         uniform mat4 uProjectionMatrix;
 
         varying lowp vec4 vColor;
-
         void main(void) {
-        gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-        vColor = aVertexColor;
+            gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+            vColor = aVertexColor;
         }
     `;
 
     // Fragment shader program
 
     const fsSource = `
+        precision mediump float; // Set default precision for floats
+
         varying lowp vec4 vColor;
 
+        uniform vec2 uViewportSize; // Viewport size uniform
+
         void main(void) {
-        gl_FragColor = vColor;
+            vec2 fragCoordNormalized = gl_FragCoord.xy / uViewportSize; // Normalize coordinates
+            gl_FragColor = vec4(fragCoordNormalized, 0.0, 1.0); // Example: color based on normalized coordinates
         }
     `;
 
@@ -61,7 +65,8 @@ export function webGLMain(canvas) {
         },
         uniformLocations: {
             projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-            modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix")
+            modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+            viewportSize: gl.getUniformLocation(shaderProgram, "uViewportSize")
         }
     };
 
@@ -69,22 +74,25 @@ export function webGLMain(canvas) {
     // objects we'll be drawing.
     const buffers = initBuffers(gl);
     // Draw the scene
-    // drawScene(gl, programInfo, buffers);
+    drawScene(gl, programInfo, buffers, squareRotation, canvas);
 
-    let then = 0;
+    // console.log(canvas.width);
+
+    // let then = 0;
 
     // Draw the scene repeatedly
-    function render(now) {
-        now *= 0.001; // convert to seconds
-        deltaTime = now - then;
-        then = now;
+    // This is essentially the control layer
+    // function render(now) {
+    //     now *= 0.001; // convert to seconds
+    //     deltaTime = now - then;
+    //     then = now;
 
-        drawScene(gl, programInfo, buffers, squareRotation);
-        squareRotation += deltaTime;
+    //     drawScene(gl, programInfo, buffers, squareRotation);
+    //     squareRotation += deltaTime;
 
-        requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
+    //     requestAnimationFrame(render);
+    // }
+    // requestAnimationFrame(render);
 }
 
 //
