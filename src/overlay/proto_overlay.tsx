@@ -1,4 +1,7 @@
-// src/components/CanvasOverlay.tsx
+// src/components/CanvasOverlay.tsx]
+
+// TODO- Abstract this component out. Multiple canvases will exist for each effect- one for highlighting, one for the radial blocking, etc. 
+
 import React, { useRef, useEffect, useState } from 'react';
 import { webGLMain } from './webgl';
 import { getRef } from "./refStore";
