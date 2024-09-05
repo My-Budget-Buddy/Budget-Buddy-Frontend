@@ -1,11 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { setAuthenticated } from "../util/redux/authSlice";
 import Cookies from "js-cookie";
 import ProtoOverlay from "../overlay/proto_overlay";
+import { setRef } from "../overlay/refStore";
 
 const Root: React.FC = () => {
+
+    const componentRef = useRef<HTMLDivElement>(this);
+
+    useEffect(() => {
+        if (componentRef.current) {
+            const rect = componentRef.current.getBoundingClientRect();
+            // Convert rect.left, rect.top, rect.width, rect.height to WebGL coordinates
+            console.log(rect)
+            setRef('RootComponent', componentRef);
+        }
+        console.log(componentRef)
+    }, []);
+
+
     //Check if authenticated
     const token = Cookies.get("jwt");
     const dispatch = useDispatch();
@@ -27,10 +42,10 @@ const Root: React.FC = () => {
     }, []);
 
     return (
-        <>
+        <div ref={componentRef}>
             <ProtoOverlay />
             <Outlet />
-        </>
+        </div>
     );
 };
 

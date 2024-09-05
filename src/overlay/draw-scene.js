@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
 
-function drawScene(gl, programInfo, buffers, squareRotation, _canvas) {
+function drawScene(gl, programInfo, buffers, squareRotation, _canvas, todoVars) {
     gl.clearColor(0.0, 0.0, 0.0, 0.0); // Clear to black, fully opaque
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -58,7 +58,11 @@ function drawScene(gl, programInfo, buffers, squareRotation, _canvas) {
     gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
     gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix);
     // gl.uniform2f(programInfo.uniformLocations.uViewportSizeLocation, _canvas.width, _canvas.height);
+    // const ref = getRef("RootComponent");
+    // console.log(ref.top);
     gl.uniform2f(programInfo.uniformLocations.viewportSize, _canvas.width, _canvas.height);
+    gl.uniform2f(programInfo.uniformLocations.mouseCoords, todoVars.mouseCoords.x, todoVars.mouseCoords.y);
+    gl.uniform1f(programInfo.uniformLocations.lightness, 0.2);
 
     {
         const offset = 0;

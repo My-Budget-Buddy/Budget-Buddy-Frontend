@@ -4,11 +4,12 @@ import { drawScene } from "./draw-scene.js";
 let squareRotation = 0.0;
 let deltaTime = 0;
 
-export function webGLMain(canvas) {
+export function webGLMain(canvas, todoVars) {
     // const canvas = document.querySelector("#glcanvas");
     // Initialize the GL context
     const gl = canvas.getContext("webgl");
-
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     // Only continue if WebGL is available and working
     if (gl === null) {
         alert("Unable to initialize WebGL. Your browser or machine may not support it.");
@@ -44,10 +45,12 @@ export function webGLMain(canvas) {
         varying lowp vec4 vColor;
 
         uniform vec2 uViewportSize; // Viewport size uniform
+        uniform vec2 uMouseCoords; 
+        uniform float uLightness; 
 
         void main(void) {
-            vec2 fragCoordNormalized = gl_FragCoord.xy / uViewportSize; // Normalize coordinates
-            gl_FragColor = vec4(fragCoordNormalized, 0.0, 1.0); // Example: color based on normalized coordinates
+            vec2 fragCoordNormalized = (gl_FragCoord.xy + uMouseCoords) / uViewportSize; // Normalize coordinates
+            gl_FragColor = vec4(fragCoordNormalized, 0.0, 0.1); // Example: color based on normalized coordinates
         }
     `;
 
@@ -67,7 +70,8 @@ export function webGLMain(canvas) {
             projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
             modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
             viewportSize: gl.getUniformLocation(shaderProgram, "uViewportSize"),
-            mousePos: gl.getUniformLocation(shaderProgram, "uMousePos"),
+            lightness: gl.getUniformLocation(shaderProgram, "uLightness"),
+            mouseCoords: gl.getUniformLocation(shaderProgram, "uMouseCoords"),
             range: gl.getUniformLocation(shaderProgram, "uRange")
         }
     };
@@ -76,7 +80,7 @@ export function webGLMain(canvas) {
     // objects we'll be drawing.
     const buffers = initBuffers(gl);
     // Draw the scene
-    drawScene(gl, programInfo, buffers, squareRotation, canvas);
+    drawScene(gl, programInfo, buffers, squareRotation, canvas, todoVars);
 
     // console.log(canvas.width);
 
@@ -95,6 +99,8 @@ export function webGLMain(canvas) {
     //     requestAnimationFrame(render);
     // }
     // requestAnimationFrame(render);
+
+    // console.log(todoVars.mouseCoords.x, todoVars.mouseCoords.y);
 }
 
 //
