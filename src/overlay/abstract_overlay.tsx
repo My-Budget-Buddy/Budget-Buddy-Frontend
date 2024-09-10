@@ -1,62 +1,72 @@
-import React, { useRef, useEffect, useState, RefObject } from 'react';
-import { webGLMain } from './webgl';
-import { getRef } from "./refStore";
+// src/components/CanvasOverlay.tsx
 
-interface CanvasOverlayProps {
-    wraps: RefObject<HTMLElement>; // the component to overlay
-    effectType: string; // determine which WebGL effect to apply
-}
+import React, { useRef, useEffect } from 'react';
+import fxManager from './fxManager'; // Import the FxManager instance
+import ConcreteCanvasOverlay from './concrete_overlay';
 
-const CanvasOverlay: React.FC<CanvasOverlayProps> = ({ wraps, effectType }) => {
+type CanvasOverlayProps = {
+    refName?: string; // Optional ref name for component-specific overlays
+    effectType: string; // Placeholder for effect type, can be used for different WebGL effects
+};
+
+const CanvasOverlay: React.FC<CanvasOverlayProps> = ({ refName, effectType }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
-
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        const targetElement = wraps.current;
-        if (!canvas || !targetElement) return;
-
-        const updateCanvasSize = () => {
-            const rect = targetElement.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-            canvas.style.top = `${rect.top}px`;
-            canvas.style.left = `${rect.left}px`;
-        };
-
-        updateCanvasSize();
-        window.addEventListener('resize', updateCanvasSize);
-
-        const handleMouseMove = (event: MouseEvent) => {
-            setMouseCoords({ x: event.clientX, y: event.clientY });
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
-
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('resize', updateCanvasSize);
-        };
-    }, [wraps]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const ref = getRef("RootComponent");
+        // Register the canvas with FxManager
+        if (refName) {
+            // Component-specific canvas
+            const componentElement = document.querySelector(`[data-refname="${refName}"]`) as HTMLElement;
+            if (componentElement) {
+                fxManager.registerComponentCanvas(refName, componentElement);
+            }
+        } else {
+            // Global canvas overlay
+            fxManager.registerGlobalCanvas();
+        }
 
-        webGLMain(canvas, { ref, mouseCoords, effectType });
-    }, [mouseCoords, effectType]); // Re-run when mouseCoords or effectType updates
+        // Cleanup on component unmount
+        return () => {
+            fxManager.cleanup();
+        };
+    }, [refName, effectType]);
 
+    switch (effectType) {
+        case "highlighting":
+            console.log("ASdf")
+            break;
+        case "radialBlocking":
+            // Code for radial blocking effect
+            break;
+        case "shadowEffect":
+            // Code for shadow effect
+            break;
+        default:
+            // Code for any other cases or a fallback
+            break;
+    }
+
+    // Render the canvas, using ref to attach it to the DOM
     return (
-        <canvas
-            ref={canvasRef}
-            style={{
-                position: 'absolute',
-                zIndex: 2,
-                pointerEvents: 'none', // Allow interactions with underlying elements
-            }}
-        />
+        // <canvas
+        //     ref={canvasRef}
+        //     style={{
+        //         position: refName ? 'absolute' : 'fixed', // Adjust positioning based on type
+        //         top: 0,
+        //         left: 0,
+        //         width: '100%',
+        //         height: '100%',
+        //         zIndex: 9999, // Ensure the canvas overlays appropriately
+        //         pointerEvents: 'none', // Prevent blocking of user interactions
+        //     }}
+        // />
+
+        <ConcreteCanvasOverlay ref={canvasRef} wraps={canvasRef} effectType={"highlighting"}>
+
+        </ConcreteCanvasOverlay>
     );
 };
 

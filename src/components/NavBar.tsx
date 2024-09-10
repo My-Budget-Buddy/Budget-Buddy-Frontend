@@ -11,6 +11,7 @@ import { useAuthentication } from "../contexts/AuthenticationContext";
 import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading } from "@trussworks/react-uswds";
 import useStoreRef from "../overlay/useStoreRef";
 import CanvasOverlay from "../overlay/abstract_overlay";
+import ConcreteCanvasOverlay from "../overlay/concrete_overlay";
 
 const NavBar = () => {
 
@@ -134,7 +135,7 @@ const NavBar = () => {
                 </div>
             )}
 
-            <CanvasOverlay effectType="highlighting" wraps={componentRef} />
+            <ConcreteCanvasOverlay name="navBar" effectType="highlighting" wraps={componentRef} />
 
         </div>
     );

@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { setAuthenticated } from "../util/redux/authSlice";
 import Cookies from "js-cookie";
-import ProtoOverlay from "../overlay/proto_overlay";
 import { setRef } from "../overlay/refStore";
-import CanvasOverlay from "../overlay/abstract_overlay";
+import fxManager from "../overlay/fxManager";
+import ConcreteCanvasOverlay from "../overlay/concrete_overlay";
 
 const Root: React.FC = () => {
 
@@ -42,9 +42,15 @@ const Root: React.FC = () => {
             });
     }, []);
 
+    const f = fxManager.getCanvases()
+    console.log("fxManager: ", f)
+
     return (
         <div ref={componentRef}>
             <Outlet />
+            {/* <CanvasOverlay effectType="highlighting" /> */}
+            <ConcreteCanvasOverlay name="GLOBAL" effectType="GLOBAL" wraps={componentRef} />
+
         </div>
     );
 };
