@@ -42,7 +42,7 @@ export function webGLMain(canvas, todoVars) {
 
         void main(void) {
             vec2 fragCoordNormalized = (gl_FragCoord.xy + uMouseCoords) / uViewportSize; // Normalize coordinates
-            gl_FragColor = vec4(fragCoordNormalized, 0.0, 0.1); // Example: color based on normalized coordinates
+            gl_FragColor = vec4(fragCoordNormalized, 1.0, 0.6); // Example: color based on normalized coordinates
         }
     `;
 
