@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import fxDirector from './fxDirector';
+import { eventEmitter } from './event_emitter';
 
 // Define props and exposed methods interface
 type TextBoxOverlayProps = {
@@ -15,7 +16,7 @@ export interface TextBoxOverlayHandle {
 
 // Define the TextBoxOverlay component with forwardRef
 const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
-    ({ position, text, onClose }, ref) => {
+    ({ position, text }, ref) => {
         const [internalPosition, setInternalPosition] = useState(position);
         const [internalText, setInternalText] = useState(text);
         const componentRef = useRef<HTMLDivElement>(null);
@@ -38,6 +39,15 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
                 setInternalText(newText);
             }
         }), []); // Empty dependency array ensures ref is updated once
+
+        const onClick = () => {
+            eventEmitter.emit('nextStep');
+        }
+
+        const onClose = () => {
+            eventEmitter.emit('close');
+            console.log("close")
+        }
 
         return (
             <div
@@ -68,6 +78,20 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
                         }}
                     >
                         X
+                    </button>
+                )}
+                {onClick && (
+                    <button
+                        onClick={onClick}
+                        style={{
+                            marginLeft: '5px',
+                            background: 'green',
+                            color: 'black',
+                            borderRadius: '4px',
+                            // cursor: 'pointer',
+                        }}
+                    >
+                        O
                     </button>
                 )}
             </div>

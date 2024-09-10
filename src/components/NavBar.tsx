@@ -135,7 +135,7 @@ const NavBar = () => {
                 </div>
             )}
 
-            <ConcreteCanvasOverlay name="navBar" effectType="highlighting" wraps={componentRef} />
+            {/* <ConcreteCanvasOverlay name="navBar" effectType="highlighting" wraps={componentRef} /> */}
 
         </div>
     );

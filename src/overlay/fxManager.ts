@@ -1,3 +1,5 @@
+import { getRef } from "./refStore";
+
 type CanvasInfo = {
     canvas: HTMLCanvasElement;
     type: "global" | "component";
@@ -11,13 +13,8 @@ class fxManager {
         // pass
     }
 
-    private createCanvas(id: string): HTMLCanvasElement {
-        const canvas = document.createElement("canvas");
-        canvas.id = id;
-        canvas.style.position = "absolute";
-        canvas.style.pointerEvents = "none"; // Prevent blocking interactions
-        document.body.appendChild(canvas);
-        return canvas;
+    getComponent(name: string) {
+        return getRef(name);
     }
 
     registerGlobalCanvas(canvas: HTMLCanvasElement) {

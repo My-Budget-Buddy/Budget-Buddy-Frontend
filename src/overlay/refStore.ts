@@ -16,6 +16,10 @@ export const getRef = (key: string): React.RefObject<HTMLElement> | undefined =>
     return refStore[key];
 };
 
+export const getAllRefs = () => {
+    return refStore;
+};
+
 // Optional: Function to clear a ref (not strictly necessary but useful)
 export const clearRef = (key: string) => {
     delete refStore[key];

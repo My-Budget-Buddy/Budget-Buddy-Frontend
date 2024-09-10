@@ -14,15 +14,20 @@ import {
     TextInput,
     Textarea
 } from "@trussworks/react-uswds";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
 import { createBudget } from "../requests/budgetRequests";
 import { TransactionCategory } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
+import useStoreRef from "../../../../overlay/useStoreRef";
 
 const NewCategoryModal: React.FC = () => {
+
+    const componentRef = useStoreRef('AddNewBudgetButton');
+
+
     const budgetsStore = useAppSelector((store) => store.budgets);
     const { t } = useTranslation();
 
@@ -90,7 +95,7 @@ const NewCategoryModal: React.FC = () => {
             //TODO Display success
         } catch {
             console.error("ERROR!");
-            //TODO display errror
+            //TODO display errror 
         }
 
         console.log("BUDGET SENT: ", budget);
@@ -119,7 +124,7 @@ const NewCategoryModal: React.FC = () => {
     };
 
     return (
-        <>
+        <div ref={componentRef}>
             <ModalToggleButton modalRef={modalRef} opener className="mx-2" onClick={handleModalOpen}>
                 {t("budgets.add-new-budget")}
             </ModalToggleButton>
@@ -207,7 +212,7 @@ const NewCategoryModal: React.FC = () => {
                     </ButtonGroup>
                 </ModalFooter>
             </Modal>
-        </>
+        </div>
     );
 };
 
