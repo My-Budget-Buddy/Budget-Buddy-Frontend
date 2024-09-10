@@ -11,7 +11,7 @@ const Root: React.FC = () => {
 
     //This is a very hacky solution to doing a network validation
     useEffect(() => {
-        fetch("https://api.skillstorm-congo.com/auth/validate", {
+        fetch("http://localhost:8125/auth/validate", {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then((response) => {

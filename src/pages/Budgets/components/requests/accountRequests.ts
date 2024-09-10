@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-const url = "https://api.skillstorm-congo.com";
+const url = "http://localhost:8125";
 
 type Account = {
     id: number;

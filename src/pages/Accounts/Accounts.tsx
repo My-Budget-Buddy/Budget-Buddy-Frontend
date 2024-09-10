@@ -4,12 +4,12 @@ import AccountModal from "./AccountModal";
 import CreditScoreModal from "./CreditScoreModal";
 
 import { useTranslation } from "react-i18next";
+import { PieChart } from "@mui/x-charts/PieChart";
 import { formatCurrency } from "../../util/helpers";
 import { useEffect, useMemo, useState } from "react";
-import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
-import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 import { deleteAccountAPI } from "../Tax/taxesAPI";
 
@@ -34,7 +34,7 @@ const Accounts: React.FC = () => {
     useEffect(() => {
         if (!jwt) return; // to prevent an unnecessary 401
 
-        fetch("https://api.skillstorm-congo.com/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
+        fetch("http://localhost:8125/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (res.ok) {
                     return res.json().then((data: Account[]) => {
@@ -79,7 +79,7 @@ const Accounts: React.FC = () => {
                 )}
             </GridContainer>
 
-            {/* Net Cash Section */}
+            {/* Balances Section */}
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
                 <div className="flex items-center space-x-2">
                     <Title>{t("accounts.net-cash")}</Title>
@@ -88,7 +88,7 @@ const Accounts: React.FC = () => {
                         onMouseLeave={() => setShowTooltip(false)}
                         className="relative"
                     >
-                        <Icon.Help className="mt-4"/>
+                        <Icon.Help className="mt-4" />
                         {/* Render tooltip conditionally */}
                         {showTooltip && (
                             <div className="absolute left-8 top-4 bg-gray-200 p-2 rounded shadow-md w-40">
@@ -99,69 +99,33 @@ const Accounts: React.FC = () => {
                 </div>
 
                 <div className="flex justify-center pt-6">
-                    {netCash >= 0 ? (
-                        <Gauge
-                            width={500}
-                            height={200}
-                            value={netCash}
-                            valueMin={0}
-                            valueMax={totalBalance} // max is the total of your assets
-                            startAngle={-60}
-                            endAngle={60}
-                            sx={{
-                                [`& .${gaugeClasses.valueText}`]: {
-                                    fontSize: "40px", // Adjust the font size // Change the color to blue
-                                    fontWeight: "bold", // Make the text bold
-                                    transform: "translate(0px, -50px)" // Adjust position if needed
-                                },
-                                [`& .${gaugeClasses.valueArc}`]: {
-                                    fill: "#52b202" // green for gain
-                                }
-                            }}
-                            text={({ value }) => `${formatCurrency(value!)}`}
-                        />
-                    ) : (
-                        <Gauge
-                            width={500}
-                            height={200}
-                            value={-netCash}
-                            valueMin={0}
-                            valueMax={totalBalance} // max is the total of your assets
-                            startAngle={60}
-                            endAngle={-60}
-                            sx={{
-                                [`& .${gaugeClasses.valueText}`]: {
-                                    fontSize: "40px", // Adjust the font size // Change the color to blue
-                                    fontWeight: "bold", // Make the text bold
-                                    transform: "translate(0px, -50px)" // Adjust position if needed
-                                },
-                                [`& .${gaugeClasses.valueArc}`]: {
-                                    fill: "#b20202" // red for loss
-                                }
-                            }}
-                            text={({ value }) => `${formatCurrency(value!)}`}
-                        />
-                    )}
+                    <PieChart height={200} width={500} series={[
+                        {
+                            innerRadius: 60,
+                            paddingAngle: 1,
+                            cornerRadius: 3,
+                            data: [
+                                { id: 0, value: (totalBalance > 0 ? totalBalance : 3000), label: "Cash", color: "green" },
+                                { id: 1, value: (debts > 0 ? debts : 10000), label: "Debts", color: "red" }
+                            ]
+                        }
+                    ]} />
                 </div>
 
                 <div className="flex justify-center">
-                    <table className="w-50  divide-gray-200">
+                    <table className="w-50">
                         <thead>
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider border-r border-gray-600">
-                                    {t("accounts.total-assets")}
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider border-gray-600">
-                                    {t("accounts.total-debts")}
+                                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">
+                                    {t("accounts.net-cash")}
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white">
                             <tr>
-                                <td className="px-6 py-4 whitespace-nowrap border-r border-gray-600">
-                                    {formatCurrency(totalBalance, true)}
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {formatCurrency(netCash, true)}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap border-gray-600">{formatCurrency(debts)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -251,9 +215,9 @@ const Accounts: React.FC = () => {
                             title: (
                                 <div className="flex space-x-2">
                                     <SavingsOutlinedIcon
-                                                            fontSize="small"
-                                                            className="mr-2"
-                                                        /> <p>{t("accounts.savings")}</p>
+                                        fontSize="small"
+                                        className="mr-2"
+                                    /> <p>{t("accounts.savings")}</p>
                                 </div>
                             ),
                             content: (
