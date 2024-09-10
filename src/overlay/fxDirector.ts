@@ -1,4 +1,5 @@
 import { eventEmitter } from "./event_emitter";
+import fxManager from "./fxManager";
 import { getAllRefs, getRef } from "./refStore";
 
 class fxDirector {
@@ -9,9 +10,8 @@ class fxDirector {
     }
 
     async startTutorial() {
-        console.log("Tutorial!");
-        console.log("tt: ", this.toolTip);
-        // this.toolTip.position = { top: 1000, left: 1000 };
+        console.log("fxManager component: ", fxManager.getAllCanvases());
+
         const pos = { top: 100, left: 1000 };
         this.updateOverlayPosition(pos);
 
@@ -19,8 +19,8 @@ class fxDirector {
 
         // console.log("Ref: ", getRef("AddNewBudgetButton"));
         const f = getRef("AddNewBudgetButton");
-        let rect = f?.current?.getBoundingClientRect();
-        console.log(rect);
+        const rect = f?.current?.getBoundingClientRect();
+        // console.log(rect);
 
         const newPos = { top: rect?.top as number, left: rect?.left as number };
         this.updateOverlayPosition(newPos);
@@ -29,7 +29,7 @@ class fxDirector {
 
     registerAvatarTooltip(_toolTip) {
         this.toolTip = _toolTip;
-        console.log("Tooltip registered: ", _toolTip);
+        // console.log("Tooltip registered: ", _toolTip);
     }
 
     updateOverlayPosition(position: { top: number; left: number }) {

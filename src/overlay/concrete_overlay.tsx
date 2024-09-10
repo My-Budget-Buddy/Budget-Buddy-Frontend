@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, RefObject } from 'react';
+import React, { useRef, useEffect, useState, RefObject, useImperativeHandle } from 'react';
 import { webGLMain } from './webgl';
 import { getRef } from "./refStore";
 import fxManager from './fxManager';
@@ -9,52 +9,42 @@ interface CanvasOverlayProps {
     effectType: string; // determine which WebGL effect to apply
 }
 
-const ConcreteCanvasOverlay: React.FC<CanvasOverlayProps> = ({ name, wraps, effectType }) => {
+const ConcreteCanvasOverlay: React.FC<CanvasOverlayProps> = (
+    { name, wraps, effectType }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
+    // const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
+    const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
-        const canvas = canvasRef.current;
-        const targetElement = wraps.current;
-        if (!canvas || !targetElement) return;
+        // IMPORTANT! Component must register itself with the fxManager
+        // in order to be controlled.
+        // console.log("\n\n\n canvasRef: ", canvasRef)
+        // fxManager.registerComponentCanvas(name, wraps?.current, canvasRef.current)
 
-        const updateCanvasSize = () => {
-            const rect = targetElement.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-            canvas.style.top = `${rect.top}px`;
-            canvas.style.left = `${rect.left}px`;
+        const registerCanvas = () => {
+            if (wraps.current && canvasRef.current) {
+                fxManager.registerComponentCanvas(name, wraps.current, canvasRef.current);
+                console.log("Canvas registered with fxManager:", canvasRef.current);
+            } else {
+                console.warn(`Cannot register canvas: wraps or canvas ref is not available.`);
+            }
         };
 
-        updateCanvasSize();
-        window.addEventListener('resize', updateCanvasSize);
 
-        const handleMouseMove = (event: MouseEvent) => {
-            setMouseCoords({ x: event.clientX, y: event.clientY });
-        };
+        // Using requestAnimationFrame to ensure DOM readiness
+        const rafId = requestAnimationFrame(registerCanvas);
 
-        window.addEventListener('mousemove', handleMouseMove);
-
-        fxManager.registerComponentCanvas(name, wraps.current, canvasRef.current)
-
+        // Cleanup function
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('resize', updateCanvasSize);
+            cancelAnimationFrame(rafId);
+            // Optionally, unregister the canvas if needed
+            // fxManager.unregisterComponentCanvas(name);
         };
 
-    }, [wraps]);
-
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        const ref = getRef("RootComponent");
-
-        webGLMain(canvas, { ref, mouseCoords, effectType });
-    }, [mouseCoords, effectType]); // Re-run when mouseCoords or effectType updates
+    }, [wraps.current]);
 
     return (
-        false && <canvas
+        <canvas
             ref={canvasRef}
             style={{
                 position: 'absolute',

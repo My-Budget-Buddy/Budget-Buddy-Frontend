@@ -17,25 +17,39 @@ class fxManager {
         return getRef(name);
     }
 
-    registerGlobalCanvas(canvas: HTMLCanvasElement) {
-        // const canvas = this.createCanvas("globalCanvas");
-        // canvas.style.position = "fixed";
-        // canvas.style.top = "0";
-        // canvas.style.left = "0";
-        // canvas.style.width = "100%";
-        // canvas.style.height = "100%";
-        // canvas.style.zIndex = "9999"; // Uhhhh...
-        this.canvases.set("global", { canvas, type: "global" });
-        // this.initializeWebGL(canvas);
+    getCanvas(name: string) {
+        return this.canvases.get(name);
     }
 
-    registerComponentCanvas(refName: string, ref: HTMLElement, canvas: HTMLCanvasElement) {
+    getAllCanvases() {
+        return this.canvases;
+    }
+
+    // registerGlobalCanvas(canvas: HTMLCanvasElement) {
+    //     // const canvas = this.createCanvas("globalCanvas");
+    //     // canvas.style.position = "fixed";
+    //     // canvas.style.top = "0";
+    //     // canvas.style.left = "0";
+    //     // canvas.style.width = "100%";
+    //     // canvas.style.height = "100%";
+    //     // canvas.style.zIndex = "9999"; // Uhhhh...
+    //     this.canvases.set("global", { canvas, type: "global" });
+    //     // this.initializeWebGL(canvas);
+    // }
+
+    registerComponentCanvas(refName: string, ref: HTMLElement | null, canvas: HTMLCanvasElement | null) {
+        if (ref == null || canvas == null) {
+            console.error("Illegal entity attempted to register: ", refName);
+            return;
+        }
+
         // const canvas = this.createCanvas(`canvas-${refName}`);
-        this.canvases.set(refName, { canvas, type: "component", refName });
+        this.canvases.set(refName, { canvas: canvas, type: "component" });
+        console.log("\n\n\n\nCanvas successfully registered! : ", refName);
         // this.updateCanvasPosition(canvas, ref);
         // this.initializeWebGL(canvas);
 
-        window.addEventListener("resize", () => this.updateCanvasPosition(canvas, ref));
+        // window.addEventListener("resize", () => this.updateCanvasPosition(canvas, ref));
     }
 
     private updateCanvasPosition(canvas: HTMLCanvasElement, ref: HTMLElement) {

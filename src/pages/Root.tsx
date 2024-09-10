@@ -74,7 +74,11 @@ const Root: React.FC = () => {
         <div ref={componentRef}>
             <Outlet />
             {/* <CanvasOverlay effectType="highlighting" /> */}
-            <ConcreteCanvasOverlay name="GLOBAL" effectType="GLOBAL" wraps={componentRef} />
+            <ConcreteCanvasOverlay
+                name="GLOBAL"
+                effectType="GLOBAL"
+                wraps={componentRef}
+            />
 
             <TextBoxOverlay
                 position={{ top: 100, left: 100 }}
