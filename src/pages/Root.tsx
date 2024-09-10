@@ -5,10 +5,11 @@ import { setAuthenticated } from "../util/redux/authSlice";
 import Cookies from "js-cookie";
 import ProtoOverlay from "../overlay/proto_overlay";
 import { setRef } from "../overlay/refStore";
+import CanvasOverlay from "../overlay/abstract_overlay";
 
 const Root: React.FC = () => {
 
-    const componentRef = useRef<HTMLDivElement>(this);
+    const componentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (componentRef.current) {
@@ -43,7 +44,6 @@ const Root: React.FC = () => {
 
     return (
         <div ref={componentRef}>
-            <ProtoOverlay />
             <Outlet />
         </div>
     );

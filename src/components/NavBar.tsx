@@ -9,8 +9,13 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuthentication } from "../contexts/AuthenticationContext";
 import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading } from "@trussworks/react-uswds";
+import useStoreRef from "../overlay/useStoreRef";
+import CanvasOverlay from "../overlay/abstract_overlay";
 
 const NavBar = () => {
+
+    const componentRef = useStoreRef('NavBar');
+
     const { t } = useTranslation();
     const { profile } = useAuthentication();
 
@@ -65,7 +70,7 @@ const NavBar = () => {
     ];
 
     return (
-        <div className="nav-container bg-[#005ea2] px-6 h-screen min-w-64 max-w-min-w-64 flex flex-col pt-6">
+        <div ref={componentRef} className="nav-container bg-[#005ea2] px-6 h-screen min-w-64 max-w-min-w-64 flex flex-col pt-6">
             <Link to="/" className="">
                 <img src={buddyLogo} className="w-44 ml-4"></img>
                 {/*<h2 className="font-semibold text-center text-2xl text-white">{t("app-name")}</h2>*/}
@@ -128,8 +133,12 @@ const NavBar = () => {
                     </div>
                 </div>
             )}
+
+            <CanvasOverlay effectType="highlighting" wraps={componentRef} />
+
         </div>
     );
 };
 
 export default NavBar;
+
