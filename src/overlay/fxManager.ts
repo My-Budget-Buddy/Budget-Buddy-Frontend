@@ -1,7 +1,3 @@
-// Checks the current page, and plays the tutorials if tutorialRun == true
-
-let tutorialRun = true;
-
 type CanvasInfo = {
     canvas: HTMLCanvasElement;
     type: "global" | "component";

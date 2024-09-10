@@ -54,7 +54,7 @@ const ConcreteCanvasOverlay: React.FC<CanvasOverlayProps> = ({ name, wraps, effe
     }, [mouseCoords, effectType]); // Re-run when mouseCoords or effectType updates
 
     return (
-        <canvas
+        false && <canvas
             ref={canvasRef}
             style={{
                 position: 'absolute',
