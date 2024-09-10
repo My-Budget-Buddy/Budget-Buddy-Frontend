@@ -20,6 +20,7 @@
     "@trussworks/react-uswds": "^9.0.0",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.6.8",
+    "budget-buddies": "file:",
     "gl-matrix": "^3.4.3",
     "i18next": "^23.11.4",
     "js-cookie": "^3.0.5",

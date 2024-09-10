@@ -18,7 +18,7 @@ const ProtoOverlay: React.FC = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const ref = getRef("RootComponent");
+        // const ref = getRef("RootComponent");
 
         // Mouse move handler to update mouse position state
         const handleMouseMove = (event: MouseEvent) => {
