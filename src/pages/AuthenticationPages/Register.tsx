@@ -29,7 +29,7 @@ const Register: React.FC = () => {
             return;
         }
 
-        const res = await fetch("https://api.skillstorm-congo.com/auth/register", {
+        const res = await fetch("http://localhost:8125/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fields)
@@ -111,7 +111,7 @@ const Register: React.FC = () => {
                                 outline
                                 className="width-full"
                                 onClick={() =>
-                                    window.location.replace("https://api.skillstorm-congo.com/auth/login/oauth2")
+                                    window.location.replace("http://localhost:8125/auth/login/oauth2")
                                 }
                             >
                                 {t("auth.google")}

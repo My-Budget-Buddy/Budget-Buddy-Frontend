@@ -1,6 +1,6 @@
 import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
 import Cookies from "js-cookie";
-const url = "https://api.skillstorm-congo.com";
+const url = "http://localhost:8125";
 
 export async function getBuckets(): Promise<SavingsBucketRowProps[]> {
     const endpoint = `${url}/buckets/user`;

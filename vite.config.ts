@@ -12,12 +12,12 @@ export default defineConfig(({ command, mode }) => {
                 // Proxy requests from /api to the backend URL specified in the environment variables
                 "/dunce": {
                     //target: "http://localhost:8125",
-                    target: "https://api.skillstorm-congo.com",
+                    target: "http://localhost:8125",
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/dunce/, "")
                 }
             }
-        },
+        }
         // Define global constants that will be replaced during the build process
         // define: {
         //     // Define __APP_ENV__ as a global constant with the value of env.APP_ENV

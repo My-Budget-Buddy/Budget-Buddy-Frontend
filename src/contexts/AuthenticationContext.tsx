@@ -49,7 +49,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     useEffect(() => {
         if (jwt) {
             // make a network request to get profile information
-            fetch("https://api.skillstorm-congo.com/users/user", { headers: { Authorization: `Bearer ${jwt}` } })
+            fetch("http://localhost:8125/users/user", { headers: { Authorization: `Bearer ${jwt}` } })
                 .then(res => {
                     if (res.ok) return res.json().then((user: User) => setProfile(user))
                     else console.log("[AuthContext]: error fetching user information")

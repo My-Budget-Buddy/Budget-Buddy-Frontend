@@ -1,6 +1,6 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import Cookies from "js-cookie";
-const url = "https://api.skillstorm-congo.com";
+const url = "http://localhost:8125";
 
 export async function getBudgetsById() {
     const endpoint = `${url}/budgets`;

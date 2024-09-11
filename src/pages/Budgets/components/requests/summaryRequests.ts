@@ -1,5 +1,5 @@
 import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../../../Tax/taxesAPI";
-const url = "https://api.skillstorm-congo.com";
+const url = "http://localhost:8125";
 
 export async function getMonthlySummary(monthYear: string): Promise<MonthlySummary> {
     return getMonthlySummaryAPI(monthYear).then((res) => {

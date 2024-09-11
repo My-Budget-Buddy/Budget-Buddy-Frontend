@@ -34,7 +34,7 @@ const Accounts: React.FC = () => {
     useEffect(() => {
         if (!jwt) return; // to prevent an unnecessary 401
 
-        fetch("https://api.skillstorm-congo.com/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
+        fetch("http://localhost:8125/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (res.ok) {
                     return res.json().then((data: Account[]) => {
@@ -88,7 +88,7 @@ const Accounts: React.FC = () => {
                         onMouseLeave={() => setShowTooltip(false)}
                         className="relative"
                     >
-                        <Icon.Help className="mt-4"/>
+                        <Icon.Help className="mt-4" />
                         {/* Render tooltip conditionally */}
                         {showTooltip && (
                             <div className="absolute left-8 top-4 bg-gray-200 p-2 rounded shadow-md w-40">
@@ -251,9 +251,9 @@ const Accounts: React.FC = () => {
                             title: (
                                 <div className="flex space-x-2">
                                     <SavingsOutlinedIcon
-                                                            fontSize="small"
-                                                            className="mr-2"
-                                                        /> <p>{t("accounts.savings")}</p>
+                                        fontSize="small"
+                                        className="mr-2"
+                                    /> <p>{t("accounts.savings")}</p>
                                 </div>
                             ),
                             content: (

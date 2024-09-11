@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
 
             // update the user Profile only if changes were made
             if (firstName !== profile.firstName || lastName !== profile.lastName) {
-                fetch("https://api.skillstorm-congo.com/users", {
+                fetch("http://localhost:8125/users", {
                     method: "PUT",
                     headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
                     body: JSON.stringify({ id, email, firstName, lastName })
