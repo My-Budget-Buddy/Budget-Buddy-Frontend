@@ -41,6 +41,13 @@ function drawScene(gl, programInfo, buffers, squareRotation, _canvas, todoVars) 
     gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix);
     gl.uniform2f(programInfo.uniformLocations.viewportSize, _canvas.width, _canvas.height);
     gl.uniform2f(programInfo.uniformLocations.mouseCoords, todoVars.mouseCoords.x, todoVars.mouseCoords.y);
+    gl.uniform1i(programInfo.uniformLocations.radialEnabled, todoVars.radialEnabled ? 1 : 0);
+    gl.uniform2f(
+        programInfo.uniformLocations.radialPosition,
+        todoVars.radialPosition.left,
+        todoVars.radialPosition.top
+    );
+    gl.uniform1f(programInfo.uniformLocations.radialRadius, todoVars.radialRadius);
     gl.uniform1f(programInfo.uniformLocations.lightness, 0.2);
 
     {

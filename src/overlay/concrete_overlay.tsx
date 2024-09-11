@@ -17,23 +17,23 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
 
         const [mouseCoords, setMousePosition] = useState({ x: 0, y: 0 });
         const [radialEnabled, setRadialEnabled] = useState(false)
-        const [radialPosition, setRadialPosition] = useState({ x: 0, y: 0 })
+        const [radialPosition, setRadialPosition] = useState({ top: 0, left: 0 })
         const [radialRadius, setRadialRadius] = useState(0)
 
         const updateEnabled = (value: boolean) => {
             setEnabled(value);
         };
 
-        const updateRadialPosition = (coords: { x: number; y: number }) => {
-
+        const updateRadialPosition = (coords: { top: number; left: number }) => {
+            setRadialPosition(coords);
         }
 
         const updateRadialHighlightRadius = (value: number) => {
-
+            setRadialRadius(value);
         };
 
         const updateRadialHighlightEnabled = (value: boolean) => {
-
+            setRadialEnabled(value);
         };
         useEffect(() => {
             // IMPORTANT! Component must register itself with the fxManager
@@ -93,11 +93,18 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
                 y: ((mouseCoords.y / canvas.height) - 1.0) * -1.,
             };
 
-            console.log(normalizedMouseCoords)
-            console.log(mouseCoords)
+            // console.log(normalizedMouseCoords)
+            // console.log(mouseCoords)
 
-            webGLMain(canvas, { ref, mouseCoords: normalizedMouseCoords });
-        }, [mouseCoords]); // Re-run when mousePosition updates
+            webGLMain(canvas, {
+                ref,
+                mouseCoords: normalizedMouseCoords,
+                radialEnabled,
+                radialPosition,
+                radialRadius
+
+            });
+        }, [mouseCoords, radialPosition, radialEnabled, radialRadius]); // Re-run when mousePosition updates
 
         useImperativeHandle(ref, () => ({
             // Expose state and functions to manipulate them

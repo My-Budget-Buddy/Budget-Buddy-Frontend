@@ -41,15 +41,15 @@ class fxDirector {
         console.log("c: ", c);
         c.updateEnabled(true);
 
-        g.updateRadialPosition(newPos);
-        g.updateRadialHighlightEnabled(true);
+        // g.updateRadialPosition(newPos);
+        // g.updateRadialHighlightEnabled(true);
 
         tween({
-            from: 0,
+            from: 1000,
             to: 100,
             duration: 2000,
             onUpdate: (value) => {
-                g.updateRadialHighlightRadius(newPos);
+                g.updateRadialHighlightRadius(value);
             },
             onComplete: () => {
                 setTimeout(() => {
