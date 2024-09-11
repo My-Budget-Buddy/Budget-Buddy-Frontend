@@ -261,7 +261,8 @@
       "add": "Add Account",
       "back": "Go back",
       "get-report": "Get Report",
-      "credit-score-report": "Credit Score Report"
+      "credit-score-report": "Credit Score Report",
+      "overview": "Balance Overview"
     }
   }
 }

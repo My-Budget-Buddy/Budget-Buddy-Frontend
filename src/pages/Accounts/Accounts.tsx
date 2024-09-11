@@ -2,14 +2,14 @@ import type { Account } from "../../types/models";
 
 import AccountModal from "./AccountModal";
 import CreditScoreModal from "./CreditScoreModal";
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 import { useTranslation } from "react-i18next";
+import { PieChart } from "@mui/x-charts/PieChart";
 import { formatCurrency } from "../../util/helpers";
 import { useEffect, useMemo, useState } from "react";
-import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
-import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 import { deleteAccountAPI } from "../Tax/taxesAPI";
 
@@ -79,10 +79,10 @@ const Accounts: React.FC = () => {
                 )}
             </GridContainer>
 
-            {/* Net Cash Section */}
+            {/* Balances Section */}
             <section className="pb-5 mb-5 border-b border-b-[#dfe1e2]">
                 <div className="flex items-center space-x-2">
-                    <Title>{t("accounts.net-cash")}</Title>
+                    <Title>{t("accounts.overview")}</Title>
                     <span
                         onMouseEnter={() => setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
@@ -99,60 +99,28 @@ const Accounts: React.FC = () => {
                 </div>
 
                 <div className="flex justify-center pt-6">
-                    {netCash >= 0 ? (
-                        <Gauge
-                            width={500}
-                            height={200}
-                            value={netCash}
-                            valueMin={0}
-                            valueMax={totalBalance} // max is the total of your assets
-                            startAngle={-60}
-                            endAngle={60}
-                            sx={{
-                                [`& .${gaugeClasses.valueText}`]: {
-                                    fontSize: "40px", // Adjust the font size // Change the color to blue
-                                    fontWeight: "bold", // Make the text bold
-                                    transform: "translate(0px, -50px)" // Adjust position if needed
-                                },
-                                [`& .${gaugeClasses.valueArc}`]: {
-                                    fill: "#52b202" // green for gain
-                                }
-                            }}
-                            text={({ value }) => `${formatCurrency(value!)}`}
-                        />
-                    ) : (
-                        <Gauge
-                            width={500}
-                            height={200}
-                            value={-netCash}
-                            valueMin={0}
-                            valueMax={totalBalance} // max is the total of your assets
-                            startAngle={60}
-                            endAngle={-60}
-                            sx={{
-                                [`& .${gaugeClasses.valueText}`]: {
-                                    fontSize: "40px", // Adjust the font size // Change the color to blue
-                                    fontWeight: "bold", // Make the text bold
-                                    transform: "translate(0px, -50px)" // Adjust position if needed
-                                },
-                                [`& .${gaugeClasses.valueArc}`]: {
-                                    fill: "#b20202" // red for loss
-                                }
-                            }}
-                            text={({ value }) => `${formatCurrency(value!)}`}
-                        />
-                    )}
+                    <PieChart height={200} width={500} series={[
+                        {
+                            innerRadius: 60, paddingAngle: 1, cornerRadius: 3, data: [
+                                { id: 0, value: totalBalance, label: t("accounts.total-assets"), color: "#87C38F" },
+                                { id: 1, value: debts, label: t("accounts.total-debts"), color: "#DA2C38" },
+                            ]
+                        }
+                    ]} />
                 </div>
 
-                <div className="flex justify-center">
-                    <table className="w-50  divide-gray-200">
+                <div className="flex justify-center mt-4">
+                    <table className="w-50 divide-gray-200">
                         <thead>
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider border-r border-gray-600">
                                     {t("accounts.total-assets")}
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider border-gray-600">
+                                <th className="px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider border-r border-gray-600">
                                     {t("accounts.total-debts")}
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider border-gray-600">
+                                    {t("accounts.net-cash")}
                                 </th>
                             </tr>
                         </thead>
@@ -161,7 +129,8 @@ const Accounts: React.FC = () => {
                                 <td className="px-6 py-4 whitespace-nowrap border-r border-gray-600">
                                     {formatCurrency(totalBalance, true)}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap border-gray-600">{formatCurrency(debts)}</td>
+                                <td className="px-6 py-4 whitespace-nowrap border-r border-gray-600">{formatCurrency(debts)}</td>
+                                <td className="px-6 py-4 whitespace-nowrap border-gray-600">{formatCurrency(netCash, true)}</td>
                             </tr>
                         </tbody>
                     </table>

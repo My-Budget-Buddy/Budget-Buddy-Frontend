@@ -259,7 +259,8 @@
       "add": "Agregar Cuenta",
       "back": "Regresar",
       "get-report": "Obtener Informe",
-      "credit-score-report": "Informe de Puntuación de Crédito"
+      "credit-score-report": "Informe de Puntuación de Crédito",
+      "overview": "Balance general"
     }
   }
 }
