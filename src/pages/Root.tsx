@@ -12,6 +12,7 @@ import fxDirector from "../overlay/fxDirector";
 const Root: React.FC = () => {
 
     const componentRef = useRef<HTMLDivElement>(null);
+    const canvasOverlayRef = useRef<any>(null);
 
     useEffect(() => {
         if (componentRef.current) {
@@ -73,8 +74,9 @@ const Root: React.FC = () => {
     return (
         <div ref={componentRef}>
             <Outlet />
-            {/* <CanvasOverlay effectType="highlighting" /> */}
+
             <ConcreteCanvasOverlay
+                ref={canvasOverlayRef}
                 name="GLOBAL"
                 effectType="GLOBAL"
                 wraps={componentRef}

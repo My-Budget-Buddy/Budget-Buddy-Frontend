@@ -4,10 +4,9 @@ import { getAllRefs, getRef } from "./refStore";
 
 class fxDirector {
     private toolTip;
+    private running: boolean = true;
 
-    constructor() {
-        // pass
-    }
+    constructor() {}
 
     async startTutorial() {
         console.log("fxManager component: ", fxManager.getAllCanvases());
@@ -15,7 +14,18 @@ class fxDirector {
         const pos = { top: 100, left: 1000 };
         this.updateOverlayPosition(pos);
 
+        // TODO Instead of waiting for a specific message,  refactor
+        //  to wait for arbitrary message and choose next step
+        // based on message
         await this.waitForUserInput("nextStep");
+        if (!this.running) {
+            this.cleanup();
+            return;
+        }
+
+        const c = fxManager.getCanvas("GLOBAL");
+        console.log("c: ", c);
+        c.updateEnabled(true);
 
         // console.log("Ref: ", getRef("AddNewBudgetButton"));
         const f = getRef("AddNewBudgetButton");
@@ -30,6 +40,7 @@ class fxDirector {
     registerAvatarTooltip(_toolTip) {
         this.toolTip = _toolTip;
         // console.log("Tooltip registered: ", _toolTip);
+        this.cleanup();
     }
 
     updateOverlayPosition(position: { top: number; left: number }) {
@@ -46,6 +57,12 @@ class fxDirector {
         } else {
             console.warn(`Overlay not found.`);
         }
+    }
+
+    cleanup() {
+        const newPos = { top: 100000, left: 100000 };
+        this.updateOverlayPosition(newPos);
+        this.updateOverlayText("");
     }
 
     private waitForUserInput(eventName: string): Promise<void> {

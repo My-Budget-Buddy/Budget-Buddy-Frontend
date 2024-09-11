@@ -14,7 +14,7 @@ import {
     TextInput,
     Textarea
 } from "@trussworks/react-uswds";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
@@ -22,6 +22,7 @@ import { createBudget } from "../requests/budgetRequests";
 import { TransactionCategory } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
 import useStoreRef from "../../../../overlay/useStoreRef";
+import ConcreteCanvasOverlay from "../../../../overlay/concrete_overlay";
 
 const NewCategoryModal: React.FC = () => {
 
@@ -212,6 +213,13 @@ const NewCategoryModal: React.FC = () => {
                     </ButtonGroup>
                 </ModalFooter>
             </Modal>
+
+            <ConcreteCanvasOverlay
+                name="GLOBAL"
+                effectType="GLOBAL"
+                wraps={componentRef}
+            />
+
         </div>
     );
 };
