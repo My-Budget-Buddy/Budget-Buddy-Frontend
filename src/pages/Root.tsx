@@ -16,12 +16,14 @@ const Root: React.FC = () => {
 
     useEffect(() => {
         if (componentRef.current) {
-            const rect = componentRef.current.getBoundingClientRect();
+            // const rect = componentRef.current.getBoundingClientRect();
             // Convert rect.left, rect.top, rect.width, rect.height to WebGL coordinates
-            console.log(rect)
+            // console.log(rect)
             setRef('RootComponent', componentRef);
+        } else {
+            return
         }
-        console.log(componentRef)
+        // console.log(componentRef)
 
         setTimeout(() => {
             fxDirector.startTutorial()

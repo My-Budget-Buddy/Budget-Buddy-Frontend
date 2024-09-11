@@ -1,6 +1,7 @@
 import { eventEmitter } from "./event_emitter";
 import fxManager from "./fxManager";
 import { getAllRefs, getRef } from "./refStore";
+import tween from "./tween";
 
 class fxDirector {
     private toolTip;
@@ -10,6 +11,10 @@ class fxDirector {
 
     async startTutorial() {
         console.log("fxManager component: ", fxManager.getAllCanvases());
+
+        const g = fxManager.getCanvas("GLOBAL");
+
+        g?.updateEnabled(true);
 
         const pos = { top: 100, left: 1000 };
         this.updateOverlayPosition(pos);
@@ -23,10 +28,6 @@ class fxDirector {
             return;
         }
 
-        const c = fxManager.getCanvas("GLOBAL");
-        console.log("c: ", c);
-        c.updateEnabled(true);
-
         // console.log("Ref: ", getRef("AddNewBudgetButton"));
         const f = getRef("AddNewBudgetButton");
         const rect = f?.current?.getBoundingClientRect();
@@ -35,6 +36,27 @@ class fxDirector {
         const newPos = { top: rect?.top as number, left: rect?.left as number };
         this.updateOverlayPosition(newPos);
         this.updateOverlayText("Add a new budget");
+
+        const c = fxManager.getCanvas("AddNewBudgetButton");
+        console.log("c: ", c);
+        c.updateEnabled(true);
+
+        g.updateRadialPosition(newPos);
+        g.updateRadialHighlightEnabled(true);
+
+        tween({
+            from: 0,
+            to: 100,
+            duration: 2000,
+            onUpdate: (value) => {
+                g.updateRadialHighlightRadius(newPos);
+            },
+            onComplete: () => {
+                setTimeout(() => {
+                    g.updateRadialHighlightEnabled(false);
+                }, 2);
+            }
+        });
     }
 
     registerAvatarTooltip(_toolTip) {

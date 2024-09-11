@@ -6,7 +6,7 @@ let squareRotation = 0.0;
 
 export function webGLMain(canvas, todoVars) {
     // const canvas = document.querySelector("#glcanvas");
-    const gl = canvas.getContext("webgl");
+    const gl = canvas.getContext("webgl2");
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     if (gl === null) {
@@ -39,10 +39,30 @@ export function webGLMain(canvas, todoVars) {
         uniform vec2 uViewportSize; // Viewport size uniform
         uniform vec2 uMouseCoords; 
         uniform float uLightness; 
+        uniform vec2 uRadialPos; 
+        uniform bool uRadialEnabled; 
+        uniform float uRadialRadius; 
 
         void main(void) {
-            vec2 fragCoordNormalized = (gl_FragCoord.xy + uMouseCoords) / uViewportSize; // Normalize coordinates
-            gl_FragColor = vec4(fragCoordNormalized, 1.0, 0.6); // Example: color based on normalized coordinates
+            vec2 fragCoordNormalized = (gl_FragCoord.xy) / uViewportSize; // Normalize coordinates
+            // gl_FragColor = vec4(fragCoordNormalized, 1.0, 0.6); // Example: color based on normalized coordinates
+            
+            // Convert mouse coordinates to normalized space
+            vec2 mouseCoordsNormalized = uMouseCoords / uViewportSize;
+
+            // Calculate the distance from the current fragment to the mouse coordinates
+            float distanceToMouse = distance(fragCoordNormalized, uMouseCoords);
+
+            // Check if the distance is less than the radius (normalized to viewport size)
+            if (distanceToMouse < (uRadialRadius / max(uViewportSize.x, uViewportSize.y))) {
+                // Inside the circle
+                gl_FragColor = vec4(1.0, 1.0, 1.0, 0.5); // White color
+            } else {
+                // Outside the circle
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 0.5); // Black color
+            }
+
+            gl_FragColor.r = distanceToMouse;
         }
     `;
 

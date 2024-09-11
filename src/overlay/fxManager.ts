@@ -5,6 +5,9 @@ type CanvasAPI = {
     getEnabled: () => boolean;
     setMouseCoords: (coords: { x: number; y: number }) => void;
     getMouseCoords: () => { x: number; y: number };
+    updateRadialPosition: (coords: { x: number; y: number }) => void;
+    updateRadialHighlightRadius: (value: number) => void;
+    updateRadialHighlightEnabled: (value: boolean) => void;
 };
 
 type CanvasInfo = {

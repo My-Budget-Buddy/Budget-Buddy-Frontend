@@ -27,6 +27,7 @@ import ConcreteCanvasOverlay from "../../../../overlay/concrete_overlay";
 const NewCategoryModal: React.FC = () => {
 
     const componentRef = useStoreRef('AddNewBudgetButton');
+    const canvasOverlayRef = useRef<any>(null);
 
 
     const budgetsStore = useAppSelector((store) => store.budgets);
@@ -215,8 +216,9 @@ const NewCategoryModal: React.FC = () => {
             </Modal>
 
             <ConcreteCanvasOverlay
-                name="GLOBAL"
-                effectType="GLOBAL"
+                ref={canvasOverlayRef}
+                name="AddNewBudgetButton"
+                effectType=""
                 wraps={componentRef}
             />
 
