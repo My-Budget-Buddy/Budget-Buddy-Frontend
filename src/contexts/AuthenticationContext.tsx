@@ -48,7 +48,6 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
 
     useEffect(() => {
         if (jwt) {
-            Cookies.set("jwt", jwt); // in production this will automatically be set but for development we need to set it manually?
             // make a network request to get profile information
             fetch("http://localhost:8125/users/user", { headers: { Authorization: `Bearer ${jwt}` } })
                 .then(res => {
