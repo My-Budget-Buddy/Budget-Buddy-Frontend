@@ -35,6 +35,11 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
         const updateRadialHighlightEnabled = (value: boolean) => {
             setRadialEnabled(value);
         };
+
+        const updateButtonHighlightEnabled = (value: boolean) => {
+            setRadialEnabled(value);
+        };
+
         useEffect(() => {
             // IMPORTANT! Component must register itself with the fxManager
             // in order to be controlled.
@@ -51,7 +56,8 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
                         getMouseCoords: () => mouseCoords,
                         updateRadialPosition,
                         updateRadialHighlightRadius,
-                        updateRadialHighlightEnabled
+                        updateRadialHighlightEnabled,
+                        updateButtonHighlightEnabled
                     });
                 }
             };
@@ -89,8 +95,13 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
             updateCanvasSizeAndPosition();
 
             const normalizedMouseCoords = {
-                x: mouseCoords.x / canvas.width,
-                y: ((mouseCoords.y / canvas.height) - 1.0) * -1.,
+                x: mouseCoords.x, /// canvas.width,
+                y: mouseCoords.y /// canvas.height) - 1.0) * -1.,
+            };
+
+            const normalizedPosCoords = {
+                top: radialPosition.top + (radialPosition.top * -0.5), /// canvas.width,
+                left: radialPosition.left  /// canvas.height) - 1.0) * -1.,
             };
 
             // console.log(normalizedMouseCoords)
@@ -100,10 +111,12 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
                 ref,
                 mouseCoords: normalizedMouseCoords,
                 radialEnabled,
-                radialPosition,
+                radialPosition: normalizedPosCoords,
                 radialRadius
 
             });
+
+            // console.log("radialPosition: ", normalizedPosCoords)
         }, [mouseCoords, radialPosition, radialEnabled, radialRadius]); // Re-run when mousePosition updates
 
         useImperativeHandle(ref, () => ({
@@ -112,6 +125,7 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
                 setEnabled(value);
             },
             getEnabled: () => enabled, // Optional: to get the current state of 'enabled'
+
         }));
 
         const updateCanvasSizeAndPosition = () => {

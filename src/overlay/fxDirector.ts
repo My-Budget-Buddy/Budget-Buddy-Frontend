@@ -16,8 +16,9 @@ class fxDirector {
 
         g?.updateEnabled(true);
 
-        const pos = { top: 100, left: 1000 };
+        const pos = { top: 100, left: 100 };
         this.updateOverlayPosition(pos);
+        // g.updateRadialHighlightEnabled(true);
 
         // TODO Instead of waiting for a specific message,  refactor
         //  to wait for arbitrary message and choose next step
@@ -31,6 +32,9 @@ class fxDirector {
         // console.log("Ref: ", getRef("AddNewBudgetButton"));
         const f = getRef("AddNewBudgetButton");
         const rect = f?.current?.getBoundingClientRect();
+
+        const center = getCenterCoordinates(rect);
+        const centerCast = { top: center.y, left: center.x };
         // console.log(rect);
 
         const newPos = { top: rect?.top as number, left: rect?.left as number };
@@ -40,9 +44,12 @@ class fxDirector {
         const c = fxManager.getCanvas("AddNewBudgetButton");
         console.log("c: ", c);
         c.updateEnabled(true);
+        // c.updateHighlightEnabled(true);
 
-        // g.updateRadialPosition(newPos);
-        // g.updateRadialHighlightEnabled(true);
+        // console.log("NEWPOS: ", newPos)
+
+        g.updateRadialPosition(centerCast);
+        g.updateRadialHighlightEnabled(true);
 
         tween({
             from: 1000,
@@ -54,7 +61,7 @@ class fxDirector {
             onComplete: () => {
                 setTimeout(() => {
                     g.updateRadialHighlightEnabled(false);
-                }, 2);
+                }, 2000);
             }
         });
     }
@@ -100,3 +107,18 @@ class fxDirector {
 }
 
 export default new fxDirector();
+
+interface CenterCoordinates {
+    x: number;
+    y: number;
+}
+
+function getCenterCoordinates(rect: DOMRect): CenterCoordinates {
+    const offsetX = (rect.right - rect.left) / 2;
+    const offsetY = (rect.bottom - rect.top) / 2;
+    const centerX = rect.left + offsetX;
+    const centerY = rect.top + offsetY;
+
+    console.log("center: ", { x: centerX, y: centerY });
+    return { x: centerX, y: centerY };
+}

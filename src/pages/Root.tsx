@@ -85,7 +85,7 @@ const Root: React.FC = () => {
             />
 
             <TextBoxOverlay
-                position={{ top: 100, left: 100 }}
+                position={{ top: 10000, left: 10000 }}
                 text={"My text"}
                 onClose={() => { }}
                 ref={textBoxRef}

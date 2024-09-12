@@ -19,6 +19,8 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
     ({ position, text }, ref) => {
         const [internalPosition, setInternalPosition] = useState(position);
         const [internalText, setInternalText] = useState(text);
+        // const [isVisible, setIsVisible] = useState(false);
+
         const componentRef = useRef<HTMLDivElement>(null);
 
         // Update internal state when props change
@@ -65,7 +67,7 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
                 }}
             >
                 {internalText}
-                {onClose && (
+                {/* {onClose && (
                     <button
                         onClick={onClose}
                         style={{
@@ -79,7 +81,7 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
                     >
                         X
                     </button>
-                )}
+                )} */}
                 {onClick && (
                     <button
                         onClick={onClick}
