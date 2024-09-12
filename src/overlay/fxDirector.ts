@@ -22,8 +22,6 @@ class fxDirector {
             "Welcome to BudgetBuddy! Here is where you can define and manage your personal budgets."
         );
 
-        // g.updateRadialHighlightEnabled(true);
-
         // TODO Instead of waiting for a specific message,  refactor
         //  to wait for arbitrary message and choose next step
         // based on message
@@ -33,13 +31,11 @@ class fxDirector {
             return;
         }
 
-        // console.log("Ref: ", getRef("AddNewBudgetButton"));
         const f = getRef("AddNewBudgetButton");
         const rect = f?.current?.getBoundingClientRect();
 
         const center = getCenterCoordinates(rect);
         const centerCast = { top: center.y, left: center.x };
-        // console.log(rect);
 
         const newPos = { top: rect?.top as number, left: rect?.right as number };
         this.updateOverlayPosition(newPos);
@@ -48,9 +44,6 @@ class fxDirector {
         const c = fxManager.getCanvas("AddNewBudgetButton");
         console.log("c: ", c);
         c.updateEnabled(true);
-        // c.updateHighlightEnabled(true);
-
-        // console.log("NEWPOS: ", newPos)
 
         g.updateRadialPosition(centerCast);
         g.updateRadialHighlightEnabled(true);
