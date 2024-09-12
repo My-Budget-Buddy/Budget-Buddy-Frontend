@@ -149,7 +149,7 @@ const FinancialInformationStepW2: React.FC = () => {
 
                     </Grid>
                     <div className="m-5">
-                        <Button type="button" onClick={handleSave}>Save</Button>
+                        <Button type="button" onClick={handleSave} id="oi-save-button">Save</Button>
                     </div>
                 </GridContainer>
 

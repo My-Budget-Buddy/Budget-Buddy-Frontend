@@ -255,7 +255,7 @@ const PersonalInfoStep: React.FC = () => {
                 </GridContainer>
             </div>
             <div className="m-5">
-                <Button type="button" onClick={() => handleSave(taxReturnInfo, taxReturnInfo.id)}>Save</Button>
+                <Button type="button" onClick={() => handleSave(taxReturnInfo, taxReturnInfo.id)} id="pi-save-button">Save</Button>
             </div>
         </>
 
