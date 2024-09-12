@@ -23,10 +23,29 @@ import { TransactionCategory } from "../../../../types/models";
 import { useTranslation } from "react-i18next";
 import useStoreRef from "../../../../overlay/useStoreRef";
 import ConcreteCanvasOverlay from "../../../../overlay/concrete_overlay";
+import { eventEmitter } from "../../../../overlay/event_emitter";
+import { setRef } from "../../../../overlay/refStore";
 
 const NewCategoryModal: React.FC = () => {
 
+    const [canProgress, setCanProgress] = useState(true);
     const componentRef = useStoreRef('AddNewBudgetButton');
+
+    // Note- refs for sub components currently don't work due to limitations
+    // with USWDS components. 
+    const reservedRef = useStoreRef('ReservedFromBudget');
+    const categoryRef = useStoreRef('CategoryDropdown');
+    const budgetedRef = useStoreRef('BudgetedAmount');
+    const notesRef = useStoreRef('NotesTextbox');
+    const submitRef = useStoreRef('SubmitButton');
+
+    const rRef = useRef()
+
+    const onClick = () => {
+        eventEmitter.emit('nextStep');
+
+    }
+
     const canvasOverlayRef = useRef<any>(null);
 
 
@@ -69,6 +88,17 @@ const NewCategoryModal: React.FC = () => {
             ...prevState,
             [name]: value
         }));
+
+        if (canProgress) {
+            eventEmitter.emit('nextStep');
+            setCanProgress(false);
+            setTimeout(() => {
+                setCanProgress(true);
+                eventEmitter.emit('nextStep');
+
+            }, 2000);
+        }
+
     };
 
     const toggleIsReserved = () => {
@@ -79,6 +109,10 @@ const NewCategoryModal: React.FC = () => {
     };
 
     async function sendNewBudget(budget: BudgetRowProps) {
+
+        eventEmitter.emit('nextStep');
+
+
         const newBudget = {
             //id: formData.id,
             userId: 1,
@@ -123,6 +157,8 @@ const NewCategoryModal: React.FC = () => {
             spentAmount: 0,
             monthYear: budgetsStore.monthYear
         });
+
+        onClick()
     };
 
     return (
@@ -141,7 +177,7 @@ const NewCategoryModal: React.FC = () => {
 
                 {/* TODO Populate with data from higher level, and use the stateful information in these input fields */}
                 <FormGroup error={isDuplicateBudgetError}>
-                    <Label htmlFor="category">{t("budgets.category")}</Label>
+                    <Label ref={categoryRef} htmlFor="category">{t("budgets.category")}</Label>
                     {isDuplicateBudgetError ? <ErrorMessage>{t("budgets.budget-already-exists")}</ErrorMessage> : null}
                     <Select id="category" name="category" value={formData.category} onChange={handleChangeInput}>
                         <option value="default">- Select -</option>
@@ -166,7 +202,7 @@ const NewCategoryModal: React.FC = () => {
                     </Select>
                 </FormGroup>
 
-                <FormGroup error={hasTotalAmountError}>
+                <FormGroup ref={budgetedRef} error={hasTotalAmountError}>
                     <Label htmlFor="totalAmount">{t("budgets.budgeted")}</Label>
                     {hasTotalAmountError ? <ErrorMessage>{t("budgets.greater-than-0")}</ErrorMessage> : null}
                     <TextInput
@@ -180,6 +216,7 @@ const NewCategoryModal: React.FC = () => {
                 </FormGroup>
 
                 <Checkbox
+                    ref={rRef}
                     id="isReserve"
                     name="isReserved"
                     label={t("budgets.reserve-from-funds")}
@@ -188,12 +225,14 @@ const NewCategoryModal: React.FC = () => {
                     className="mt-8"
                 />
 
-                <Label htmlFor="notes">{t("budgets.notes")}:</Label>
+                <Label ref={notesRef} htmlFor="notes">{t("budgets.notes")}:</Label>
                 <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChangeInput} />
 
                 <ModalFooter>
                     <ButtonGroup>
                         <Button
+                            id="submitButton"
+                            ref={submitRef}
                             onClick={handleSubmit}
                             disabled={
                                 isSending || hasTotalAmountError || !hasSelectedCategory || isDuplicateBudgetError

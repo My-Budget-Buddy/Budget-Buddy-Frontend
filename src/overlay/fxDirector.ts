@@ -16,8 +16,12 @@ class fxDirector {
 
         g?.updateEnabled(true);
 
-        const pos = { top: 100, left: 100 };
+        const pos = { top: 20, left: 20 };
         this.updateOverlayPosition(pos);
+        this.updateOverlayText(
+            "Welcome to BudgetBuddy! Here is where you can define and manage your personal budgets."
+        );
+
         // g.updateRadialHighlightEnabled(true);
 
         // TODO Instead of waiting for a specific message,  refactor
@@ -37,9 +41,9 @@ class fxDirector {
         const centerCast = { top: center.y, left: center.x };
         // console.log(rect);
 
-        const newPos = { top: rect?.top as number, left: rect?.left as number };
+        const newPos = { top: rect?.top as number, left: rect?.right as number };
         this.updateOverlayPosition(newPos);
-        this.updateOverlayText("Add a new budget");
+        this.updateOverlayText("Start by adding a new budget");
 
         const c = fxManager.getCanvas("AddNewBudgetButton");
         console.log("c: ", c);
@@ -64,6 +68,51 @@ class fxDirector {
                 }, 2000);
             }
         });
+
+        await this.waitForUserInput("nextStep");
+
+        const categoryElement = document.querySelector("#category");
+        const categoryRect = categoryElement?.getBoundingClientRect();
+
+        this.updateOverlayPosition({ top: categoryRect?.top, left: categoryRect?.right });
+        this.updateOverlayText("Let's select the category of item you'd like to budget for this month.");
+
+        this.toolTip.updateButtonShown(false);
+
+        await this.waitForUserInput("nextStep");
+
+        const totalAmount = document.querySelector("#totalAmount");
+        const totalRect = totalAmount?.getBoundingClientRect();
+
+        this.updateOverlayPosition({ top: totalRect?.top, left: totalRect?.right });
+        this.updateOverlayText(
+            "Put in the amount of money you're willing to budget for this category for this month here."
+        );
+
+        await this.waitForUserInput("nextStep");
+
+        this.updateOverlayPosition({ top: totalRect?.top + 80, left: totalRect?.right });
+        this.updateOverlayText(
+            "Check this box if you want to 'box off' this money from you total remaining cash for the month."
+        );
+
+        await delay(5000);
+
+        const submitElement = document.querySelector("#submitButton");
+        const submitRect = submitElement?.getBoundingClientRect();
+
+        this.updateOverlayPosition({ top: submitRect?.top, left: submitRect?.right });
+        this.updateOverlayText("Now, go ahead and save your budget. You can always change it later. ");
+
+        await this.waitForUserInput("nextStep");
+
+        this.updateOverlayPosition(pos);
+        this.updateOverlayText("Congratulations! You've set up your first budget!");
+
+        this.toolTip.updateButtonShown(true);
+
+        await this.waitForUserInput("nextStep");
+        this.cleanup();
     }
 
     registerAvatarTooltip(_toolTip) {
@@ -112,6 +161,8 @@ interface CenterCoordinates {
     x: number;
     y: number;
 }
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function getCenterCoordinates(rect: DOMRect): CenterCoordinates {
     const offsetX = (rect.right - rect.left) / 2;

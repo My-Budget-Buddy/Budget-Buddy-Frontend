@@ -25,9 +25,7 @@ const Root: React.FC = () => {
         }
         // console.log(componentRef)
 
-        setTimeout(() => {
-            fxDirector.startTutorial()
-        }, 1000);
+
     }, []);
 
 

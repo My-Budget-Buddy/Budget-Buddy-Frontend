@@ -150,7 +150,7 @@ const ConcreteCanvasOverlay = forwardRef<any, CanvasOverlayProps>(
                 ref={canvasRef}
                 style={{
                     position: 'absolute',
-                    zIndex: 2,
+                    zIndex: 9999,
                     pointerEvents: 'none', // Allow interactions with underlying elements
                 }}
             />

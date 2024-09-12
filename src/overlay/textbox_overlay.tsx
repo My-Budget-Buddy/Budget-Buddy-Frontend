@@ -19,9 +19,14 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
     ({ position, text }, ref) => {
         const [internalPosition, setInternalPosition] = useState(position);
         const [internalText, setInternalText] = useState(text);
+        const [buttonShown, setButtonShown] = useState(true);
         // const [isVisible, setIsVisible] = useState(false);
 
         const componentRef = useRef<HTMLDivElement>(null);
+
+        // const setHasButton = (b: boolean) => {
+        //     setButtonShown(b)
+        // }
 
         // Update internal state when props change
         useEffect(() => {
@@ -39,6 +44,9 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
             },
             updateText: (newText: string) => {
                 setInternalText(newText);
+            },
+            updateButtonShown: (b: boolean) => {
+                setButtonShown(b)
             }
         }), []); // Empty dependency array ensures ref is updated once
 
@@ -62,7 +70,7 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
                     color: 'white',
                     padding: '5px',
                     borderRadius: '4px',
-                    zIndex: 10000,
+                    zIndex: 100000,
                     pointerEvents: 'auto', // Allow interactions if needed
                 }}
             >
@@ -82,7 +90,7 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
                         X
                     </button>
                 )} */}
-                {onClick && (
+                {buttonShown && (
                     <button
                         onClick={onClick}
                         style={{
@@ -91,6 +99,7 @@ const TextBoxOverlay = forwardRef<TextBoxOverlayHandle, TextBoxOverlayProps>(
                             color: 'black',
                             borderRadius: '4px',
                             // cursor: 'pointer',
+                            // visibility: setHasButton ? hidden: visible
                         }}
                     >
                         O
