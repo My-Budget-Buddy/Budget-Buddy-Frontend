@@ -1,20 +1,17 @@
-import { Button, Icon, Table, Title } from "@trussworks/react-uswds";
+import { Button, Icon, Table, Title, Select } from "@trussworks/react-uswds";
 import React, { useEffect, useState } from "react";
 import { AxisConfig, useDrawingArea } from "@mui/x-charts";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { styled } from "@mui/material/styles";
-import { LineChart } from "@mui/x-charts/LineChart";
+import { LineChart, lineElementClasses, markElementClasses } from "@mui/x-charts/LineChart";
 import { Link, useNavigate } from "react-router-dom";
 import CategoryIcon, { categoryIcons } from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
 import { useTranslation } from "react-i18next";
-
-//import axios from "axios";
-
-import { getTransactionByUserId } from "../../utils/transactionService";
+import axios from "axios";
+//import { getTransactionByUserId } from "../../utils/transactionService";
 
 //define the type for months
-
 type Month =
     | "january"
     | "february"
@@ -29,8 +26,7 @@ type Month =
     | "november"
     | "december";
 
-// define the type for spending categories
-
+//define the type for spending categories
 type SpendingCategory = {
     displayName: any;
     name: TransactionCategory;
@@ -40,10 +36,20 @@ type SpendingCategory = {
 };
 
 
+//define type for year dropdown options
+type YearOption = {
+    value: number;
+    label: string;
+};
 
+
+
+//main spending component
 const Spending: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+
+    // ---set up state variables----
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [mostPopularVendors, setMostPopularVendors] = useState<{ vendorName: string; amount: number }[]>([]);
     const [spendingCategories, setSpendingCategories] = useState<SpendingCategory[]>([]);
@@ -52,6 +58,40 @@ const Spending: React.FC = () => {
     const [currentWeekDeposits, setCurrentWeekDeposits] = useState<number>(0);
     const [previousWeekDeposits, setPreviousWeekDeposits] = useState<number>(0);
     const [currentYearSpending, setCurrentYearSpending] = useState<number>(0);
+
+    const [predictions2024, setPredictions2024] = useState<Transaction[]>([]);  // stores predicted transactions for the year 2024
+    const [predictions2025, setPredictions2025] = useState<Transaction[]>([]);  // stores predicted transactions for the year 2025
+    const [viewingNextYear, setViewingNextYear] = useState(false);  // toggle for switching between current and next year view
+    const [selectedYear, setSelectedYear] = useState<number>(2024);  // stores the selected year for filtering transaction data
+
+    //initial data structure for monthly spending. set each month to zero
+    const initialData: Record<Month, number> = {
+        january: 0,
+        february: 0,
+        march: 0,
+        april: 0,
+        may: 0,
+        june: 0,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+    };
+
+    const [spendingData2022, setSpendingData2022] = useState<Record<Month, number>>({ ...initialData });
+    const [spendingData2023, setSpendingData2023] = useState<Record<Month, number>>({ ...initialData });
+    const [spendingData2024, setSpendingData2024] = useState<Record<Month, number>>({ ...initialData });
+
+    // array of years for the dropdown menu
+    const years = [2022, 2023, 2024];
+
+    // dropdown options for selecting a year
+    const yearOptions: YearOption[] = years.map((year) => ({
+        value: year,
+        label: year.toString(),
+    }));
 
     //colors for each category
     const categoryColors: { [key in TransactionCategory]: string } = {
@@ -82,6 +122,7 @@ const Spending: React.FC = () => {
         december: 0
     });
 
+
     //starting state for earned data. set all months to zero
     const [earnedData, setEarnedData] = useState<Record<Month, number>>({
         january: 0,
@@ -100,132 +141,326 @@ const Spending: React.FC = () => {
 
     // ----AXIOS CALL------
     //fetch from backend with axios
-    useEffect(() => {
-        const fetchTransactions = async () => {
-            try {
-                // const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
-                // const transactions = response.data;
 
-                const transactions = await getTransactionByUserId(1);
-                setTransactions(transactions);
+    const fetchTransactions = async () => {
+        try {
+            // const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
+            // const transactions = response.data;
 
-                const now = new Date();
-                const startOfThisWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-                const startOfLastWeek = new Date(new Date(startOfThisWeek).setDate(startOfThisWeek.getDate() - 7));
-                const startOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+            // const transactions = await getTransactionByUserId(1);
 
-                let thisWeekSpending = 0;
-                let lastWeekSpending = 0;
-                let thisWeekDeposits = 0;
-                let lastWeekDeposits = 0;
-                let thisYearSpending = 0;
+            // -----fetch synthetic transactions from the flask api endpoint----
+            const response = await axios.get<Transaction[]>("http://localhost:5000/api/transactions");
 
-                transactions.forEach((transaction) => {
-                    const transactionDate = new Date(transaction.date);
-                    const amount = transaction.amount;
+            //store fetched transactions
+            const transactions = response.data;
 
-                    if (transactionDate >= startOfThisYear && transaction.category !== "Income") {
-                        thisYearSpending += amount; // Total spending this year
+            // make copies of the current spending data for 2022, 2023, and 2024
+            const updatedSpendingData2022 = { ...spendingData2022 };
+            const updatedSpendingData2023 = { ...spendingData2023 };
+            const updatedSpendingData2024 = { ...spendingData2024 };
+
+            console.log("First transaction in API response:", transactions[0]);  // log first transaction for debugging
+            setTransactions(transactions);
+
+            // define current date, start of this week, start of last week, start of current year
+            const now = new Date();
+            const startOfThisWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+            const startOfLastWeek = new Date(new Date(startOfThisWeek).setDate(startOfThisWeek.getDate() - 7));
+            const startOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+            let thisWeekSpending = 0;
+            let lastWeekSpending = 0;
+            let thisWeekDeposits = 0;
+            let lastWeekDeposits = 0;
+            let thisYearSpending = 0;
+
+            transactions.forEach((transaction: Transaction) => {
+                const transactionDate = new Date(transaction.date);
+                const amount = transaction.amount;
+                const year = transactionDate.getFullYear(); // get the transaction year
+                const monthIndex = transactionDate.getMonth(); // transaction month as an index
+
+                // map month to their corresponding names
+                const monthKeys: Month[] = [
+                    "january",
+                    "february",
+                    "march",
+                    "april",
+                    "may",
+                    "june",
+                    "july",
+                    "august",
+                    "september",
+                    "october",
+                    "november",
+                    "december"
+                ];
+                const monthKey = monthKeys[monthIndex];
+
+                // update spending data based on the year of the transaction
+                if (year === 2022) {
+                    if (transaction.category !== "Income") {
+                        updatedSpendingData2022[monthKey] += amount;
                     }
-
-                    if (transactionDate >= startOfThisWeek) {
-                        if (transaction.category === "Income") {
-                            thisWeekDeposits += amount;
-                        } else {
-                            thisWeekSpending += amount;
-                        }
-                    } else if (transactionDate >= startOfLastWeek && transactionDate < startOfThisWeek) {
-                        if (transaction.category === "Income") {
-                            lastWeekDeposits += amount;
-                        } else {
-                            lastWeekSpending += amount;
-                        }
+                } else if (year === 2023) {
+                    if (transaction.category !== "Income") {
+                        updatedSpendingData2023[monthKey] += amount;
                     }
-                });
+                } else if (year === 2024) {
+                    if (transaction.category !== "Income") {
+                        updatedSpendingData2024[monthKey] += amount;
+                    }
+                }
 
-                setCurrentWeekSpending(thisWeekSpending);
-                setPreviousWeekSpending(lastWeekSpending);
-                setCurrentWeekDeposits(thisWeekDeposits);
-                setPreviousWeekDeposits(lastWeekDeposits);
-                setCurrentYearSpending(thisYearSpending);
+                // update spending for the current year if it's not an income transaction
+                if (transactionDate >= startOfThisYear && transaction.category !== "Income") {
+                    thisYearSpending += amount; // total spending this year
+                }
 
-                const updatedSpendingData: Record<Month, number> = { ...spendingData };
-                const updatedEarnedData: Record<Month, number> = { ...earnedData };
-
-                const categorySpending: { [key in TransactionCategory]?: number } = {};
-
-                const vendorSpending: { [vendorName: string]: number } = {};
-
-                //process each transaction
-                transactions.forEach((transaction: Transaction) => {
-                    const monthIndex = new Date(transaction.date).getMonth();
-                    const amount = transaction.amount;
-                    const monthKeys: Month[] = [
-                        "january",
-                        "february",
-                        "march",
-                        "april",
-                        "may",
-                        "june",
-                        "july",
-                        "august",
-                        "september",
-                        "october",
-                        "november",
-                        "december"
-                    ];
-                    const monthKey = monthKeys[monthIndex];
-
-                    //if the category is INCOME, update earned data
-                    //else update spending data and the spending categories
+                if (transactionDate >= startOfThisWeek) {
                     if (transaction.category === "Income") {
-                        updatedEarnedData[monthKey] += amount;
+                        thisWeekDeposits += amount;
                     } else {
-                        updatedSpendingData[monthKey] += amount;
-
-                        if (!categorySpending[transaction.category]) {
-                            categorySpending[transaction.category] = 0;
-                        }
-                        categorySpending[transaction.category]! += amount;
-
-                        if (!vendorSpending[transaction.vendorName]) {
-                            vendorSpending[transaction.vendorName] = 0;
-                        }
-                        vendorSpending[transaction.vendorName] += amount;
+                        thisWeekSpending += amount;
                     }
-                });
-
-                //map category spending to an array with colors
-                const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
-                    name: category,
-                    displayName: t(category),
-                    value: categorySpending[category]!,
-                    color: categoryColors[category],
-                    icon: categoryIcons[category]
-                }));
+                } else if (transactionDate >= startOfLastWeek && transactionDate < startOfThisWeek) {
+                    if (transaction.category === "Income") {
+                        lastWeekDeposits += amount;
+                    } else {
+                        lastWeekSpending += amount;
+                    }
+                }
 
 
 
-                //to get the top five vendors
-                const popularVendors = Object.keys(vendorSpending)
-                    .map((vendorName) => ({
-                        vendorName,
-                        amount: vendorSpending[vendorName]
-                    }))
-                    .sort((a, b) => b.amount - a.amount)
-                    .slice(0, 5);
+            });
 
-                setSpendingData(updatedSpendingData);
-                setEarnedData(updatedEarnedData);
-                setSpendingCategories(spendingCategories);
-                setMostPopularVendors(popularVendors);
+            setCurrentWeekSpending(thisWeekSpending);
+            setPreviousWeekSpending(lastWeekSpending);
+            setCurrentWeekDeposits(thisWeekDeposits);
+            setPreviousWeekDeposits(lastWeekDeposits);
+            setCurrentYearSpending(thisYearSpending);
+
+            const updatedSpendingData: Record<Month, number> = { ...spendingData };
+            const updatedEarnedData: Record<Month, number> = { ...earnedData };
+
+            const categorySpending: { [key in TransactionCategory]?: number } = {};
+
+            const vendorSpending: { [vendorName: string]: number } = {};
+
+            //process each transaction
+            transactions.forEach((transaction: Transaction) => {
+                const monthIndex = new Date(transaction.date).getMonth();
+                const amount = transaction.amount;
+                const monthKeys: Month[] = [
+                    "january",
+                    "february",
+                    "march",
+                    "april",
+                    "may",
+                    "june",
+                    "july",
+                    "august",
+                    "september",
+                    "october",
+                    "november",
+                    "december"
+                ];
+                const monthKey = monthKeys[monthIndex];
+
+                //if the category is INCOME, update earned data
+                //else update spending data and the spending categories
+                if (transaction.category === "Income") {
+                    updatedEarnedData[monthKey] += amount;
+                } else {
+                    updatedSpendingData[monthKey] += amount;
+
+                    if (!categorySpending[transaction.category]) {
+                        categorySpending[transaction.category] = 0;
+                    }
+                    categorySpending[transaction.category]! += amount;
+
+                    if (!vendorSpending[transaction.vendorName]) {
+                        vendorSpending[transaction.vendorName] = 0;
+                    }
+                    vendorSpending[transaction.vendorName] += amount;
+                }
+            });
+
+            //map category spending to an array with colors
+            const spendingCategories = (Object.keys(categorySpending) as TransactionCategory[]).map((category) => ({
+                name: category,
+                displayName: t(category),
+                value: categorySpending[category]!,
+                color: categoryColors[category],
+                icon: categoryIcons[category]
+            }));
+
+
+
+            //to get the top five vendors
+            const popularVendors = Object.keys(vendorSpending)
+                .map((vendorName) => ({
+                    vendorName,
+                    amount: vendorSpending[vendorName]
+                }))
+                .sort((a, b) => b.amount - a.amount)
+                .slice(0, 5);
+
+            setSpendingData2022(updatedSpendingData2022);
+            setSpendingData2023(updatedSpendingData2023);
+            setSpendingData2024(updatedSpendingData2024);
+            setEarnedData(updatedEarnedData);
+            setSpendingCategories(spendingCategories);
+            setMostPopularVendors(popularVendors);
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+        }
+    };
+
+    // handle year change from the dropdown
+    const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const year = Number(event.target.value);
+        setSelectedYear(year); // update selected year
+    };
+
+    // toggle between viewing current year and next year
+    const handleToggleYearView = () => {
+        setViewingNextYear(!viewingNextYear);
+        setSelectedYear(selectedYear === 2024 ? 2025 : 2024);
+    };
+
+
+
+    // effect to fetch transactions when component mounts
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                await fetchTransactions();  // fetch transactions and update state
             } catch (error) {
                 console.error("Error fetching transactions:", error);
             }
         };
 
-        fetchTransactions();
-    }, [t]);
+        fetchData();  // call fetchdata when the component loads
+    }, []);   // empty dependency array means this effect runs once when the component mounts
+
+
+
+
+
+    // fetch predictions based on transactions
+    const fetchPredictions = async () => {
+        console.log("Raw Transaction Structure:", transactions[0]);  // log the first transaction to see its structure
+
+        try {
+            // filter out any undefined transactions to ensure clean data
+            const filteredTransactions = transactions.filter(transaction => transaction !== undefined);
+            console.log("Filtered Transactions:", filteredTransactions);
+
+            // map the filtered transactions to the correct format (same structure as Transaction type)
+            const formattedTransactions: Transaction[] = filteredTransactions.map(transaction => ({
+                transactionId: transaction.transactionId,
+                userId: transaction.userId,
+                accountId: transaction.accountId,
+                vendorName: transaction.vendorName,
+                amount: transaction.amount,
+                description: transaction.description,
+                category: transaction.category,
+                date: transaction.date,
+            }));
+
+            console.log("Formatted Transactions:", formattedTransactions);
+
+            // send a post request to the flask api to get spending predictions
+            const response = await axios.post("http://localhost:5000/api/forecast", {
+                transactions: formattedTransactions,  // send the formatted transactions as part of the request
+            });
+
+            // update the state with predictions for 2024 and 2025 from the api response
+            setPredictions2024(response.data.predictions_2024);
+            setPredictions2025(response.data.predictions_2025);
+
+        } catch (error) {
+            console.error("Error fetching predictions:", error);
+        }
+    };
+
+
+
+    // effect to fetch predictions when transactions are updated and selected year is 2024 or 2025
+    useEffect(() => {
+        if (transactions.length > 0 && (selectedYear === 2024 || selectedYear === 2025)) {
+            fetchPredictions();  // only fetch predictions if transactions are set and the selected year is 2024 or 2025!!!
+        }
+    }, [transactions, selectedYear]);  // runs when transactions or selectedYear changes
+
+
+
+
+
+    // prepare chart data dynamically based on the selected year
+    const prepareChartData = () => {
+        // use the month type to ensure consistency in month names
+        const months: Month[] = [
+            "january", "february", "march", "april", "may", "june",
+            "july", "august", "september", "october", "november", "december"
+        ];
+        let chartData: { month: string, spending: number | null, predicted: number | null }[] = [];
+        // generate chart data for the year 2024
+        if (selectedYear === 2024) {
+            chartData = months.map((month, index) => ({
+                month: t(`spending.month.${month}`),
+
+                // actual data for jan to aug
+                spending: index < 8 ? spendingData2024[month] : null,
+
+                // show predicted data from september onwards
+                predicted: index >= 8 ? predictions2024.find(prediction => new Date(prediction.date).getMonth() === index)?.amount ?? null : null
+            }));
+        } else if (selectedYear === 2025) {
+            // data for 2025 (only predicted data)
+            chartData = months.map((month, index) => ({
+                month: t(`spending.month.${month}`),
+                spending: null,  //no actual spending for 2025 yet
+                predicted: predictions2025[index]?.amount || null,  // predicted data for each month
+            }));
+        } else if (selectedYear === 2023) {
+            // 2023 data actual spending
+            chartData = months.map((month) => ({
+                month: t(`spending.month.${month}`),
+                spending: spendingData2023[month],  // access actual spending data for each month
+                predicted: null,
+            }));
+        } else if (selectedYear === 2022) {
+            // 2022 data
+            chartData = months.map((month) => ({
+                month: t(`spending.month.${month}`),
+                spending: spendingData2022[month],
+                predicted: null,
+            }));
+        }
+
+        return chartData;
+    };
+
+    // prepare chart data based on the selected year
+    const lineGraph = prepareChartData();
+    const monthCategories = lineGraph.map((d) => d.month);  // extract month names for the x-axis
+    const actualData = lineGraph.map((d) => d.spending);     // extract actual spending data for the line graph
+    const predictedData = lineGraph.map((d) => d.predicted);   // extract predicted spending data for the line graph
+
+
+
+
+
+
+
+
+
+
+
 
     const calculatePercentageChange = (current: number, previous: number) => {
         if (previous === 0) return 0; // handle division by zero
@@ -337,12 +572,7 @@ const Spending: React.FC = () => {
             <div className="flex-1">
                 <section className="h-screen ">
                     {/* Title for the page */}
-                    {/* <div className="mb-4 ml-3"> */}
                     <Title>{t("spending.title")}</Title>
-                    {/* <h2 className="text-[2.3rem] mb-10 pt-2 text-bold">{t("spending.title")}</h2> */}
-                    {/* <h2 className="text-2xl text-light">Your total spending this year is</h2>
-                        <p className="text-4xl font-semibold">${totalSpent.toFixed(2)}</p> */}
-                    {/* </div> */}
                     <div className="flex justify-between gap-x-4 w-full m-0">
                         {[
                             {
@@ -402,45 +632,168 @@ const Spending: React.FC = () => {
                         ))}
                     </div>
 
-                    {/* Full-width row */}
-                    <div className="p-4 mt-4 m-0 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px]">
+                    {/* full width row for chart container */}
+                    <div className={`p-4 mt-4 m-0 min-h-[30rem] rounded-xl flex flex-col justify-center items-center shadow-md border-[1px] ${selectedYear === 2025 ? 'bg-slate-900' : 'bg-white'}`}>
                         <div className="mb-4 ml-3 flex w-full justify-between items-center">
-                            <h2 className="text-3xl p-5 pl-8 text-bold">{t("spending.graphTitle")}</h2>
-                            <div>
-                                <Link to="/dashboard/spending/May" className="mr-3 pr-8">
-                                    <Button type="button" className="ml-3">
-                                        {t("spending.seeCurrentMonth")}
-                                    </Button>
-                                </Link>
+
+                            {/* set the graph title and color based on the selected year */}
+                            <h2 className={`text-3xl p-5 pl-8 text-bold ${selectedYear === 2025 ? 'text-white' : 'text-black'}`}>
+                                {selectedYear === 2025
+                                    ? "Projected Spending for 2025"
+                                    : `Spending for ${selectedYear}`}
+                            </h2>
+
+                            <div className="flex items-center gap-6 bg-transparent p-4 pr-5">
+                                {/* show "See Current Month" button if not 2025 */}
+                                {selectedYear !== 2025 && (
+                                    <Link to="/dashboard/spending/May" >
+                                        <Button type="button" >
+                                            {t("spending.seeCurrentMonth")}
+                                        </Button>
+                                    </Link>
+                                )}
+
+                                {/* show year dropdown if not 2025 */}
+                                {selectedYear !== 2025 && (
+                                    <Select
+                                        id="year-select"
+                                        name="year-select"
+                                        value={selectedYear}
+                                        onChange={handleYearChange}
+                                        style={{
+                                            padding: "0.5rem",
+                                            width: "10rem",
+                                            backgroundColor: "transparent",
+                                            border: "1px solid black",
+                                            borderRadius: "4px",
+                                            appearance: "none",
+                                            marginTop: "-1.5px", //push dropdown up a little bit
+                                        }}
+                                    >
+                                        {yearOptions.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                )}
+
+                                {/* button to toggle between years */}
+                                {/* change button color if on year 2025 */}
+                                <Button
+                                    type="button"
+                                    style={{
+                                        backgroundColor: viewingNextYear ? "white" : "black",
+                                        color: viewingNextYear ? "black" : "white",
+                                        border: viewingNextYear ? "1px solid white" : "1px solid black",
+                                    }}
+                                    onClick={handleToggleYearView}
+                                >
+                                    {viewingNextYear ? "Back to 2024 Spending" : "View 2025 Predictions"}
+                                </Button>
+
                             </div>
                         </div>
+
+
                         <div className="flex items-center mb-2 justify-start w-full">
                             <LineChart
                                 xAxis={[
-                                    { scaleType: "band", data: categories, categoryGapRatio: 0.5 } as AxisConfig<"band">
+                                    { scaleType: "band", data: monthCategories, categoryGapRatio: 0.5 } as AxisConfig<"band">
                                 ]}
+
 
                                 series={[
                                     {
-                                        data: earnedValues,
-                                        color: "#BCC3CB",
-                                        label: t("spending.earned")
-                                        // area: true,
-                                        //stack: "total"
+                                        data: selectedYear === 2024 ? actualData.slice(0, 9) : actualData,  // only actual data until August for 2024, or full year for other years
+                                        label: 'Actual Spending',
+                                        id: 'actualId',  // ID for data series to apply styles
+                                        color: '#1F4B99'
                                     },
                                     {
-                                        data: spendingValues,
-                                        color: "#1f78b4",
-                                        label: t("spending.spendings")
-                                        //area: true,
-                                        //stack: "total"
+                                        data: selectedYear === 2024 ? predictedData : selectedYear === 2025 ? predictedData : [],  // predicted data for 2024 and 2025
+                                        label: 'Projected Spending',
+                                        id: 'predictedId',
+                                        color: selectedYear === 2025 ? '#66CDAA' : '#FF8C00', // Use lighter color for predictions in 2025
                                     }
+                                ]}
+                                grid={{
+                                    horizontal: true //horizonatal grid lines
+                                }}
+                                width={1400}
+                                height={450}
+
+                                slotProps={{
+                                    legend: {
+                                        hidden: selectedYear === 2025,  // hide legend if year 2025
+                                    }
+                                }}
+                                sx={{
+                                    [`.${lineElementClasses.root}, .${markElementClasses.root}`]: {
+                                        strokeWidth: 2,  // stroke width for all lines
+                                    },
+                                    '.MuiLineElement-series-predictedId': {
+                                        strokeDasharray: '5 5',  // dashed line for predicted data
+                                        strokeWidth: 12,  // stroke width for predicted data
+                                    },
+                                    '.MuiLineElement-series-actualId': {
+                                        strokeDasharray: '0',  // solid line for actual data
+                                        strokeWidth: 6,
+                                    },
+                                    [`.${markElementClasses.root}:not(.${markElementClasses.highlighted})`]: {
+                                        fill: '#fff',  // fill color for non-highlighted marks
+                                    },
+                                    [`& .${markElementClasses.highlighted}`]: {
+                                        stroke: 'none',  // remove stroke for highlighted marks
+                                    },
+                                    '& .MuiChartsAxis-label': {
+                                        fontSize: '25px', // font size for axis labels
+                                        fill: selectedYear === 2025 ? 'white' : 'black', // white label color for 2025
+                                    },
+                                    '& .MuiChartsTick-label': {
+                                        fontSize: '25px', // font size for tick labels
+                                        fill: selectedYear === 2025 ? 'white' : 'black', // white tick label color for 2025
+                                    },
+                                    // grid line color based on the selected year????
+                                    '& .MuiChartsAxis-root': {
+                                        stroke: selectedYear === 2025 ? 'white' : 'gray',
+                                    },
+                                    // custom styling for the grid lines
+                                    '& .MuiChartsGrid-root line': {
+                                        stroke: selectedYear === 2025 ? '#4B4B4B' : '#d3d3d3', // color of the grid lines
+                                        strokeWidth: selectedYear === 2025 ? 1.5 : 1.5, // thickness of the grid lines
+                                    },
+
+
+                                }}
+                            />
+
+
+                            {/* <LineChart
+                                xAxis={[
+                                    { scaleType: "band", data: monthCategories, categoryGapRatio: 0.5 } as AxisConfig<"band">
+                                ]}
+                                series={[
+                                    {
+                                        data: actualData,
+                                        color: "#1f78b4", // Adjust color as needed
+                                        label: t("spending.actual"),
+                                    },
+                                    {
+                                        data: predictedData,
+                                        color: "#FF6384", // Adjust color as needed
+                                        label: selectedYear === 2025 ? t("spending.predicted2025") : t("spending.predicted"),
+                                    },
                                 ]}
                                 grid={{ horizontal: true }}
                                 width={1400}
                                 height={400}
-                            //onItemClick={handleItemClick} //this lets you click on the bars
-                            />
+                            /> */}
+
+
+
+
+
                         </div>
                     </div>
 

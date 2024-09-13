@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+
 //const jwtCookie = Cookies.get("jwt");
 
 const apiClient = axios.create({
@@ -17,6 +18,7 @@ apiClient.interceptors.request.use((config) => {
     if (jwtCookie) {
         config.headers.Authorization = `Bearer ${jwtCookie}`;
     }
+
     return config;
 });
 
