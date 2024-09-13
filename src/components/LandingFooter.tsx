@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
 
         <footer className="usa-footer usa-footer--slim bg-white shadow-md w-full z-50">
             <div className="grid-container usa-footer__return-to-top" style={{ backgroundColor: 'transparent' }}>
-                <a href="#" aria-label="Return to top" className="usa-footer__return-to-top-link">
+                <a id="return-to-top-button" href="#" aria-label="Return to top" className="usa-footer__return-to-top-link">
                     <svg
                         className="usa-icon"
                         xmlns="http://www.w3.org/2000/svg"
@@ -31,22 +31,22 @@ const Footer: React.FC = () => {
                         <nav className="usa-footer__nav" aria-label="Footer navigation">
                             <ul className="grid-row grid-gap">
                                 <li className="mobile-lg:grid-col-6 desktop:grid-col-auto usa-footer__primary-content">
-                                    <Link className="usa-footer__primary-link" to="/">
+                                    <Link id="about-us-link" className="usa-footer__primary-link" to="/">
                                         About Us
                                     </Link>
                                 </li>
                                 <li className="mobile-lg:grid-col-6 desktop:grid-col-auto usa-footer__primary-content">
-                                    <Link className="usa-footer__primary-link" to="/">
+                                    <Link id="services-link" className="usa-footer__primary-link" to="/">
                                         Services
                                     </Link>
                                 </li>
                                 <li className="mobile-lg:grid-col-6 desktop:grid-col-auto usa-footer__primary-content">
-                                    <Link className="usa-footer__primary-link" to="/">
+                                    <Link id="contact-link" className="usa-footer__primary-link" to="/">
                                         Contact
                                     </Link>
                                 </li>
                                 <li className="mobile-lg:grid-col-6 desktop:grid-col-auto usa-footer__primary-content">
-                                    <Link className="usa-footer__primary-link" to="/">
+                                    <Link id="support-link" className="usa-footer__primary-link" to="/">
                                         Support
                                     </Link>
                                 </li>
@@ -58,12 +58,12 @@ const Footer: React.FC = () => {
                             <div className="grid-row grid-gap">
                                 <div className="grid-col-auto mobile-lg:grid-col-12 desktop:grid-col-auto">
                                     <div className="usa-footer__contact-info">
-                                        <a href="tel:1-800-555-5555">(800) 555-1234</a>
+                                        <a id="phone-attachment" href="tel:1-800-555-5555">(800) 555-1234</a>
                                     </div>
                                 </div>
                                 <div className="grid-col-auto mobile-lg:grid-col-12 desktop:grid-col-auto">
                                     <div className="usa-footer__contact-info">
-                                        <a href="mailto:info@budgetbuddy.com">info@budgetbuddy.com</a>
+                                        <a id="email-attachment" href="mailto:info@budgetbuddy.com">info@budgetbuddy.com</a>
                                     </div>
                                 </div>
                             </div>
