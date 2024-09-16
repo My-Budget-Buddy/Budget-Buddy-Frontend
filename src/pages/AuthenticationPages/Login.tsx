@@ -56,7 +56,7 @@ const Login: React.FC = () => {
                 <Grid row className="flex-justify-center margin-bottom-205">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
                         {error && (
-                            <Alert type="error" heading="Error Logging In" headingLevel="h4">
+                            <Alert id="loginAlert" type="error" heading="Error Logging In" headingLevel="h4">
                                 {error}
                             </Alert>
                         )}
@@ -80,6 +80,7 @@ const Login: React.FC = () => {
                                         autoComplete="current-password"
                                     />
                                     <button
+                                        id="btnShowLoginPassword"
                                         type="button"
                                         title="Toggle Password Visibility"
                                         className="usa-show-password"
@@ -89,7 +90,7 @@ const Login: React.FC = () => {
                                         {showPassword ? t("auth.hide") : t("auth.show")}
                                     </button>
 
-                                    <Button type="submit" className="width-full margin-top-3">
+                                    <Button id="btnLoginSubmit" type="submit" className="width-full margin-top-3">
                                         {t("auth.login")}
                                     </Button>
                                 </Fieldset>
@@ -102,6 +103,7 @@ const Login: React.FC = () => {
                             </div>
 
                             <Button
+                                id="btnGoogleSignIn"
                                 type="button"
                                 outline
                                 className="width-full"
@@ -115,7 +117,7 @@ const Login: React.FC = () => {
 
                         <p className="text-center">
                             {t("auth.to-register")}{" "}
-                            <Link to="/register" className="usa-link">
+                            <Link id="linkRegister" to="/register" className="usa-link">
                                 {t("auth.register")}
                             </Link>
                         </p>
