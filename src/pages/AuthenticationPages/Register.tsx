@@ -85,6 +85,7 @@ const Register: React.FC = () => {
                                         autoComplete="new-password"
                                     />
                                     <button
+                                        id="show-password"
                                         type="button"
                                         title="Toggle Password Visibility"
                                         className="usa-show-password"
@@ -94,7 +95,7 @@ const Register: React.FC = () => {
                                         {showPassword ? t("auth.hide") : t("auth.show")}
                                     </button>
 
-                                    <Button type="submit" className="width-full margin-top-3">
+                                    <Button id="create-account" type="submit" className="width-full margin-top-3">
                                         {t("auth.register")}
                                     </Button>
                                 </Fieldset>
@@ -107,6 +108,7 @@ const Register: React.FC = () => {
                             </div>
 
                             <Button
+                                id="google-sign-in"
                                 type="button"
                                 outline
                                 className="width-full"
@@ -120,7 +122,7 @@ const Register: React.FC = () => {
 
                         <p className="text-center">
                             {t("auth.to-login")}{" "}
-                            <Link to="/login" className="usa-link">
+                            <Link id="link-login" to="/login" className="usa-link">
                                 {t("auth.login")}
                             </Link>
                         </p>
