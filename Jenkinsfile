@@ -7,9 +7,9 @@ pipeline{
             steps {
                 // Remove lingering selenium/cucumber repository to guarantee latest test suite
                 sh '''
-                    if [ -d "project-two-functional-tests" ]; then
+                    if [ -d "Budget-Buddy-Frontend-Testing" ]; then
                         echo "Removing selenium/cucumber repository..."
-                        rm -rf project-two-functional-tests
+                        rm -rf Budget-Buddy-Frontend-Testing
                     else
                         echo "Selenium/cucumber repository does not exist, skipping deletion."
                     fi
