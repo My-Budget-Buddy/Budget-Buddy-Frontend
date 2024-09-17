@@ -13,11 +13,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAllTaxReturns } from './TaxReturnSlice';
 import { RootState } from '../../util/redux/store';
 import { taxReturn } from './TaxReturnSlice';
-import { useAuthentication } from '../../contexts/AuthenticationContext';
+//commenting out the line below because it was removed from the useeffect for testing purposes
+//import { useAuthentication } from '../../contexts/AuthenticationContext';
 import { useTranslation } from 'react-i18next';
 
 const DisplayTaxTables: React.FC = () => {
-  const { jwt } = useAuthentication();
+  //commenting out the line below because it was removed from the useeffect for testing purposes
+ // const { jwt } = useAuthentication();
   const nav = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -28,7 +30,8 @@ const DisplayTaxTables: React.FC = () => {
         dispatch(setAllTaxReturns(res.data)); // Assuming res.data is an array of tax return items
       })
       .catch((err) => console.error(err));
-  }, [jwt]);
+      //making the dependency blank so that it appears quicker for selenium tests
+  }, []);
 
 
   const allTaxReturns = useSelector((state: RootState) => state.taxReturn.taxReturns);
