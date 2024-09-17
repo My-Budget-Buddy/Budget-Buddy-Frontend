@@ -2,6 +2,7 @@ pipeline{
     agent any
 
     stages{
+        // changed
         // Removes previous builds from the instance.
         stage('Clean space'){
             steps {
@@ -62,8 +63,8 @@ pipeline{
 
         // Retrieves the selenium/cucumber repository and runs the tests.
         stage('Selenium/Cucumber Tests'){
-            withCredentials([string(credentialsId: "CUCUMBER_PUBLISH_TOKEN", variable: "CUCUMBER_TOKEN")]){
-                steps{
+            steps{
+                withCredentials([string(credentialsId: "CUCUMBER_PUBLISH_TOKEN", variable: "CUCUMBER_TOKEN")]){
                     sh '''
                     git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git
                     cd Budget-Buddy-Frontend-Testing
