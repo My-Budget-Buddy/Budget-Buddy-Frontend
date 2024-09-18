@@ -111,7 +111,7 @@ pipeline{
         // SonarQube
         stage('Analyze Frontend'){
             environment{
-                SONAR_SERVER_URL = ''
+                SONAR_SERVER_URL = 'https://sonarcloud.io/'
                 SONAR_PROJECT_KEY = credentials('FRONTEND_SONAR_PROJECT_KEY')
                 SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
             }
@@ -121,7 +121,7 @@ pipeline{
                     script{
                         withSonarQubeEnv('SonarCloud'){
                             sh '''
-                            node sonarqube-scanner.js
+                            node sonarqube-scanner.cjs
                             '''
                         }
                     }

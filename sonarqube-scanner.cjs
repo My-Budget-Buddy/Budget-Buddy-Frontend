@@ -1,6 +1,6 @@
-const sonarqubeScanner = require('sonarqube-scanner');
+const scanner = require('sonarqube-scanner').default;
 
-sonarqubeScanner(
+scanner(
     {
         serverUrl: '${{ SONAR_SERVER_URL }}',
         options: {
