@@ -1,5 +1,5 @@
 const scanner = require('sonarqube-scanner').default;
-import { env } from 'node:process';
+const env = require('node:process').env;
 
 scanner(
     {
