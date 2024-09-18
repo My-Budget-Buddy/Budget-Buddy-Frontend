@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { URL_oauth2SocialLogin, URL_registerUser } from "../../api/services/AuthService";
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Register: React.FC = () => {
             return;
         }
 
-        const res = await fetch("http://localhost:8125/auth/register", {
+        const res = await fetch(URL_registerUser, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fields)
@@ -113,7 +114,7 @@ const Register: React.FC = () => {
                                 outline
                                 className="width-full"
                                 onClick={() =>
-                                    window.location.replace("http://localhost:8125/auth/login/oauth2")
+                                    window.location.replace(URL_oauth2SocialLogin)
                                 }
                             >
                                 {t("auth.google")}

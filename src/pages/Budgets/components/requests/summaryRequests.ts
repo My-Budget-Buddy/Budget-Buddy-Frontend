@@ -1,5 +1,5 @@
 import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../../../Tax/taxesAPI";
-const url = "http://localhost:8125";
+import { URL as url } from "../../../../api/Endpoint";
 
 export async function getMonthlySummary(monthYear: string): Promise<MonthlySummary> {
     return getMonthlySummaryAPI(monthYear).then((res) => {

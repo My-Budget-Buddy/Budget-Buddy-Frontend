@@ -1,19 +1,21 @@
 import { URL } from "../Endpoint";
 
+const authUrl = URL + "/auth";
+
 // Registers a user
-export const URL_registerUser = URL + "/register";
+export const URL_registerUser = authUrl + "/register";
 
 // Login
-export const URL_loginUser = URL + "/login";
+export const URL_loginUser = authUrl + "/login";
 
 // Converts an oauth to a login
-export const URL_oauth2SocialLogin = URL + "/login/oauth2";
+export const URL_oauth2SocialLogin = authUrl + "/login/oauth2";
 
 // Logout
-export const URL_logout = URL + "/logout/redirect";
+export const URL_logout = authUrl + "/logout/redirect";
 
 // Update password
-export const URL_updatePassword = URL + "/update/password";
+export const URL_updatePassword = authUrl + "/update/password";
 
 // Validate token
-export const URL_validateJwt = URL + "/validate";
+export const URL_validateJwt = authUrl + "/validate";
