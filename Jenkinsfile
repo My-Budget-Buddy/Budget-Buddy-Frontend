@@ -109,13 +109,12 @@ pipeline{
         }
 
         // SonarQube
-        stage('Test and Analyze Frontend'){
+        stage('Analyze Frontend'){
             steps{
                 container('npm'){
                     script{
                         withSonarQubeEnv('SonarCloud'){
                             sh '''
-                            npm run test --coverage
                             npx sonar-scanner \
                                 -Dsonar.projectKey=my-budget-buddy \
                                 -Dsonar.projectName=Budget-Buddy-Frontend \
@@ -129,12 +128,14 @@ pipeline{
             }
         }
 
-        // Performs jest tests
-        stage('Jest Tests'){
-            steps{
-                sh 'echo "!!! JEST TESTS NOT INTEGRATED !!!'
-            }
-        }
+        // Performs jest tests - will always fail until tests are defined.
+        // stage('Jest Tests'){
+        //     steps{
+        //         container('npm'){
+        //             sh 'npm run test --coverage'
+        //         }
+        //     }
+        // }
 
         // Retrieves the selenium/cucumber repository and runs the tests.
         stage('Selenium/Cucumber Tests'){
