@@ -46,6 +46,13 @@ pipeline{
                         - '9999999'
                       tty: true
 
+                    - name: maven
+                      image: 924809052459.dkr.ecr.us-east-1.amazonaws.com/maven:latest
+                      imagePullPolicy: Always
+                      volumeMounts:
+                        - name: kaniko-cache
+                        mountPath: /kaniko/.cache
+
                     volumes:
                     - name: kaniko-cache
                       emptyDir: {}
@@ -92,17 +99,19 @@ pipeline{
         // SonarQube
         stage('Test and Analyze Frontend'){
             steps{
-                script{
-                    withSonarQubeEnv('SonarCloud'){
-                        sh '''
-                        npm run test --coverage
-                        npx sonar-scanner \
-                            -Dsonar.projectKey=my-budget-buddy \
-                            -Dsonar.projectName=Budget-Buddy-Frontend \
-                            -Dsonar.sources=src \
-                            -Dsonar.exclusions=**/dist/** \
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                        '''
+                container('npm'){
+                    script{
+                        withSonarQubeEnv('SonarCloud'){
+                            sh '''
+                            npm run test --coverage
+                            npx sonar-scanner \
+                                -Dsonar.projectKey=my-budget-buddy \
+                                -Dsonar.projectName=Budget-Buddy-Frontend \
+                                -Dsonar.sources=src \
+                                -Dsonar.exclusions=**/dist/** \
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+                            '''
+                        }
                     }
                 }
             }
@@ -118,12 +127,14 @@ pipeline{
         // Retrieves the selenium/cucumber repository and runs the tests.
         stage('Selenium/Cucumber Tests'){
             steps{
-                withCredentials([string(credentialsId: "CUCUMBER_PUBLISH_TOKEN", variable: "CUCUMBER_TOKEN")]){
-                    sh '''
-                    git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git
-                    cd Budget-Buddy-Frontend-Testing
-                    mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
-                    '''
+                container('maven'){
+                    withCredentials([string(credentialsId: "CUCUMBER_PUBLISH_TOKEN", variable: "CUCUMBER_TOKEN")]){
+                        sh '''
+                        git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git
+                        cd Budget-Buddy-Frontend-Testing
+                        mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                        '''
+                    }
                 }
             }
         }
