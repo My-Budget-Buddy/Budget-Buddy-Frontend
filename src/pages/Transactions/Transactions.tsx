@@ -431,7 +431,7 @@ const Transactions: React.FC = () => {
                                         <td>
                                             <ModalToggleButton
                                                 type="button"
-                                                id="moreInfoModal"
+                                                id="btnTransactionArrow"
                                                 className="usa-button--unstyled"
                                                 modalRef={infoRef}
                                                 onClick={() => handleInfoOpen(transaction)}
@@ -454,7 +454,7 @@ const Transactions: React.FC = () => {
                 aria-describedby="transaction-details"
                 aria-labelledby="transaction-details-title"
             >
-                <ModalHeading className="text-center mb-6">
+                <ModalHeading id="transactionDetailedInfoHeading" className="text-center mb-6">
                     {t("transactions.transaction-detailed-information")}
                 </ModalHeading>
                 {infoTransaction && (
@@ -464,7 +464,7 @@ const Transactions: React.FC = () => {
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
                                     <div>{formatDate(infoTransaction.date)}</div>
                                 </div>
-                                <Button type="button" onClick={() => handleViewHistory(infoTransaction)}>
+                                <Button type="button" id="viewHistoryBtn" onClick={() => handleViewHistory(infoTransaction)}>
                                     {t("transactions.view-history")}
                                 </Button>
                             </div>
@@ -665,7 +665,7 @@ const Transactions: React.FC = () => {
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">{t("transactions.submit")}</Button>
+                            <Button id="editTransactionBtn" type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="edit-transaction-account">{t("transactions.account")}</Label>

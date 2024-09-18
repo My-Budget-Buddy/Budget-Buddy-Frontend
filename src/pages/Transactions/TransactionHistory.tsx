@@ -658,7 +658,7 @@ function TransactionHistory() {
                 <Form onSubmit={handleCreateTransaction} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
-                            id="transaction-date"
+                            id="create-transaction-date"
                             name="date"
                             className="col-span-3 usa-input usa-date-picker_external-input"
                             type="date"
@@ -683,7 +683,7 @@ function TransactionHistory() {
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
                                     value={newTransaction.amount}
-                                    id="transaction-amount"
+                                    id="create-transaction-amount"
                                     name="amount"
                                     type="number"
                                     onChange={handleInputChange}
@@ -693,7 +693,7 @@ function TransactionHistory() {
                             <Label htmlFor="transaction-category">{t("transactions-table.category")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
-                                    id="transaction-category"
+                                    id="create-transaction-category"
                                     name="category"
                                     value={newTransaction.category}
                                     onChange={handleSelectChange}
@@ -709,7 +709,7 @@ function TransactionHistory() {
                             <Label htmlFor="transaction-description">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={newTransaction.description || ""}
-                                id="transaction-description"
+                                id="create-transaction-description"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
@@ -719,7 +719,7 @@ function TransactionHistory() {
                             <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
-                                    id="transaction-account"
+                                    id="create-transaction-account"
                                     name="accountId"
                                     value={newTransaction.accountId}
                                     onChange={handleSelectChange}
@@ -751,7 +751,7 @@ function TransactionHistory() {
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
                                     <div>{formatDate(currentTransaction.date)}</div>
                                 </div>
-                                <Button type="button" onClick={() => { infoRef.current?.toggleModal(); modalRef.current?.toggleModal(); }}>
+                                <Button type="button" id="editTransactionModal" onClick={() => { infoRef.current?.toggleModal(); modalRef.current?.toggleModal(); }}>
                                     {t("transactions.edit-transaction")}
                                 </Button>
                             </div>
