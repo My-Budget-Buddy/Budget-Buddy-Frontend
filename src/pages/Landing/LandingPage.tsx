@@ -70,7 +70,7 @@ export default function LandingPage() {
                             BudgetBuddy helps you track spending, manage budgets, and achieve financial goals with ease. Make every dollar count with BudgetBuddy.
                         </p>
                         <div className="mt-10 flex justify-start">
-                            <Link to="/dashboard" className="usa-button">
+                            <Link to="/dashboard" className="usa-button" id="btnGetStarted">
                                 Get Started
                             </Link>
                         </div>
@@ -96,7 +96,7 @@ export default function LandingPage() {
                                     <h2 className="text-4xl font-semibold leading-8 text-gray-900">{feature.title}</h2>
                                 </div>
                                 <div className="mt-4">
-                                    <div className="text-xl leading-8 text-gray-600" dangerouslySetInnerHTML={{ __html: feature.description }}></div>
+                                    <div  id="feature-text" className="text-xl leading-8 text-gray-600" dangerouslySetInnerHTML={{ __html: feature.description }}></div>
                                 </div>
                             </div>
                         </div>

@@ -379,6 +379,7 @@ const Dashboard: React.FC = () => {
                                             <ModalToggleButton
                                                 modalRef={modalRef}
                                                 opener
+                                                id = "btnTransactionArrow"
                                                 className="usa-button--unstyled"
                                                 onClick={() => setCurrentTransaction(recentTransactions[idx])}
                                             >
@@ -390,7 +391,7 @@ const Dashboard: React.FC = () => {
                             </tbody>
                         </Table>
                         <Link to="/dashboard/transactions" className="text-center">
-                            <Button type="submit">{t("dashboard.all-transactions")}</Button>
+                            <Button id="btnViewAllTransactions" type="submit">{t("dashboard.all-transactions")}</Button>
                         </Link>
                     </>
                 ) : (
