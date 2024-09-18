@@ -35,7 +35,7 @@ pipeline{
                       tty: true
 
                     - name: npm
-                      image: node:6-alpine
+                      image: node:latest
                       imagePullPolicy: Always
                       volumeMounts:
                       - name: kaniko-cache
