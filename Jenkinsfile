@@ -115,6 +115,8 @@ pipeline{
                     script{
                         withSonarQubeEnv('SonarCloud'){
                             sh '''
+                            whoami
+                            ls -l
                             npx sonar-scanner \
                                 -Dsonar.projectKey=My-Budget-Buddy_Budget-Buddy-Frontend \
                                 -Dsonar.projectName=Budget-Buddy-Frontend \
