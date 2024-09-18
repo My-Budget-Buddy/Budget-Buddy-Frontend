@@ -110,28 +110,19 @@ pipeline{
 
         // SonarQube
         stage('Analyze Frontend'){
+            environment{
+                SONAR_SERVER_URL = 'https://sonarcloud.io/'
+                SONAR_TOKEN = credentials('SONAR_TOKEN')
+                SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
+            }
+
             steps{
                 container('npm'){
                     script{
                         withSonarQubeEnv('SonarCloud'){
                             sh '''
-                            whoami
-                            ls -l
-
-                            npx install -g sonar-scanner@3.1.0
-                            npx sonar-scanner \
-                                -Dsonar.host.url=https://sonarcloud.io/project/key?id=My-Budget-Buddy_Budget-Buddy-Frontend \
-                                -Dsonar.projectKey=My-Budget-Buddy_Budget-Buddy-Frontend \
-                                -Dsonar.projectName=Budget-Buddy-Frontend \
-                                -Dsonar.sources=./ \
-                                -Dsonar.exclusions=**/dist/** \
-                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+                            node sonarqube-scanner.cjs
                             '''
-
-                            // sh '''
-                            //     echo "Installing sonar-scanner..."
-                            //     npm install -g sonarqube-scanner
-                            // '''
                         }
                     }
                 }
