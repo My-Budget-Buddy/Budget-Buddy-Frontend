@@ -9,7 +9,7 @@ scanner(
         'sonar.projectName': env.SONAR_PROJECT_NAME,
         'sonar.projectDescription': 'SonarQube project for ${SONAR_PROJECT_NAME}',
         'sonar.sources': 'src',
-        'sonar.tests': 'test',
+        // 'sonar.tests': 'test',
       },
     },
     error => {
