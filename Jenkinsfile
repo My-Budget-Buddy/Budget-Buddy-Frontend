@@ -118,6 +118,7 @@ pipeline{
                             whoami
                             ls -l
                             npx sonar-scanner \
+                                -Dsonar.host.url=https://sonarcloud.io/project/key?id=My-Budget-Buddy_Budget-Buddy-Frontend \
                                 -Dsonar.projectKey=My-Budget-Buddy_Budget-Buddy-Frontend \
                                 -Dsonar.projectName=Budget-Buddy-Frontend \
                                 -Dsonar.sources=./ \
