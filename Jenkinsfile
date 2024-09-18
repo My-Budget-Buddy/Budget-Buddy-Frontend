@@ -52,6 +52,11 @@ pipeline{
                       volumeMounts:
                         - name: kaniko-cache
                           mountPath: /kaniko/.cache
+                      command:
+                        - sleep
+                      args:
+                        - '9999999'
+                      tty: true
 
 #                     - name: postgres
 #                      image: postgres:13.16-alpine3.20
