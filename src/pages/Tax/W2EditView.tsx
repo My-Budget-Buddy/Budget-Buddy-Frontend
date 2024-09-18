@@ -72,10 +72,10 @@ function W2EditView() {
 
                 </div>
                 <div className="flex ">
-                    <Button type='button' onClick={handlePreviousStep} disabled={currentStep === 0}>
+                    <Button type='button' onClick={handlePreviousStep} disabled={currentStep === 0} id="prev">
                         Prev
                     </Button>
-                    <Button type='button' onClick={handleNextStep} disabled={currentStep === steps.length - 1}>
+                    <Button type='button' onClick={handleNextStep} disabled={currentStep === steps.length - 1} id="next">
                         Next
                     </Button>
                 </div>

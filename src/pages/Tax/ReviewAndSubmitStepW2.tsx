@@ -137,8 +137,8 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                                             )}
                                         </CardBody>
                                         <CardFooter>
-                                            <Button type="button" onClick={handlePreviousW2} disabled={currentW2Index === 0}>Previous</Button>
-                                            <Button type="button" onClick={handleNextW2} disabled={currentW2Index === W2s.length - 1}>Next</Button>
+                                            <Button type="button" onClick={handlePreviousW2} disabled={currentW2Index === 0} id="review-w2-prev-button">Previous</Button>
+                                            <Button type="button" onClick={handleNextW2} disabled={currentW2Index === W2s.length - 1} id="review-w2-next-button">Next</Button>
                                         </CardFooter>
                                     </Card>
                                 </Grid>
@@ -175,8 +175,8 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                                             )}
                                         </CardBody>
                                         <CardFooter>
-                                            <Button type="button" onClick={handlePreviousDeduction} disabled={currentDeductionIndex === 0}>Previous</Button>
-                                            <Button type="button" onClick={handleNextDeduction} disabled={currentDeductionIndex === DeductionList.length - 1}>Next</Button>
+                                            <Button type="button" onClick={handlePreviousDeduction} disabled={currentDeductionIndex === 0} id="review-deduct-prev-button">Previous</Button>
+                                            <Button type="button" onClick={handleNextDeduction} disabled={currentDeductionIndex === DeductionList.length - 1} id="review-deduct-next-button">Next</Button>
                                         </CardFooter>
                                     </Card>
                                 </Grid>
@@ -185,7 +185,7 @@ const ReviewAndSubmitStepW2: React.FC = () => {
                     </Grid>
                 </GridContainer>
             </div>
-            <Button type="button" onClick={handleSubmit}>Submit</Button>
+            <Button type="button" onClick={handleSubmit} id="review-submit-button">Submit</Button>
         </>
     );
 };
