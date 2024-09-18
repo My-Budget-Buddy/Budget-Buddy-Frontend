@@ -1,5 +1,73 @@
 pipeline{
-    agent any
+    agent {
+        kubernetes{
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                    containers:
+                    - name: kaniko
+                      image: 924809052459.dkr.ecr.us-east-1.amazonaws.com/kaniko:latest
+                      imagePullPolicy: Always
+                      volumeMounts:
+                      - name: kaniko-cache
+                        mountPath: /kaniko/.cache
+                      env:
+                      - name: AWS_REGION
+                        valueFrom:
+                          secretKeyRef:
+                          name: ecr-login
+                          key: AWS_REGION
+                      - name: AWS_ACCESS_KEY_ID
+                        valueFrom:
+                          secretKeyRef:
+                          name: ecr-login
+                          key: AWS_ACCESS_KEY_ID
+                      - name: AWS_SECRET_ACCESS_KEY
+                        valueFrom:
+                          secretKeyRef:
+                          name: ecr-login
+                          key: AWS_SECRET_ACCESS_KEY
+                      command:
+                      - sleep
+                      args:
+                      - '9999999'
+                      tty: true
+
+                    - name: npm
+                      image: node:6-alpine
+                      imagePullPolicy: Always
+                      volumeMounts:
+                      - name: kaniko-cache
+                        mountPath: /kaniko/.cache
+                      env:
+                      - name: AWS_REGION
+                        valueFrom:
+                          secretKeyRef:
+                          name: ecr-login
+                          key: AWS_REGION
+                      - name: AWS_ACCESS_KEY_ID
+                        valueFrom:
+                          secretKeyRef:
+                          name: ecr-login
+                          key: AWS_ACCESS_KEY_ID
+                      - name: AWS_SECRET_ACCESS_KEY
+                        valueFrom:
+                          secretKeyRef:
+                          name: ecr-login
+                          key: AWS_SECRET_ACCESS_KEY
+                      command:
+                        - sleep
+                      args:
+                        - '9999999'
+                      tty: true
+
+                    volumes:
+                    - name: kaniko-cache
+                      emptyDir: {}
+            '''
+        }
+    }
 
     stages{
         // changed
@@ -31,7 +99,9 @@ pipeline{
         // Builds the frontend.
         stage('Build frontend'){
             steps{
-                sh 'npm install && npm run build'
+                container('npm'){
+                    sh 'npm install && npm run build'
+                }
             }
         }
 
