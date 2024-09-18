@@ -51,7 +51,14 @@ pipeline{
                       imagePullPolicy: Always
                       volumeMounts:
                         - name: kaniko-cache
-                        mountPath: /kaniko/.cache
+                          mountPath: /kaniko/.cache
+
+#                     - name: postgres
+#                      image: postgres:13.16-alpine3.20
+#                      imagePullPolicy: Always
+#                      volumeMounts:
+#                        - name: kaniko-cache
+#                          mountPath: /kaniko/.cache
 
                     volumes:
                     - name: kaniko-cache
