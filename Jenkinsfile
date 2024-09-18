@@ -15,19 +15,19 @@ pipeline{
                       env:
                       - name: AWS_REGION
                         valueFrom:
-                          secretKeyRef:
-                          name: ecr-login
-                          key: AWS_REGION
+                            secretKeyRef:
+                                name: ecr-login
+                                key: AWS_REGION
                       - name: AWS_ACCESS_KEY_ID
                         valueFrom:
-                          secretKeyRef:
-                          name: ecr-login
-                          key: AWS_ACCESS_KEY_ID
+                            secretKeyRef:
+                                name: ecr-login
+                                key: AWS_ACCESS_KEY_ID
                       - name: AWS_SECRET_ACCESS_KEY
                         valueFrom:
-                          secretKeyRef:
-                          name: ecr-login
-                          key: AWS_SECRET_ACCESS_KEY
+                            secretKeyRef:
+                                name: ecr-login
+                                key: AWS_SECRET_ACCESS_KEY
                       command:
                       - sleep
                       args:
@@ -40,22 +40,6 @@ pipeline{
                       volumeMounts:
                       - name: kaniko-cache
                         mountPath: /kaniko/.cache
-                      env:
-                      - name: AWS_REGION
-                        valueFrom:
-                          secretKeyRef:
-                          name: ecr-login
-                          key: AWS_REGION
-                      - name: AWS_ACCESS_KEY_ID
-                        valueFrom:
-                          secretKeyRef:
-                          name: ecr-login
-                          key: AWS_ACCESS_KEY_ID
-                      - name: AWS_SECRET_ACCESS_KEY
-                        valueFrom:
-                          secretKeyRef:
-                          name: ecr-login
-                          key: AWS_SECRET_ACCESS_KEY
                       command:
                         - sleep
                       args:
