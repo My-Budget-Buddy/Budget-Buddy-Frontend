@@ -114,22 +114,22 @@ pipeline{
                 container('npm'){
                     script{
                         withSonarQubeEnv('SonarCloud'){
-                            // sh '''
-                            // whoami
-                            // ls -l
-                            // npx sonar-scanner \
-                            //     -Dsonar.host.url=https://sonarcloud.io/project/key?id=My-Budget-Buddy_Budget-Buddy-Frontend \
-                            //     -Dsonar.projectKey=My-Budget-Buddy_Budget-Buddy-Frontend \
-                            //     -Dsonar.projectName=Budget-Buddy-Frontend \
-                            //     -Dsonar.sources=./ \
-                            //     -Dsonar.exclusions=**/dist/** \
-                            //     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                            // '''
-
                             sh '''
-                                echo "Installing sonar-scanner..."
-                                npm install -g sonarqube-scanner
+                            whoami
+                            ls -l
+                            npx sonar-scanner \
+                                -Dsonar.host.url=https://sonarcloud.io/project/key?id=My-Budget-Buddy_Budget-Buddy-Frontend \
+                                -Dsonar.projectKey=My-Budget-Buddy_Budget-Buddy-Frontend \
+                                -Dsonar.projectName=Budget-Buddy-Frontend \
+                                -Dsonar.sources=./ \
+                                -Dsonar.exclusions=**/dist/** \
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             '''
+
+                            // sh '''
+                            //     echo "Installing sonar-scanner..."
+                            //     npm install -g sonarqube-scanner
+                            // '''
                         }
                     }
                 }
