@@ -116,9 +116,9 @@ pipeline{
                         withSonarQubeEnv('SonarCloud'){
                             sh '''
                             npx sonar-scanner \
-                                -Dsonar.projectKey=my-budget-buddy \
+                                -Dsonar.projectKey=My-Budget-Buddy_Budget-Buddy-Frontend \
                                 -Dsonar.projectName=Budget-Buddy-Frontend \
-                                -Dsonar.sources=src \
+                                -Dsonar.sources=./ \
                                 -Dsonar.exclusions=**/dist/** \
                                 -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             '''
