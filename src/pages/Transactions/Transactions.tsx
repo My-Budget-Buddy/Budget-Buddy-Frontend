@@ -201,6 +201,7 @@ const Transactions: React.FC = () => {
                 <div className="flex gap-4 align-end mt-4">
                     <Button
                         type="button"
+                        id="clearFilterBtn"
                         className="usa-button--secondary"
                         onClick={() => {
                             setSelectedCategory("All Categories");
@@ -219,6 +220,7 @@ const Transactions: React.FC = () => {
                     </Button>
                     <select
                         className="p-2 border rounded"
+                        id="sortByDropdown"
                         value={sortOrder}
                         onChange={(e) => setSortOrder(e.target.value)}
                     >
@@ -227,13 +229,14 @@ const Transactions: React.FC = () => {
                     </select>
                     <select
                         className="p-2 border rounded"
+                        id="directionDropdown"
                         value={sortDirection}
                         onChange={(e) => setSortDirection(e.target.value)}
                     >
                         <option value="desc">{t("transactions.descending")}</option>
                         <option value="asc">{t("transactions.ascending")}</option>
                     </select>
-                    <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
+                    <ModalToggleButton type="button" id="addTransactionModal" className="usa-button" modalRef={createRef}>
                         {t("transactions.add-transaction")}
                     </ModalToggleButton>
                 </div>
@@ -242,6 +245,7 @@ const Transactions: React.FC = () => {
             <div className="flex justify-center items-center gap-4 bg-transparent p-4">
                 <select
                     className="p-2 w-40"
+                    id="allCategoriesDropDown"
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                 >
@@ -254,6 +258,7 @@ const Transactions: React.FC = () => {
                 </select>
                 <select
                     className="p-2 w-40"
+                    id="allAccountDropDown"
                     value={selectedAccount}
                     onChange={(e) => setSelectedAccount(e.target.value)}
                 >
@@ -266,6 +271,7 @@ const Transactions: React.FC = () => {
                 </select>
                 <select
                     className="p-2 w-40"
+                    id="allAmountsDropDown"
                     value={amountFilter}
                     onChange={(e) => {
                         setAmountFilter(e.target.value);
@@ -281,6 +287,7 @@ const Transactions: React.FC = () => {
                 </select>
                 <select
                     className="p-2 w-40"
+                    id="allDatesDropDown"
                     value={dateFilter}
                     onChange={(e) => {
                         setDateFilter(e.target.value);
@@ -356,7 +363,7 @@ const Transactions: React.FC = () => {
 
             <div className="flex">
                 <div className="p-4 mt-4 m-2 min-h-[30rem] rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-screen">
-                    <h1 className="px-4">{t("transactions.list-of-transactions")}</h1>
+                    <h1 id="listOfTransactionsTitle" className="px-4">{t("transactions.list-of-transactions")}</h1>
                     {filteredTransactions.length === 0 ? (
                         <div className="text-center">
                             <p className="text-lg">
@@ -395,6 +402,7 @@ const Transactions: React.FC = () => {
                                         <td>
                                             <Button
                                                 type="button"
+                                                id="editBtn"
                                                 className="usa-button--unstyled"
                                                 onClick={() => {
                                                     setEditTransaction(transaction);
@@ -405,6 +413,7 @@ const Transactions: React.FC = () => {
                                             </Button>
                                             <Button
                                                 type="button"
+                                                id="deleteBtn"
                                                 className="usa-button--unstyled"
                                                 onClick={() => handleDelete(transaction.transactionId)}
                                             >
@@ -422,6 +431,7 @@ const Transactions: React.FC = () => {
                                         <td>
                                             <ModalToggleButton
                                                 type="button"
+                                                id="btnTransactionArrow"
                                                 className="usa-button--unstyled"
                                                 modalRef={infoRef}
                                                 onClick={() => handleInfoOpen(transaction)}
@@ -444,7 +454,7 @@ const Transactions: React.FC = () => {
                 aria-describedby="transaction-details"
                 aria-labelledby="transaction-details-title"
             >
-                <ModalHeading className="text-center mb-6">
+                <ModalHeading id="transactionDetailedInfoHeading" className="text-center mb-6">
                     {t("transactions.transaction-detailed-information")}
                 </ModalHeading>
                 {infoTransaction && (
@@ -454,7 +464,7 @@ const Transactions: React.FC = () => {
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
                                     <div>{formatDate(infoTransaction.date)}</div>
                                 </div>
-                                <Button type="button" onClick={() => handleViewHistory(infoTransaction)}>
+                                <Button type="button" id="viewHistoryBtn" onClick={() => handleViewHistory(infoTransaction)}>
                                     {t("transactions.view-history")}
                                 </Button>
                             </div>
@@ -566,7 +576,7 @@ const Transactions: React.FC = () => {
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">{t("transactions.submit")}</Button>
+                            <Button id="addTransactionBtn"type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
@@ -655,7 +665,7 @@ const Transactions: React.FC = () => {
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">{t("transactions.submit")}</Button>
+                            <Button id="editTransactionBtn" type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="edit-transaction-account">{t("transactions.account")}</Label>
