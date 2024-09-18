@@ -128,7 +128,7 @@ pipeline{
 
                             sh '''
                                 echo "Installing sonar-scanner..."
-                                npx install -g sonar-scanner
+                                npm install -g sonarqube-scanner
                             '''
                         }
                     }
