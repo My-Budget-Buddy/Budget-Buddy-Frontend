@@ -1,11 +1,12 @@
 const scanner = require('sonarqube-scanner').default;
+import { env } from 'node:process';
 
 scanner(
     {
-      serverUrl: '${SONAR_SERVER_URL}',
-      token: '${SONAR_TOKEN}',
+      serverUrl: env.SONAR_SERVER_URL,
+      token: env.SONAR_TOKEN,
       options: {
-        'sonar.projectName': '${SONAR_PROJECT_NAME}',
+        'sonar.projectName': env.SONAR_PROJECT_NAME,
         'sonar.projectDescription': 'SonarQube project for ${SONAR_PROJECT_NAME}',
         'sonar.sources': 'src',
         'sonar.tests': 'test',
