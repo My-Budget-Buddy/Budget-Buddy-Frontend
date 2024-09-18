@@ -18,7 +18,7 @@ pipeline{
 
                 // Remove lingering dist files to guarantee latest build
                 sh '''
-                    if[ -d "dist" ]; then
+                    if [ -d "dist" ]; then
                         echo "Removing previous distribution..."
                         rm -rf dist
                     else
