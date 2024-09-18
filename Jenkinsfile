@@ -112,7 +112,7 @@ pipeline{
         stage('Analyze Frontend'){
             environment{
                 SONAR_SERVER_URL = 'https://sonarcloud.io/'
-                SONAR_PROJECT_KEY = credentials('FRONTEND_SONAR_PROJECT_KEY')
+                SONAR_TOKEN = credentials('SONAR_TOKEN')
                 SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
             }
 

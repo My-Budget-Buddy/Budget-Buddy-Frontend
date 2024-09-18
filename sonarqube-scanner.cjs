@@ -2,16 +2,19 @@ const scanner = require('sonarqube-scanner').default;
 
 scanner(
     {
-        serverUrl: '${{ SONAR_SERVER_URL }}',
-        options: {
-            'sonar.projectKey': '${{ SONAR_PROJECT_KEY }}',
-            'sonar.projectName': '${{ SONAR_PROJECT_NAME }}',
-            'sonar.projectVersion': '1.0',
-            'sonar.sources': './src',
-            // 'sonar.tests': './tests',
-            'sonar.javascript.lcov.reportPaths': 'coverage/lcov.info',
-            'sonar.sourceEncoding': 'UTF-8',
-        },
+      serverUrl: '${SONAR_SERVER_URL}',
+      token: '${SONAR_TOKEN}',
+      options: {
+        'sonar.projectName': '${SONAR_PROJECT_NAME}',
+        'sonar.projectDescription': 'SonarQube project for ${SONAR_PROJECT_NAME}',
+        'sonar.sources': 'src',
+        'sonar.tests': 'test',
+      },
     },
-    () => process.exit()
-);
+    error => {
+      if (error) {
+        console.error(error);
+      }
+      process.exit();
+    },
+  );
