@@ -101,7 +101,7 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
 
     return (
         <div>
-            <ModalToggleButton modalRef={modalRef} opener onClick={handleModalOpen}>
+            <ModalToggleButton id="Add-New-Savings-Bucket" modalRef={modalRef} opener onClick={handleModalOpen}>
                 {children}
             </ModalToggleButton>
 
@@ -119,7 +119,7 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
                         value={formData.data.name}
                         onChange={handleChangeInput}
                         placeholder="Name"
-                        id={""}
+                        id={"Budget-Name-Input"}
                     />
                     <TextInput
                         type="number"
@@ -127,13 +127,13 @@ const NewBucketModal: React.FC<NewBucketModalProps> = ({ children }) => {
                         value={formData.data.amount_required}
                         onChange={handleChangeInput}
                         placeholder="Amount"
-                        id={""}
+                        id={"Amount-Required-Input"}
                     />
                 </div>
 
                 <ModalFooter>
                     <ButtonGroup>
-                        <Button onClick={handleSubmit} disabled={isSending} type={"button"}>
+                        <Button id="Submit-New-Savings-Bucket" onClick={handleSubmit} disabled={isSending} type={"button"}>
                             {t("budgets.buttons.submit")}
                         </Button>
                         <ModalToggleButton modalRef={modalRef} closer unstyled className="padding-105 text-center">

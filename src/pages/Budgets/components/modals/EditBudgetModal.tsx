@@ -117,7 +117,7 @@ const EditBudgetModal: React.FC<CategoryProps> = ({ id, category, budgeted, isRe
 
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
+            <ModalToggleButton id="Edit-Budget" modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
                 <Icon.Edit />
             </ModalToggleButton>
 

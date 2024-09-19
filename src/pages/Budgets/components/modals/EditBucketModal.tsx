@@ -91,7 +91,7 @@ const EditBucketModal: React.FC<EditBucketModalProps> = ({ data }, { children })
 
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
+            <ModalToggleButton id="Edit-Savings-Bucket" modalRef={modalRef} opener unstyled onClick={handleModalOpen}>
                 <Icon.Edit />
                 {children}
             </ModalToggleButton>
