@@ -5,7 +5,7 @@ import { env } from "node:process";
 
 export default defineConfig(({ command, mode }) => {
     // Load environment variables from .env file based on the current mode (e.g., development, production)
-    const env = loadEnv(mode, process.cwd());
+    // const env = loadEnv(mode, process.cwd());
 
     return {
         plugins: [react()],

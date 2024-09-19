@@ -7,7 +7,7 @@ const deductionsUrl = URL + "/deductions";
 // Find deduction by deduction ID
 export const URL_findDeductionById = `${deductionsUrl}/{id}`;
 export const getUrl_findDeductionById = (id: number) => {
-    URL_findDeductionById.replace("{id}", id.toString());
+    return URL_findDeductionById.replace("{id}", id.toString());
 }
 
 // Retrieve list of all Deductions
