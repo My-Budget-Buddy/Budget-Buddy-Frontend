@@ -1,4 +1,9 @@
-import { env } from "node:process";
+let url = "http://localhost:8125";
+
+const env = import.meta.env.MODE;
+if (env === 'production') {
+    url = "api.skillstorm-congo.com";
+}
 
 // Base URL for the backend API
-export const URL = env.BASE_API_ENDPOINT;
+export const URL = url;
