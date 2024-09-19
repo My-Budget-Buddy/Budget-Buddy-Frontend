@@ -229,7 +229,7 @@ const Dashboard: React.FC = () => {
                     id="chart-container"
                     className="flex flex-col flex-auto w-2/3 p-8 mr-12 border-solid border-4 rounded-lg shadow-lg"
                 >
-                    <h3 className="flex items-center justify-center text-2xl font-bold my-0">
+                    <h3 className="flex items-center justify-center text-2xl font-bold my-0" id="current-spending-chart-header">
                         {t("dashboard.chart")} {formatCurrency(monthlySpend)}
                     </h3>
                     <LineChart
@@ -409,6 +409,7 @@ const Dashboard: React.FC = () => {
                     <div className="w-2/5 flex justify-center">
                         {/* <SummaryComponent hideAdditionalInfo/> */}
                         <Gauge
+                            id="budget-gauge"
                             width={200}
                             height={200}
                             value={parseFloat((budgetGaugeSpent).toFixed(2))}
