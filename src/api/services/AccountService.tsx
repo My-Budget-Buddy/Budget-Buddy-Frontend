@@ -3,7 +3,7 @@ import { URL } from "../Endpoint";
 const accountsUrl = URL + "/accounts";
 
 // Get accounts by user ID
-export const URL_getAccountsByUserId = accountsUrl + "/";
+export const URL_getAccountsByUserId = accountsUrl;
 
 // Get individual account by ID. Must replace {accountId} with the account ID.
 export const URL_getAccountByAccountIdAndUserId = accountsUrl + "/{accountId}";
@@ -12,7 +12,7 @@ export const getURL_getAccountByAccountIdAndUserId = (accountId: string) => {
 }
 
 // Create Account
-export const URL_createAccount = accountsUrl + "/";
+export const URL_createAccount = accountsUrl;
 
 // Update Account. Must replace {accountId} with the account ID.
 export const URL_updateAccount = accountsUrl + "/{accountId}";
@@ -27,4 +27,4 @@ export const getURL_deleteAccount = (accountId: string) => {
 }
 
 // Delete all accounts
-export const URL_deleteAllAccounts = accountsUrl + "/";
+export const URL_deleteAllAccounts = accountsUrl;
