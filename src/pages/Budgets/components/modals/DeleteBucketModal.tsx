@@ -56,7 +56,7 @@ const DeleteBucketModal: React.FC<TODO_CategoryProps> = ({ id, bucketName }) => 
 
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled>
+            <ModalToggleButton id="Delete-Savings-Bucket" modalRef={modalRef} opener unstyled>
                 <Icon.Delete />
             </ModalToggleButton>
 
