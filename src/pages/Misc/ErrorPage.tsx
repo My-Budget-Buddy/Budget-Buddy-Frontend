@@ -15,7 +15,7 @@ const ErrorPage = () => {
                     <Grid className="flex-justify-center">
                         <div className="bg-white shadow-lg rounded-lg padding-5 text-center" style={{ maxWidth: '600px', width: '100%' }}>
                             <Icon.Error size={4} className="text-secondary margin-bottom-2" />
-                            <h1 className="text-primary font-heading-xl margin-bottom-1">Page not found</h1>
+                            <h1 id="error-page-header" className="text-primary font-heading-xl margin-bottom-1">Page not found</h1>
                             <p className="usa-intro margin-top-1 text-base-dark">
                                 We’re sorry, we can’t find the page you're looking for. It might have been removed, changed its name, or is otherwise unavailable.
                             </p>
@@ -27,7 +27,7 @@ const ErrorPage = () => {
                                 Visit our homepage for helpful tools and resources, or contact us and we’ll point you in the right direction.
                             </p>
                             <div className="margin-y-5">
-                                <NavLink to="/" className="usa-button">
+                                <NavLink id="Return-to-homepage" to="/" className="usa-button">
                                     Return to homepage
                                 </NavLink>
 
