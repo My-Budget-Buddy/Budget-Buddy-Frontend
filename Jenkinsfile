@@ -114,6 +114,7 @@ pipeline{
                 SONAR_SERVER_URL = 'https://sonarcloud.io/'
                 SONAR_TOKEN = credentials('SONAR_TOKEN')
                 SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
+                SONAR_PROJECT_KEY = 'My-Budget-Buddy_Budget-Buddy-Frontend'
             }
 
             steps{

@@ -7,7 +7,8 @@ scanner(
       token: env.SONAR_TOKEN,
       options: {
         'sonar.projectName': env.SONAR_PROJECT_NAME,
-        'sonar.projectDescription': 'SonarQube project for ${SONAR_PROJECT_NAME}',
+        'sonar.projectKey': env.SONAR_PROJECT_KEY,
+        'sonar.projectDescription': 'SonarQube project for ' + env.SONAR_PROJECT_NAME,
         'sonar.sources': 'src',
         // 'sonar.tests': 'test',
       },
