@@ -1,9 +1,4 @@
-let url = "http://localhost:8125";
-
-const env = import.meta.env.MODE;
-if (env === 'production') {
-    url = "api.skillstorm-congo.com";
-}
+let url = import.meta.env.VITE_BASE_API_ENDPOINT;
 
 // Base URL for the backend API
 export const URL = url;
