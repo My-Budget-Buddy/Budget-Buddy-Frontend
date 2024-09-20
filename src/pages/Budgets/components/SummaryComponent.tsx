@@ -100,7 +100,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
 
     return (
         <>
-            <div className="flex flex-row justify-between w-full">
+            <div className="flex flex-row justify-between w-full" id="summary-component">
                 <div className="flex flex-col items-center" hidden={hideAdditionalInfo}>
                     <div className="text-2xl font-bold flex flex-row items-center">
                         <Title>{t("budgets.total-funds")}</Title>
@@ -109,7 +109,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                             onMouseLeave={() => setShowTooltip(false)}
                             className="relative text-sm"
                         >
-                            <Icon.Help className="mt-4"/>
+                            <Icon.Help className="mt-4" />
                             {/* Render tooltip conditionally */}
                             {showTooltip && (
                                 <div className="absolute left-8 top-0 bg-gray-200 p-2 rounded shadow-md w-80 text-sm">
@@ -160,7 +160,7 @@ const SummaryComponent: React.FC<CustomComponentProps> = ({ hideAdditionalInfo }
                                 totalBudgetAmount={monthlySummary.totalBudgetAmount}
                             />
                         </Title>
-                        <div className="text-lg">{formatCurrency(budgets.spendingBudget)}</div>
+                        <div id="Spending-Budget-Div" className="text-lg">{formatCurrency(budgets.spendingBudget)}</div>
                     </div>
                     <div className="flex flex-col items-center">
                         <div className="text-2xl font-bold">{t("budgets.allocated")}</div>

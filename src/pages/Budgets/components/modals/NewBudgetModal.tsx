@@ -120,7 +120,7 @@ const NewCategoryModal: React.FC = () => {
 
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener className="mx-2" onClick={handleModalOpen}>
+            <ModalToggleButton modalRef={modalRef} opener className="mx-2" onClick={handleModalOpen} id="Add-New-Budget">
                 {t("budgets.add-new-budget")}
             </ModalToggleButton>
 
@@ -192,6 +192,7 @@ const NewCategoryModal: React.FC = () => {
                                 isSending || hasTotalAmountError || !hasSelectedCategory || isDuplicateBudgetError
                             }
                             type={"button"}
+                            id="Submit"
                         >
                             {t("budgets.buttons.submit")}
                         </Button>

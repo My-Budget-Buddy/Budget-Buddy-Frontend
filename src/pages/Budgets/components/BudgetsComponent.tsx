@@ -52,7 +52,7 @@ const BudgetsComponent: React.FC = () => {
         })();
     }, [budgetsStore.monthYear]);
 
-    useEffect(() => {}, [budgetsStore]);
+    useEffect(() => { }, [budgetsStore]);
 
     // Updates the redux store with fresh budgets from the database
     useEffect(() => {
