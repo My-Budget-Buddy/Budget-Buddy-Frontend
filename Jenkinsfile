@@ -72,6 +72,10 @@ pipeline{
         }
     }
 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
+    }
+
     environment{
         STAGING_API_ENDPOINT = 'https://api.skillstorm-congo.com'
         PROD_API_ENDPOINT = 'https://api.skillstorm-congo.com'
