@@ -49,6 +49,10 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
 
     useEffect(() => {
         if (jwt) {
+            console.log("JWT has changed: " + jwt);
+            Cookies.set("jwt", jwt, { sameSite: "None", secure: true });
+            console.log("JWT cookie has been set: " + Cookies.get("jwt"));
+
             // make a network request to get profile information
             fetch(URL_findUserById, { headers: { Authorization: `Bearer ${jwt}` } })
                 .then(res => {
