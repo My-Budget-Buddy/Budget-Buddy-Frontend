@@ -15,6 +15,7 @@ const apiClient = axios.create({
 apiClient.defaults.withCredentials = true;
 
 apiClient.interceptors.request.use((config) => {
+    console.log("index.ts API CLIENT INTERCEPTORS\n" + JSON.stringify(config));
     const jwtCookie = Cookies.get("jwt");
     if (jwtCookie) {
         config.headers.Authorization = `Bearer ${jwtCookie}`;

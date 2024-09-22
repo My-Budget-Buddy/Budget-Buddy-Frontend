@@ -3,6 +3,7 @@ import type { User } from "../types/models";
 import Cookies from "js-cookie";
 
 import { Dispatch, SetStateAction, useState, createContext, useEffect, useContext } from "react";
+import { URL_findUserById } from "../api/services/UserService";
 
 interface Authorization {
     loading: boolean;
@@ -49,7 +50,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     useEffect(() => {
         if (jwt) {
             // make a network request to get profile information
-            fetch("http://localhost:8125/users/user", { headers: { Authorization: `Bearer ${jwt}` } })
+            fetch(URL_findUserById, { headers: { Authorization: `Bearer ${jwt}` } })
                 .then(res => {
                     if (res.ok) return res.json().then((user: User) => setProfile(user))
                     else console.log("[AuthContext]: error fetching user information")

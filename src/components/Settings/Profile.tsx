@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { updateUserPassword } from "../../pages/Tax/taxesAPI";
 import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
+import { URL_updateUser } from "../../api/services/UserService";
 
 const Profile: React.FC = () => {
     const { t } = useTranslation();
@@ -40,7 +41,7 @@ const Profile: React.FC = () => {
 
             // update the user Profile only if changes were made
             if (firstName !== profile.firstName || lastName !== profile.lastName) {
-                fetch("http://localhost:8125/users", {
+                fetch(URL_updateUser, {
                     method: "PUT",
                     headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
                     body: JSON.stringify({ id, email, firstName, lastName })
