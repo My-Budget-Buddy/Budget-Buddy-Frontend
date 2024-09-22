@@ -72,6 +72,11 @@ pipeline{
         }
     }
 
+    environment{
+        STAGING_API_ENDPOINT = 'https://api.skillstorm-congo.com'
+        PROD_API_ENDPOINT = 'https://api.skillstorm-congo.com'
+    }
+
     stages{
         // Pulls all dependencies from git.
         stage('Pull Dependencies'){
@@ -81,9 +86,28 @@ pipeline{
         }
 
         // Builds the frontend.
-        stage('Build frontend'){
+        stage('Build frontend for Staging'){
+            when{
+                branch 'testing-cohort-dev'
+            }
+
             steps{
                 container('npm'){
+                    sh 'echo "VITE_BASE_API_ENDPOINT=${STAGING_API_ENDPOINT}" > .env'
+                    sh 'npm install && npm run build'
+                }
+            }
+        }
+
+        // Builds the frontend.
+        stage('Build frontend for Production'){
+            when{
+                branch 'testing-cohort'
+            }
+
+            steps{
+                container('npm'){
+                    sh 'echo "VITE_BASE_API_ENDPOINT=${PROD_API_ENDPOINT}" > .env'
                     sh 'npm install && npm run build'
                 }
             }
@@ -124,7 +148,7 @@ pipeline{
         stage('Selenium/Cucumber Tests'){
             steps{
                 container('maven'){
-                    withCredentials([string(credentialsId: "CUCUMBER_PUBLISH_TOKEN", variable: "CUCUMBER_TOKEN")]){
+                    withCredentials([string(credentialsId: "CUCUMBER_TOKEN", variable: "CUCUMBER_TOKEN")]){
                         directory('Budget-Buddy-Frontend-Testing'){
                             sh 'mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}'
                         }
@@ -134,7 +158,24 @@ pipeline{
         }
 
         // Deploy to S3
-        stage('S3 Deployment'){
+        stage('S3 Deployment for Staging'){
+            when{
+                branch 'testing-cohort-dev'
+            }
+
+            steps{
+                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                    sh 'aws s3 sync dist s3://budget-buddy-frontend-staging'
+                }
+            }
+        }
+
+        // Deploy to S3
+        stage('S3 Deployment for Production'){
+            when{
+                branch 'testing-cohort'
+            }
+
             steps{
                 withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
                     sh 'aws s3 sync dist s3://budget-buddy-frontend'
@@ -144,6 +185,10 @@ pipeline{
 
         // Invalidate cloudfront and trigger reupload
         stage('Cloudfront Update'){
+            when{
+                branch 'testing-cohort'
+            }
+
             steps{
                 withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
                     sh 'aws cloudfront create-invalidation --distribution-id E2D9Z4H1DJNT0K --paths "/*"'
