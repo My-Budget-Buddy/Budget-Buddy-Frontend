@@ -84,6 +84,19 @@ pipeline{
     }
 
     stages{
+        // Set namespace
+        stage('Set Namespace') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == "${TEST_BRANCH}") {
+                        env.NAMESPACE = 'staging'
+                    } else if (env.BRANCH_NAME == "${MAIN_BRANCH}") {
+                        env.NAMESPACE = 'prod'
+                    }
+                }
+            }
+        }
+
         // Pulls all dependencies from git.
         stage('Pull Dependencies'){
             steps{
