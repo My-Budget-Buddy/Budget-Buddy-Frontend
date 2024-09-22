@@ -41,3 +41,7 @@ textarea:focus {
   /* all: initial !important; */
   border: none !important;
 }
+.usa-overlay {
+    z-index: 3 !important;
+}
+
