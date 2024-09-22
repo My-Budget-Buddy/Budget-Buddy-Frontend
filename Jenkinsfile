@@ -35,7 +35,7 @@ pipeline{
                       tty: true
 
                     - name: npm
-                      image: node:latest
+                      image: 924809052459.dkr.ecr.us-east-1.amazonaws.com/node:latest
                       imagePullPolicy: Always
                       volumeMounts:
                       - name: kaniko-cache
@@ -57,13 +57,6 @@ pipeline{
                       args:
                         - '9999999'
                       tty: true
-
-#                     - name: postgres
-#                      image: postgres:13.16-alpine3.20
-#                      imagePullPolicy: Always
-#                      volumeMounts:
-#                        - name: kaniko-cache
-#                          mountPath: /kaniko/.cache
 
                     volumes:
                     - name: kaniko-cache
