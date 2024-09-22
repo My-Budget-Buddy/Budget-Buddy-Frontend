@@ -4,6 +4,8 @@ import { Outlet } from "react-router-dom";
 import { setAuthenticated } from "../util/redux/authSlice";
 import Cookies from "js-cookie";
 
+import { URL_validateJwt } from "../api/services/AuthService";
+
 const Root: React.FC = () => {
     //Check if authenticated
     const token = Cookies.get("jwt");
@@ -11,7 +13,7 @@ const Root: React.FC = () => {
 
     //This is a very hacky solution to doing a network validation
     useEffect(() => {
-        fetch("http://localhost:8125/auth/validate", {
+        fetch(URL_validateJwt, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then((response) => {

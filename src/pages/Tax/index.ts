@@ -2,9 +2,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 //const jwtCookie = Cookies.get("jwt");
 
+import { URL } from "../../api/Endpoint";
+
 const apiClient = axios.create({
     // hiding the URL in the .env file
-    baseURL: `http://localhost:8125`,
+    baseURL: URL,
     headers: {
         "Content-Type": "application/json"
     }

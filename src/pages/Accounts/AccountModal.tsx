@@ -20,6 +20,8 @@ import { useTranslation } from "react-i18next";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 
+import { URL_getAccountsByUserId } from "../../api/services/AccountService";
+
 interface AccountModalProps {
     onAccountAdded: (account: Account) => void;
 }
@@ -60,7 +62,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
         e.currentTarget.reset();
 
-        fetch("http://localhost:8125/accounts", {
+        fetch(URL_getAccountsByUserId, {
             method: "POST",
             headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
             body: JSON.stringify(fields)

@@ -5,6 +5,7 @@ import { Link, Navigate } from "react-router-dom";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { useDispatch } from "react-redux";
 import { setAuthenticated } from "../../util/redux/authSlice";
+import { URL_loginUser, URL_oauth2SocialLogin } from "../../api/services/AuthService";
 
 const Login: React.FC = () => {
     const { t } = useTranslation();
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
             password: e.currentTarget.elements.password.value
         };
 
-        const res = await fetch("http://localhost:8125/auth/login", {
+        const res = await fetch(URL_loginUser, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fields),
@@ -108,7 +109,7 @@ const Login: React.FC = () => {
                                 outline
                                 className="width-full"
                                 onClick={() =>
-                                    window.location.replace("http://localhost:8125/auth/login/oauth2")
+                                    window.location.replace(URL_oauth2SocialLogin)
                                 }
                             >
                                 {t("auth.google")}

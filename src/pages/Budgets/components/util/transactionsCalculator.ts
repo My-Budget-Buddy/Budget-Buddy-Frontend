@@ -1,6 +1,6 @@
 import { BudgetRowProps } from "../../../../types/budgetInterfaces";
 import Cookies from "js-cookie";
-const url = "http://localhost:8125";
+import { URL as url } from "../../../../api/Endpoint";
 
 // TODO Given a list of transactions, return budget totals
 const endpoint = `${url}/budgets`;
