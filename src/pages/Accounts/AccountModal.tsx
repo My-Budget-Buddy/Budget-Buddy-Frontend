@@ -106,7 +106,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             {error}
                         </Alert>
                     )}
-                    <Form ref={formRef} onSubmit={handleSubmit} className="usa-prose">
+                    <Form ref={formRef} onSubmit={handleSubmit} className="usa-prose" id="form-add-account">
                         <Fieldset>
                             <div className="flex flex-row gap-4">
                                 <div>
@@ -180,7 +180,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
                         <ModalFooter>
                             <ButtonGroup>
-                                <Button type="submit">{t("accounts.add")}</Button>
+                                <Button id="submit-add-account" type="submit">{t("accounts.add")}</Button>
                                 <ModalToggleButton
                                     modalRef={modalRef}
                                     closer
