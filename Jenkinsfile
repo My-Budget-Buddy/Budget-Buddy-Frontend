@@ -177,8 +177,9 @@ pipeline{
                             npm install && npm run dev &
                             echo $!
                         ''', returnStdout: true).trim()
+                    }
 
-                        // wait for frontend to be ready
+                    // wait for frontend to be ready
                         sh '''
                             TRIES_REMAINING=16
 
@@ -194,7 +195,6 @@ pipeline{
                             done
                             echo '***frontend is ready***'
                         '''
-                    }
 
                     container('maven'){
                         withCredentials([string(credentialsId: 'CUCUMBER_PUBLISH_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
