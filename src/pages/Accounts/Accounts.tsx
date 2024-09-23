@@ -103,6 +103,7 @@ const Accounts: React.FC = () => {
                 <div className="flex justify-center pt-6">
                     {netCash >= 0 ? (
                         <Gauge
+                            id="netCash-gauge"
                             width={500}
                             height={200}
                             value={netCash}
@@ -124,6 +125,7 @@ const Accounts: React.FC = () => {
                         />
                     ) : (
                         <Gauge
+                            id= "netCash-gauge"
                             width={500}
                             height={200}
                             value={-netCash}
