@@ -97,7 +97,7 @@ pipeline{
         // Pulls all dependencies from git.
         stage('Pull Dependencies'){
             steps{
-                sh 'git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git'
+                sh 'git clone -b testing-cohort-dev https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git'
             }
         }
 
@@ -165,7 +165,7 @@ pipeline{
             steps{
                 container('maven'){
                     withCredentials([string(credentialsId: "CUCUMBER_TOKEN", variable: "CUCUMBER_TOKEN")]){
-                        directory('Budget-Buddy-Frontend-Testing'){
+                        dir('Budget-Buddy-Frontend-Testing/cucumber-selenium-tests'){
                             sh 'mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}'
                         }
                     }
