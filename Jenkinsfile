@@ -163,6 +163,9 @@ pipeline{
         // Retrieves the selenium/cucumber repository and runs the tests.
         stage('Selenium/Cucumber Tests'){
             steps{
+                container('npm'){
+                    sh 'npm run dev'
+                }
                 container('maven'){
                     withCredentials([string(credentialsId: "CUCUMBER_TOKEN", variable: "CUCUMBER_TOKEN")]){
                         dir('Budget-Buddy-Frontend-Testing/cucumber-selenium-tests'){
