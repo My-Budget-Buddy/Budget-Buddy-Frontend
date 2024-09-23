@@ -164,6 +164,10 @@ pipeline{
         stage('Selenium/Cucumber Tests'){
             steps{
                 script {
+                    // Log current jobs (should be none)
+                    sh 'echo "Beginning local functional tests."'
+                    sh 'jobs -l'
+
                     // capture IDs to later terminate pipeline project test servers
                     def frontendPid
                     frontendPid = sh(script: '''
@@ -173,8 +177,6 @@ pipeline{
 
                     // wait for frontend to be ready
                     sh '''
-                        TRIES_REMAINING=16
-
                         TRIES_REMAINING=16
 
                         echo 'Waiting for frontend to be ready...'
