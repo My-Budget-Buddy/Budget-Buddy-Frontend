@@ -9,6 +9,9 @@ scanner(
         'sonar.projectName': env.SONAR_PROJECT_NAME,
         'sonar.projectKey': env.SONAR_PROJECT_KEY,
         'sonar.projectDescription': 'SonarQube project for ' + env.SONAR_PROJECT_NAME,
+
+        'sonar.branch.name': env.BRANCH_NAME,
+
         'sonar.sources': 'src',
         // 'sonar.tests': 'test',
         // 'sonar.javascript.lcov.reportPaths': 'coverage/lcov.info'
