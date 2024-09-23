@@ -1,5 +1,102 @@
 import { TransactionCategory } from '../types/models';
-import { validateTransaction } from '../utils/transactionService';
+import { validateTransaction, getTransactionByUserId, deleteTransaction, getAccountsByUserId, createTransaction, updateTransaction, getTransactionByVendor } from '../utils/transactionService';
+import { createTransactionAPI, deleteTransactionAPI, getAccountsByUserIdAPI, getTransactionByUserIdAPI, getTransactionByVendorAPI, updateTransactionAPI } from "../pages/Tax/taxesAPI"; 
+import { Transaction, Account } from "../types/models";
+
+// Mock the API calls
+jest.mock('../pages/Tax/taxesAPI');
+
+describe("API Functions", () => {
+  const mockTransaction: Transaction = {
+    transactionId: 1,
+    userId: 1,
+    vendorName: 'Vendor',
+    amount: 100,
+    date: '2022-01-01',
+    category: "Category" as TransactionCategory,
+    accountId: 1,
+    description: 'Description',
+  };
+
+const mockAccount: Account = {
+    id: 1,
+    userId: '123',
+    accountNumber: "Test Account",
+    type: "CHECKING",
+    routingNumber: "123456789",
+    institution: "Test Bank",
+    investmentRate: 0.01,
+    startingBalance: 1000,
+    currentBalance: 1000,
+};
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("getTransactionByUserId should return transactions for a user", async () => {
+    (getTransactionByUserIdAPI as jest.Mock).mockResolvedValue({ data: [mockTransaction] });
+
+    const result = await getTransactionByUserId(1);
+    
+    expect(getTransactionByUserIdAPI).toHaveBeenCalledWith(1);
+    expect(result).toEqual([mockTransaction]);
+  });
+
+  test("deleteTransaction should call deleteTransactionAPI with correct id", async () => {
+    await deleteTransaction(1);
+
+    expect(deleteTransactionAPI).toHaveBeenCalledWith(1);
+  });
+
+  test("getAccountsByUserId should return accounts for a user", async () => {
+    (getAccountsByUserIdAPI as jest.Mock).mockResolvedValue({ data: [mockAccount] });
+
+    const result = await getAccountsByUserId(1);
+
+    expect(getAccountsByUserIdAPI).toHaveBeenCalledWith(1);
+    expect(result).toEqual([mockAccount]);
+  });
+
+test("createTransaction should create a new transaction", async () => {
+    const newTransaction = {
+        id: 1,
+        vendorName: "Vendor",
+        amount: 100,
+        date: '2022-01-01',
+        category: "Category" as TransactionCategory,
+        userId: 123, // Add userId
+        accountId: 1, // Add accountId
+        description: 'Description' // Add description
+    };
+    (createTransactionAPI as jest.Mock).mockResolvedValue({ data: mockTransaction });
+
+    const result = await createTransaction(newTransaction);
+
+    expect(createTransactionAPI).toHaveBeenCalledWith(newTransaction);
+    expect(result).toEqual(mockTransaction);
+});
+
+  test("updateTransaction should update an existing transaction", async () => {
+    (updateTransactionAPI as jest.Mock).mockResolvedValue({ data: mockTransaction });
+
+    const result = await updateTransaction(mockTransaction);
+
+    expect(updateTransactionAPI).toHaveBeenCalledWith(mockTransaction.transactionId, mockTransaction);
+    expect(result).toEqual(mockTransaction);
+  });
+
+  test("getTransactionByVendor should return transactions for a specific vendor", async () => {
+    (getTransactionByVendorAPI as jest.Mock).mockResolvedValue({ data: [mockTransaction] });
+
+    const result = await getTransactionByVendor("Vendor");
+
+    expect(getTransactionByVendorAPI).toHaveBeenCalledWith("Vendor");
+    expect(result).toEqual([mockTransaction]);
+  });
+});
+
+
 
 describe('validateTransaction', () => {
     it('should return an empty array if all fields are valid', () => {
@@ -92,6 +189,23 @@ describe('validateTransaction', () => {
             'Vendor name is required.',
             'Category is required.',
             'Invalid category.',]);
+    });
+
+    it('should return an array with error message if date in invalid', () => {
+        const transaction = {
+            vendorName: 'vendor',
+            date: 'invalid date',
+            amount: 100,
+            category: 'Dining' as TransactionCategory,
+            accountId: 1234567890,
+            userId: 123,
+            description: 'Example transaction',
+        };
+
+        const errors = validateTransaction(transaction);
+
+        expect(errors).toEqual([
+            'Date is invalid.',]);
     });
 
 });
