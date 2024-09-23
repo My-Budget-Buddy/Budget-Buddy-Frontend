@@ -11,6 +11,7 @@ scanner(
         'sonar.projectDescription': 'SonarQube project for ' + env.SONAR_PROJECT_NAME,
         'sonar.sources': 'src',
         // 'sonar.tests': 'test',
+        // 'sonar.javascript.lcov.reportPaths': 'coverage/lcov.info'
       },
     },
     error => {
