@@ -167,7 +167,7 @@ pipeline{
                     // capture IDs to later terminate pipeline project test servers
                     def frontendPid
                     frontendPid = sh(script: '''
-                        npm install && npx vite --mode test &
+                        npm install && npm run dev &
                         echo $!
                     ''', returnStdout: true).trim()
 
