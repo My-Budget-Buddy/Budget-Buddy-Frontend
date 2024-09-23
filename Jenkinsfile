@@ -197,7 +197,7 @@ pipeline{
                         '''
 
                     container('maven'){
-                        withCredentials([string(credentialsId: 'CUCUMBER_PUBLISH_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
+                        withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
                                 mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
