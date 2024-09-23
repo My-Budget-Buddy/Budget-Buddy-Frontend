@@ -168,35 +168,41 @@ pipeline{
                     sh 'echo "Beginning local functional tests."'
                     sh 'jobs -l'
 
+                    
                     // capture IDs to later terminate pipeline project test servers
                     def frontendPid
-                    frontendPid = sh(script: '''
-                        npm install && npm run dev &
-                        echo $!
-                    ''', returnStdout: true).trim()
 
-                    // wait for frontend to be ready
-                    sh '''
-                        TRIES_REMAINING=16
+                    container('npm'){
+                        frontendPid = sh(script: '''
+                            npm install && npm run dev &
+                            echo $!
+                        ''', returnStdout: true).trim()
 
-                        echo 'Waiting for frontend to be ready...'
-                        while ! curl --output /dev/null --silent http://localhost:5173; do
-                            TRIES_REMAINING=$((TRIES_REMAINING - 1))
-                            if [ $TRIES_REMAINING -le 0 ]; then
-                                echo 'frontend did not start within expected time.'
-                                exit 1
-                            fi
-                            echo 'waiting for frontend...'
-                            sleep 5
-                        done
-                        echo '***frontend is ready***'
-                    '''
-
-                    withCredentials([string(credentialsId: 'CUCUMBER_PUBLISH_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
+                        // wait for frontend to be ready
                         sh '''
-                            cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                            mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                            TRIES_REMAINING=16
+
+                            echo 'Waiting for frontend to be ready...'
+                            while ! curl --output /dev/null --silent http://localhost:5173; do
+                                TRIES_REMAINING=$((TRIES_REMAINING - 1))
+                                if [ $TRIES_REMAINING -le 0 ]; then
+                                    echo 'frontend did not start within expected time.'
+                                    exit 1
+                                fi
+                                echo 'waiting for frontend...'
+                                sleep 5
+                            done
+                            echo '***frontend is ready***'
                         '''
+                    }
+
+                    container('maven'){
+                        withCredentials([string(credentialsId: 'CUCUMBER_PUBLISH_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
+                            sh '''
+                                cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
+                                mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                            '''
+                        }
                     }
 
                     // kill frontend process
