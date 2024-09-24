@@ -93,9 +93,11 @@ pipeline{
         // Create backup of current S3
         stage('Create S3 Backup'){
             steps{
-                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
-                    sh 'mkdir s3-backup'
-                    sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+                container('kaniko'){
+                    withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                        sh 'mkdir s3-backup'
+                        sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+                    }
                 }
             }
         }
@@ -242,8 +244,10 @@ pipeline{
             }
 
             steps{
-                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
-                    sh 'aws s3 sync dist s3://budget-buddy-frontend-staging'
+                container('kaniko'){
+                    withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                        sh 'aws s3 sync dist s3://budget-buddy-frontend-staging'
+                    }
                 }
             }
         }
@@ -295,8 +299,10 @@ pipeline{
             }
 
             steps{
-                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
-                    sh 'aws s3 sync dist s3://budget-buddy-frontend'
+                container('kaniko'){
+                    withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                        sh 'aws s3 sync dist s3://budget-buddy-frontend'
+                    }
                 }
             }
         }
@@ -308,8 +314,10 @@ pipeline{
             }
 
             steps{
-                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
-                    sh 'aws cloudfront create-invalidation --distribution-id E2D9Z4H1DJNT0K --paths "/*"'
+                container('kaniko'){
+                    withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                        sh 'aws cloudfront create-invalidation --distribution-id E2D9Z4H1DJNT0K --paths "/*"'
+                    }
                 }
             }
         }
@@ -440,15 +448,17 @@ pipeline{
     failure {
         echo 'The pipeline failed. No pull request created.'
 
-        script{
-            // Reset staging S3
-            if(env.BRANCH_NAME.equals('testing-cohort-dev')){
-                sh 'aws sync s3-backup s3://budget-buddy-frontend-staging'
-            }
+        container('kaniko'){
+            script{
+                // Reset staging S3
+                if(env.BRANCH_NAME.equals('testing-cohort-dev')){
+                    sh 'aws sync s3-backup s3://budget-buddy-frontend-staging'
+                }
 
-            // Reset production S3
-            if(env.BRANCH_NAME.equals('testing-cohort')){
-                sh 'aws sync s3-backup s3://budget-buddy-frontend'
+                // Reset production S3
+                if(env.BRANCH_NAME.equals('testing-cohort')){
+                    sh 'aws sync s3-backup s3://budget-buddy-frontend'
+                }
             }
         }
     }
