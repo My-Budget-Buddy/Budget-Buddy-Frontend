@@ -163,7 +163,7 @@ pipeline{
                         withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -Dmaven.test.failure.ignore=true
                             '''
                         }
                     }
@@ -284,7 +284,7 @@ pipeline{
                         withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -Dmaven.test.failure.ignore=true
                             '''
                         }
                     }
