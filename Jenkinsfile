@@ -263,37 +263,15 @@ pipeline{
         stage('Staging Functional Tests'){
             steps{
                 script {
-                    // Log current jobs (should be none)
-                    sh 'echo "Beginning staging functional tests."'
-                    sh 'jobs -l'
-
-                    
-                    // capture IDs to later terminate pipeline project test servers
-                    def frontendPid
-
-                    container('npm'){
-                        frontendPid = sh(script: '''
-                            npm install && npm run dev &
-                            echo $!
-                        ''', returnStdout: true).trim()
-                    }
-
-                    // wait for frontend to be ready
-                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
-                    sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
-
                     // Run testing suite
                     container('maven'){
                         withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -Dmaven.test.failure.ignore=true -DfrontendUrl=${STAGING_HOST}
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -DfrontendUrl=${STAGING_HOST}
                             '''
                         }
                     }
-
-                    // kill frontend process
-                    sh "kill ${frontendPid} || true"
                 }
             }
         }
