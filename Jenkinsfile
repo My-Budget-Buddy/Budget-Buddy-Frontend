@@ -155,6 +155,7 @@ pipeline{
                     }
 
                     // wait for frontend to be ready
+                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
                     sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
 
                     // Run testing suite
@@ -183,6 +184,7 @@ pipeline{
 
             steps{
                 container('npm'){
+                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh'
                     sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
                 }
             }
@@ -198,6 +200,7 @@ pipeline{
 
             steps{
                 container('npm'){
+                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh'
                     sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${PROD_API_ENDPOINT}'
                 }
             }
@@ -273,6 +276,7 @@ pipeline{
                     }
 
                     // wait for frontend to be ready
+                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
                     sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
 
                     // Run testing suite
