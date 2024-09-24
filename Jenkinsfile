@@ -65,13 +65,18 @@ pipeline{
         }
     }
 
+    // --- DECLARE OPTIONS --- 
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
     }
 
+    // --- DECLARE ENVIRONMENT ---
+
     environment{
         STAGING_API_ENDPOINT = 'https://api.skillstorm-congo.com'
         PROD_API_ENDPOINT = 'https://api.skillstorm-congo.com'
+        ISOLATED_API_ENDPOINT = 'http://localhost:5173'
 
         CLIENT_ID = credentials('GITHUB_APP_CLIENT_ID')
         PEM = credentials('GITHUB_APP_PEM')
@@ -80,7 +85,11 @@ pipeline{
         MAIN_BRANCH = 'testing-cohort'
     }
 
+    // --- STAGES ---
+
     stages{
+        // --- COMMON BEFORE ---
+
         // Set namespace
         stage('Set Namespace') {
             steps {
@@ -98,10 +107,66 @@ pipeline{
         stage('Pull Dependencies'){
             steps{
                 sh 'git clone -b testing-cohort-dev https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git'
+                sh 'git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Kubernetes.git'
             }
         }
 
-        // Builds the frontend.
+        // --- testing-cohort-dev ---
+
+        // Builds the frontend for isolated tests.
+        stage('Build for Isolated Tests'){
+            when{
+                branch 'testing-cohort-dev'
+            }
+
+            steps{
+                container('npm'){
+                    sh 'rm .env'                        // Clean env
+                    sh 'echo "VITE_BASE_API_ENDPOINT=${ISOLATED_API_ENDPOINT}" > .env'  // Write new information
+                    sh 'npm install && npm run build'   // Build
+                }
+            }
+        }
+
+        // Retrieves the selenium/cucumber repository and runs the tests.
+        stage('Isolated Functional Tests'){
+            steps{
+                script {
+                    // Log current jobs (should be none)
+                    sh 'echo "Beginning local functional tests."'
+                    sh 'jobs -l'
+
+                    
+                    // capture IDs to later terminate pipeline project test servers
+                    def frontendPid
+
+                    container('npm'){
+                        frontendPid = sh(script: '''
+                            npm install && npm run dev &
+                            echo $!
+                        ''', returnStdout: true).trim()
+                    }
+
+                    // wait for frontend to be ready
+                    sh './Scripts/AwaitFrontend.sh'
+
+                    // Run testing suite
+                    container('maven'){
+                        withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
+                            sh '''
+                                cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
+                                mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                            '''
+                        }
+                    }
+
+                    // kill frontend process
+                    sh "kill ${frontendPid} || true"
+                }
+            }
+        }
+
+        // Builds the frontend for the staging environment.
         stage('Build frontend for Staging'){
             when{
                 branch 'testing-cohort-dev'
@@ -109,11 +174,14 @@ pipeline{
 
             steps{
                 container('npm'){
+                    sh 'rm .env'
                     sh 'echo "VITE_BASE_API_ENDPOINT=${STAGING_API_ENDPOINT}" > .env'
                     sh 'npm install && npm run build'
                 }
             }
         }
+
+        // --- testing-cohort ---
 
         // Builds the frontend.
         stage('Build frontend for Production'){
@@ -128,6 +196,8 @@ pipeline{
                 }
             }
         }
+
+        // --- COMMON PRE-DEPLOYMENT ---
 
         // SonarQube
         stage('Analyze Frontend'){
@@ -159,70 +229,6 @@ pipeline{
         //         }
         //     }
         // }
-
-        // Retrieves the selenium/cucumber repository and runs the tests.
-        stage('Selenium/Cucumber Tests'){
-            steps{
-                script {
-                    // Log current jobs (should be none)
-                    sh 'echo "Beginning local functional tests."'
-                    sh 'jobs -l'
-
-                    
-                    // capture IDs to later terminate pipeline project test servers
-                    def frontendPid
-
-                    container('npm'){
-                        frontendPid = sh(script: '''
-                            npm install && npm run dev &
-                            echo $!
-                        ''', returnStdout: true).trim()
-                    }
-
-                    // wait for frontend to be ready
-                        sh '''
-                            TRIES_REMAINING=16
-
-                            echo 'Waiting for frontend to be ready...'
-                            while ! curl --output /dev/null --silent http://localhost:5173; do
-                                TRIES_REMAINING=$((TRIES_REMAINING - 1))
-                                if [ $TRIES_REMAINING -le 0 ]; then
-                                    echo 'frontend did not start within expected time.'
-                                    exit 1
-                                fi
-                                echo 'waiting for frontend...'
-                                sleep 5
-                            done
-                            echo '***frontend is ready***'
-                        '''
-
-                    container('maven'){
-                        withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
-                            sh '''
-                                cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
-                            '''
-                        }
-                    }
-
-                    // kill frontend process
-                    sh "kill ${frontendPid} || true"
-                }
-
-
-                //- ------------
-                container('npm'){
-                    sh 'npm run dev &'
-                }
-                container('maven'){
-                    withCredentials([string(credentialsId: "CUCUMBER_TOKEN", variable: "CUCUMBER_TOKEN")]){
-                        dir(''){
-                            sh ''
-                        }
-                    }
-                }
-            }
-        }
 
         // Deploy to S3
         stage('S3 Deployment for Staging'){
