@@ -111,7 +111,7 @@ pipeline{
             }
         }
 
-        // --- testing-cohort-dev ---
+        // --- TESTING-COHORT-DEV BUILDING ---
 
         // Builds the frontend for isolated tests.
         stage('Build for Isolated Tests'){
@@ -121,9 +121,7 @@ pipeline{
 
             steps{
                 container('npm'){
-                    sh 'rm .env'                        // Clean env
-                    sh 'echo "VITE_BASE_API_ENDPOINT=${ISOLATED_API_ENDPOINT}" > .env'  // Write new information
-                    sh 'npm install && npm run build'   // Build
+                    sh './Scripts/BuildFrontend.sh ${ISOLATED_API_ENDPOINT}'
                 }
             }
         }
@@ -155,7 +153,7 @@ pipeline{
                         withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
                             '''
                         }
                     }
@@ -174,14 +172,12 @@ pipeline{
 
             steps{
                 container('npm'){
-                    sh 'rm .env'
-                    sh 'echo "VITE_BASE_API_ENDPOINT=${STAGING_API_ENDPOINT}" > .env'
-                    sh 'npm install && npm run build'
+                    sh './Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
                 }
             }
         }
 
-        // --- testing-cohort ---
+        // --- TESTING-COHORT BUILDING ---
 
         // Builds the frontend.
         stage('Build frontend for Production'){
@@ -191,8 +187,7 @@ pipeline{
 
             steps{
                 container('npm'){
-                    sh 'echo "VITE_BASE_API_ENDPOINT=${PROD_API_ENDPOINT}" > .env'
-                    sh 'npm install && npm run build'
+                    sh './Scripts/BuildFrontend.sh ${PROD_API_ENDPOINT}'
                 }
             }
         }
@@ -230,7 +225,19 @@ pipeline{
         //     }
         // }
 
-        // Deploy to S3
+        // Create backup of current S3
+        stage('Create S3 Backup'){
+            steps{
+                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                    sh 'mkdir s3-backup'
+                    sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+                }
+            }
+        }
+
+        // --- TESTING-COHORT-DEV DEPLOYMENT ---
+
+        // Deploy to staging S3
         stage('S3 Deployment for Staging'){
             when{
                 branch 'testing-cohort-dev'
@@ -243,7 +250,47 @@ pipeline{
             }
         }
 
-        // Deploy to S3
+        // Retrieves the selenium/cucumber repository and runs the tests.
+        stage('Staging Functional Tests'){
+            steps{
+                script {
+                    // Log current jobs (should be none)
+                    sh 'echo "Beginning staging functional tests."'
+                    sh 'jobs -l'
+
+                    
+                    // capture IDs to later terminate pipeline project test servers
+                    def frontendPid
+
+                    container('npm'){
+                        frontendPid = sh(script: '''
+                            npm install && npm run dev &
+                            echo $!
+                        ''', returnStdout: true).trim()
+                    }
+
+                    // wait for frontend to be ready
+                    sh './Scripts/AwaitFrontend.sh'
+
+                    // Run testing suite
+                    container('maven'){
+                        withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
+                            sh '''
+                                cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN}
+                            '''
+                        }
+                    }
+
+                    // kill frontend process
+                    sh "kill ${frontendPid} || true"
+                }
+            }
+        }
+
+        // --- TESTING-COHORT DEPLOYMENT ---
+
+        // Deploy to Production S3
         stage('S3 Deployment for Production'){
             when{
                 branch 'testing-cohort'
@@ -256,7 +303,7 @@ pipeline{
             }
         }
 
-        // Invalidate cloudfront and trigger reupload
+        // Trigger cloudfront refresh
         stage('Cloudfront Update'){
             when{
                 branch 'testing-cohort'
