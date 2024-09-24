@@ -440,14 +440,16 @@ pipeline{
     failure {
         echo 'The pipeline failed. No pull request created.'
 
-        // Reset staging S3
-        if(env.BRANCH_NAME.equals('testing-cohort-dev')){
-            sh 'aws sync s3-backup s3://budget-buddy-frontend-staging'
-        }
+        script{
+            // Reset staging S3
+            if(env.BRANCH_NAME.equals('testing-cohort-dev')){
+                sh 'aws sync s3-backup s3://budget-buddy-frontend-staging'
+            }
 
-        // Reset production S3
-        if(env.BRANCH_NAME.equals('testing-cohort')){
-            sh 'aws sync s3-backup s3://budget-buddy-frontend'
+            // Reset production S3
+            if(env.BRANCH_NAME.equals('testing-cohort')){
+                sh 'aws sync s3-backup s3://budget-buddy-frontend'
+            }
         }
     }
   }
