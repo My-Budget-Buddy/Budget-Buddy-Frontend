@@ -117,7 +117,7 @@ pipeline{
         stage('Build for Isolated Tests'){
             steps{
                 container('npm'){
-                    sh './Scripts/BuildFrontend.sh ${ISOLATED_API_ENDPOINT}'
+                    sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${ISOLATED_API_ENDPOINT}'
                 }
             }
         }
@@ -142,7 +142,7 @@ pipeline{
                     }
 
                     // wait for frontend to be ready
-                    sh './Scripts/AwaitFrontend.sh'
+                    sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
 
                     // Run testing suite
                     container('maven'){
@@ -170,7 +170,7 @@ pipeline{
 
             steps{
                 container('npm'){
-                    sh './Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
+                    sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
                 }
             }
         }
@@ -185,7 +185,7 @@ pipeline{
 
             steps{
                 container('npm'){
-                    sh './Scripts/BuildFrontend.sh ${PROD_API_ENDPOINT}'
+                    sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${PROD_API_ENDPOINT}'
                 }
             }
         }
@@ -268,7 +268,7 @@ pipeline{
                     }
 
                     // wait for frontend to be ready
-                    sh './Scripts/AwaitFrontend.sh'
+                    sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
 
                     // Run testing suite
                     container('maven'){
