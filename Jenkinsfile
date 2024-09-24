@@ -90,6 +90,16 @@ pipeline{
     stages{
         // --- COMMON BEFORE ---
 
+        // Create backup of current S3
+        stage('Create S3 Backup'){
+            steps{
+                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                    sh 'mkdir s3-backup'
+                    sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+                }
+            }
+        }
+
         // Set namespace
         stage('Set Namespace') {
             steps {
@@ -222,16 +232,6 @@ pipeline{
         //         }
         //     }
         // }
-
-        // Create backup of current S3
-        stage('Create S3 Backup'){
-            steps{
-                withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
-                    sh 'mkdir s3-backup'
-                    sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
-                }
-            }
-        }
 
         // --- TESTING-COHORT-DEV DEPLOYMENT ---
 
