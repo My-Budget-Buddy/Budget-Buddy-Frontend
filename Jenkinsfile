@@ -129,6 +129,7 @@ pipeline{
         stage('Build for Isolated Tests'){
             steps{
                 container('npm'){
+                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh'
                     sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${ISOLATED_API_ENDPOINT}'
                 }
             }
