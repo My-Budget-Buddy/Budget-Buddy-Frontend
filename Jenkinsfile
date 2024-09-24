@@ -74,9 +74,12 @@ pipeline{
     // --- DECLARE ENVIRONMENT ---
 
     environment{
-        STAGING_API_ENDPOINT = 'https://api.skillstorm-congo.com'
+        STAGING_API_ENDPOINT = 'https://staging.api.skillstorm-congo.com'
         PROD_API_ENDPOINT = 'https://api.skillstorm-congo.com'
-        ISOLATED_API_ENDPOINT = 'http://localhost:5173'
+        
+        ISOLATED_HOST = 'http://localhost:5173'
+        STAGING_HOST = 'https://staging.frontend.skillstorm-congo.com'
+        PROD_HOST = 'https://frontend.skillstorm-congo.com'
 
         CLIENT_ID = credentials('GITHUB_APP_CLIENT_ID')
         PEM = credentials('GITHUB_APP_PEM')
@@ -130,7 +133,7 @@ pipeline{
             steps{
                 container('npm'){
                     sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh'
-                    sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${ISOLATED_API_ENDPOINT}'
+                    sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
                 }
             }
         }
@@ -163,7 +166,7 @@ pipeline{
                         withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -Dmaven.test.failure.ignore=true
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -Dmaven.test.failure.ignore=true -DfrontendUrl=${ISOLATED_HOST}
                             '''
                         }
                     }
@@ -284,7 +287,7 @@ pipeline{
                         withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -Dmaven.test.failure.ignore=true
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -Dmaven.test.failure.ignore=true -DfrontendUrl=${STAGING_HOST}
                             '''
                         }
                     }
