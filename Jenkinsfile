@@ -111,14 +111,10 @@ pipeline{
             }
         }
 
-        // --- TESTING-COHORT-DEV BUILDING ---
+        // --- ISOLATED TESTING ---
 
         // Builds the frontend for isolated tests.
         stage('Build for Isolated Tests'){
-            when{
-                branch 'testing-cohort-dev'
-            }
-
             steps{
                 container('npm'){
                     sh './Scripts/BuildFrontend.sh ${ISOLATED_API_ENDPOINT}'
@@ -163,6 +159,8 @@ pipeline{
                 }
             }
         }
+
+        // --- TESTING-COHORT-DEV BUILDING ---
 
         // Builds the frontend for the staging environment.
         stage('Build frontend for Staging'){
@@ -317,6 +315,8 @@ pipeline{
         }
     }
 
+    // --- POST PIPELINE ---
+
     post {
     always {
         cleanWs()
@@ -438,7 +438,17 @@ pipeline{
     }
 
     failure {
-      echo 'The pipeline failed. No pull request created.'
+        echo 'The pipeline failed. No pull request created.'
+
+        // Reset staging S3
+        if(env.BRANCH_NAME.equals('testing-cohort-dev')){
+            sh 'aws sync s3-backup s3://budget-buddy-frontend-staging'
+        }
+
+        // Reset production S3
+        if(env.BRANCH_NAME.equals('testing-cohort')){
+            sh 'aws sync s3-backup s3://budget-buddy-frontend'
+        }
     }
   }
 }
