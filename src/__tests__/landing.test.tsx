@@ -86,4 +86,6 @@ describe('LandingPage', () => {
     it('renders the ReviewSection component', () => {
       expect(screen.getByText('Mocked Review Section')).toBeInTheDocument();
     });
-  });
+});
+
+
