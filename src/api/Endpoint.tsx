@@ -1,4 +1,4 @@
-let url = import.meta.env.VITE_BASE_API_ENDPOINT;
+import { config } from "./config";
 
 // Base URL for the backend API
-export const URL = url;
+export const URL = config.apiUrl;

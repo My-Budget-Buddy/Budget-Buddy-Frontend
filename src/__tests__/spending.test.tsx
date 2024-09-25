@@ -23,6 +23,12 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
+jest.mock("../api/config", () => ({
+  config: {
+    apiUrl: "http://localhost:mock",
+  },
+}));
+
 beforeEach(() => {
   render(
     <Router>
