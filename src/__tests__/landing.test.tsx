@@ -13,10 +13,11 @@ jest.mock("../api/config", () => ({
 }));
 
 //Image mocks
-jest.mock('../../assets/budgets/Mar-Business_11.jpg', () => 'budgetImg');
-jest.mock('../../assets/taxes/Wavy_Tech-03_Single-12.jpg', () => 'taxImg');
-jest.mock('../../assets/transactions/20943914.jpg', () => 'transactionsImg');
+jest.setMock('../../assets/budgets/Mar-Business_11.jpg', () => 'budgetImg');
+jest.setMock('../../assets/taxes/Wavy_Tech-03_Single-12.jpg', () => 'taxImg');
+jest.setMock('../../assets/transactions/20943914.jpg', () => 'transactionsImg');
 jest.mock('../../assets/hero.jpg', () => 'heroBg');
+
 jest.mock('../pages/Landing/ReviewSection.tsx', () => () => <div>Mocked Review Section</div>);
 
 // Style mocks
@@ -74,10 +75,11 @@ describe('LandingPage', () => {
         expect(elements.length).toBeGreaterThan(0);
       });
   
-      const featureImages = ['budgetImg', 'transactionsImg', 'taxImg'];
-      featureImages.forEach(image => {
-        const imgElements = screen.getAllByAltText(/image/i);
-        expect(imgElements.some(img => img.getAttribute('src') === image)).toBe(true);
+    //   const featureImages = ['budgetImg', 'transactionsImg', 'taxImg'];
+      featureTitles.forEach(title => {
+        const imgElements = screen.getAllByRole('img');
+
+        expect(imgElements.some(img => img.getAttribute('Alt') === title)).toBe(true);
       });
     });
   
