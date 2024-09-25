@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import Login from '../pages/AuthenticationPages/Login';
-import { AuthenticationProvider } from '../contexts/AuthenticationContext';
+import { AuthenticationProvider, useAuthentication } from '../contexts/AuthenticationContext';
 import { store } from '../util/redux/store';
 import { Provider } from 'react-redux';
 import Cookies from 'js-cookie';
@@ -30,6 +30,15 @@ global.fetch = jest.fn(() =>
         json: () => Promise.resolve({ jwt: 'fetch-mock-jwt' }),
     } as Response)
 );
+
+// Mock authentication
+jest.mock('../contexts/AuthenticationContext', () => ({
+    useAuthentication: () => ({
+        jwt: null,
+        loading: false,
+        setJwt: jest.fn()
+    })
+}))
 
 const cookiesSpy = jest.spyOn(Cookies, 'get');
 
@@ -79,11 +88,13 @@ describe('Login Component', () => {
         const usernameInput = screen.getByLabelText('auth.email');
         const passwordInput = screen.getByLabelText('auth.password');
         const submitButton = screen.getByText('auth.login', { selector: 'button' });
+        const submitClickSpy = jest.spyOn(submitButton, 'onclick', 'get').mockClear();
 
         fireEvent.change(usernameInput, { target: { value: 'testuser' } });
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
         fireEvent.click(submitButton);
 
         // Add your assertions here based on what should happen on form submission
+        expect(submitClickSpy).toHaveBeenCalled();
     });
 });
