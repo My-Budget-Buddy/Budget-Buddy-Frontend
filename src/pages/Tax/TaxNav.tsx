@@ -84,13 +84,13 @@ const TaxNav: React.FC = () => {
         <div style={containerStyle} className=" rounded-lg shadow-lg">
             <div style={iconsContainerStyle}>
                 <div style={toolStyle}>
-                    <button style={iconButtonStyle} onClick={() => handleIconClick("File Taxes")}>
+                    <button style={iconButtonStyle} onClick={() => handleIconClick("File Taxes")} id="file-taxes">
                         <div style={{ ...iconStyle, backgroundImage: `url(${taxImage})` }}></div>
                     </button>
                     <div style={labelStyle}>{t("tax.file-taxes")}</div>
                 </div>
                 <div style={toolStyle}>
-                    <button style={iconButtonStyle} onClick={() => handleIconClick("Estimate Refund")}>
+                    <button style={iconButtonStyle} onClick={() => handleIconClick("Estimate Refund")} id="estimate-refund">
                         <div
                             style={{
                                 ...iconStyle,
@@ -101,7 +101,7 @@ const TaxNav: React.FC = () => {
                     <div style={labelStyle}>{t("tax.estimate-refund")}</div>
                 </div>
                 <div style={toolStyle}>
-                    <button style={iconButtonStyle} onClick={() => handleIconClick("Document Checklist")}>
+                    <button style={iconButtonStyle} onClick={() => handleIconClick("Document Checklist")} id="document-checklist">
                         <div
                             style={{
                                 ...iconStyle,
@@ -112,7 +112,7 @@ const TaxNav: React.FC = () => {
                     <div style={labelStyle}>{t("tax.document-checklist")}</div>
                 </div>
                 <div style={toolStyle}>
-                    <button style={iconButtonStyle} onClick={() => handleIconClick("Refund Planning")}>
+                    <button style={iconButtonStyle} onClick={() => handleIconClick("Refund Planning")} id="refund-planning">
                         <div
                             style={{
                                 ...iconStyle,

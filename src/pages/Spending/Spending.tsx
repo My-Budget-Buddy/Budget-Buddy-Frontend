@@ -103,9 +103,6 @@ const Spending: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                // const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
-                // const transactions = response.data;
-
                 const transactions = await getTransactionByUserId(1);
                 setTransactions(transactions);
 

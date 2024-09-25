@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
-const url = "http://localhost:8125";
+
+import { URL as url } from "../../../../api/Endpoint";
 
 type Account = {
     id: number;

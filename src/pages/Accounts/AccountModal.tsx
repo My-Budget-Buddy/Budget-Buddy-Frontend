@@ -20,6 +20,8 @@ import { useTranslation } from "react-i18next";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 
+import { URL_getAccountsByUserId } from "../../api/services/AccountService";
+
 interface AccountModalProps {
     onAccountAdded: (account: Account) => void;
 }
@@ -60,7 +62,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
         e.currentTarget.reset();
 
-        fetch("http://localhost:8125/accounts", {
+        fetch(URL_getAccountsByUserId, {
             method: "POST",
             headers: { Authorization: `Bearer ${jwt}`, "Content-Type": "application/json" },
             body: JSON.stringify(fields)
@@ -104,7 +106,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
                             {error}
                         </Alert>
                     )}
-                    <Form ref={formRef} onSubmit={handleSubmit} className="usa-prose">
+                    <Form ref={formRef} onSubmit={handleSubmit} className="usa-prose" id="form-add-account">
                         <Fieldset>
                             <div className="flex flex-row gap-4">
                                 <div>
@@ -178,7 +180,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ onAccountAdded }) => {
 
                         <ModalFooter>
                             <ButtonGroup>
-                                <Button type="submit">{t("accounts.add")}</Button>
+                                <Button id="submit-add-account" type="submit">{t("accounts.add")}</Button>
                                 <ModalToggleButton
                                     modalRef={modalRef}
                                     closer

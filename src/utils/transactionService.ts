@@ -2,9 +2,6 @@
 import { Account, Transaction, TransactionCategory } from "../types/models.ts";
 import { createTransactionAPI, deleteTransactionAPI, getAccountsByUserIdAPI, getTransactionByUserIdAPI, getTransactionByVendorAPI, updateTransactionAPI } from "../pages/Tax/taxesAPI.ts";
 
-// const TRANSACTIONS_API_URL = "http://localhost:8125/transactions";
-// const ACCOUNTS_API_URL = "http://localhost:8125/accounts";
-
 export const getTransactionByUserId = async (userId: number): Promise<Transaction[]> => {
     //const response = await axios.get<Transaction[]>(`${TRANSACTIONS_API_URL}/user/${userId}`);
     return(getTransactionByUserIdAPI(userId)
