@@ -5,6 +5,11 @@ import { Transaction, Account } from "../types/models";
 
 // Mock the API calls
 jest.mock('../pages/Tax/taxesAPI');
+jest.mock("../api/config", () => ({
+  config: {
+    apiUrl: "http://localhost:mock",
+  },
+}));
 
 describe("API Functions", () => {
   const mockTransaction: Transaction = {
