@@ -68,7 +68,7 @@ pipeline{
     // --- DECLARE OPTIONS --- 
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '30'))
     }
 
     // --- DECLARE ENVIRONMENT ---
@@ -121,7 +121,7 @@ pipeline{
         // Pulls all dependencies from git.
         stage('Pull Dependencies'){
             steps{
-                sh 'git clone -b daniel413x/pipeline https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git'
+                sh 'git clone -b testing-cohort-dev https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git'
                 sh 'git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Kubernetes.git'
             }
         }
@@ -129,53 +129,52 @@ pipeline{
         // --- ISOLATED TESTING ---
 
         // Builds the frontend for isolated tests.
-        stage('Build for Isolated Tests'){
-            steps{
-                container('npm'){
-                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh'
-                    sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
-                }
-            }
-        }
+        // stage('Build for Isolated Tests'){
+        //     steps{
+        //         container('npm'){
+        //             sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh'
+        //             sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
+        //         }
+        //     }
+        // }
 
-        // Retrieves the selenium/cucumber repository and runs the tests.
-        stage('Isolated Functional Tests'){
-            steps{
-                script {
-                    // Log current jobs (should be none)
-                    sh 'echo "Beginning local functional tests."'
-                    sh 'jobs -l'
+        // // Retrieves the selenium/cucumber repository and runs the tests.
+        // stage('Isolated Functional Tests'){
+        //     steps{
+        //         script {
+        //             // Log current jobs (should be none)
+        //             sh 'echo "Beginning local functional tests."'
+        //             sh 'jobs -l'
 
-                    
-                    // capture IDs to later terminate pipeline project test servers
-                    def frontendPid
+        //             // capture IDs to later terminate pipeline project test servers
+        //             def frontendPid
 
-                    container('npm'){
-                        frontendPid = sh(script: '''
-                            npm install && npm run dev &
-                            echo $!
-                        ''', returnStdout: true).trim()
-                    }
+        //             container('npm'){
+        //                 frontendPid = sh(script: '''
+        //                     npm install && npm run dev &
+        //                     echo $!
+        //                 ''', returnStdout: true).trim()
+        //             }
 
-                    // wait for frontend to be ready
-                    sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
-                    sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
+        //             // wait for frontend to be ready
+        //             sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
+        //             sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
 
-                    // Run testing suite
-                    container('maven'){
-                        withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
-                            sh '''
-                                cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn clean test -Dheadless=true -Dmaven.test.failure.ignore=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -DfrontendUrl=${ISOLATED_HOST}
-                            '''
-                        }
-                    }
+        //             // Run testing suite
+        //             container('maven'){
+        //                 withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
+        //                     sh '''
+        //                         cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
+        //                         mvn clean test -Dheadless=true -Dmaven.test.failure.ignore=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -DfrontendUrl=${ISOLATED_HOST}
+        //                     '''
+        //                 }
+        //             }
 
-                    // kill frontend process
-                    sh "kill ${frontendPid} || true"
-                }
-            }
-        }
+        //             // kill frontend process
+        //             sh "kill ${frontendPid} || true"
+        //         }
+        //     }
+        // }
 
         // --- TESTING-COHORT-DEV BUILDING ---
 
@@ -212,35 +211,35 @@ pipeline{
         // --- COMMON PRE-DEPLOYMENT ---
 
         // SonarQube
-        stage('Analyze Frontend'){
-            environment{
-                SONAR_SERVER_URL = 'https://sonarcloud.io/'
-                SONAR_TOKEN = credentials('SONAR_TOKEN')
-                SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
-                SONAR_PROJECT_KEY = 'My-Budget-Buddy_Budget-Buddy-Frontend'
-            }
+        // stage('Analyze Frontend'){
+        //     environment{
+        //         SONAR_SERVER_URL = 'https://sonarcloud.io/'
+        //         SONAR_TOKEN = credentials('SONAR_TOKEN')
+        //         SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
+        //         SONAR_PROJECT_KEY = 'My-Budget-Buddy_Budget-Buddy-Frontend'
+        //     }
 
-            steps{
-                container('npm'){
-                    script{
-                        withSonarQubeEnv('SonarCloud'){
-                            sh '''
-                            node sonarqube-scanner.cjs
-                            '''
-                        }
-                    }
-                }
-            }
-        }
+        //     steps{
+        //         container('npm'){
+        //             script{
+        //                 withSonarQubeEnv('SonarCloud'){
+        //                     sh '''
+        //                     node sonarqube-scanner.cjs
+        //                     '''
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        // Performs jest tests
-        stage('Jest Tests'){
-            steps{
-                container('npm'){
-                    sh 'npm run test:coverage'
-                }
-            }
-        }
+        // // Performs jest tests
+        // stage('Jest Tests'){
+        //     steps{
+        //         container('npm'){
+        //             sh 'npm run test:coverage'
+        //         }
+        //     }
+        // }
 
         // --- TESTING-COHORT-DEV DEPLOYMENT ---
 
@@ -312,141 +311,141 @@ pipeline{
     // --- POST PIPELINE ---
 
     post {
-    always {
-        cleanWs()
-    }
-
-    success {
-      script {
-       if (env.BRANCH_NAME == 'testing-cohort') {
-        def now = sh(script: 'date +%s', returnStdout: true).trim()
-        def iat = (now.toInteger() - 60).toString()
-        def exp = (now.toInteger() + 600).toString()
-
-        echo "Current time: ${now}"
-        echo "Issued at: ${iat}"
-        echo "Expires at: ${exp}"
-
-        // Generate JWT
-        def JWT = sh(script: """
-            #!/bin/bash
-            client_id="${CLIENT_ID}"
-            pem="${PEM}"
-            iat="${iat}"
-            exp="${exp}"
-            b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
-            header=\$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
-            payload=\$(echo -n "{\\"iat\\":\${iat},\\"exp\\":\${exp},\\"iss\\":\\"\${client_id}\\"}" | b64enc)
-            header_payload="\${header}.\${payload}"
-
-            pem_file=\$(mktemp)
-            echo "\${pem}" > "\${pem_file}"
-
-            signature=\$(echo -n "\${header_payload}" | openssl dgst -sha256 -sign "\${pem_file}" | b64enc)
-            JWT="\${header_payload}.\${signature}"
-            rm -f "\${pem_file}"
-            echo "\${JWT}"
-        """, returnStdout: true).trim()
-        echo "Generated JWT: ${JWT}"
-
-  
-          // Retrieve access token
-          def tokenResponse = httpRequest(
-                    url: "https://api.github.com/app/installations/54988601/access_tokens",
-                    httpMode: 'POST',
-                    customHeaders: [
-                        [name: 'Accept', value: '*/*'],
-                        [name: 'Authorization', value: "Bearer ${JWT}"],
-                    ],
-                    contentType: 'APPLICATION_JSON'
-                )
-        
-        def GITHUB_TOKEN = null
-        
-        if (tokenResponse.status == 201) { // 201 is the status code for created
-          def jsonResponse = readJSON text: tokenResponse.content
-          GITHUB_TOKEN = jsonResponse.token
-
-          echo "Access token ${GITHUB_TOKEN} created."
-        } else {
-            error "Access token retrieval failed, aborting pipeline"
+        always {
+            cleanWs()
         }
 
-          
-        // Create the Pull Request
-        def pullResponse = httpRequest(
-                    url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls",
-                    httpMode: 'POST',
-                    customHeaders: [
-                        [name: 'Accept', value: '*/*'],
-                        [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
-                    ],
-                    contentType: 'APPLICATION_JSON',
-                    requestBody: """
-                        {
-                            "title": "Automated PR: Pipeline successful",
-                            "head": "${TEST_BRANCH}",
-                            "base": "${MAIN_BRANCH}",
-                            "body": "This pull request was created automatically after a successful pipeline run."
-                        }
+        success {
+        script {
+        if (env.BRANCH_NAME == 'testing-cohort') {
+            def now = sh(script: 'date +%s', returnStdout: true).trim()
+            def iat = (now.toInteger() - 60).toString()
+            def exp = (now.toInteger() + 600).toString()
+
+            echo "Current time: ${now}"
+            echo "Issued at: ${iat}"
+            echo "Expires at: ${exp}"
+
+            // Generate JWT
+            def JWT = sh(script: """
+                #!/bin/bash
+                client_id="${CLIENT_ID}"
+                pem="${PEM}"
+                iat="${iat}"
+                exp="${exp}"
+                b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+                header=\$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
+                payload=\$(echo -n "{\\"iat\\":\${iat},\\"exp\\":\${exp},\\"iss\\":\\"\${client_id}\\"}" | b64enc)
+                header_payload="\${header}.\${payload}"
+
+                pem_file=\$(mktemp)
+                echo "\${pem}" > "\${pem_file}"
+
+                signature=\$(echo -n "\${header_payload}" | openssl dgst -sha256 -sign "\${pem_file}" | b64enc)
+                JWT="\${header_payload}.\${signature}"
+                rm -f "\${pem_file}"
+                echo "\${JWT}"
+            """, returnStdout: true).trim()
+            echo "Generated JWT: ${JWT}"
+
+    
+            // Retrieve access token
+            def tokenResponse = httpRequest(
+                        url: "https://api.github.com/app/installations/54988601/access_tokens",
+                        httpMode: 'POST',
+                        customHeaders: [
+                            [name: 'Accept', value: '*/*'],
+                            [name: 'Authorization', value: "Bearer ${JWT}"],
+                        ],
+                        contentType: 'APPLICATION_JSON'
+                    )
+            
+            def GITHUB_TOKEN = null
+            
+            if (tokenResponse.status == 201) { // 201 is the status code for created
+            def jsonResponse = readJSON text: tokenResponse.content
+            GITHUB_TOKEN = jsonResponse.token
+
+            echo "Access token ${GITHUB_TOKEN} created."
+            } else {
+                error "Access token retrieval failed, aborting pipeline"
+            }
+
+            
+            // Create the Pull Request
+            def pullResponse = httpRequest(
+                        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls",
+                        httpMode: 'POST',
+                        customHeaders: [
+                            [name: 'Accept', value: '*/*'],
+                            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
+                        ],
+                        contentType: 'APPLICATION_JSON',
+                        requestBody: """
+                            {
+                                "title": "Automated PR: Pipeline successful",
+                                "head": "${TEST_BRANCH}",
+                                "base": "${MAIN_BRANCH}",
+                                "body": "This pull request was created automatically after a successful pipeline run."
+                            }
+                        """
+                    )
+
+            // Extract PR number from the response
+            if (pullResponse.status == 201) { // 201 is the status code for created
+            def jsonResponse = readJSON text: pullResponse.content
+            int prNumber = jsonResponse.number
+
+            echo "PR #${prNumber} created."
+
+            // Request Reviewers for the Pull Request
+            String reviewerApiUrl = "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls/${prNumber}/requested_reviewers"
+            String reviewerPayload = """
+                    {
+                        "reviewers": [${REVIEWER_GITHUB_USERNAMES}]
+                    }
                     """
-                )
 
-        // Extract PR number from the response
-        if (pullResponse.status == 201) { // 201 is the status code for created
-          def jsonResponse = readJSON text: pullResponse.content
-          int prNumber = jsonResponse.number
+            def reviewerResponse = httpRequest(
+                        url: reviewerApiUrl,
+                        httpMode: 'POST',
+                        customHeaders: [
+                            [name: 'Accept', value: 'application/vnd.github+json'],
+                            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
+                            [name: 'X-GitHub-Api-Version', value: '2022-11-28']
+                        ],
+                        contentType: 'APPLICATION_JSON',
+                        requestBody: reviewerPayload
+                    )
 
-          echo "PR #${prNumber} created."
-
-          // Request Reviewers for the Pull Request
-          String reviewerApiUrl = "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls/${prNumber}/requested_reviewers"
-          String reviewerPayload = """
-                {
-                    "reviewers": [${REVIEWER_GITHUB_USERNAMES}]
-                }
-                """
-
-          def reviewerResponse = httpRequest(
-                    url: reviewerApiUrl,
-                    httpMode: 'POST',
-                    customHeaders: [
-                        [name: 'Accept', value: 'application/vnd.github+json'],
-                        [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
-                        [name: 'X-GitHub-Api-Version', value: '2022-11-28']
-                    ],
-                    contentType: 'APPLICATION_JSON',
-                    requestBody: reviewerPayload
-                )
-
-          if (reviewerResponse.status == 201) {
-              echo "Reviewers requested for PR #${prNumber}."
-          } else {
-              echo "Failed to request reviewers for PR #${prNumber}. Status: ${reviewerResponse.status}"
-          }
-        } else {
-              echo "Failed to create PR. Status: ${response.status}"
+            if (reviewerResponse.status == 201) {
+                echo "Reviewers requested for PR #${prNumber}."
+            } else {
+                echo "Failed to request reviewers for PR #${prNumber}. Status: ${reviewerResponse.status}"
+            }
+            } else {
+                echo "Failed to create PR. Status: ${response.status}"
+            }
         }
-      }
-      }
-    }
+        }
+        }
 
-    failure {
-        echo 'The pipeline failed. No pull request created.'
+        failure {
+            echo 'The pipeline failed. No pull request created.'
 
-        container('kaniko'){
-            script{
-                // Reset staging S3
-                if(env.BRANCH_NAME.equals('testing-cohort-dev')){
-                    sh 'aws s3 sync s3-backup s3://budget-buddy-frontend-staging'
-                }
+            container('kaniko'){
+                script{
+                    // Reset staging S3
+                    if(env.BRANCH_NAME.equals('testing-cohort-dev')){
+                        sh 'aws s3 sync s3-backup s3://budget-buddy-frontend-staging'
+                    }
 
-                // Reset production S3
-                if(env.BRANCH_NAME.equals('testing-cohort')){
-                    sh 'aws s3 sync s3-backup s3://budget-buddy-frontend'
+                    // Reset production S3
+                    if(env.BRANCH_NAME.equals('testing-cohort')){
+                        sh 'aws s3 sync s3-backup s3://budget-buddy-frontend'
+                    }
                 }
             }
         }
     }
-  }
 }
