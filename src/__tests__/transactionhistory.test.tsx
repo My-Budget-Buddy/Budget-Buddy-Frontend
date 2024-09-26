@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within, act } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import TransactionHistory from '../pages/Transactions/TransactionHistory';
@@ -408,6 +408,24 @@ describe('TransactionHistory Component', () => {
         });
 
         // Component renders fine with no accounts
+        expect(screen.getByText('transactions.add-transaction')).toBeInTheDocument();
+    });
+
+    it('handles no transactions gracefully', async () => {
+        const { getTransactionByVendor } = require('../utils/transactionService');
+        getTransactionByVendor.mockResolvedValue([]);
+
+        render(
+            <TestWrapper>
+                <TransactionHistory />
+            </TestWrapper>
+        );
+
+        await waitFor(() => {
+            expect(getTransactionByVendor).toHaveBeenCalled();
+        });
+
+        // Component renders fine with no transactions
         expect(screen.getByText('transactions.add-transaction')).toBeInTheDocument();
     });
 });

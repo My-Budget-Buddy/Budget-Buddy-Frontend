@@ -191,13 +191,21 @@ function TransactionHistory() {
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        if (createRef.current?.modalIsOpen) setNewTransaction({ ...newTransaction, [name]: value });
+        let newValue: string | number = value;
+
+        // Parse 'amount' as a number
+        if (name === 'amount') {
+            newValue = value === '' ? '' : parseFloat(value);
+        }
+
+        if (createRef.current?.modalIsOpen) {
+            setNewTransaction({ ...newTransaction, [name]: newValue });
+        }
         if (modalRef.current?.modalIsOpen) {
             setCurrentTransaction({
                 ...currentTransaction,
-                [name]: value
+                [name]: newValue
             });
-
         }
     }
 
@@ -214,11 +222,20 @@ function TransactionHistory() {
 
     function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
         const { name, value } = event.target;
-        if (createRef.current?.modalIsOpen) setNewTransaction({ ...newTransaction, [name]: value });
+        let newValue: string | number = value;
+
+        // Parse 'accountId' as a number
+        if (name === 'accountId') {
+            newValue = parseInt(value, 10);
+        }
+
+        if (createRef.current?.modalIsOpen) {
+            setNewTransaction({ ...newTransaction, [name]: newValue });
+        }
         if (modalRef.current?.modalIsOpen) {
             setCurrentTransaction({
                 ...currentTransaction,
-                [name]: value
+                [name]: newValue
             });
         }
     }
@@ -245,7 +262,7 @@ function TransactionHistory() {
         <>
             <div className="min-w-screen min-h-screen flex flex-col gap-6">
                 <div className="flex justify-between items-center bg-transparent">
-                    <Title><Trans i18nKey={"transactions.history"} components={{ 1: <i id="vendorNameTitle" className="text-blue-700" /> }}  values={{ val: Name }} /></Title>
+                    <Title><Trans i18nKey={"transactions.history"} components={{ 1: <i id="vendorNameTitle" className="text-blue-700" /> }} values={{ val: Name }} /></Title>
                     <div className="flex gap-4 mt-4">
                         <Button
                             type="button"
@@ -678,7 +695,7 @@ function TransactionHistory() {
                                 disabled
                                 required
                             />
-                            <Label htmlFor="transaction-amount">{t("transactions-table.amount")}</Label>
+                            <Label htmlFor="create-transaction-amount">{t("transactions-table.amount")}</Label>
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
@@ -706,7 +723,7 @@ function TransactionHistory() {
                                     ))}
                                 </Select>
                             </div>
-                            <Label htmlFor="transaction-description">{t("budgets.notes")}</Label>
+                            <Label htmlFor="create-transaction-description">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={newTransaction.description || ""}
                                 id="create-transaction-description"
