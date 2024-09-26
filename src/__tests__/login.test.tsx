@@ -85,21 +85,22 @@ describe('Login Component', () => {
 
     // Test if the form can be submitted.
     it('submits the form', () => {
+        global.fetch = jest.fn(() => Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(
+                { jwt: 'fetch-mock-jwt' }
+            )
+        } as Response))
+
         const usernameInput = screen.getByLabelText('auth.email');
         const passwordInput = screen.getByLabelText('auth.password');
         const submitButton = screen.getByText('auth.login', { selector: 'button' });
 
-        global.fetch = jest.fn(() =>
-            Promise.resolve({
-                json: () => Promise.resolve({ jwt: 'fetch-mock-jwt' }),
-            } as Response)
-        );
-
-        fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-        fireEvent.change(passwordInput, { target: { value: 'password123' } });
+        fireEvent.change(usernameInput, { target: { value: 'user@email.com' } })
+        fireEvent.change(passwordInput, { taarget: { value: 'password123' } })
         fireEvent.click(submitButton);
 
-        // Add your assertions here based on what should happen on form submission
         expect(global.fetch).toHaveBeenCalled();
     });
 });
