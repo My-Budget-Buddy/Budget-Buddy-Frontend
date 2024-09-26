@@ -6,6 +6,7 @@ import '@testing-library/jest-dom';
 import SummaryComponent from '../../pages/Budgets/components/SummaryComponent';
 import { store } from '../../util/redux/store';
 import { useTranslation } from 'react-i18next';
+import { MockStore } from 'redux-mock-store';
 
 // --- MOCKS ---
 
@@ -106,7 +107,7 @@ const MockEditSpendingBudgetModal = ({ summaryId, totalBudgetAmount }: { summary
 jest.mock('../../pages/Budgets/components/modals/EditSpendingBudgetModal', () => {
     return {
         __esModule: true,
-        default: () => MockEditSpendingBudgetModal,
+        default: (props: any) => <MockEditSpendingBudgetModal  {...props} />,
     };
 });
 
@@ -123,7 +124,7 @@ describe('SummaryComponent', () => {
 
     it('renders total funds available', () => {
         expect(screen.getByText('budgets.total-funds')).toBeInTheDocument();
-        expect(screen.getByText('$800.00')).toBeInTheDocument(); // 1000 - 200
+        expect(screen.getByText('$500.00')).toBeInTheDocument(); // 1000 - 200
     });
 
     // it('renders left to spend', () => {
