@@ -23,9 +23,9 @@ const mockStore = configureStore([]);
 const store = mockStore({
     simpleFormStatus: { isSending: false },
     budgets: {
-        monthYear: '2023-10',
-        selectedMonthString: 'October',
-        selectedYear: 2023,
+        monthYear: '2024-9',
+        selectedMonthString: 'September',
+        selectedYear: 2024,
         budgets: [],
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     },
@@ -72,39 +72,39 @@ describe('BudgetsComponent', () => {
         );
     });
 
-    test('renders without crashing', () => {
-        expect(screen.getByText(/October 2023 Budget/i)).toBeInTheDocument();
+    it('renders without crashing', () => {
+        expect(screen.getByText(/September 2024 Budget/i)).toBeInTheDocument();
     });
 
-    test('dispatches updateSelectedDate when previous month button is clicked', () => {
-        fireEvent.click(screen.getByText(/September.*2023/i));
+    it('dispatches updateSelectedDate when previous month button is clicked', () => {
+        fireEvent.click(screen.getByText(/August 2024/i));
         const actions = store.getActions();
-        expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: 8, selectedYear: 2023 }));
+        expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: 7, selectedYear: 2024 }));
     });
 
-    // test('dispatches updateSelectedDate when next month button is clicked', () => {
-    //     fireEvent.click(screen.getByText(/November 2023/i));
-    //     const actions = store.getActions();
-    //     expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: 10, selectedYear: 2023 }));
-    // });
+    it('dispatches updateSelectedDate when next month button is clicked', () => {
+        fireEvent.click(screen.getByText(/October 2024/i));
+        const actions = store.getActions();
+        expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: 9, selectedYear: 2024 }));
+    });
 
-    // test('renders no budgets message when budgets list is empty', () => {
-    //     expect(screen.getByText(/no-budgets/i)).toBeInTheDocument();
-    // });
+    test('renders no budgets message when budgets list is empty', () => {
+        expect(screen.getByText(/no-budgets/i)).toBeInTheDocument();
+    });
 
-    // test('sorts budgets when column headers are clicked', () => {
-    //     const budgets = [
-    //         { id: 1, category: 'Food', totalAmount: 200, spentAmount: 150, isReserved: false, notes: '' },
-    //         { id: 2, category: 'Transport', totalAmount: 100, spentAmount: 50, isReserved: false, notes: '' },
-    //     ];
-    //     (store.getState() as any).budgets.budgets = budgets;
+    test('sorts budgets when column headers are clicked', () => {
+        const budgets = [
+            { id: 1, category: 'Food', totalAmount: 200, spentAmount: 150, isReserved: false, notes: '' },
+            { id: 2, category: 'Transport', totalAmount: 100, spentAmount: 50, isReserved: false, notes: '' },
+        ];
+        (store.getState() as any).budgets.budgets = budgets;
 
-    //     fireEvent.click(screen.getByText(/Budget Category/i));
-    //     let actions = store.getActions();
-    //     expect(actions).toContainEqual(updateBudgets([...budgets].sort((a, b) => a.category.localeCompare(b.category))));
+        fireEvent.click(screen.getByText('budgets.category', { exact: false, selector: 'th' }));
+        let actions = store.getActions();
+        expect(actions).toContainEqual(updateBudgets([...budgets].sort((a, b) => b.category.localeCompare(a.category))));
 
-    //     fireEvent.click(screen.getByText(/Budgeted/i));
-    //     actions = store.getActions();
-    //     expect(actions).toContainEqual(updateBudgets([...budgets].sort((a, b) => a.totalAmount - b.totalAmount)));
-    // });
+        fireEvent.click(screen.getByText('budgets.budgeted', { exact: false, selector: 'th' }));
+        actions = store.getActions();
+        expect(actions).toContainEqual(updateBudgets([...budgets].sort((a, b) => a.totalAmount - b.totalAmount)));
+    });
 });
