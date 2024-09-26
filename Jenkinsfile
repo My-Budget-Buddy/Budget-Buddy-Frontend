@@ -98,7 +98,14 @@ pipeline{
                 container('kaniko'){
                     withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
                         sh 'mkdir s3-backup'
-                        sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+
+                         if(env.BRANCH_NAME.equals('testing-cohort-dev')){
+                            sh 'aws s3 sync s3://budget-buddy-frontend-staging s3-backup'
+                        }
+
+                        if(env.BRANCH_NAME.equals('testing-cohort')){
+                            sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+                        }
                     }
                 }
             }
@@ -157,6 +164,32 @@ pipeline{
             }
         }
 
+        // Set up the database for the staging environment
+        stage('Set Up Database for Staging') {
+            when {
+            branch 'testing-cohort-dev'
+            }
+
+            steps {
+            container('aws-kubectl') {
+                withCredentials([
+                string(credentialsId: 'STAGING_DATABASE_USER', variable: 'DATABASE_USERNAME'),
+                string(credentialsId: 'STAGING_DATABASE_PASSWORD', variable: 'DATABASE_PASSWORD')])
+                {
+                sh '''
+                    aws eks --region us-east-1 update-kubeconfig --name project3-eks
+
+                    # deploy staging db
+
+                    cd Budget-Buddy-Kubernetes/Databases
+                    chmod +x ./deploy-database.sh
+                    ./deploy-database.sh ${NAMESPACE} $DATABASE_USERNAME $DATABASE_PASSWORD
+                    '''
+                }
+            }
+            }
+        }
+
         // --- UNIT TESTING ---
 
         // Performs jest tests
@@ -200,6 +233,8 @@ pipeline{
                 container('kaniko'){
                     withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
                         sh 'aws s3 sync dist s3://budget-buddy-frontend-staging'
+                        // Trigger cloudfront refresh
+                        sh 'aws cloudfront create-invalidation --distribution-id E2QXLYSZ7XF3P4 --paths "/*"'
                     }
                 }
             }
@@ -234,26 +269,14 @@ pipeline{
                 container('kaniko'){
                     withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
                         sh 'aws s3 sync dist s3://budget-buddy-frontend'
-                    }
-                }
-            }
-        }
-
-        // Trigger cloudfront refresh
-        stage('Cloudfront Update'){
-            when{
-                branch 'testing-cohort'
-            }
-
-            steps{
-                container('kaniko'){
-                    withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
-                        sh 'aws cloudfront create-invalidation --distribution-id E2D9Z4H1DJNT0K --paths "/*"'
+                        // Trigger cloudfront refresh
+                        sh 'aws cloudfront create-invalidation --distribution-id E2D9Z4H1DJNT0K --paths "/*"' 
                     }
                 }
             }
         }
     }
+
 
   // --- POST PIPELINE ---
 
