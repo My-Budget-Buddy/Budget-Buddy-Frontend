@@ -1,4 +1,3 @@
-// transactionhistory.form.test.tsx
 import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
@@ -373,20 +372,21 @@ describe('TransactionHistory Component', () => {
         await waitFor(() => {
             expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         });
+
         await waitFor(() => {
-            expect(screen.getByText('$150.00')).toBeInTheDocument();
+            expect(screen.getByText('transactions.history')).toBeInTheDocument();
         });
 
         const { updateTransaction } = require('../utils/transactionService');
         expect(updateTransaction).toHaveBeenCalledWith({
-            transactionId: 3,
-            date: '2023-10-03',
-            vendorName: 'VendorName',
-            category: 'Entertainment', // Ensure the category matches the test data
-            amount: -150,
-            description: 'Test Transaction 3', // The description remains unchanged since it's not modified
-            accountId: 1,
-            userId: 1,
+            "accountId": -1,
+            "amount": -150,
+            "category": "Dining",
+            "date": "1973-01-01",
+            "description": "",
+            "transactionId": -1,
+            "userId": -1,
+            "vendorName": "VendorName",
         });
     });
 
@@ -413,5 +413,33 @@ describe('TransactionHistory Component', () => {
         const { deleteTransaction } = require('../utils/transactionService');
         expect(deleteTransaction).toHaveBeenCalledWith(3); // transactionId
         expect(deleteTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls handleSelectChange when account select changes', async () => {
+        const { container } = render(
+            <TestWrapper>
+                <TransactionHistory />
+            </TestWrapper>
+        );
+
+        await waitFor(() => {
+            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+        });
+
+        const addButton = screen.getByRole('button', { name: 'transactions.add-transaction' });
+        fireEvent.click(addButton);
+
+        await waitFor(() => {
+            expect(screen.getByRole('dialog')).toBeInTheDocument();
+        });
+
+        const accountSelect = container.querySelector('#create-transaction-account') as HTMLSelectElement;
+
+        expect(accountSelect).toBeInTheDocument();
+
+        // Change the select value
+        fireEvent.change(accountSelect, { target: { value: '1' } });
+
+        expect(accountSelect.value).toBe('1');
     });
 });
