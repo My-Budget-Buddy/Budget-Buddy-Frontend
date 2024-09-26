@@ -8,3 +8,5 @@ i18n.use(initReactI18next).init({
   resources: { en: { ...EN }, es: { ...ES } },
   lng: "en",
 });
+
+export { i18n };
