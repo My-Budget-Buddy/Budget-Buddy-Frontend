@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -102,12 +102,10 @@
 <a name='L37'></a><a href='#L37'>37</a>
 <a name='L38'></a><a href='#L38'>38</a>
 <a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -116,9 +114,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -133,17 +131,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
-import { Icon } from "@trussworks/react-uswds";
-import { TransactionCategory } from "../types/models";
+<span class="cstat-no" title="statement not covered" >import { Icon } from "@trussworks/react-uswds";</span>
+<span class="cstat-no" title="statement not covered" >import { TransactionCategory } from "../types/models";</span>
 &nbsp;
-export const categoryIcons: { [key in TransactionCategory]: React.ElementType } = {
+export const <span class="cstat-no" title="statement not covered" >categoryIcons: { [key in TransactionCategory]: React.ElementType } = {</span>
     [TransactionCategory.GROCERIES]: Icon.LocalGroceryStore,
     [TransactionCategory.ENTERTAINMENT]: Icon.Youtube,
     [TransactionCategory.DINING]: Icon.Restaurant,
@@ -154,7 +154,7 @@ export const categoryIcons: { [key in TransactionCategory]: React.ElementType } 
     [TransactionCategory.INCOME]: Icon.TrendingUp,
     [TransactionCategory.MISC]: Icon.MoreHoriz
 };
-export const categoryColors: { [key in TransactionCategory]: string } = {
+export const <span class="cstat-no" title="statement not covered" >categoryColors: { [key in TransactionCategory]: string } = {</span>
     [TransactionCategory.GROCERIES]: "#90c8f4",
     [TransactionCategory.ENTERTAINMENT]: "#e5d23a",
     [TransactionCategory.DINING]: "#6ed198",
@@ -171,12 +171,12 @@ interface CategoryIconProps {
     color: string; // pass color as a prop
 }
 &nbsp;
-const CategoryIcon: React.FC&lt;CategoryIconProps&gt; = ({ category, color }) =&gt; {
-    const IconComponent = categoryIcons[category];
-    return &lt;IconComponent style={{ color, fontSize: "1.3rem", marginRight: "0.8rem" }} /&gt;;
+const CategoryIcon: React.FC&lt;CategoryIconProps&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> category, color }) =&gt; {</span>
+    const IconComponent = <span class="cstat-no" title="statement not covered" >categoryIcons[category];</span>
+<span class="cstat-no" title="statement not covered" >    return &lt;IconComponent style={{ color, fontSize: "1.3rem", marginRight: "0.8rem" }} /&gt;;</span>
 };
 &nbsp;
-export default CategoryIcon;
+<span class="cstat-no" title="statement not covered" >export default CategoryIcon;</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -184,7 +184,7 @@ export default CategoryIcon;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-09-25T20:46:47.669Z
+                at 2024-09-26T13:31:41.292Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
