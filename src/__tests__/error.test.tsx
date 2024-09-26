@@ -26,7 +26,7 @@ beforeEach(() => {
         <MemoryRouter initialEntries={['/error']}>
             <Routes>
                 <Route path="/error" element={<ErrorPage />} />
-                <Route path="/" element={<LandingPage />} />
+                <Route path="/" element={<div>Landing Page</div>} />
             </Routes>
         </MemoryRouter>
     );
