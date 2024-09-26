@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 //import { useAuthentication } from '../contexts/AuthenticationContext';
 import { Provider } from 'react-redux';
 import { store } from '../util/redux/store';
+import { getAccountByID } from '../pages/Tax/taxesAPI';
 
 
 // Mock @mui/x-charts components
@@ -120,15 +121,84 @@ describe('Dashboard', () => {
   });
 
   it('renders the add account button', () => {
-      const button = screen.getByRole('button', { name: /dashboard.add-account/i })
-      expect(button).not.toBeDisabled();
+      const buttonAccount = screen.getByRole('button', { name: /dashboard.add-account/i })
+      expect(buttonAccount).not.toBeDisabled();
+      fireEvent.click(buttonAccount);
   });
-/*
-  it('renders the add account button', () => {
-    const button1 = screen.getByRole('button', { name: /dashboard.view-budgets/i })
-    expect(button1).not.toBeDisabled();
+
+  it('renders the view budget button', () => {
+    const buttonBudget = screen.getByRole('button', { name: /dashboard.view-budgets/i })
+    expect(buttonBudget).not.toBeDisabled();
+    fireEvent.click(buttonBudget);
 });
-*/
+
+it('renders the view add transaction button', () => {
+  const buttonAddTransaction = screen.getByRole('button', { name: /dashboard.add-transaction/i })
+  expect(buttonAddTransaction).not.toBeDisabled();
+  fireEvent.click(buttonAddTransaction);
+});
+
+it('renders the link for add account', () => {
+  const link = screen.getByRole('link', { name: 'dashboard.add-account' });
+  expect(link).toBeInTheDocument();
+  fireEvent.click(link);
+});
+
+it('renders the link for view budgets', () => {
+  const link = screen.getByRole('link', { name: 'dashboard.view-budgets' });
+  expect(link).toBeInTheDocument();
+  fireEvent.click(link);
+});
+
+it('renders the link for add transaction', () => {
+  const link = screen.getByRole('link', { name: 'dashboard.add-transaction' });
+  expect(link).toBeInTheDocument();
+  fireEvent.click(link);
+});
+
+it('makes a call to getAccountByID', () => {
+  const Account = getAccountByID();
+  expect(Account).not.toBeNull();
+
+});
+
+it('render and verify accounts title', () => {
+  const title = screen.getByText('accounts.title');
+  expect(title).toBeInTheDocument();
+
+});
+
+it('render and verify recent-transactions title', () => {
+  const title = screen.getByText('dashboard.recent-transactions');
+  expect(title).toBeInTheDocument();
+
+});
+
+it('render and verify budgets.title title', () => {
+  const title = screen.getByText('budgets.title');
+  expect(title).toBeInTheDocument();
+});
+
+
+it('renders the chart container', () => {
+  const chart = document.getElementById("chart-container");
+  expect(chart).not.toBeNull();
+  
+});
+
+it('renders the different account types', async () => {
+  await waitFor(() => {
+      expect(screen.getByText(/checking/i)).toBeInTheDocument();
+      expect(screen.getByText(/savings/i)).toBeInTheDocument();
+      expect(screen.getByText(/investment/i)).toBeInTheDocument();
+      expect(screen.getByText(/credit/i)).toBeInTheDocument();
+
+  });
+});
+
+it('renders the recent transactions', async () => {
+  expect(screen.getByText('dashboard.recent-transactions')).toBeInTheDocument();
+});
 
 
 });
