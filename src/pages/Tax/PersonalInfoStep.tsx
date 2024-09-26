@@ -115,7 +115,7 @@ const PersonalInfoStep: React.FC = () => {
                                     <FormGroup >
                                         <label htmlFor="city">City</label>
                                         <TextInput
-                                            id="cty"
+                                            id="city"
                                             name="city"
                                             type="text"
                                             //defaultValue="test"
