@@ -137,8 +137,8 @@ const WithholdingsAndMiscW2: React.FC = () => {
             <div>
 
                 <FormGroup >
-                    <label htmlFor="select">Deduction Type</label>
-                    <Select id="deddeduction" name="deddeduction" required onChange={handleChange}>
+                    <label id="deduction-type-label" htmlFor="select">Deduction Type</label>
+                    <Select id="deddeduction" aria-labelledby="deduction-type-label" name="deddeduction" required onChange={handleChange}>
                         <option>- Select -</option>
                         <option value="1">Health Savings Account</option>
                         <option value="2">IRA Contributions</option>
