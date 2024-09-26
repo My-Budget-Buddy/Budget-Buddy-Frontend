@@ -94,17 +94,17 @@ pipeline{
 
         // Create backup of current S3
         stage('Create S3 Backup'){
-            steps{
-                container('kaniko'){
-                    withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
-                        sh 'mkdir s3-backup'
+            steps {
+                script {
+                    container('kaniko'){
+                        withAWS(region: 'us-east-1', credentials: 'AWS_CREDENTIALS'){
+                            sh 'mkdir s3-backup'
 
-                         if(env.BRANCH_NAME.equals('testing-cohort-dev')){
-                            sh 'aws s3 sync s3://budget-buddy-frontend-staging s3-backup'
-                        }
-
-                        if(env.BRANCH_NAME.equals('testing-cohort')){
-                            sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+                            if (env.BRANCH_NAME == "${TEST_BRANCH}") {
+                                sh 'aws s3 sync s3://budget-buddy-frontend-staging s3-backup'
+                            } else if (env.BRANCH_NAME == "${MAIN_BRANCH}") {
+                                sh 'aws s3 sync s3://budget-buddy-frontend s3-backup'
+                            }
                         }
                     }
                 }
