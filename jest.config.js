@@ -12,4 +12,23 @@ export default {
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/src/__mocks__/imageMock.ts',
     '\\.(css|less)$': '<rootDir>/src/__mocks__/styleMock.ts',
   },
+  coveragePathIgnorePatterns: [
+    'src/App.tsx',
+    'src/i18n.ts',
+    'src/main.tsx',
+    'src/vite-env.d.ts',
+    'src/api/services',
+    'src/api/config.ts',
+    'src/components',
+    'src/contexts',
+    'src/layouts',
+    'src/pages/Root.tsx',
+    'src/pages/Budgets/components/modals',
+    'src/pages/Budgets/components/requests',
+    'src/pages/Budgets/components/subComponents',
+    'src/pages/Budgets/components/util',
+    'src/pages/Tax/TaxesAPI.ts',
+    'src/routing',
+    'src/util'
+  ],
 };
