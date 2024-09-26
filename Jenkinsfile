@@ -82,7 +82,7 @@ pipeline{
 
         CLIENT_ID = credentials('GITHUB_APP_CLIENT_ID')
         PEM = credentials('GITHUB_APP_PEM')
-        REVIEWER_GITHUB_USERNAMES = '"Anthowu07", "msabas1", "aldrich19"'
+        REVIEWER_GITHUB_USERNAMES = '"Anthowu07", "MaelstromDef", "brittshook"'
         TEST_BRANCH = 'testing-cohort-dev'
         MAIN_BRANCH = 'testing-cohort'
     }
