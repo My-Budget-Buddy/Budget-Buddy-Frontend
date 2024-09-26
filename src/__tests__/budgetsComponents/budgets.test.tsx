@@ -1,11 +1,11 @@
 import React from 'react';
-import Budgets from "../pages/Budgets/Budgets";
+import Budgets from "../../pages/Budgets/Budgets";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { URL_getAllBucketsByUserId, URL_findAllBudgets } from "../api/services/BudgetService";
+import { URL_getAllBucketsByUserId, URL_findAllBudgets, URL_getBudgetsByMonthYear } from "../../api/services/BudgetService";
 
 // Mock fetch function
 global.fetch = jest.fn((url) => {
@@ -26,12 +26,44 @@ global.fetch = jest.fn((url) => {
             ])
         } as Response);
     }
-    return Promise.reject(new Error('Invalid URL'));
+    if (url === URL_getBudgetsByMonthYear) {
+        return Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve([
+                {
+                    budgetId: 1,
+                    userId: 101,
+                    category: "Groceries",
+                    totalAmount: 1500,
+                    isReserved: true,
+                    monthYear: "2024-09",
+                    notes: "Monthly rent",
+                    createdTimestamp: "2024-09-01T10:00:00Z"
+                },
+                {
+                    budgetId: 2,
+                    userId: 101,
+                    category: "Entertainment",
+                    totalAmount: 2500,
+                    isReserved: false,
+                    monthYear: "2024-09",
+                    notes: "Groceries and dining out",
+                    createdTimestamp: "2024-09-01T10:00:00Z"
+                }
+            ])
+        } as Response);
+    }
+
+    return Promise.resolve({
+        ok: false,
+        status: 400
+    } as Response);
 });
 
 jest.mock("../api/config", () => ({
     config: {
-        apiUrl: "http://localhost:8125",
+        apiUrl: "http://localhost:mock",
     },
 }));
 
