@@ -1,6 +1,6 @@
-pipeline{
+pipeline {
     agent {
-        kubernetes{
+        kubernetes {
             yaml '''
                 apiVersion: v1
                 kind: Pod
@@ -35,27 +35,28 @@ pipeline{
                       tty: true
 
                     - name: aws-kubectl
-                        image: 924809052459.dkr.ecr.us-east-1.amazonaws.com/aws-kubectl:latest
-                        env:
-                        - name: AWS_REGION
+                      image: 924809052459.dkr.ecr.us-east-1.amazonaws.com/aws-kubectl:latest
+                      env:
+                      - name: AWS_REGION
                         valueFrom:
                             secretKeyRef:
-                            name: ecr-login
-                            key: AWS_REGION
-                        - name: AWS_ACCESS_KEY_ID
+                                name: ecr-login
+                                key: AWS_REGION
+                      - name: AWS_ACCESS_KEY_ID
                         valueFrom:
                             secretKeyRef:
-                            name: ecr-login
-                            key: AWS_ACCESS_KEY_ID
-                        - name: AWS_SECRET_ACCESS_KEY
+                                name: ecr-login
+                                key: AWS_ACCESS_KEY_ID
+                      - name: AWS_SECRET_ACCESS_KEY
                         valueFrom:
                             secretKeyRef:
-                            name: ecr-login
-                            key: AWS_SECRET_ACCESS_KEY
-                        command:
-                        - "sleep"
-                        args:
-                        - "9999999"
+                                name: ecr-login
+                                key: AWS_SECRET_ACCESS_KEY
+                      command:
+                      - sleep
+                      args:
+                      - '9999999'
+                      tty: true
 
                     - name: npm
                       image: 924809052459.dkr.ecr.us-east-1.amazonaws.com/node:latest
@@ -64,21 +65,21 @@ pipeline{
                       - name: kaniko-cache
                         mountPath: /kaniko/.cache
                       command:
-                        - sleep
+                      - sleep
                       args:
-                        - '9999999'
+                      - '9999999'
                       tty: true
 
                     - name: maven
                       image: 924809052459.dkr.ecr.us-east-1.amazonaws.com/maven:latest
                       imagePullPolicy: Always
                       volumeMounts:
-                        - name: kaniko-cache
-                          mountPath: /kaniko/.cache
+                      - name: kaniko-cache
+                        mountPath: /kaniko/.cache
                       command:
-                        - sleep
+                      - sleep
                       args:
-                        - '9999999'
+                      - '9999999'
                       tty: true
 
                     volumes:
