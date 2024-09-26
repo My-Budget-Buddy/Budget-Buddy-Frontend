@@ -1,35 +1,86 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import W2EditView from '../pages/Tax/W2EditView';
+import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import { BrowserRouter } from 'react-router-dom';
+
+jest.mock("../api/config", () => ({
+    config: {
+        apiUrl: "http://localhost:mock",
+    },
+}));
+
+const mockStore = configureStore([]);
+const store = mockStore({
+    simpleFormStatus: { isSending: false },
+    budgets: {
+        monthYear: '2024-9',
+        selectedMonthString: 'September',
+        selectedYear: 2024,
+        budgets: [],
+        months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    },
+});
+
+// MOCKED COMPONENTS
+
+jest.mock('../pages/Tax/PersonalInfoStep', () => ({
+    __esModule: true,
+    default: jest.fn(() => <div>Personal Information Content</div>),
+}));
+
+jest.mock('../pages/Tax/w2Step', () => ({
+    __esModule: true,
+    default: jest.fn(() => <div>File W2s Content</div>),
+}));
+
+jest.mock('../pages/Tax/FinancialInformationStepW2', () => ({
+    __esModule: true,
+    default: jest.fn(() => <div>Other Income Content</div>),
+}));
+
+jest.mock('../pages/Tax/WithholdingsAndMiscW2', () => ({
+    __esModule: true,
+    default: jest.fn(() => <div>Deductions Content</div>),
+}));
+
+jest.mock('../pages/Tax/ReviewAndSubmitStepW2', () => ({
+    __esModule: true,
+    default: jest.fn(() => <div>Review and submit Content</div>),
+}));
 
 describe('W2EditView', () => {
+    beforeEach(() => {
+        render(
+            <W2EditView />
+        );
+    })
+
     it('renders step indicator with correct steps', () => {
-        render(<W2EditView />);
         const steps = ['Personal Information', 'File W2s', 'Other Income', 'Deductions', 'Review and submit'];
-        steps.forEach(step => {
-            expect(screen.getByText(step)).toBeInTheDocument();
+        steps.forEach(async step => {
+            const stepIndicator = (await screen.findAllByText(step, { selector: 'span' })).find((el) => el.className === 'usa-step-indicator__segment-label')
+            expect(stepIndicator).toBeInTheDocument();
         });
     });
 
     it('initially renders PersonalInfoStep component', () => {
-        render(<W2EditView />);
-        expect(screen.getByText('Personal Information Content')).toBeInTheDocument();
+        expect(screen.getByText('Personal Information Content', { selector: 'div' })).toBeInTheDocument();
     });
 
     it('navigates to next step on Next button click', () => {
-        render(<W2EditView />);
         fireEvent.click(screen.getByText('Next'));
         expect(screen.getByText('File W2s Content')).toBeInTheDocument();
     });
 
     it('navigates to previous step on Prev button click', () => {
-        render(<W2EditView />);
         fireEvent.click(screen.getByText('Next'));
         fireEvent.click(screen.getByText('Prev'));
         expect(screen.getByText('Personal Information Content')).toBeInTheDocument();
     });
 
     it('Next button is disabled on the last step', () => {
-        render(<W2EditView />);
         for (let i = 0; i < 4; i++) {
             fireEvent.click(screen.getByText('Next'));
         }
@@ -37,7 +88,6 @@ describe('W2EditView', () => {
     });
 
     it('Prev button is disabled on the first step', () => {
-        render(<W2EditView />);
         expect(screen.getByText('Prev')).toBeDisabled();
     });
 });
