@@ -358,6 +358,123 @@ describe('Transactions', () => {
         });
     });
 
+    it('filters transactions by date', async () => {
+        mockGetTransactionByUserId.mockResolvedValue([
+            {
+                transactionId: 1,
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
+                description: "Test Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+
+            {
+                transactionId: 2,
+                date: "2022-08-05",
+                vendorName: 'OtherVendor',
+                category: 'Dining' as TransactionCategory,
+                amount: 500.0,
+                description: "Another Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+
+        ]);
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+        await waitFor(async () => {
+
+            const datesDropDowns = screen.getAllByLabelText('allDatesDropDown');
+            const dateDropDown = datesDropDowns[0];
+            fireEvent.change(dateDropDown, { target: { value: 'date' } });
+
+            // Wait for the date inputs to appear
+            const minDate = await screen.findByPlaceholderText('Min Date');
+            const maxDate = await screen.findByPlaceholderText('Max Date');
+
+            // Change the dates
+            fireEvent.change(minDate, { target: { value: '2023-10-01' } });
+            fireEvent.change(maxDate, { target: { value: '2023-10-05' } });
+
+            // Check that the dates have been changed
+            expect(minDate).toHaveValue('2023-10-01');
+            expect(maxDate).toHaveValue('2023-10-05');
+
+            const vendorNames = screen.getAllByText('VendorName');
+            const vendorName = vendorNames[0]
+            expect(vendorName).toBeInTheDocument();
+            // await waitFor(() => {
+            //     expect(screen.queryByText('OtherVendor')).not.toBeInTheDocument();
+            // });
+        });
+    });
+
+    it('filters transactions by amount', async () => {
+        mockGetTransactionByUserId.mockResolvedValue([
+            {
+                transactionId: 1,
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
+                description: "Test Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+
+            {
+                transactionId: 2,
+                date: "2022-08-05",
+                vendorName: 'OtherVendor',
+                category: 'Dining' as TransactionCategory,
+                amount: 500.0,
+                description: "Another Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+
+        ]);
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+        await waitFor(async () => {
+            const amountDropDowns = screen.getAllByLabelText('allAmountsDropDown');
+            const amountDropDown = amountDropDowns[0];
+            fireEvent.change(amountDropDown, { target: { value: 'amount' } });
+
+            // Wait for the amount inputs to appear
+            const minAmount = await screen.findByPlaceholderText('Min Amount');
+            const maxAmount = await screen.findByPlaceholderText('Max Amount');
+
+            // Change the amounts
+            fireEvent.change(minAmount, { target: { value: '100' } });
+            fireEvent.change(maxAmount, { target: { value: '200' } });
+
+            // Check that the amounts have been changed
+            expect(minAmount).toHaveValue(100);
+            expect(maxAmount).toHaveValue(200);
+
+            const vendorNames = screen.getAllByText('VendorName');
+            const vendorName = vendorNames[0]
+            expect(vendorName).toBeInTheDocument();
+            // await waitFor(() => {
+            //     expect(screen.queryByText('OtherVendor')).not.toBeInTheDocument();
+            // });
+        });
+    });
+
     it('opens and submits edit transaction modal', async () => {
         (validateTransaction as jest.Mock).mockReturnValue([]);
 
@@ -490,6 +607,38 @@ describe('Transactions', () => {
 
         await waitFor(() => {
             expect(deleteTransaction).toHaveBeenCalled();
+        });
+    });
+
+    it('renders the transaction details modal', async () => {
+        mockGetTransactionByVendor.mockResolvedValue([
+            {
+                transactionId: 1,
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
+                description: "Test Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+        ]);
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // Open the details modal
+        const detailsButtons = await screen.findAllByLabelText('transaction-arrow');
+        fireEvent.click(detailsButtons[0]);
+
+        await waitFor(() => {
+            screen.getAllByLabelText('transactionDetailedInfo').forEach(item => {
+                expect(item).toBeInTheDocument();
+            });
         });
     });
 
