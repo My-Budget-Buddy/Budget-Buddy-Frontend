@@ -88,6 +88,8 @@ describe("AccountModal Component", () => {
     });
 });
 
+//commented out code is another method by mockign the modal components itself which got higher coverage but
+//leads to more surepoint focus errors prob not recommended
 
 // Mock Modal and other components from @trussworks/react-uswds
 
