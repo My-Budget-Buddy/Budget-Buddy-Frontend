@@ -191,21 +191,13 @@ function TransactionHistory() {
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        let newValue: string | number = value;
-
-        // Parse 'amount' as a number
-        if (name === 'amount') {
-            newValue = value === '' ? '' : parseFloat(value);
-        }
-
-        if (createRef.current?.modalIsOpen) {
-            setNewTransaction({ ...newTransaction, [name]: newValue });
-        }
+        if (createRef.current?.modalIsOpen) setNewTransaction({ ...newTransaction, [name]: value });
         if (modalRef.current?.modalIsOpen) {
             setCurrentTransaction({
                 ...currentTransaction,
-                [name]: newValue
+                [name]: value
             });
+
         }
     }
 
@@ -222,20 +214,11 @@ function TransactionHistory() {
 
     function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
         const { name, value } = event.target;
-        let newValue: string | number = value;
-
-        // Parse 'accountId' as a number
-        if (name === 'accountId') {
-            newValue = parseInt(value, 10);
-        }
-
-        if (createRef.current?.modalIsOpen) {
-            setNewTransaction({ ...newTransaction, [name]: newValue });
-        }
+        if (createRef.current?.modalIsOpen) setNewTransaction({ ...newTransaction, [name]: value });
         if (modalRef.current?.modalIsOpen) {
             setCurrentTransaction({
                 ...currentTransaction,
-                [name]: newValue
+                [name]: value
             });
         }
     }
@@ -695,7 +678,7 @@ function TransactionHistory() {
                                 disabled
                                 required
                             />
-                            <Label htmlFor="create-transaction-amount">{t("transactions-table.amount")}</Label>
+                            <Label htmlFor="transaction-amount">{t("transactions-table.amount")}</Label>
                             <InputGroup>
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
@@ -723,7 +706,7 @@ function TransactionHistory() {
                                     ))}
                                 </Select>
                             </div>
-                            <Label htmlFor="create-transaction-description">{t("budgets.notes")}</Label>
+                            <Label htmlFor="transaction-description">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={newTransaction.description || ""}
                                 id="create-transaction-description"
