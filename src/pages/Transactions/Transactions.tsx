@@ -263,6 +263,7 @@ const Transactions: React.FC = () => {
                 <select
                     className="p-2 w-40"
                     id="allAccountDropDown"
+                    aria-label="allAccountDropDown"
                     value={selectedAccount}
                     onChange={(e) => setSelectedAccount(e.target.value)}
                 >
@@ -276,6 +277,7 @@ const Transactions: React.FC = () => {
                 <select
                     className="p-2 w-40"
                     id="allAmountsDropDown"
+                    aria-label="allAmountsDropDown"
                     value={amountFilter}
                     onChange={(e) => {
                         setAmountFilter(e.target.value);
@@ -287,11 +289,12 @@ const Transactions: React.FC = () => {
                     }}
                 >
                     <option value="all">{t("transactions.all-amounts")}</option>
-                    <option value="amount">{t("transactions.amount-range")}</option>
+                    <option aria-label="amount-range" value="amount">{t("transactions.amount-range")}</option>
                 </select>
                 <select
                     className="p-2 w-40"
                     id="allDatesDropDown"
+                    aria-label="allDatesDropDown"
                     value={dateFilter}
                     onChange={(e) => {
                         setDateFilter(e.target.value);
@@ -303,7 +306,7 @@ const Transactions: React.FC = () => {
                     }}
                 >
                     <option value="all">{t("transactions.all-dates")}</option>
-                    <option value="date">{t("transactions.date-range")}</option>
+                    <option aria-label="date-range" value="date">{t("transactions.date-range")}</option>
                 </select>
             </div>
 
@@ -315,6 +318,7 @@ const Transactions: React.FC = () => {
                             <TextInput
                                 value={minAmount}
                                 id="min-amount"
+                                aria-label="min-amount"
                                 name="minAmount"
                                 type="number"
                                 placeholder="Min Amount"
@@ -326,6 +330,7 @@ const Transactions: React.FC = () => {
                             <TextInput
                                 value={maxAmount}
                                 id="max-amount"
+                                aria-label="max-amount"
                                 name="maxAmount"
                                 type="number"
                                 placeholder="Max Amount"
@@ -408,6 +413,7 @@ const Transactions: React.FC = () => {
                                             <Button
                                                 type="button"
                                                 id="editBtn"
+                                                aria-label="edit-transaction-btn"
                                                 className="usa-button--unstyled"
                                                 onClick={() => {
                                                     setEditTransaction(transaction);
@@ -418,6 +424,7 @@ const Transactions: React.FC = () => {
                                             </Button>
                                             <Button
                                                 type="button"
+                                                aria-label="delete-transaction-btn"
                                                 id="deleteBtn"
                                                 className="usa-button--unstyled"
                                                 onClick={() => handleDelete(transaction.transactionId)}
@@ -437,6 +444,7 @@ const Transactions: React.FC = () => {
                                             <ModalToggleButton
                                                 type="button"
                                                 id="btnTransactionArrow"
+                                                aria-label="transaction-arrow"
                                                 className="usa-button--unstyled"
                                                 modalRef={infoRef}
                                                 onClick={() => handleInfoOpen(transaction)}
@@ -459,7 +467,7 @@ const Transactions: React.FC = () => {
                 aria-describedby="transaction-details"
                 aria-labelledby="transaction-details-title"
             >
-                <ModalHeading id="transactionDetailedInfoHeading" className="text-center mb-6">
+                <ModalHeading aria-label="transactionDetailedInfo" id="transactionDetailedInfoHeading" className="text-center mb-6">
                     {t("transactions.transaction-detailed-information")}
                 </ModalHeading>
                 {infoTransaction && (
@@ -529,6 +537,7 @@ const Transactions: React.FC = () => {
                         <input
                             id="transaction-date"
                             name="date"
+                            aria-label="create-transaction-date"
                             className="col-span-3 usa-input usa-date-picker_external-input"
                             type="date"
                             value={newTransaction.date}
@@ -574,14 +583,15 @@ const Transactions: React.FC = () => {
                                     ))}
                                 </Select>
                             </div>
-                            <Label htmlFor="transaction-description">{t("budgets.notes")}</Label>
+                            <Label aria-label="create-transaction-description" htmlFor="transaction-description">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={newTransaction.description || ""}
                                 id="transaction-description"
+                                aria-label="create-transaction-description"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button id="addTransactionBtn"type="submit">{t("transactions.submit")}</Button>
+                            <Button aria-label="addTransactionBtn" id="addTransactionBtn"type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
@@ -630,6 +640,7 @@ const Transactions: React.FC = () => {
                             <TextInput
                                 value={editTransaction?.vendorName}
                                 id="edit-transaction-vendorName"
+                                aria-label="edit-transaction-vendorName"
                                 name="vendorName"
                                 type="text"
                                 onChange={handleInputChange}
@@ -641,6 +652,7 @@ const Transactions: React.FC = () => {
                                 <TextInput
                                     value={editTransaction?.amount}
                                     id="edit-transaction-amount"
+                                    aria-label="edit-transaction-amount"
                                     name="amount"
                                     type="number"
                                     onChange={handleInputChange}
@@ -667,10 +679,11 @@ const Transactions: React.FC = () => {
                             <Textarea
                                 value={editTransaction?.description || ""}
                                 id="edit-transaction-description"
+                                aria-label="edit-transaction-description"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button id="editTransactionBtn" type="submit">{t("transactions.submit")}</Button>
+                            <Button aria-label= "edit-transactions.submit" id="editTransactionBtn" type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="edit-transaction-account">{t("transactions.account")}</Label>
