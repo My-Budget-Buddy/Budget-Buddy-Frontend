@@ -5,6 +5,11 @@ import { MemoryRouter, BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { current } from '@reduxjs/toolkit';
 
+const setCurrentWeekSpending = jest.fn();
+const setPreviousWeekSpending = jest.fn();
+const setCurrentWeekDeposits = jest.fn();
+const setPreviousWeekDeposits = jest.fn();
+
 jest.mock("@mui/x-charts", () => ({
   AxisConfig: jest.fn().mockImplementation(({ children }) => children),
   useDrawingArea: jest.fn().mockReturnValue({
@@ -201,5 +206,12 @@ it('renders the See Current Month button correctly', async () => {
   // Wait for the data to load and check if the button is rendered
   await waitFor(() => {
     expect(screen.getByText('spending.seeCurrentMonth')).toBeInTheDocument();
+  });
+});
+
+it('renders the spending pie chart correctly', async () => {
+  // Wait for the data to load and check if the chart is rendered
+  await waitFor(() => {
+    expect(document.getElementById('spending-pie-chart')).toBeInTheDocument();
   });
 });
