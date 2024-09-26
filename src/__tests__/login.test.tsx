@@ -88,13 +88,18 @@ describe('Login Component', () => {
         const usernameInput = screen.getByLabelText('auth.email');
         const passwordInput = screen.getByLabelText('auth.password');
         const submitButton = screen.getByText('auth.login', { selector: 'button' });
-        const submitClickSpy = jest.spyOn(submitButton, 'onclick', 'get').mockClear();
+
+        global.fetch = jest.fn(() =>
+            Promise.resolve({
+                json: () => Promise.resolve({ jwt: 'fetch-mock-jwt' }),
+            } as Response)
+        );
 
         fireEvent.change(usernameInput, { target: { value: 'testuser' } });
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
         fireEvent.click(submitButton);
 
         // Add your assertions here based on what should happen on form submission
-        expect(submitClickSpy).toHaveBeenCalled();
+        expect(global.fetch).toHaveBeenCalled();
     });
 });
