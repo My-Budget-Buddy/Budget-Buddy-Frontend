@@ -5,11 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { current } from '@reduxjs/toolkit';
 
-// const setCurrentWeekSpending = jest.fn();
-// const setPreviousWeekSpending = jest.fn();
-// const setCurrentWeekDeposits = jest.fn();
-// const setPreviousWeekDeposits = jest.fn();
-
 jest.mock("@mui/x-charts", () => ({
   AxisConfig: jest.fn().mockImplementation(({ children }) => children),
   useDrawingArea: jest.fn().mockReturnValue({
@@ -155,7 +150,48 @@ jest.mock("../utils/transactionService", () => ({
       transactionId: 11,
       userId: 1,
       vendorName: "Skillstorm"
+    },
+    {
+      accountId: 2,
+      amount: 2010.45,
+      category: "Income",
+      date: "2024-09-25",
+      description: "Paycheck",
+      transactionId: 12,
+      userId: 1,
+      vendorName: "Skillstorm"
+    },
+    {
+      accountId: 2,
+      amount: 2010.45,
+      category: "Income",
+      date: "2024-09-20",
+      description: "Paycheck",
+      transactionId: 13,
+      userId: 1,
+      vendorName: "Skillstorm"
+    },
+    {
+      accountId: 2,
+      amount: 199.99,
+      category: "Shopping",
+      date: "2024-09-20",
+      description: "Electronic accessories",
+      transactionId: 14,
+      userId: 1,
+      vendorName: "Best Buy"
+    },
+    {
+      accountId: 2,
+      amount: 20999.99,
+      category: "Shopping",
+      date: "2024-09-20",
+      description: "Electronic accessories",
+      transactionId: 15,
+      userId: 1,
+      vendorName: "Best Buy"
     }
+
   ]),
 }));
 
@@ -186,8 +222,8 @@ it('renders the spending cards correctly', async () => {
 
   // check if prices populate with correct values
   expect(screen.getByTestId('price-0')).toHaveTextContent('$499.99'); 
-  expect(screen.getByTestId('price-1')).toHaveTextContent('$0'); 
-  expect(screen.getByTestId('price-2')).toHaveTextContent('$1,921.21'); 
+  expect(screen.getByTestId('price-1')).toHaveTextContent('$2,010.45'); 
+  expect(screen.getByTestId('price-2')).toHaveTextContent('23,121.19'); 
 
   // check if cards populate with correct details
   expect(screen.getByTestId('details-0')).toHaveTextContent('spending.spentThisWeek');
