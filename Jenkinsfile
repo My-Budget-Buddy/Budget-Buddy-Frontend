@@ -366,7 +366,7 @@ def retrieveAccessToken(JWT) {
 // Function to create pull request
 def createPullRequest(GITHUB_TOKEN) {
     def pullResponse = httpRequest(
-        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls",
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-Frontend/pulls",
         httpMode: 'POST',
         customHeaders: [
             [name: 'Accept', value: '*/*'],
@@ -396,7 +396,7 @@ def createPullRequest(GITHUB_TOKEN) {
 // Function to request reviewers for the pull request
 def requestReviewers(GITHUB_TOKEN, prNumber) {
     def reviewerResponse = httpRequest(
-        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls/${prNumber}/requested_reviewers",
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-Frontend/pulls/${prNumber}/requested_reviewers",
         httpMode: 'POST',
         customHeaders: [
             [name: 'Accept', value: 'application/vnd.github+json'],
@@ -421,7 +421,7 @@ def requestReviewers(GITHUB_TOKEN, prNumber) {
 // Function to revert last pull request
 def revertLastPullRequest(GITHUB_TOKEN) {
     def getPullResponse = httpRequest(
-        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/commits/${env.GIT_COMMIT}/pulls",
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-Frontend/commits/${env.GIT_COMMIT}/pulls",
         httpMode: 'GET',
         customHeaders: [
             [name: 'Accept', value: '*/*'],
@@ -525,7 +525,7 @@ def requestReviewersForRevert(prAuthor, GITHUB_TOKEN, jsonResponse) {
     }
 
     def revertRequestResponse = httpRequest(
-        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls/${revertPrNumber}/requested_reviewers",
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-Frontend/pulls/${revertPrNumber}/requested_reviewers",
         httpMode: 'POST',
         customHeaders: [
             [name: 'Accept', value: 'application/vnd.github+json'],
