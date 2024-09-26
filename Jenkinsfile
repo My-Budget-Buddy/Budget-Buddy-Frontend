@@ -77,7 +77,6 @@ pipeline{
         STAGING_API_ENDPOINT = 'https://staging.api.skillstorm-congo.com'
         PROD_API_ENDPOINT = 'https://api.skillstorm-congo.com'
         
-        ISOLATED_HOST = 'http://localhost:5173'
         STAGING_HOST = 'https://staging.frontend.skillstorm-congo.com'
         PROD_HOST = 'https://frontend.skillstorm-congo.com'
 
@@ -126,56 +125,6 @@ pipeline{
             }
         }
 
-        // --- ISOLATED TESTING ---
-
-        // Builds the frontend for isolated tests.
-        // stage('Build for Isolated Tests'){
-        //     steps{
-        //         container('npm'){
-        //             sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh'
-        //             sh './Budget-Buddy-Kubernetes/Scripts/BuildFrontend.sh ${STAGING_API_ENDPOINT}'
-        //         }
-        //     }
-        // }
-
-        // // Retrieves the selenium/cucumber repository and runs the tests.
-        // stage('Isolated Functional Tests'){
-        //     steps{
-        //         script {
-        //             // Log current jobs (should be none)
-        //             sh 'echo "Beginning local functional tests."'
-        //             sh 'jobs -l'
-
-        //             // capture IDs to later terminate pipeline project test servers
-        //             def frontendPid
-
-        //             container('npm'){
-        //                 frontendPid = sh(script: '''
-        //                     npm install && npm run dev &
-        //                     echo $!
-        //                 ''', returnStdout: true).trim()
-        //             }
-
-        //             // wait for frontend to be ready
-        //             sh 'chmod +x ./Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
-        //             sh './Budget-Buddy-Kubernetes/Scripts/AwaitFrontend.sh'
-
-        //             // Run testing suite
-        //             container('maven'){
-        //                 withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
-        //                     sh '''
-        //                         cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-        //                         mvn clean test -Dheadless=true -Dmaven.test.failure.ignore=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -DfrontendUrl=${ISOLATED_HOST}
-        //                     '''
-        //                 }
-        //             }
-
-        //             // kill frontend process
-        //             sh "kill ${frontendPid} || true"
-        //         }
-        //     }
-        // }
-
         // --- TESTING-COHORT-DEV BUILDING ---
 
         // Builds the frontend for the staging environment.
@@ -208,31 +157,9 @@ pipeline{
             }
         }
 
-        // --- COMMON PRE-DEPLOYMENT ---
+        // --- UNIT TESTING ---
 
-        // SonarQube
-        // stage('Analyze Frontend'){
-        //     environment{
-        //         SONAR_SERVER_URL = 'https://sonarcloud.io/'
-        //         SONAR_TOKEN = credentials('SONAR_TOKEN')
-        //         SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
-        //         SONAR_PROJECT_KEY = 'My-Budget-Buddy_Budget-Buddy-Frontend'
-        //     }
-
-        //     steps{
-        //         container('npm'){
-        //             script{
-        //                 withSonarQubeEnv('SonarCloud'){
-        //                     sh '''
-        //                     node sonarqube-scanner.cjs
-        //                     '''
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-        // // Performs jest tests
+        // Performs jest tests
         // stage('Jest Tests'){
         //     steps{
         //         container('npm'){
@@ -240,6 +167,26 @@ pipeline{
         //         }
         //     }
         // }
+
+        // SonarQube
+        stage('Analyze Frontend'){
+            environment{
+                SONAR_PROJECT_NAME = 'Budget-Buddy-Frontend'
+                SONAR_PROJECT_KEY = 'My-Budget-Buddy_Budget-Buddy-Frontend'
+            }
+
+            steps{
+                container('npm'){
+                    script{
+                        withSonarQubeEnv('SonarCloud'){
+                            sh '''
+                            node sonarqube-scanner.cjs
+                            '''
+                        }
+                    }
+                }
+            }
+        }
 
         // --- TESTING-COHORT-DEV DEPLOYMENT ---
 
@@ -308,144 +255,294 @@ pipeline{
         }
     }
 
-    // --- POST PIPELINE ---
+  // --- POST PIPELINE ---
 
-    post {
-        always {
-            cleanWs()
-        }
+  post {
+    always {
+        cleanWs()
+    }
 
-        success {
-        script {
-        if (env.BRANCH_NAME == 'testing-cohort') {
-            def now = sh(script: 'date +%s', returnStdout: true).trim()
-            def iat = (now.toInteger() - 60).toString()
-            def exp = (now.toInteger() + 600).toString()
+    success {
+      script {
+        handleSuccess()
+      }
+    }
 
-            echo "Current time: ${now}"
-            echo "Issued at: ${iat}"
-            echo "Expires at: ${exp}"
+    failure {
+      script {
+        handleFailure()
+      }
+    }
+  }
+}
 
-            // Generate JWT
-            def JWT = sh(script: """
-                #!/bin/bash
-                client_id="${CLIENT_ID}"
-                pem="${PEM}"
-                iat="${iat}"
-                exp="${exp}"
-                b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
-                header=\$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
-                payload=\$(echo -n "{\\"iat\\":\${iat},\\"exp\\":\${exp},\\"iss\\":\\"\${client_id}\\"}" | b64enc)
-                header_payload="\${header}.\${payload}"
 
-                pem_file=\$(mktemp)
-                echo "\${pem}" > "\${pem_file}"
+// Function to handle success case
+def handleSuccess() {
+    if (env.BRANCH_NAME == "${TEST_BRANCH}") {
+        def JWT = generateJWT()
+        def GITHUB_TOKEN = retrieveAccessToken(JWT)
+        createPullRequest(GITHUB_TOKEN)
+    }
+}
 
-                signature=\$(echo -n "\${header_payload}" | openssl dgst -sha256 -sign "\${pem_file}" | b64enc)
-                JWT="\${header_payload}.\${signature}"
-                rm -f "\${pem_file}"
-                echo "\${JWT}"
-            """, returnStdout: true).trim()
-            echo "Generated JWT: ${JWT}"
+// Function to handle failure case
+def handleFailure() {
+    echo 'The pipeline failed.'
+    echo 'Resetting S3'
 
-    
-            // Retrieve access token
-            def tokenResponse = httpRequest(
-                        url: "https://api.github.com/app/installations/54988601/access_tokens",
-                        httpMode: 'POST',
-                        customHeaders: [
-                            [name: 'Accept', value: '*/*'],
-                            [name: 'Authorization', value: "Bearer ${JWT}"],
-                        ],
-                        contentType: 'APPLICATION_JSON'
-                    )
-            
-            def GITHUB_TOKEN = null
-            
-            if (tokenResponse.status == 201) { // 201 is the status code for created
-            def jsonResponse = readJSON text: tokenResponse.content
-            GITHUB_TOKEN = jsonResponse.token
-
-            echo "Access token ${GITHUB_TOKEN} created."
-            } else {
-                error "Access token retrieval failed, aborting pipeline"
+    container('kaniko'){
+        script{
+            // Reset staging S3
+            if(env.BRANCH_NAME.equals('testing-cohort-dev')){
+                sh 'aws s3 sync s3-backup s3://budget-buddy-frontend-staging'
             }
 
-            
-            // Create the Pull Request
-            def pullResponse = httpRequest(
-                        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls",
-                        httpMode: 'POST',
-                        customHeaders: [
-                            [name: 'Accept', value: '*/*'],
-                            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
-                        ],
-                        contentType: 'APPLICATION_JSON',
-                        requestBody: """
-                            {
-                                "title": "Automated PR: Pipeline successful",
-                                "head": "${TEST_BRANCH}",
-                                "base": "${MAIN_BRANCH}",
-                                "body": "This pull request was created automatically after a successful pipeline run."
-                            }
-                        """
-                    )
-
-            // Extract PR number from the response
-            if (pullResponse.status == 201) { // 201 is the status code for created
-            def jsonResponse = readJSON text: pullResponse.content
-            int prNumber = jsonResponse.number
-
-            echo "PR #${prNumber} created."
-
-            // Request Reviewers for the Pull Request
-            String reviewerApiUrl = "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls/${prNumber}/requested_reviewers"
-            String reviewerPayload = """
-                    {
-                        "reviewers": [${REVIEWER_GITHUB_USERNAMES}]
-                    }
-                    """
-
-            def reviewerResponse = httpRequest(
-                        url: reviewerApiUrl,
-                        httpMode: 'POST',
-                        customHeaders: [
-                            [name: 'Accept', value: 'application/vnd.github+json'],
-                            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
-                            [name: 'X-GitHub-Api-Version', value: '2022-11-28']
-                        ],
-                        contentType: 'APPLICATION_JSON',
-                        requestBody: reviewerPayload
-                    )
-
-            if (reviewerResponse.status == 201) {
-                echo "Reviewers requested for PR #${prNumber}."
-            } else {
-                echo "Failed to request reviewers for PR #${prNumber}. Status: ${reviewerResponse.status}"
-            }
-            } else {
-                echo "Failed to create PR. Status: ${response.status}"
+            // Reset production S3
+            if(env.BRANCH_NAME.equals('testing-cohort')){
+                sh 'aws s3 sync s3-backup s3://budget-buddy-frontend'
             }
         }
-        }
-        }
+    }
 
-        failure {
-            echo 'The pipeline failed. No pull request created.'
+    echo 'Reverting last PR.'
+    def JWT = generateJWT()
+    def GITHUB_TOKEN = retrieveAccessToken(JWT)
+    revertLastPullRequest(GITHUB_TOKEN)
+}
 
-            container('kaniko'){
-                script{
-                    // Reset staging S3
-                    if(env.BRANCH_NAME.equals('testing-cohort-dev')){
-                        sh 'aws s3 sync s3-backup s3://budget-buddy-frontend-staging'
-                    }
+// Function to generate JWT
+def generateJWT() {
+    def now = sh(script: 'date +%s', returnStdout: true).trim()
+    def iat = (now.toInteger() - 60).toString()
+    def exp = (now.toInteger() + 600).toString()
 
-                    // Reset production S3
-                    if(env.BRANCH_NAME.equals('testing-cohort')){
-                        sh 'aws s3 sync s3-backup s3://budget-buddy-frontend'
-                    }
-                }
+    echo "Current time: ${now}"
+    echo "Issued at: ${iat}"
+    echo "Expires at: ${exp}"
+
+    return sh(script: """
+        #!/bin/bash
+        client_id="${CLIENT_ID}"
+        pem="${PEM}"
+        iat="${iat}"
+        exp="${exp}"
+        b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+        header=\$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
+        payload=\$(echo -n "{\\"iat\\":\${iat},\\"exp\\":\${exp},\\"iss\\":\\"\${client_id}\\"}" | b64enc)
+        header_payload="\${header}.\${payload}"
+
+        pem_file=\$(mktemp)
+        echo "\${pem}" > "\${pem_file}"
+
+        signature=\$(echo -n "\${header_payload}" | openssl dgst -sha256 -sign "\${pem_file}" | b64enc)
+        JWT="\${header_payload}.\${signature}"
+        rm -f "\${pem_file}"
+        echo "\${JWT}"
+    """, returnStdout: true).trim()
+}
+
+// Function to retrieve access token
+def retrieveAccessToken(JWT) {
+    def tokenResponse = httpRequest(
+        url: 'https://api.github.com/app/installations/54988601/access_tokens',
+        httpMode: 'POST',
+        customHeaders: [
+            [name: 'Accept', value: '*/*'],
+            [name: 'Authorization', value: "Bearer ${JWT}"],
+        ],
+        contentType: 'APPLICATION_JSON'
+    )
+
+    if (tokenResponse.status == 201) {
+        def jsonResponse = readJSON text: tokenResponse.content
+        echo "Access token ${jsonResponse.token} created."
+        return jsonResponse.token
+    } else {
+        error 'Access token retrieval failed, aborting pipeline'
+    }
+}
+
+// Function to create pull request
+def createPullRequest(GITHUB_TOKEN) {
+    def pullResponse = httpRequest(
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls",
+        httpMode: 'POST',
+        customHeaders: [
+            [name: 'Accept', value: '*/*'],
+            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
+        ],
+        contentType: 'APPLICATION_JSON',
+        requestBody: """
+            {
+                "title": "Automated PR: Pipeline successful",
+                "head": "${TEST_BRANCH}",
+                "base": "${MAIN_BRANCH}",
+                "body": "This pull request was created automatically after a successful pipeline run."
             }
+        """
+    )
+
+    if (pullResponse.status == 201) {
+        def jsonResponse = readJSON text: pullResponse.content
+        int prNumber = jsonResponse.number
+        echo "PR #${prNumber} created."
+        requestReviewers(GITHUB_TOKEN, prNumber)
+    } else {
+        echo "Failed to create PR. Status: ${pullResponse.status}"
+    }
+}
+
+// Function to request reviewers for the pull request
+def requestReviewers(GITHUB_TOKEN, prNumber) {
+    def reviewerResponse = httpRequest(
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls/${prNumber}/requested_reviewers",
+        httpMode: 'POST',
+        customHeaders: [
+            [name: 'Accept', value: 'application/vnd.github+json'],
+            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
+            [name: 'X-GitHub-Api-Version', value: '2022-11-28']
+        ],
+        contentType: 'APPLICATION_JSON',
+        requestBody: """
+            {
+                "reviewers": [${REVIEWER_GITHUB_USERNAMES}]
+            }
+        """
+    )
+
+    if (reviewerResponse.status == 201) {
+        echo "Reviewers requested for PR #${prNumber}."
+    } else {
+        echo "Failed to request reviewers for PR #${prNumber}. Status: ${reviewerResponse.status}"
+    }
+}
+
+// Function to revert last pull request
+def revertLastPullRequest(GITHUB_TOKEN) {
+    def getPullResponse = httpRequest(
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/commits/${env.GIT_COMMIT}/pulls",
+        httpMode: 'GET',
+        customHeaders: [
+            [name: 'Accept', value: '*/*'],
+            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
+        ],
+        contentType: 'APPLICATION_JSON'
+    )
+
+    if (getPullResponse.status == 200) {
+        def jsonResponse = readJSON text: getPullResponse.content
+        def pullRequest = jsonResponse[0]
+        def prNumber = pullRequest.number
+        def prNodeId = pullRequest.node_id
+        def prTitle = pullRequest.title
+        def prAuthor = pullRequest.user.login
+
+        echo "Retrieved last PR #${prNumber}."
+
+        def revertResponse = revertPullRequest(prNumber, prNodeId, prTitle, GITHUB_TOKEN)
+        handleRevertResponse(revertResponse, prNumber, prAuthor, GITHUB_TOKEN)
+    } else {
+        error "Failed to retrieve last PR. Status: ${getPullResponse.status}"
+    }
+}
+
+// Function to revert the pull request via GraphQL
+def revertPullRequest(prNumber, prNodeId, prTitle, GITHUB_TOKEN) {
+    return httpRequest(
+        url: 'https://api.github.com/graphql',
+        httpMode: 'POST',
+        customHeaders: [
+            [name: 'Accept', value: '*/*'],
+            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
+        ],
+        contentType: 'APPLICATION_JSON',
+        requestBody: """
+            {
+                "query": "mutation RevertPullRequest { \
+                    revertPullRequest( \
+                        input: { \
+                            pullRequestId: \\"${prNodeId}\\", \
+                            title: \\"Automated PR: Revert '${prTitle}' on failed pipeline run\\", \
+                            draft: false, \
+                            body: \\"This pull request was created automatically after a failed pipeline run. This pull request reverts PR #${prNumber}.\\" \
+                        } \
+                    ) { \
+                        revertPullRequest { \
+                            createdAt \
+                            id \
+                            number \
+                            state \
+                            title \
+                            url \
+                        } \
+                        pullRequest { \
+                            baseRefOid \
+                            createdAt \
+                            headRefOid \
+                            id \
+                            number \
+                            state \
+                            title \
+                            url \
+                        } \
+                    } \
+                }"
+            }
+        """
+    )
+}
+
+// Function to handle the revert response
+def handleRevertResponse(revertResponse, prNumber, prAuthor, GITHUB_TOKEN) {
+    if (revertResponse.status == 400) {
+        def jsonResponse = readJSON text: revertResponse.content
+        echo "Failed to revert PR #${prNumber}. ${jsonResponse.errors[0].message}"
+    } else if (revertResponse.status == 200) {
+        def jsonResponse = readJSON text: revertResponse.content
+        if (jsonResponse.errors != null) {
+            error "Failed to revert PR #${prNumber}. ${jsonResponse.errors[0].message}"
+        } else {
+            echo "PR #${prNumber} reverted."
+            requestReviewersForRevert(prAuthor, GITHUB_TOKEN, jsonResponse)
         }
+    } else {
+        error 'GraphQL request failed, aborting pipeline'
+    }
+}
+
+// Function to request reviewers for the reverted pull request
+def requestReviewersForRevert(prAuthor, GITHUB_TOKEN, jsonResponse) {
+    def revertPrNumber = jsonResponse.data.revertPullRequest.revertPullRequest.number
+    def revertReviewers = "${REVIEWER_GITHUB_USERNAMES}"
+
+    // Convert the comma-separated string into a list of trimmed usernames (removing quotes and extra spaces)
+    def reviewerList = revertReviewers.split(',').collect { it.trim().replaceAll('"', '') }
+
+    // Check if prAuthor is not already in the list
+    if (!reviewerList.contains(prAuthor) && prAuthor != null && prAuthor != 'jenkins_budgetbuddy') {
+        revertReviewers += ", \"${prAuthor}\""
+    }
+
+    def revertRequestResponse = httpRequest(
+        url: "https://api.github.com/repos/My-Budget-Buddy/Budget-Buddy-${PASCAL_SERVICE_NAME}/pulls/${revertPrNumber}/requested_reviewers",
+        httpMode: 'POST',
+        customHeaders: [
+            [name: 'Accept', value: 'application/vnd.github+json'],
+            [name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"],
+            [name: 'X-GitHub-Api-Version', value: '2022-11-28']
+        ],
+        contentType: 'APPLICATION_JSON',
+        requestBody: """
+            {
+                "reviewers": [${revertReviewers}]
+            }
+        """
+    )
+
+    if (revertRequestResponse.status == 201) {
+        echo "Reviewers requested for revert PR #${revertPrNumber}."
+    } else {
+        echo "Failed to request reviewers for revert PR #${revertPrNumber}. Status: ${revertRequestResponse.status}"
     }
 }
