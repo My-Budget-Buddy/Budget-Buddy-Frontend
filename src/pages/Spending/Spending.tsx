@@ -370,8 +370,8 @@ const Spending: React.FC = () => {
                                         <card.icon
                                             className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`}
                                         />
-                                        <p className="text-bold pt-5 text-3xl">${card.price.toLocaleString()}</p>
-                                        <p className="text-light pt-1 text-xl">{card.details}</p>
+                                        <p className="text-bold pt-5 text-3xl" data-testid={`price-${index}`}>${card.price.toLocaleString()}</p>
+                                        <p className="text-light pt-1 text-xl" data-testid={`details-${index}`}>{card.details}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start justify-end">
