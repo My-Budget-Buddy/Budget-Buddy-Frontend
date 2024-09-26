@@ -115,13 +115,14 @@ const PersonalInfoStep: React.FC = () => {
                                     <FormGroup >
                                         <label htmlFor="city">City</label>
                                         <TextInput
-                                            id="city"
+                                            id="cty"
                                             name="city"
                                             type="text"
                                             //defaultValue="test"
                                             value={taxReturnInfo.city}
                                             onChange={handleChange}
                                             validationStatus={errors2.city ? "error" : undefined}
+                                            aria-label="City"
                                         />
                                         {errors2.city && <span style={{ color: 'red' }}>{errors2.city}</span>}
                                     </FormGroup>
