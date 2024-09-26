@@ -1,6 +1,6 @@
 // transactionhistory.form.test.tsx
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import TransactionHistory from '../pages/Transactions/TransactionHistory';
@@ -118,7 +118,21 @@ jest.mock('../components/CategoryIcon', () => ({
     categoryColors: {},
 }));
 
+// Define Transaction type
+interface Transaction {
+    transactionId: number;
+    date: string;
+    vendorName: string;
+    category: string;
+    amount: number;
+    description: string;
+    accountId: number;
+    userId: number;
+}
+
 describe('TransactionHistory Component', () => {
+    let mockTransactions: Transaction[] = [];
+
     beforeEach(() => {
         const {
             getTransactionByVendor,
@@ -129,7 +143,8 @@ describe('TransactionHistory Component', () => {
             validateTransaction,
         } = require('../utils/transactionService');
 
-        getTransactionByVendor.mockResolvedValue([
+        // Initialize mockTransactions with initial data
+        mockTransactions = [
             {
                 transactionId: 1,
                 date: '2023-10-01',
@@ -160,8 +175,12 @@ describe('TransactionHistory Component', () => {
                 accountId: 1,
                 userId: 1,
             },
-        ]);
+        ];
 
+        // Mock getTransactionByVendor to return the current mockTransactions
+        getTransactionByVendor.mockImplementation(() => Promise.resolve([...mockTransactions]));
+
+        // Mock getAccountsByUserId to return accounts
         getAccountsByUserId.mockResolvedValue([
             {
                 id: 1,
@@ -170,30 +189,27 @@ describe('TransactionHistory Component', () => {
             },
         ]);
 
-        updateTransaction.mockResolvedValue({
-            transactionId: 1,
-            date: '2023-10-01',
-            vendorName: 'VendorName',
-            category: 'Dining',
-            amount: -150.0, // updated amount
-            description: 'Updated Transaction',
-            accountId: 1,
-            userId: 1,
+        // Mock updateTransaction to update mockTransactions
+        updateTransaction.mockImplementation(async (updatedTransaction: Transaction) => {
+            mockTransactions = mockTransactions.map((tx) =>
+                tx.transactionId === updatedTransaction.transactionId ? { ...tx, ...updatedTransaction } : tx
+            );
+            return Promise.resolve(updatedTransaction);
         });
 
-        deleteTransaction.mockResolvedValue({});
-
-        createTransaction.mockResolvedValue({
-            transactionId: 4,
-            date: '2023-10-04',
-            vendorName: 'VendorName',
-            category: 'Groceries',
-            amount: -200.0,
-            description: 'New Transaction',
-            accountId: 1,
-            userId: 1,
+        // Mock deleteTransaction to remove from mockTransactions
+        deleteTransaction.mockImplementation(async (transactionId: number) => {
+            mockTransactions = mockTransactions.filter((tx) => tx.transactionId !== transactionId);
+            return Promise.resolve({});
         });
 
+        // Mock createTransaction to add to mockTransactions
+        createTransaction.mockImplementation(async (newTransaction: Transaction) => {
+            mockTransactions.push(newTransaction);
+            return Promise.resolve(newTransaction);
+        });
+
+        // Mock validateTransaction to return empty array (no errors)
         validateTransaction.mockReturnValue([]);
     });
 
@@ -271,5 +287,131 @@ describe('TransactionHistory Component', () => {
             description: 'Test Transaction',
             date: expect.any(String), // Date is set automatically
         });
+    });
+
+    it('handles API errors correctly when creating a transaction', async () => {
+        const { container } = render(
+            <TestWrapper>
+                <TransactionHistory />
+            </TestWrapper>
+        );
+
+        await waitFor(() => {
+            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+        });
+
+        // Simulate clicking Add Transaction button
+        const addTransactionButton = container.querySelector('#addTransactionModal') as HTMLElement;
+        expect(addTransactionButton).toBeInTheDocument();
+        fireEvent.click(addTransactionButton);
+
+        await waitFor(() => {
+            expect(screen.getByRole('dialog')).toBeInTheDocument();
+        });
+
+        const { createTransaction } = require('../utils/transactionService');
+        createTransaction.mockRejectedValue(new Error('Network Error'));
+
+        const amountInput = screen.getByLabelText('transactions-table.amount') as HTMLInputElement;
+        const descriptionInput = screen.getByLabelText('budgets.notes') as HTMLTextAreaElement;
+        const submitButton = screen.getByRole('button', { name: 'transactions.submit' });
+        expect(submitButton).toBeInTheDocument();
+
+        fireEvent.change(amountInput, { target: { value: '-200' } });
+        fireEvent.change(descriptionInput, { target: { value: 'Test Transaction' } });
+
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(createTransaction).toHaveBeenCalledWith({
+                userId: 1,
+                accountId: 1,
+                vendorName: 'VendorName',
+                amount: -200,
+                category: 'Groceries',
+                description: 'Test Transaction',
+                date: expect.any(String),
+            });
+            expect(consoleErrorSpy).toHaveBeenCalledWith("Error creating transaction:", expect.any(Error));
+        });
+
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+        consoleErrorSpy.mockRestore();
+    });
+
+    it('handles editing a transaction correctly', async () => {
+        const { container } = render(
+            <TestWrapper>
+                <TransactionHistory />
+            </TestWrapper>
+        );
+
+        await waitFor(() => {
+            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+        });
+
+        // Find the first edit button transactionId:3
+        const editButtons = screen.getAllByTestId('icon-edit');
+        expect(editButtons.length).toBeGreaterThan(0);
+
+        // Simulate clicking the first edit button
+        fireEvent.click(editButtons[0]);
+
+        await waitFor(() => {
+            expect(screen.getByRole('dialog')).toBeInTheDocument();
+        });
+
+        const amountInput = screen.getByLabelText('transactions-table.amount') as HTMLInputElement;
+        fireEvent.change(amountInput, { target: { value: '-150' } });
+
+        const submitButton = screen.getByRole('button', { name: 'transactions.submit' });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        });
+        await waitFor(() => {
+            expect(screen.getByText('$150.00')).toBeInTheDocument();
+        });
+
+        const { updateTransaction } = require('../utils/transactionService');
+        expect(updateTransaction).toHaveBeenCalledWith({
+            transactionId: 3,
+            date: '2023-10-03',
+            vendorName: 'VendorName',
+            category: 'Entertainment', // Ensure the category matches the test data
+            amount: -150,
+            description: 'Test Transaction 3', // The description remains unchanged since it's not modified
+            accountId: 1,
+            userId: 1,
+        });
+    });
+
+    it('handles deleting a transaction correctly', async () => {
+        const { container } = render(
+            <TestWrapper>
+                <TransactionHistory />
+            </TestWrapper>
+        );
+
+        await waitFor(() => {
+            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+        });
+
+        const deleteButtons = screen.getAllByTestId('icon-delete');
+        expect(deleteButtons.length).toBeGreaterThan(0);
+
+        fireEvent.click(deleteButtons[0]);
+
+        await waitFor(() => {
+            expect(screen.queryByText('Test Transaction 3')).not.toBeInTheDocument();
+        });
+
+        const { deleteTransaction } = require('../utils/transactionService');
+        expect(deleteTransaction).toHaveBeenCalledWith(3); // transactionId
+        expect(deleteTransaction).toHaveBeenCalledTimes(1);
     });
 });
