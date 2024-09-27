@@ -1,11 +1,11 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Accounts from "../../pages/Accounts/Accounts";
+import Accounts from "../src/pages/Accounts/Accounts";
 import { Provider } from "react-redux";
 import configureStore from 'redux-mock-store';
 import '@testing-library/jest-dom';
-import AccountModal from "../../pages/Accounts/AccountModal";
-import CreditScoreModal from "../../pages/Accounts/CreditScoreModal";
+import AccountModal from "../src/pages/Accounts/AccountModal";
+import CreditScoreModal from "../src/pages/Accounts/CreditScoreModal";
 
 
 /*Have to mock gauge and esl in both x-charts and x-charts/Gauge
@@ -33,7 +33,7 @@ jest.mock('focus-trap-react', () => {
     return ({ children }: any) => <div>{children}</div>;
 });
 //Mocks api request
-jest.mock("../../api/config", () => ({
+jest.mock("../src/api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
@@ -48,7 +48,7 @@ jest.mock('react-i18next', () => ({
 
 
 // Mock useAuthentication to avoid errors
-jest.mock("../../contexts/AuthenticationContext", () => ({
+jest.mock("../src/contexts/AuthenticationContext", () => ({
     useAuthentication: () => ({ jwt: "mocked-jwt-token" })
 }));
 
