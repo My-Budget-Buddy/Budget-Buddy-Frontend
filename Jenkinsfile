@@ -219,13 +219,13 @@ pipeline {
         // --- UNIT TESTING ---
 
         // Performs jest tests
-        // stage('Jest Tests'){
-        //     steps{
-        //         container('npm'){
-        //             sh 'npm run test:coverage'
-        //         }
-        //     }
-        // }
+        stage('Jest Tests'){
+            steps{
+                container('npm'){
+                    sh 'npm run test:coverage'
+                }
+            }
+        }
 
         // SonarQube
         stage('Analyze Frontend'){
