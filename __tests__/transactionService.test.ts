@@ -1,12 +1,12 @@
 // Import necessary models and utility functions
-import { TransactionCategory } from '../types/models';
-import { validateTransaction, getTransactionByUserId, deleteTransaction, getAccountsByUserId, createTransaction, updateTransaction, getTransactionByVendor } from '../utils/transactionService';
-import { createTransactionAPI, deleteTransactionAPI, getAccountsByUserIdAPI, getTransactionByUserIdAPI, getTransactionByVendorAPI, updateTransactionAPI } from "../pages/Tax/taxesAPI"; 
-import { Transaction, Account } from "../types/models";
+import { TransactionCategory } from '../src/types/models';
+import { validateTransaction, getTransactionByUserId, deleteTransaction, getAccountsByUserId, createTransaction, updateTransaction, getTransactionByVendor } from '../src/utils/transactionService';
+import { createTransactionAPI, deleteTransactionAPI, getAccountsByUserIdAPI, getTransactionByUserIdAPI, getTransactionByVendorAPI, updateTransactionAPI } from "../src/pages/Tax/taxesAPI"; 
+import { Transaction, Account } from "../src/types/models";
 
 // Mock the API calls
-jest.mock('../pages/Tax/taxesAPI'); // Mock API calls in `taxesAPI`
-jest.mock("../api/config", () => ({
+jest.mock('../src/pages/Tax/taxesAPI'); // Mock API calls in `taxesAPI`
+jest.mock("../src/api/config", () => ({
   config: {
     apiUrl: "http://localhost:mock", // Mock the API URL to avoid actual HTTP requests
   },
