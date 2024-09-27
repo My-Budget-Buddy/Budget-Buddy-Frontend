@@ -4,8 +4,6 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import TransactionHistory from '../pages/Transactions/TransactionHistory';
 
-const originalConsoleError = console.error.bind(console);   // DELETE ME!!!
-
 // Mock react-i18next
 jest.mock('react-i18next', () => ({
     useTranslation: () => ({
@@ -132,19 +130,6 @@ interface Transaction {
 }
 
 describe('TransactionHistory Component', () => {
-    // // DELETE THESE BELOW
-
-    // beforeAll(() => {
-    //     console.error = (error) => { }
-    //     console.log = (msg) => { }
-    // })
-
-    // afterAll(() => {
-    //     console.error = originalConsoleError
-    // })
-
-    // // DELETE THESE ABOVE
-
     let mockTransactions: Transaction[] = [];
 
     beforeEach(() => {
