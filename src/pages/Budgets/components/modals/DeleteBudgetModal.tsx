@@ -57,7 +57,7 @@ const DeleteBudgetModal: React.FC<DeleteBudgetModalProps> = ({ id, category }) =
 
     return (
         <>
-            <ModalToggleButton modalRef={modalRef} opener unstyled>
+            <ModalToggleButton id="Delete-Budget" modalRef={modalRef} opener unstyled>
                 <Icon.Delete />
             </ModalToggleButton>
 

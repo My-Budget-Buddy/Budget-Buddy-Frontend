@@ -139,10 +139,6 @@ const SpendingMonth: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                // const response = await axios.get<Transaction[]>(`http://localhost:8083/transactions/user/1`);
-
-                // const transactions = response.data;
-
                 const transactions = await getTransactionByUserId(1);
                 setTransactions(transactions);
 
@@ -323,11 +319,11 @@ const SpendingMonth: React.FC = () => {
 
                     {/* Title for the page */}
                     <div className="mb-6">
-                        <h2 className="ml-3 py-4 pt-10 text-bold text-3xl opacity-70">
+                        <h2 id="spending-month-title" className="ml-3 py-4 pt-10 text-bold text-3xl opacity-70">
                             {t(`spending.month.${lowercaseMonth}`)} {t("spending.spending")}
                         </h2>
 
-                        <div className="flex items-center">
+                        <div id="month-spending" className="flex items-center">
                             <p className="text-5xl pl-2 font-semibold">${currentMonthSpending.toFixed(2)}</p>
                             <div className="flex items-center ml-5">
                                 <p
@@ -355,7 +351,7 @@ const SpendingMonth: React.FC = () => {
                         <div className="flex items-center justify-between w-full mb-4 pl-6">
                             <div className="flex items-center gap-4 bg-transparent p-4">
                                 <Link to="/dashboard/spending" className="mr-3">
-                                    <Button type="button" className="ml-3">
+                                    <Button id="back-to-spending-btn" type="button" className="ml-3">
                                         {t("spending.backToAnnualSpendingOverview")}
                                     </Button>
                                 </Link>
@@ -386,7 +382,7 @@ const SpendingMonth: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center mb-2 justify-start w-full">
+                        <div id="spending-month-bar-chart" className="flex items-center mb-2 justify-start w-full">
                             <BarChart
                                 xAxis={[
                                     {
@@ -422,6 +418,7 @@ const SpendingMonth: React.FC = () => {
                         <div className="flex flex-col justify-center items-center flex-3 p-4 m-2 min-h-[40rem] rounded-xl shadow-md border-[1px]">
                             {spendingCategories.length > 0 ? (
                                 <div
+                                    id="spending-month-pie-chart"
                                     className="relative w-full h-full"
                                     style={{ minHeight: "600px", minWidth: "600px" }}
                                 >

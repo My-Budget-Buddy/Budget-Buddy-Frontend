@@ -5,6 +5,7 @@ import { Link, Navigate } from "react-router-dom";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { useDispatch } from "react-redux";
 import { setAuthenticated } from "../../util/redux/authSlice";
+import { URL_loginUser, URL_oauth2SocialLogin } from "../../api/services/AuthService";
 
 const Login: React.FC = () => {
     const { t } = useTranslation();
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
             password: e.currentTarget.elements.password.value
         };
 
-        const res = await fetch("http://localhost:8125/auth/login", {
+        const res = await fetch(URL_loginUser, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fields),
@@ -56,7 +57,7 @@ const Login: React.FC = () => {
                 <Grid row className="flex-justify-center margin-bottom-205">
                     <Grid col={12} tablet={{ col: 8 }} desktop={{ col: 6 }}>
                         {error && (
-                            <Alert type="error" heading="Error Logging In" headingLevel="h4">
+                            <Alert id="loginAlert" type="error" heading="Error Logging In" headingLevel="h4">
                                 {error}
                             </Alert>
                         )}
@@ -80,6 +81,7 @@ const Login: React.FC = () => {
                                         autoComplete="current-password"
                                     />
                                     <button
+                                        id="btnShowLoginPassword"
                                         type="button"
                                         title="Toggle Password Visibility"
                                         className="usa-show-password"
@@ -89,7 +91,7 @@ const Login: React.FC = () => {
                                         {showPassword ? t("auth.hide") : t("auth.show")}
                                     </button>
 
-                                    <Button type="submit" className="width-full margin-top-3">
+                                    <Button id="btnLoginSubmit" type="submit" className="width-full margin-top-3">
                                         {t("auth.login")}
                                     </Button>
                                 </Fieldset>
@@ -102,11 +104,12 @@ const Login: React.FC = () => {
                             </div>
 
                             <Button
+                                id="btnGoogleSignIn"
                                 type="button"
                                 outline
                                 className="width-full"
                                 onClick={() =>
-                                    window.location.replace("http://localhost:8125/auth/login/oauth2")
+                                    window.location.replace(URL_oauth2SocialLogin)
                                 }
                             >
                                 {t("auth.google")}
@@ -115,7 +118,7 @@ const Login: React.FC = () => {
 
                         <p className="text-center">
                             {t("auth.to-register")}{" "}
-                            <Link to="/register" className="usa-link">
+                            <Link id="linkRegister" to="/register" className="usa-link">
                                 {t("auth.register")}
                             </Link>
                         </p>

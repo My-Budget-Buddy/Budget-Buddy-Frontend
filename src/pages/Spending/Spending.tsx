@@ -103,9 +103,6 @@ const Spending: React.FC = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                // const response = await axios.get<Transaction[]>("http://localhost:8083/transactions/user/1");
-                // const transactions = response.data;
-
                 const transactions = await getTransactionByUserId(1);
                 setTransactions(transactions);
 
@@ -367,14 +364,14 @@ const Spending: React.FC = () => {
                                 bgColor: "bg-blue-500"
                             }
                         ].map((card, index) => (
-                            <div key={index} className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex">
+                            <div key={index} id="spending-header-cards" className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex">
                                 <div className="flex-1 flex items-center">
                                     <div>
                                         <card.icon
                                             className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`}
                                         />
-                                        <p className="text-bold pt-5 text-3xl">${card.price.toLocaleString()}</p>
-                                        <p className="text-light pt-1 text-xl">{card.details}</p>
+                                        <p className="text-bold pt-5 text-3xl" data-testid={`price-${index}`}>${card.price.toLocaleString()}</p>
+                                        <p className="text-light pt-1 text-xl" data-testid={`details-${index}`}>{card.details}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start justify-end">
@@ -408,13 +405,13 @@ const Spending: React.FC = () => {
                             <h2 className="text-3xl p-5 pl-8 text-bold">{t("spending.graphTitle")}</h2>
                             <div>
                                 <Link to="/dashboard/spending/May" className="mr-3 pr-8">
-                                    <Button type="button" className="ml-3">
+                                    <Button id="see-current-month-button" type="button" className="ml-3">
                                         {t("spending.seeCurrentMonth")}
                                     </Button>
                                 </Link>
                             </div>
                         </div>
-                        <div className="flex items-center mb-2 justify-start w-full">
+                        <div id="spending-earnings-graph" className="flex items-center mb-2 justify-start w-full">
                             <LineChart
                                 xAxis={[
                                     { scaleType: "band", data: categories, categoryGapRatio: 0.5 } as AxisConfig<"band">
@@ -449,7 +446,7 @@ const Spending: React.FC = () => {
                         <div className="flex flex-col justify-center items-center flex-2 p-2 m-0 mt-2 min-h-[40rem] rounded-xl shadow-md border-[1px] w-full sm:w-2/3 md:w-1/2 lg:w-1/2 ">
                             {spendingCategories.length > 0 ? (
 
-                                <div className="relative w-full h-full ml-12" style={{ minHeight: "610px", minWidth: "610px" }}>
+                                <div id="spending-pie-chart" className="relative w-full h-full ml-12" style={{ minHeight: "610px", minWidth: "610px" }}>
 
                                     <PieChart
                                         series={[
@@ -508,7 +505,7 @@ const Spending: React.FC = () => {
                         </div>
                         {/* section for more insights -> top expenses..and?? */}
 
-                        <div className="flex flex-col justify-center mt-3 gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
+                        <div id="top-categories-purchases-vendors" className="flex flex-col justify-center mt-3 gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
                             {/* Top Categories components */}
                             <div className="w-full m-1 p-4 rounded-xl shadow-md border-[0.5px] border-l-8 border-gray-500 bg-white text-gray-800">
                                 <p className="text-xl">

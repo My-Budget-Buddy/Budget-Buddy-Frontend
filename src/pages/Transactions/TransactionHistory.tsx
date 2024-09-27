@@ -245,10 +245,11 @@ function TransactionHistory() {
         <>
             <div className="min-w-screen min-h-screen flex flex-col gap-6">
                 <div className="flex justify-between items-center bg-transparent">
-                    <Title><Trans i18nKey={"transactions.history"} components={{ 1: <i className="text-blue-700" /> }} values={{ val: Name }} /></Title>
+                    <Title><Trans i18nKey={"transactions.history"} components={{ 1: <i id="vendorNameTitle" className="text-blue-700" /> }} values={{ val: Name }} /></Title>
                     <div className="flex gap-4 mt-4">
                         <Button
                             type="button"
+                            id="clearFilterBtn"
                             className="usa-button--secondary"
                             onClick={() => {
                                 setSelectedCategory("All Categories");
@@ -267,6 +268,7 @@ function TransactionHistory() {
                         </Button>
                         <select
                             className="p-2 border rounded"
+                            id="sortByDropdown"
                             value={sortOrder}
                             onChange={(e) => setSortOrder(e.target.value)}
                         >
@@ -275,13 +277,14 @@ function TransactionHistory() {
                         </select>
                         <select
                             className="p-2 border rounded"
+                            id="directionDropdown"
                             value={sortDirection}
                             onChange={(e) => setSortDirection(e.target.value)}
                         >
                             <option value="desc">{t("transactions.descending")}</option>
                             <option value="asc">{t("transactions.ascending")}</option>
                         </select>
-                        <ModalToggleButton type="button" className="usa-button" modalRef={createRef}>
+                        <ModalToggleButton type="button" id="addTransactionModal" className="usa-button" modalRef={createRef}>
                             {t("transactions.add-transaction")}
                         </ModalToggleButton>
                     </div>
@@ -290,6 +293,7 @@ function TransactionHistory() {
                 <div className="flex justify-center items-center gap-4 bg-transparent p-4">
                     <select
                         className="p-2 w-40"
+                        id="allCategoriesDropDown"
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
@@ -302,6 +306,7 @@ function TransactionHistory() {
                     </select>
                     <select
                         className="p-2 w-40"
+                        id="allAccountDropDown"
                         value={selectedAccount}
                         onChange={(e) => setSelectedAccount(e.target.value)}
                     >
@@ -314,6 +319,7 @@ function TransactionHistory() {
                     </select>
                     <select
                         className="p-2 w-40"
+                        id="allAmountsDropDown"
                         value={amountFilter}
                         onChange={(e) => {
                             setAmountFilter(e.target.value);
@@ -329,6 +335,7 @@ function TransactionHistory() {
                     </select>
                     <select
                         className="p-2 w-40"
+                        id="allDatesDropDown"
                         value={dateFilter}
                         onChange={(e) => {
                             setDateFilter(e.target.value);
@@ -439,6 +446,7 @@ function TransactionHistory() {
                                             <td>
                                                 <ModalToggleButton
                                                     type={"button"}
+                                                    id="editBtn"
                                                     className="usa-button--unstyled"
                                                     modalRef={modalRef}
                                                     onClick={() => {
@@ -451,6 +459,7 @@ function TransactionHistory() {
                                                     type={"button"}
                                                     onClick={() => handleDelete(transaction.transactionId)}
                                                     className="usa-button--unstyled"
+                                                    id="deleteBtn"
                                                 >
                                                     <Icon.Delete />
                                                 </Button>
@@ -466,6 +475,7 @@ function TransactionHistory() {
                                             <td>
                                                 <ModalToggleButton
                                                     type="button"
+                                                    id="detailedInfoModal"
                                                     className="usa-button--unstyled"
                                                     modalRef={infoRef}
                                                     onClick={() => {
@@ -481,7 +491,7 @@ function TransactionHistory() {
                             </Table>
                         )}
                     </div>
-                    <div className="p-4 mt-4 m-2 rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-1/3">
+                    <div id="summaryDiv" className="p-4 mt-4 m-2 rounded-xl justify-center items-center shadow-md border-[1px] flex-initial w-1/3">
                         <h1>{t("transactions.summary")}</h1>
                         {t("transactions.total-transactions")}: {filteredTransactions.length}
                         <hr />
@@ -613,7 +623,7 @@ function TransactionHistory() {
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">{t("transactions.submit")}</Button>
+                            <Button id="editTransactionBtn" type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
@@ -648,7 +658,7 @@ function TransactionHistory() {
                 <Form onSubmit={handleCreateTransaction} large>
                     <div className="grid grid-cols-6 gap-5">
                         <input
-                            id="transaction-date"
+                            id="create-transaction-date"
                             name="date"
                             className="col-span-3 usa-input usa-date-picker_external-input"
                             type="date"
@@ -673,7 +683,7 @@ function TransactionHistory() {
                                 <InputPrefix>$</InputPrefix>
                                 <TextInput
                                     value={newTransaction.amount}
-                                    id="transaction-amount"
+                                    id="create-transaction-amount"
                                     name="amount"
                                     type="number"
                                     onChange={handleInputChange}
@@ -683,7 +693,7 @@ function TransactionHistory() {
                             <Label htmlFor="transaction-category">{t("transactions-table.category")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
-                                    id="transaction-category"
+                                    id="create-transaction-category"
                                     name="category"
                                     value={newTransaction.category}
                                     onChange={handleSelectChange}
@@ -699,17 +709,17 @@ function TransactionHistory() {
                             <Label htmlFor="transaction-description">{t("budgets.notes")}</Label>
                             <Textarea
                                 value={newTransaction.description || ""}
-                                id="transaction-description"
+                                id="create-transaction-description"
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button type="submit">{t("transactions.submit")}</Button>
+                            <Button id="addTransactionBtn" type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
                             <div className="grid grid-cols-8">
                                 <Select
-                                    id="transaction-account"
+                                    id="create-transaction-account"
                                     name="accountId"
                                     value={newTransaction.accountId}
                                     onChange={handleSelectChange}
@@ -741,7 +751,7 @@ function TransactionHistory() {
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border border-black rounded-xl">
                                     <div>{formatDate(currentTransaction.date)}</div>
                                 </div>
-                                <Button type="button" onClick={() => { infoRef.current?.toggleModal(); modalRef.current?.toggleModal(); }}>
+                                <Button type="button" id="editTransactionModal" onClick={() => { infoRef.current?.toggleModal(); modalRef.current?.toggleModal(); }}>
                                     {t("transactions.edit-transaction")}
                                 </Button>
                             </div>

@@ -125,15 +125,15 @@ const WwStep: React.FC = () => {
                                     <td>{item.w2state}</td>
                                     <td>{item.w2employer}</td>
                                     <td>
-                                        <Button type="button" onClick={() => handleEditClick(item)}>Edit</Button>
-                                        <Button type="button" secondary onClick={() => handleDeleteClick(item.w2id)}>Delete</Button>
+                                        <Button type="button" onClick={() => handleEditClick(item)} id="w2-edit-button">Edit</Button>
+                                        <Button type="button" secondary onClick={() => handleDeleteClick(item.w2id)} id="w2-delete-button">Delete</Button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                         <div className="m-5">
-                            <Button type="button" onClick={handleAddClick}>Add</Button>
-                            <Button type="button" onClick={handleSubmit}>Submit</Button>
+                            <Button type="button" onClick={handleAddClick} id="w2-add-button">Add</Button>
+                            <Button type="button" onClick={handleSubmit} id="w2-submit-button">Submit</Button>
                         </div>
                     </Table>
 
@@ -250,7 +250,7 @@ const WwStep: React.FC = () => {
 
 
                         </Grid>
-                        <Button type="button" onClick={() => handleSaveClick(W2info)}>Save</Button>
+                        <Button type="button" onClick={() => handleSaveClick(W2info)} id="w2-save-button">Save</Button>
                     </Grid>
                 </GridContainer>
             </div>

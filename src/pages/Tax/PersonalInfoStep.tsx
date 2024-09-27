@@ -122,6 +122,7 @@ const PersonalInfoStep: React.FC = () => {
                                             value={taxReturnInfo.city}
                                             onChange={handleChange}
                                             validationStatus={errors2.city ? "error" : undefined}
+                                            aria-label="City"
                                         />
                                         {errors2.city && <span style={{ color: 'red' }}>{errors2.city}</span>}
                                     </FormGroup>
@@ -255,7 +256,7 @@ const PersonalInfoStep: React.FC = () => {
                 </GridContainer>
             </div>
             <div className="m-5">
-                <Button type="button" onClick={() => handleSave(taxReturnInfo, taxReturnInfo.id)}>Save</Button>
+                <Button type="button" onClick={() => handleSave(taxReturnInfo, taxReturnInfo.id)} id="pi-save-button">Save</Button>
             </div>
         </>
 

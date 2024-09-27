@@ -5,7 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-
+    "esModuleInterop": true,
     "allowJs": true,  // Enable JavaScript file imports
 
 
@@ -19,10 +19,10 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,      // WAS TRUE
+    "noUnusedParameters": false,  // WAS TRUE
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "__tests__", "__mocks__", "__testSetup__"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

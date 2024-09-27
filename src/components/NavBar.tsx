@@ -22,32 +22,38 @@ const NavBar = () => {
         {
             path: "/dashboard",
             title: t("dashboard.title"),
-            icon: <Icon.List className="mr-3" />
+            icon: <Icon.List className="mr-3" />,
+            id: "navbar-dashboard"
         },
         {
             path: "/dashboard/accounts",
             title: t("accounts.title"),
-            icon: <Icon.AccountBalance className="mr-3" />
+            icon: <Icon.AccountBalance className="mr-3" />,
+            id: "navbar-accounts"
         },
         {
             path: "/dashboard/budgets",
             title: t("budgets.title"),
-            icon: <Icon.Assessment className="mr-3" />
+            icon: <Icon.Assessment className="mr-3" />,
+            id: "navbar-budgets"
         },
         {
             path: "/dashboard/spending",
             title: t("spending.title"),
-            icon: <ReceiptOutlinedIcon className="mr-3" fontSize="small" />
+            icon: <ReceiptOutlinedIcon className="mr-3" fontSize="small" />,
+            id: "navbar-spending"
         },
         {
             path: "/dashboard/transactions",
             title: t("transactions.title"),
-            icon: <Icon.Search className="mr-3" />
+            icon: <Icon.Search className="mr-3" />,
+            id: "navbar-transactions"
         },
         {
             path: "/dashboard/tax",
             title: t("tax.title"),
-            icon: <RequestPageOutlinedIcon className="mr-3" fontSize="small" />
+            icon: <RequestPageOutlinedIcon className="mr-3" fontSize="small" />,
+            id: "navbar-tax"
         }
     ];
 
@@ -66,13 +72,14 @@ const NavBar = () => {
 
     return (
         <div className="nav-container bg-[#005ea2] px-6 h-screen min-w-64 max-w-min-w-64 flex flex-col pt-6">
-            <Link to="/" className="">
+            <Link id="navbar-landing" to="/" className="">
                 <img src={buddyLogo} className="w-44 ml-4"></img>
                 {/*<h2 className="font-semibold text-center text-2xl text-white">{t("app-name")}</h2>*/}
             </Link>
             <div className="flex flex-col items-center gap-6 mt-8">
                 {pages.map((pages) => (
                     <Link
+                        id={pages.id}
                         to={pages.path}
                         className="w-full usa-button min-w-full text-left items-center"
                         key={pages.path}

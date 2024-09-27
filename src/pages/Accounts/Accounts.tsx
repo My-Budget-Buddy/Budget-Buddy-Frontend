@@ -13,6 +13,8 @@ import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 import { deleteAccountAPI } from "../Tax/taxesAPI";
 
+import { URL_getAccountsByUserId } from "../../api/services/AccountService";
+
 const Accounts: React.FC = () => {
     const { t } = useTranslation();
     const { jwt } = useAuthentication();
@@ -34,7 +36,7 @@ const Accounts: React.FC = () => {
     useEffect(() => {
         if (!jwt) return; // to prevent an unnecessary 401
 
-        fetch("http://localhost:8125/accounts", { headers: { Authorization: `Bearer ${jwt}` } })
+        fetch(URL_getAccountsByUserId, { headers: { Authorization: `Bearer ${jwt}` } })
             .then((res) => {
                 if (res.ok) {
                     return res.json().then((data: Account[]) => {
@@ -101,6 +103,7 @@ const Accounts: React.FC = () => {
                 <div className="flex justify-center pt-6">
                     {netCash >= 0 ? (
                         <Gauge
+                            id="netCash-gauge"
                             width={500}
                             height={200}
                             value={netCash}
@@ -122,6 +125,7 @@ const Accounts: React.FC = () => {
                         />
                     ) : (
                         <Gauge
+                            id= "netCash-gauge"
                             width={500}
                             height={200}
                             value={-netCash}

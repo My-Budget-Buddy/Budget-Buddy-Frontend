@@ -23,3 +23,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.env
+
+## Coverage Results
+coverage
+.sonar
+test-report.xml

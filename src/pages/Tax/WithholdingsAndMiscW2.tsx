@@ -120,8 +120,8 @@ const WithholdingsAndMiscW2: React.FC = () => {
                             <td>{item.deddeduction}</td>
                             <td>{item.dedamountSpent}</td>
                             <td>
-                                <Button type="button" onClick={() => handleEditClick(item)}>Edit</Button>
-                                <Button type="button" secondary onClick={() => handleDeleteClick(item.dedid)}>Delete</Button>
+                                <Button type="button" onClick={() => handleEditClick(item)} id="deduction-edit-button">Edit</Button>
+                                <Button type="button" secondary onClick={() => handleDeleteClick(item.dedid)} id="deduction-delete-button">Delete</Button>
                             </td>
                         </tr>
                     ))}
@@ -129,16 +129,16 @@ const WithholdingsAndMiscW2: React.FC = () => {
             </Table>
         </div>
         <div className="m-5">
-            <Button type="button" onClick={handleAddClick}>Add</Button>
-            <Button type="button" onClick={handleSubmit}>Submit</Button>
+            <Button type="button" onClick={handleAddClick} id="deduction-add-button">Add</Button>
+            <Button type="button" onClick={handleSubmit} id="deduction-submit-button">Submit</Button>
         </div>
         {editingItem && (
 
             <div>
 
                 <FormGroup >
-                    <label htmlFor="select">Deduction Type</label>
-                    <Select id="deddeduction" name="deddeduction" required onChange={handleChange}>
+                    <label id="deduction-type-label" htmlFor="select">Deduction Type</label>
+                    <Select id="deddeduction" aria-labelledby="deduction-type-label" name="deddeduction" required onChange={handleChange}>
                         <option>- Select -</option>
                         <option value="1">Health Savings Account</option>
                         <option value="2">IRA Contributions</option>
@@ -181,7 +181,7 @@ const WithholdingsAndMiscW2: React.FC = () => {
 
 
                 <div className="m-5">
-                    <Button type="button" onClick={() => handleSaveClick(deductionsState)}>Save</Button>
+                    <Button type="button" onClick={() => handleSaveClick(deductionsState)} id="deduction-save-button">Save</Button>
                 </div>
 
             </div>

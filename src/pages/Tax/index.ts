@@ -2,9 +2,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 //const jwtCookie = Cookies.get("jwt");
 
+import { URL } from "../../api/Endpoint";
+
 const apiClient = axios.create({
     // hiding the URL in the .env file
-    baseURL: `http://localhost:8125`,
+    baseURL: URL,
     headers: {
         "Content-Type": "application/json"
     }
@@ -13,8 +15,11 @@ const apiClient = axios.create({
 apiClient.defaults.withCredentials = true;
 
 apiClient.interceptors.request.use((config) => {
-    const jwtCookie = Cookies.get("jwt");
+    console.log("index.ts API CLIENT INTERCEPTORS\n" + JSON.stringify(config));
+    const jwtCookie = Cookies.get('jwt');
+    console.log("jwtCookie: " + jwtCookie);
     if (jwtCookie) {
+        console.log("SDFGDSFGSDFGDSFGSDFGSDFGDSFGDSF:\n" + jwtCookie); 
         config.headers.Authorization = `Bearer ${jwtCookie}`;
     }
     return config;
