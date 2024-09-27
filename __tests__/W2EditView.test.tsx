@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import W2EditView from '../pages/Tax/W2EditView';
+import W2EditView from '../src/pages/Tax/W2EditView';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { BrowserRouter } from 'react-router-dom';
 
-jest.mock("../api/config", () => ({
+jest.mock("../src/api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
@@ -25,27 +25,27 @@ const store = mockStore({
 
 // MOCKED COMPONENTS
 
-jest.mock('../pages/Tax/PersonalInfoStep', () => ({
+jest.mock('../src/pages/Tax/PersonalInfoStep', () => ({
     __esModule: true,
     default: jest.fn(() => <div>Personal Information Content</div>),
 }));
 
-jest.mock('../pages/Tax/w2Step', () => ({
+jest.mock('../src/pages/Tax/w2Step', () => ({
     __esModule: true,
     default: jest.fn(() => <div>File W2s Content</div>),
 }));
 
-jest.mock('../pages/Tax/FinancialInformationStepW2', () => ({
+jest.mock('../src/pages/Tax/FinancialInformationStepW2', () => ({
     __esModule: true,
     default: jest.fn(() => <div>Other Income Content</div>),
 }));
 
-jest.mock('../pages/Tax/WithholdingsAndMiscW2', () => ({
+jest.mock('../src/pages/Tax/WithholdingsAndMiscW2', () => ({
     __esModule: true,
     default: jest.fn(() => <div>Deductions Content</div>),
 }));
 
-jest.mock('../pages/Tax/ReviewAndSubmitStepW2', () => ({
+jest.mock('../src/pages/Tax/ReviewAndSubmitStepW2', () => ({
     __esModule: true,
     default: jest.fn(() => <div>Review and submit Content</div>),
 }));

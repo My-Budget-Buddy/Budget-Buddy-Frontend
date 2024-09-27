@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent, cleanup, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Register from '../pages/AuthenticationPages/Register';
+import Register from '../src/pages/AuthenticationPages/Register';
 import Cookies from 'js-cookie';
 import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom';
 import * as router from 'react-router-dom'
-import Login from '../pages/AuthenticationPages/Login';
+import Login from '../src/pages/AuthenticationPages/Login';
 import { act } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -17,7 +17,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock authentication
-jest.mock('../contexts/AuthenticationContext', () => ({
+jest.mock('../src/contexts/AuthenticationContext', () => ({
     useAuthentication: () => ({
         jwt: null,
         loading: false,
@@ -26,7 +26,7 @@ jest.mock('../contexts/AuthenticationContext', () => ({
 }))
 
 // Mock API endpoint
-jest.mock('../api/config', () => ({
+jest.mock('../src/api/config', () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },

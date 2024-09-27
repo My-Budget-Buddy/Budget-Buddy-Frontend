@@ -2,19 +2,19 @@ import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
-import { store } from '../util/redux/store';
+import { store } from '../src/util/redux/store';
 import { BrowserRouter as Router } from 'react-router-dom';
-import PersonalInfoStep from '../pages/Tax/PersonalInfoStep';
-import { getTaxReturnById, updateTaxReturnAPI } from '../pages/Tax/taxesAPI';
+import PersonalInfoStep from '../src/pages/Tax/PersonalInfoStep';
+import { getTaxReturnById, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';
 
-jest.mock("../api/config", () => ({
-    config: {
-      apiUrl: "http://localhost:mock",
-    },
-  }));
+jest.mock("../src/api/config", () => ({
+  config: {
+    apiUrl: "http://localhost:mock",
+  },
+}));
 
 // Mock the taxesAPI module
-jest.mock('../pages/Tax/taxesAPI', () => ({
+jest.mock('../src/pages/Tax/taxesAPI', () => ({
   getTaxReturnById: jest.fn(),
   updateTaxReturnAPI: jest.fn()
 }));
@@ -74,7 +74,7 @@ describe('PersonalInfoStep', () => {
     expect(save).toBeInTheDocument();
   });
 
-  
+
   it('should update form fields correctly', async () => {
     await act(async () => {
       render(
@@ -111,5 +111,5 @@ describe('PersonalInfoStep', () => {
 
     expect(updateTaxReturnAPI).toHaveBeenCalled();
   });
-  
+
 });

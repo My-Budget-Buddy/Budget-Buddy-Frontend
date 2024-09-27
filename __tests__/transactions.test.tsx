@@ -1,10 +1,10 @@
 import React, { act } from 'react';
-import Transactions from "../pages/Transactions/Transactions";
+import Transactions from "../src/pages/Transactions/Transactions";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import { createTransaction, deleteTransaction, getAccountsByUserId, getTransactionByUserId, getTransactionByVendor, updateTransaction, validateTransaction } from '../utils/transactionService';
-import { TransactionCategory } from '../types/models';
+import { createTransaction, deleteTransaction, getAccountsByUserId, getTransactionByUserId, getTransactionByVendor, updateTransaction, validateTransaction } from '../src/utils/transactionService';
+import { TransactionCategory } from '../src/types/models';
 
 // Mock the useTranslation hook and Trans component
 jest.mock('react-i18next', () => ({
@@ -18,14 +18,14 @@ jest.mock('react-i18next', () => ({
 }));
 
 //mock the config file
-jest.mock("../api/config", () => ({
+jest.mock("../src/api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
 }));
 
 // Mock the transactionService functions
-jest.mock('../utils/transactionService');
+jest.mock('../src/utils/transactionService');
 
 //mock the focus trap react in order for tests to run
 jest.mock('focus-trap-react', () => {
@@ -34,14 +34,14 @@ jest.mock('focus-trap-react', () => {
 
 
 // Mock CategoryIcon
-jest.mock('../components/CategoryIcon', () => ({
+jest.mock('../src/components/CategoryIcon', () => ({
     __esModule: true,
     default: ({ category }: { category: string }) => <div data-testid="mock-category-icon">{category}</div>,
     categoryColors: {},
 }));
 
 // Mock formatCurrency and formatDate functions
-jest.mock('../util/helpers', () => ({
+jest.mock('../src/util/helpers', () => ({
     formatCurrency: (amount: number | bigint) => {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -183,7 +183,7 @@ describe('Transactions', () => {
     it('shows no transactions message when list is empty', async () => {
         // Update mock to return an empty transactions list when getTransactionByUserId is called
         (getTransactionByUserId as jest.Mock).mockResolvedValueOnce([]);
-    
+
         // Render the component using MemoryRouter to simulate the route '/transactions'
         render(
             <MemoryRouter initialEntries={['/transactions']}>
@@ -193,7 +193,7 @@ describe('Transactions', () => {
                 </Routes>
             </MemoryRouter>
         );
-    
+
         // Wait for the "no transactions" message to appear on the screen
         await waitFor(() => {
             // Check that the element with the 'noTransactions' aria-label is present in the document
@@ -206,16 +206,16 @@ describe('Transactions', () => {
         (getTransactionByUserId as jest.Mock).mockResolvedValueOnce([
             {
                 transactionId: 1,
-                date: "2023-10-01",           
-                vendorName: 'VendorName',      
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                  
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                   
-                userId: 1,                      
+                accountId: 1,
+                userId: 1,
             },
         ]);
-    
+
         render(
             <MemoryRouter initialEntries={['/transactions']}>
                 <Routes>
@@ -223,27 +223,27 @@ describe('Transactions', () => {
                 </Routes>
             </MemoryRouter>
         );
-    
+
         // Wait for the transactions table elements to appear
         await waitFor(() => {
             // Check that the 'date' header is displayed in the transactions table
             screen.getAllByText('transactions-table.date').forEach(item => {
-                expect(item).toBeInTheDocument(); 
+                expect(item).toBeInTheDocument();
             });
-            
+
             // Check that the 'name' header is displayed in the transactions table
             screen.getAllByText('transactions-table.name').forEach(item => {
-                expect(item).toBeInTheDocument(); 
+                expect(item).toBeInTheDocument();
             });
-            
+
             // Check that the 'category' header is displayed in the transactions table
             screen.getAllByText('transactions-table.category').forEach(item => {
                 expect(item).toBeInTheDocument();
             });
-            
+
             // Check that the 'amount' header is displayed in the transactions table
             screen.getAllByText('transactions-table.amount').forEach(item => {
-                expect(item).toBeInTheDocument(); 
+                expect(item).toBeInTheDocument();
             });
         });
     });
@@ -253,16 +253,16 @@ describe('Transactions', () => {
         (getTransactionByUserId as jest.Mock).mockResolvedValueOnce([
             {
                 transactionId: 1,
-                date: "2023-10-01",           
-                vendorName: 'VendorName',       
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                 
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                   
-                userId: 1,                     
+                accountId: 1,
+                userId: 1,
             },
         ]);
-    
+
         render(
             <MemoryRouter initialEntries={['/transactions']}>
                 <Routes>
@@ -270,65 +270,65 @@ describe('Transactions', () => {
                 </Routes>
             </MemoryRouter>
         );
-    
+
         // Wait for the transaction rows to appear with the correct data
         await waitFor(() => {
             // Check that the vendor name 'VendorName' is rendered in the table
             screen.getAllByText('VendorName').forEach(item => {
-                expect(item).toBeInTheDocument();  
+                expect(item).toBeInTheDocument();
             });
-            
+
             // Check that the transaction amount '$100.00' is rendered in the table
             screen.getAllByText('$100.00').forEach(item => {
-                expect(item).toBeInTheDocument();  
+                expect(item).toBeInTheDocument();
             });
-            
+
             // Check that the transaction category 'Income' is rendered in the table
             screen.getAllByText('Income').forEach(item => {
-                expect(item).toBeInTheDocument(); 
+                expect(item).toBeInTheDocument();
             });
         });
     });
-    
+
 
     it('filters transactions by category', async () => {
         // Mock the getTransactionByUserId function to return a list of transactions with different categories
         mockGetTransactionByUserId.mockResolvedValue([
             {
                 transactionId: 1,
-                date: "2023-10-01",            
-                vendorName: 'VendorName',       
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                  
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                   
-                userId: 1,                      
+                accountId: 1,
+                userId: 1,
             },
 
             //Second transaction with different information
             {
                 transactionId: 2,
-                date: "2022-08-05",            
-                vendorName: 'OtherVendor',     
-                category: 'Dining' as TransactionCategory, 
-                amount: 500.0,                 
-                description: "Another Transaction", 
-                accountId: 1,                  
-                userId: 1,                    
+                date: "2022-08-05",
+                vendorName: 'OtherVendor',
+                category: 'Dining' as TransactionCategory,
+                amount: 500.0,
+                description: "Another Transaction",
+                accountId: 1,
+                userId: 1,
             },
         ]);
-    
+
         // Wait for the category dropdown and transactions to be rendered
         await waitFor(() => {
             // Select the dropdown element for filtering by category
             const categorySelect = screen.getByLabelText('allCategoriesDropDown');
-    
+
             // Simulate selecting the 'Income' category from the dropdown
             fireEvent.change(categorySelect, { target: { value: 'Income' } });
-    
+
             // Check that the transaction with the 'Income' category (VendorName) is displayed
             expect(screen.getByText('VendorName')).toBeInTheDocument();
-            
+
             // Check that the transaction with the 'Dining' category (OtherVendor) is not displayed
             expect(screen.queryByText('OtherVendor')).not.toBeInTheDocument();
         });
@@ -341,94 +341,94 @@ describe('Transactions', () => {
         mockGetTransactionByUserId.mockResolvedValue([
             {
                 transactionId: 1,
-                date: "2023-10-01",            
-                vendorName: 'VendorName',       
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                  
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                   
-                userId: 1,                     
+                accountId: 1,
+                userId: 1,
             },
             //second transaction with different information
             {
                 transactionId: 2,
-                date: "2022-08-05",            
-                vendorName: 'OtherVendor',     
-                category: 'Dining' as TransactionCategory, 
-                amount: 500.0,                 
-                description: "Another Transaction", 
-                accountId: 2,                  
-                userId: 1,                     
+                date: "2022-08-05",
+                vendorName: 'OtherVendor',
+                category: 'Dining' as TransactionCategory,
+                amount: 500.0,
+                description: "Another Transaction",
+                accountId: 2,
+                userId: 1,
             },
         ]);
-    
+
         // Mock the getAccountsByUserId function to return two accounts, each from a different institution
         mockGetAccountsByUserId.mockResolvedValue([
             {
                 id: 1,
-                userId: '123',                 
-                accountNumber: "Test Account", 
-                type: "CHECKING",              
-                routingNumber: "123456789",    
+                userId: '123',
+                accountNumber: "Test Account",
+                type: "CHECKING",
+                routingNumber: "123456789",
                 institution: "Heritage Bank",  // First account institution (Heritage Bank)
-                investmentRate: 0.01,          
-                startingBalance: 1000,         
-                currentBalance: 1000,          
+                investmentRate: 0.01,
+                startingBalance: 1000,
+                currentBalance: 1000,
             },
             {
                 id: 2,
-                userId: '123',                 
-                accountNumber: "Test Account", 
-                type: "CHECKING",              
-                routingNumber: "123456789",    
+                userId: '123',
+                accountNumber: "Test Account",
+                type: "CHECKING",
+                routingNumber: "123456789",
                 institution: "Keystone Bank",  // Second account institution (Keystone Bank)
-                investmentRate: 0.01,          
-                startingBalance: 1000,         
-                currentBalance: 1000,          
+                investmentRate: 0.01,
+                startingBalance: 1000,
+                currentBalance: 1000,
             },
         ]);
-    
+
         // Wait for the account dropdown and accounts to be rendered
         await waitFor(() => {
             // Select the dropdown element for filtering by account
             const accountSelect = screen.getByLabelText('allAccountDropDown');
-    
+
             // Simulate selecting 'Heritage Bank' from the dropdown
             fireEvent.change(accountSelect, { target: { value: 'Heritage Bank' } });
-    
+
             // Check that transactions related to 'Heritage Bank' are displayed
             const heritageBankNames = screen.getAllByText('Heritage Bank');
-            expect(heritageBankNames[0]).toBeInTheDocument();  
+            expect(heritageBankNames[0]).toBeInTheDocument();
         });
     });
-    
+
 
     it('filters transactions by date', async () => {
         // Mock the getTransactionByUserId function to return two transactions with different dates
         mockGetTransactionByUserId.mockResolvedValue([
             {
                 transactionId: 1,
-                date: "2023-10-01",            
-                vendorName: 'VendorName',       
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                  
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                   
-                userId: 1,                      
+                accountId: 1,
+                userId: 1,
             },
             //second transaction with different information
             {
                 transactionId: 2,
-                date: "2022-08-05",            
-                vendorName: 'OtherVendor',     
-                category: 'Dining' as TransactionCategory, 
-                amount: 500.0,                 
-                description: "Another Transaction", 
-                accountId: 1,                  
-                userId: 1,                    
+                date: "2022-08-05",
+                vendorName: 'OtherVendor',
+                category: 'Dining' as TransactionCategory,
+                amount: 500.0,
+                description: "Another Transaction",
+                accountId: 1,
+                userId: 1,
             },
         ]);
-    
+
         render(
             <MemoryRouter initialEntries={['/transactions']}>
                 <Routes>
@@ -436,28 +436,28 @@ describe('Transactions', () => {
                 </Routes>
             </MemoryRouter>
         );
-    
+
         // Wait for the date filter dropdown and date inputs to be rendered
         await waitFor(async () => {
             // Get the date dropdown
             const datesDropDowns = screen.getAllByLabelText('allDatesDropDown');
             const dateDropDown = datesDropDowns[0];
-    
+
             // Simulate changing the filter dropdown to 'date'
             fireEvent.change(dateDropDown, { target: { value: 'date' } });
-    
+
             // Wait for the date range inputs (Min Date and Max Date) to appear
             const minDate = await screen.findByPlaceholderText('Min Date');
             const maxDate = await screen.findByPlaceholderText('Max Date');
-    
+
             // Simulate setting the min and max date filters
             fireEvent.change(minDate, { target: { value: '2023-10-01' } });
             fireEvent.change(maxDate, { target: { value: '2023-10-05' } });
-    
+
             // Assert that the input values were correctly updated
             expect(minDate).toHaveValue('2023-10-01');
             expect(maxDate).toHaveValue('2023-10-05');
-    
+
             // Check that the transaction with the matching date ('2023-10-01') is displayed
             const vendorNames = screen.getAllByText('VendorName');
             const vendorName = vendorNames[0];
@@ -470,26 +470,26 @@ describe('Transactions', () => {
         mockGetTransactionByUserId.mockResolvedValue([
             {
                 transactionId: 1,
-                date: "2023-10-01",          
-                vendorName: 'VendorName',       
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                  
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                   
-                userId: 1,                      
+                accountId: 1,
+                userId: 1,
             },
             {
                 transactionId: 2,
-                date: "2022-08-05",            
-                vendorName: 'OtherVendor',     
-                category: 'Dining' as TransactionCategory, 
-                amount: 500.0,                 
-                description: "Another Transaction", 
-                accountId: 1,                  
-                userId: 1,                     
+                date: "2022-08-05",
+                vendorName: 'OtherVendor',
+                category: 'Dining' as TransactionCategory,
+                amount: 500.0,
+                description: "Another Transaction",
+                accountId: 1,
+                userId: 1,
             },
         ]);
-    
+
         render(
             <MemoryRouter initialEntries={['/transactions']}>
                 <Routes>
@@ -497,54 +497,54 @@ describe('Transactions', () => {
                 </Routes>
             </MemoryRouter>
         );
-    
+
         // Wait for the amount filter dropdown and inputs to be rendered
         await waitFor(async () => {
             // Get the amount filter dropdown 
             const amountDropDowns = screen.getAllByLabelText('allAmountsDropDown');
             const amountDropDown = amountDropDowns[0];
-    
+
             // Simulate changing the filter dropdown to 'amount'
             fireEvent.change(amountDropDown, { target: { value: 'amount' } });
-    
+
             // Wait for the amount range inputs (Min Amount and Max Amount) to appear
             const minAmount = await screen.findByPlaceholderText('Min Amount');
             const maxAmount = await screen.findByPlaceholderText('Max Amount');
-    
+
             // Simulate setting the min and max amount filters
             fireEvent.change(minAmount, { target: { value: '100' } });
             fireEvent.change(maxAmount, { target: { value: '200' } });
-    
+
             // Assert that the input values were correctly updated
-            expect(minAmount).toHaveValue(100);  
-            expect(maxAmount).toHaveValue(200);  
-    
+            expect(minAmount).toHaveValue(100);
+            expect(maxAmount).toHaveValue(200);
+
             // Check that the transaction with an amount within the range (100.0) is displayed
             const vendorNames = screen.getAllByText('VendorName');
             const vendorName = vendorNames[0];
-            expect(vendorName).toBeInTheDocument();  
+            expect(vendorName).toBeInTheDocument();
         });
     });
-    
+
 
     it('opens and submits edit transaction modal', async () => {
         // Mock the validateTransaction function to return no validation errors
         (validateTransaction as jest.Mock).mockReturnValue([]);
-    
+
         // Mock the updateTransaction function to return an updated transaction upon submission
         (updateTransaction as jest.Mock).mockResolvedValueOnce([
             {
                 transactionId: 1,
-                date: "2023-10-01",            
-                vendorName: 'VendorName',       
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                  
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                  
-                userId: 1,                      
+                accountId: 1,
+                userId: 1,
             },
         ]);
-    
+
         render(
             <MemoryRouter initialEntries={['/transactions']}>
                 <Routes>
@@ -552,54 +552,54 @@ describe('Transactions', () => {
                 </Routes>
             </MemoryRouter>
         );
-    
+
         // Open the edit transaction modal
         const editButtons = await screen.findAllByLabelText('edit-transaction-btn');
         fireEvent.click(editButtons[0]);
-    
+
         // Modify the transaction description in the modal
         const editDescriptions = await screen.findAllByLabelText('edit-transaction-description');
-        fireEvent.change(editDescriptions[0], { target: { value: 'Updated Description' } }); 
-    
+        fireEvent.change(editDescriptions[0], { target: { value: 'Updated Description' } });
+
         // Submit the edit transaction form
         const editSubmitButtons = await screen.findAllByLabelText('edit-transactions.submit');
-        fireEvent.click(editSubmitButtons[0]); 
-    
+        fireEvent.click(editSubmitButtons[0]);
+
         // Wait for the updateTransaction function to be called after form submission
         await waitFor(() => {
             expect(mockUpdateTransaction).toHaveBeenCalled(); // Assert that the updateTransaction API was called
         });
     });
-    
+
 
 
 
     it('opens and submits create transaction modal', async () => {
         // Mock the validateTransaction function to return no validation errors
         (validateTransaction as jest.Mock).mockReturnValue([]);
-    
+
         // Define a mock transaction to simulate a successful creation response
         const mockTransactions = [
             {
                 transactionId: 1,
-                date: "2022-10-01",           
-                vendorName: 'VendorName',       
-                category: 'Income' as TransactionCategory, 
-                amount: 100.0,                  
+                date: "2022-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
                 description: "Test Transaction",
-                accountId: 1,                   
-                userId: 1,                      
+                accountId: 1,
+                userId: 1,
             },
         ];
-    
+
         // Mock the createTransaction function to return the mock transactions when called
         (createTransaction as jest.Mock).mockResolvedValueOnce(mockTransactions);
-    
+
         // Ensure that the date for the mock transaction is defined
         mockTransactions.forEach(transaction => {
             expect(transaction.date).toBeDefined();
         });
-    
+
         render(
             <MemoryRouter initialEntries={['/transactions']}>
                 <Routes>
@@ -607,112 +607,112 @@ describe('Transactions', () => {
                 </Routes>
             </MemoryRouter>
         );
-    
+
         // Open the create transaction modal
         const createButtons = await screen.findAllByLabelText('addTransactionModal');
-        fireEvent.click(createButtons[0]); 
-    
+        fireEvent.click(createButtons[0]);
+
         // Fill out the create transaction form
 
         // Change the amount in the form
         const createAmounts = await screen.findAllByLabelText('transactions-table.amount') as HTMLInputElement[];
-        fireEvent.change(createAmounts[0], { target: { value: '200.0' } }); 
-    
+        fireEvent.change(createAmounts[0], { target: { value: '200.0' } });
+
         // Change the date in the form
         const createDates = await screen.findAllByLabelText('create-transaction-date') as HTMLInputElement[];
-        fireEvent.change(createDates[0], { target: { value: '2023-10-01' } }); 
-    
+        fireEvent.change(createDates[0], { target: { value: '2023-10-01' } });
+
         // Change the vendor name in the form
         const createVendors = await screen.findAllByLabelText('transactions-table.name') as HTMLInputElement[];
-        fireEvent.change(createVendors[0], { target: { value: 'New Vendor' } }); 
-    
+        fireEvent.change(createVendors[0], { target: { value: 'New Vendor' } });
+
         // Change the category in the form
         const createCategories = await screen.findAllByLabelText('transactions-table.category');
-        fireEvent.change(createCategories[0] as HTMLInputElement, { target: { value: 'Income' } }); 
-    
+        fireEvent.change(createCategories[0] as HTMLInputElement, { target: { value: 'Income' } });
+
         // Submit the create transaction form
         const createSubmitButtons = await screen.findAllByLabelText('addTransactionBtn');
-        fireEvent.click(createSubmitButtons[0]); 
-    
+        fireEvent.click(createSubmitButtons[0]);
+
         // Wait for the createTransaction function to be called after form submission
         await waitFor(() => {
             expect(createTransaction).toHaveBeenCalled(); // Assert that the createTransaction API was called
         });
     });
 
-it('deletes a transaction', async () => {
-    // Mock the deleteTransaction function to resolve with an empty array (simulating successful deletion)
-    (deleteTransaction as jest.Mock).mockResolvedValueOnce([]);
+    it('deletes a transaction', async () => {
+        // Mock the deleteTransaction function to resolve with an empty array (simulating successful deletion)
+        (deleteTransaction as jest.Mock).mockResolvedValueOnce([]);
 
-    // Mock the retrieval of transactions by vendor to return a sample transaction
-    mockGetTransactionByVendor.mockResolvedValue([
-        {
-            transactionId: 1,                     
-            date: "2023-10-01",                   
-            vendorName: 'VendorName',              
-            category: 'Income' as TransactionCategory, 
-            amount: 100.0,                         
-            description: "Test Transaction",       
-            accountId: 1,                          
-            userId: 1,                             
-        },
-    ]);
+        // Mock the retrieval of transactions by vendor to return a sample transaction
+        mockGetTransactionByVendor.mockResolvedValue([
+            {
+                transactionId: 1,
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
+                description: "Test Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+        ]);
 
-    render(
-        <MemoryRouter initialEntries={['/transactions']}>
-            <Routes>
-                <Route path="/transactions" element={<Transactions />} />
-            </Routes>
-        </MemoryRouter>
-    );
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
 
-    // Find all delete buttons in the rendered component
-    const deleteButtons = await screen.findAllByLabelText('delete-transaction-btn');
-    fireEvent.click(deleteButtons[0]);
+        // Find all delete buttons in the rendered component
+        const deleteButtons = await screen.findAllByLabelText('delete-transaction-btn');
+        fireEvent.click(deleteButtons[0]);
 
-    // Wait for the deleteTransaction function to be called
-    await waitFor(() => {
-        expect(deleteTransaction).toHaveBeenCalled(); // Assert that the deleteTransaction function was invoked
-    });
-});
-
-
-it('renders the transaction details modal', async () => {
-    // Mock the retrieval of transactions by vendor to return a sample transaction
-    mockGetTransactionByVendor.mockResolvedValue([
-        {
-            transactionId: 1,                     
-            date: "2023-10-01",                   
-            vendorName: 'VendorName',              
-            category: 'Income' as TransactionCategory, 
-            amount: 100.0,                         
-            description: "Test Transaction",       
-            accountId: 1,                          
-            userId: 1,                            
-        },
-    ]);
-
-    render(
-        <MemoryRouter initialEntries={['/transactions']}>
-            <Routes>
-                <Route path="/transactions" element={<Transactions />} />
-            </Routes>
-        </MemoryRouter>
-    );
-
-    // Find all detail buttons in the rendered component (e.g., buttons to view more details about a transaction)
-    const detailsButtons = await screen.findAllByLabelText('transaction-arrow');
-    // Simulate a click on the first details button to open the details modal
-    fireEvent.click(detailsButtons[0]);
-
-    // Wait for the transaction detail information to be rendered in the modal
-    await waitFor(() => {
-        // Verify that all elements with the label 'transactionDetailedInfo' are in the document
-        screen.getAllByLabelText('transactionDetailedInfo').forEach(item => {
-            expect(item).toBeInTheDocument();
+        // Wait for the deleteTransaction function to be called
+        await waitFor(() => {
+            expect(deleteTransaction).toHaveBeenCalled(); // Assert that the deleteTransaction function was invoked
         });
     });
-});
+
+
+    it('renders the transaction details modal', async () => {
+        // Mock the retrieval of transactions by vendor to return a sample transaction
+        mockGetTransactionByVendor.mockResolvedValue([
+            {
+                transactionId: 1,
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
+                description: "Test Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+        ]);
+
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // Find all detail buttons in the rendered component (e.g., buttons to view more details about a transaction)
+        const detailsButtons = await screen.findAllByLabelText('transaction-arrow');
+        // Simulate a click on the first details button to open the details modal
+        fireEvent.click(detailsButtons[0]);
+
+        // Wait for the transaction detail information to be rendered in the modal
+        await waitFor(() => {
+            // Verify that all elements with the label 'transactionDetailedInfo' are in the document
+            screen.getAllByLabelText('transactionDetailedInfo').forEach(item => {
+                expect(item).toBeInTheDocument();
+            });
+        });
+    });
 
 
 });
