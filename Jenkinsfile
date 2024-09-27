@@ -273,13 +273,40 @@ pipeline {
                         withCredentials([string(credentialsId: 'CUCUMBER_TOKEN', variable: 'CUCUMBER_TOKEN')]) {
                             sh '''
                                 cd Budget-Buddy-Frontend-Testing/cucumber-selenium-tests
-                                mvn clean test -Dheadless=true -Dmaven.test.failure.ignore=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -DfrontendUrl=${STAGING_HOST}
+                                mvn clean test -Dheadless=true -Dcucumber.publish.token=${CUCUMBER_TOKEN} -DfrontendUrl=${STAGING_HOST}
                             '''
                         }
                     }
                 }
             }
         }
+
+    stage('Performance Tests for Staging') {
+        when {
+          branch 'testing-cohort-dev'
+        }
+        steps {
+          sh '''
+              TRIES_REMAINING=16
+
+              echo 'Waiting for frontend to be ready...'
+              while ! curl --output /dev/null --silent https://staging.frontend.skillstorm-congo.com/; do
+                  TRIES_REMAINING=$((TRIES_REMAINING - 1))
+                  if [ $TRIES_REMAINING -le 0 ]; then
+                      echo "***Frontend is ready***"
+                      exit 1
+                      fi
+                  done
+              '''
+          container("aws-kubectl") {
+              bzt "Budget-Buddy-PerformanceTests/0-stepping.yaml"
+              bzt "Budget-Buddy-PerformanceTests/1-stepping.yaml"
+              bzt "Budget-Buddy-PerformanceTests/2-stepping.yaml"
+              bzt "Budget-Buddy-PerformanceTests/3-stepping.yaml"
+              archiveArtifacts artifacts: '*/**.jtl', allowEmptyArchive: true
+          }
+        }
+      }
 
         // --- TESTING-COHORT DEPLOYMENT ---
 
@@ -343,11 +370,13 @@ def handleFailure() {
             // Reset staging S3
             if(env.BRANCH_NAME.equals('testing-cohort-dev')){
                 sh 'aws s3 sync s3-backup s3://budget-buddy-frontend-staging'
+                sh 'aws cloudfront create-invalidation --distribution-id E2QXLYSZ7XF3P4 --paths "/*"'
             }
 
             // Reset production S3
             if(env.BRANCH_NAME.equals('testing-cohort')){
                 sh 'aws s3 sync s3-backup s3://budget-buddy-frontend'
+                sh 'aws cloudfront create-invalidation --distribution-id E2D9Z4H1DJNT0K --paths "/*"'
             }
         }
     }
