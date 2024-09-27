@@ -245,7 +245,7 @@ function TransactionHistory() {
         <>
             <div className="min-w-screen min-h-screen flex flex-col gap-6">
                 <div className="flex justify-between items-center bg-transparent">
-                    <Title><Trans i18nKey={"transactions.history"} components={{ 1: <i id="vendorNameTitle" className="text-blue-700" /> }}  values={{ val: Name }} /></Title>
+                    <Title><Trans i18nKey={"transactions.history"} components={{ 1: <i id="vendorNameTitle" className="text-blue-700" /> }} values={{ val: Name }} /></Title>
                     <div className="flex gap-4 mt-4">
                         <Button
                             type="button"

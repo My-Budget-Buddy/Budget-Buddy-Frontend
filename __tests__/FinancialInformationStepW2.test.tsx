@@ -3,12 +3,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import FinancialInformationStepW2 from '../pages/Tax/FinancialInformationStepW2';
-import { otherIncome, setOtherIncomeInfo } from '../pages/Tax/otherIncomeSlice';
-import { getOtherIncomeAPI, updateTaxReturnAPI } from '../pages/Tax/taxesAPI';
-import { store } from '../util/redux/store';
+import FinancialInformationStepW2 from '../src/pages/Tax/FinancialInformationStepW2';
+import { otherIncome, setOtherIncomeInfo } from '../src/pages/Tax/otherIncomeSlice';
+import { getOtherIncomeAPI, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';
+import { store } from '../src/util/redux/store';
 
-import * as TaxesApi from '../pages/Tax/taxesAPI';
+import * as TaxesApi from '../src/pages/Tax/taxesAPI';
 
 
 
@@ -19,7 +19,7 @@ jest.mock('react-redux', () => ({
 }));
 
 // Mock the taxesAPI module
-jest.mock('../pages/Tax/taxesAPI', () => ({
+jest.mock('../src/pages/Tax/taxesAPI', () => ({
     getOtherIncomeAPI: jest.fn().mockResolvedValue({
         data: {
             longTermCapitalGains: 1000,
@@ -30,18 +30,18 @@ jest.mock('../pages/Tax/taxesAPI', () => ({
         }
     }),
     addOtherIncomeAPI: jest.fn().mockResolvedValue({
-        otherIncome:{
+        otherIncome: {
             oilongTermCapitalGains: 100,
-              oishortTermCapitalGains: 50,
-              oiotherInvestmentIncome: 20,
-              oinetBusinessIncome: 30,
-              oiadditionalIncome: 10
+            oishortTermCapitalGains: 50,
+            oiotherInvestmentIncome: 20,
+            oinetBusinessIncome: 30,
+            oiadditionalIncome: 10
         }
     }),
     updateTaxReturnAPI: jest.fn()
 }));
 
-jest.mock("../api/config", () => ({
+jest.mock("../src/api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
@@ -54,7 +54,7 @@ jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockReturnValue({})
 }));
 
-jest.mock('../pages/Tax/taxesAPI', () => ({
+jest.mock('../src/pages/Tax/taxesAPI', () => ({
     getOtherIncomeAPI: jest.fn().mockResolvedValue({
         data: {
             longTermCapitalGains: 1000,
@@ -114,5 +114,5 @@ describe('FinancialInformationStepW2', () => {
     });
 
 
-    
+
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import TaxResults from '../pages/Tax/TaxResults';
+import TaxResults from '../src/pages/Tax/TaxResults';
 import Cookies from 'js-cookie';
 
 // Mock the js-cookie library
@@ -10,23 +10,23 @@ jest.mock('js-cookie', () => ({
 }));
 
 // Mock the us-icon.svg
-jest.mock('../images/us-icon.svg', () => ({
+jest.mock('../src/images/us-icon.svg', () => ({
   UsIcon: () => <svg data-testid="us-icon" />
 }));
 
 // Mock the state-icon.svg
-jest.mock('../images/state-icon.svg', () => ({
+jest.mock('../src/images/state-icon.svg', () => ({
   StateIcon: () => <svg data-testid="state-icon" />
 }));
 
 // Mock the react-confetti library
 jest.mock('react-confetti', () => ({
-    __esModule: true,
-    default: ({ numberOfPieces }: { numberOfPieces: 200 }) => <div data-testid="confetti" data-number-of-pieces={numberOfPieces} />
-  }));
+  __esModule: true,
+  default: ({ numberOfPieces }: { numberOfPieces: 200 }) => <div data-testid="confetti" data-number-of-pieces={numberOfPieces} />
+}));
 
 // Mock the taxesAPI module
-jest.mock('../pages/Tax/taxesAPI', () => ({
+jest.mock('../src/pages/Tax/taxesAPI', () => ({
   getCurrentRefundAPI: jest.fn().mockResolvedValue({ data: { federalRefund: 1253, stateRefund: 283 } })
 }));
 
@@ -53,7 +53,7 @@ describe('TaxResults', () => {
     expect(totRefund).toBeInTheDocument();
   });
 
-  
+
 
   it('should render confetti with the correct number of pieces', async () => {
     await act(async () => {
