@@ -3,13 +3,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
-import WithholdingsAndMiscW2 from '../pages/Tax/WithholdingsAndMiscW2';
-import { RootState } from '../util/redux/store';
-import { setDeductionsInfo } from '../pages/Tax/deductionsSlice';
-import { SaveDeductionsByTaxReturn, getDeductionsByTaxReturn } from '../pages/Tax/taxesAPI';
+import WithholdingsAndMiscW2 from '../src/pages/Tax/WithholdingsAndMiscW2';
+import { RootState } from '../src/util/redux/store';
+import { setDeductionsInfo } from '../src/pages/Tax/deductionsSlice';
+import { SaveDeductionsByTaxReturn, getDeductionsByTaxReturn } from '../src/pages/Tax/taxesAPI';
 import '@testing-library/jest-dom/';
 
-jest.mock('../pages/Tax/taxesAPI', () => ({
+jest.mock('../src/pages/Tax/taxesAPI', () => ({
     getDeductionsByTaxReturn: jest.fn(),
     SaveDeductionsByTaxReturn: jest.fn(),
 }));
@@ -80,7 +80,7 @@ const initialState: RootState = {
     }
 };
 
-jest.mock("../api/config", () => ({
+jest.mock("../src/api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },

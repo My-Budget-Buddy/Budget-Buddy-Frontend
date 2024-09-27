@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent, within, act } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import TransactionHistory from '../pages/Transactions/TransactionHistory';
+import TransactionHistory from '../src/pages/Transactions/TransactionHistory';
 
 // Mock react-i18next
 jest.mock('react-i18next', () => ({
@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock transactionService functions
-jest.mock('../utils/transactionService', () => ({
+jest.mock('../src/utils/transactionService', () => ({
     getTransactionByVendor: jest.fn(),
     getAccountsByUserId: jest.fn(),
     updateTransaction: jest.fn(),
@@ -28,14 +28,14 @@ jest.mock('@mui/x-charts', () => ({
 }));
 
 // Mock CategoryIcon
-jest.mock('../components/CategoryIcon', () => ({
+jest.mock('../src/components/CategoryIcon', () => ({
     __esModule: true,
     default: ({ category }: { category: string }) => <div data-testid="mock-category-icon">{category}</div>,
     categoryColors: {},
 }));
 
 // Mock formatCurrency and formatDate functions
-jest.mock('../util/helpers', () => ({
+jest.mock('../src/util/helpers', () => ({
     formatCurrency: (amount: number | bigint) => {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -67,7 +67,7 @@ describe('TransactionHistory Component', () => {
             deleteTransaction,
             createTransaction,
             validateTransaction,
-        } = require('../utils/transactionService');
+        } = require('../src/utils/transactionService');
 
         getTransactionByVendor.mockResolvedValue([
             {
@@ -161,7 +161,7 @@ describe('TransactionHistory Component', () => {
 
         // Wait for data to be loaded
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         // Ensure transactions are displayed
@@ -194,7 +194,7 @@ describe('TransactionHistory Component', () => {
 
         // Wait for data to be loaded
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         // Get the date filter select element
@@ -301,7 +301,7 @@ describe('TransactionHistory Component', () => {
 
         // Wait for data to be loaded
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
 
@@ -337,7 +337,7 @@ describe('TransactionHistory Component', () => {
         );
 
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         const amountFilter = container.querySelector('#allAmountsDropDown') as HTMLSelectElement;
@@ -370,7 +370,7 @@ describe('TransactionHistory Component', () => {
         );
 
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         const sortByDropdown = container.querySelector('#sortByDropdown') as HTMLSelectElement;
@@ -394,7 +394,7 @@ describe('TransactionHistory Component', () => {
     });
 
     it('handles no accounts gracefully', async () => {
-        const { getAccountsByUserId } = require('../utils/transactionService');
+        const { getAccountsByUserId } = require('../src/utils/transactionService');
         getAccountsByUserId.mockResolvedValue([]);
 
         render(
@@ -412,7 +412,7 @@ describe('TransactionHistory Component', () => {
     });
 
     it('handles no transactions gracefully', async () => {
-        const { getTransactionByVendor } = require('../utils/transactionService');
+        const { getTransactionByVendor } = require('../src/utils/transactionService');
         getTransactionByVendor.mockResolvedValue([]);
 
         render(

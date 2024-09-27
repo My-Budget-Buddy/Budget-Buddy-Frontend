@@ -1,10 +1,10 @@
 import React from 'react';
-import SpendingMonth from '../pages/Spending/SpendingMonth';
+import SpendingMonth from '../src/pages/Spending/SpendingMonth';
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
-jest.mock("../api/config", () => ({
+jest.mock("../src/api/config", () => ({
   config: {
     apiUrl: "http://localhost:mock",
   },
@@ -13,7 +13,7 @@ jest.mock("../api/config", () => ({
 // mocks react-i18next 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
-      t: (key: string) => key,
+    t: (key: string) => key,
   }),
   Trans: ({ i18nKey }: { i18nKey: string }) => <>{i18nKey}</>,
 }));
@@ -42,18 +42,18 @@ jest.mock("@mui/x-charts/BarChart", () => ({
 }));
 
 // mocks transactionService function
-jest.mock("../utils/transactionService", () => ({
+jest.mock("../src/utils/transactionService", () => ({
   getTransactionByUserId: jest.fn()
 }));
 
 // Mock CategoryIcon
-jest.mock('../components/CategoryIcon', () => ({
+jest.mock('../src/components/CategoryIcon', () => ({
   __esModule: true,
   default: ({ category }: { category: string }) => <div data-testid="mock-category-icon">{category}</div>,
   categoryColors: {},
 }));
 
-jest.mock("../utils/transactionService", () => ({
+jest.mock("../src/utils/transactionService", () => ({
   getTransactionByUserId: jest.fn().mockResolvedValue([
     {
       accountId: 1,
@@ -117,38 +117,38 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-it('renders without crashing', async() => {
+it('renders without crashing', async () => {
   await waitFor(() => {
     expect(document.getElementById('spending-month-title')).toBeInTheDocument();
   });
 });
 
-it('renders back to spending button correctly', async() => { 
+it('renders back to spending button correctly', async () => {
   await waitFor(() => {
     expect(screen.getByText('spending.backToAnnualSpendingOverview')).toBeInTheDocument();
   });
 });
 
-it('renders month select correctly', async() => {
+it('renders month select correctly', async () => {
   await waitFor(() => {
     expect(document.getElementById('month-select')).toBeInTheDocument();
   });
 });
 
-it('renders spending month bar chart correctly', async() => {
+it('renders spending month bar chart correctly', async () => {
   await waitFor(() => {
     expect(document.getElementById('spending-month-bar-chart')).toBeInTheDocument();
   });
 });
 
-it('renders spending month pie chart correctly', async() => {
+it('renders spending month pie chart correctly', async () => {
 
   await waitFor(() => {
     expect(document.getElementById('spending-month-pie-chart')).toBeInTheDocument();
   });
 });
 
-it('renders no data message and button when spendingCategories.length === 0', async() => { 
+it('renders no data message and button when spendingCategories.length === 0', async () => {
   await waitFor(() => {
     expect(screen.getByText('spending.no-data')).toBeInTheDocument();
     expect(screen.getByText('transactions.add-transaction')).toBeInTheDocument();

@@ -1,5 +1,5 @@
 import React from 'react';
-import Spending from "../pages/Spending/Spending";
+import Spending from "../src/pages/Spending/Spending";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
@@ -33,13 +33,13 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-jest.mock("../api/config", () => ({
+jest.mock("../src/api/config", () => ({
   config: {
     apiUrl: "http://localhost:mock",
   },
 }));
 
-jest.mock("../utils/transactionService", () => ({
+jest.mock("../src/utils/transactionService", () => ({
   getTransactionByUserId: jest.fn().mockResolvedValue([
     {
       accountId: 1,
@@ -209,10 +209,10 @@ afterEach(() => {
 
 it('renders without crashing', () => {
   expect(screen.getByText('spending.title')).toBeInTheDocument();
-}); 
+});
 
 it('renders the spending cards correctly', async () => {
-  
+
   // Wait for the data to load and check if the cards are rendered
   await waitFor(() => {
     expect(screen.getByText('spending.spentThisWeek')).toBeInTheDocument();
@@ -221,9 +221,9 @@ it('renders the spending cards correctly', async () => {
   });
 
   // check if prices populate with correct values
-  expect(screen.getByTestId('price-0')).toHaveTextContent('$499.99'); 
-  expect(screen.getByTestId('price-1')).toHaveTextContent('$2,010.45'); 
-  expect(screen.getByTestId('price-2')).toHaveTextContent('23,121.19'); 
+  expect(screen.getByTestId('price-0')).toHaveTextContent('$499.99');
+  expect(screen.getByTestId('price-1')).toHaveTextContent('$2,010.45');
+  expect(screen.getByTestId('price-2')).toHaveTextContent('23,121.19');
 
   // check if cards populate with correct details
   expect(screen.getByTestId('details-0')).toHaveTextContent('spending.spentThisWeek');
@@ -232,10 +232,10 @@ it('renders the spending cards correctly', async () => {
 });
 
 it('renders the spending line chart correctly', async () => {
-    // Wait for the data to load and check if the chart is rendered
-    await waitFor(() => {
-      expect(screen.getByText('spending.graphTitle')).toBeInTheDocument();
-    });
+  // Wait for the data to load and check if the chart is rendered
+  await waitFor(() => {
+    expect(screen.getByText('spending.graphTitle')).toBeInTheDocument();
+  });
 });
 
 it('renders the See Current Month button correctly', async () => {

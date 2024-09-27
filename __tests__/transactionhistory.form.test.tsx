@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import TransactionHistory from '../pages/Transactions/TransactionHistory';
+import TransactionHistory from '../src/pages/Transactions/TransactionHistory';
 
 // Mock react-i18next
 jest.mock('react-i18next', () => ({
@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock transactionService functions
-jest.mock('../utils/transactionService', () => ({
+jest.mock('../src/utils/transactionService', () => ({
     getTransactionByVendor: jest.fn(),
     getAccountsByUserId: jest.fn(),
     updateTransaction: jest.fn(),
@@ -111,7 +111,7 @@ jest.mock('@trussworks/react-uswds', () => {
 });
 
 // Mock CategoryIcon
-jest.mock('../components/CategoryIcon', () => ({
+jest.mock('../src/components/CategoryIcon', () => ({
     __esModule: true,
     default: ({ category }: { category: string }) => <div data-testid="mock-category-icon">{category}</div>,
     categoryColors: {},
@@ -140,7 +140,7 @@ describe('TransactionHistory Component', () => {
             deleteTransaction,
             createTransaction,
             validateTransaction,
-        } = require('../utils/transactionService');
+        } = require('../src/utils/transactionService');
 
         // Initialize mockTransactions with initial data
         mockTransactions = [
@@ -236,7 +236,7 @@ describe('TransactionHistory Component', () => {
 
         // Wait for data to load
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
         });
 
         const addTransactionButton = container.querySelector('#addTransactionModal') as HTMLElement;
@@ -272,7 +272,7 @@ describe('TransactionHistory Component', () => {
             expect(screen.getByText('-$200.00')).toBeInTheDocument();
         });
 
-        const { createTransaction } = require('../utils/transactionService');
+        const { createTransaction } = require('../src/utils/transactionService');
         expect(createTransaction).toHaveBeenCalledWith({
             userId: 1,
             accountId: 1, // Assuming the first account is selected by default
@@ -292,7 +292,7 @@ describe('TransactionHistory Component', () => {
         );
 
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
         });
 
         // Simulate clicking Add Transaction button
@@ -304,7 +304,7 @@ describe('TransactionHistory Component', () => {
             expect(screen.getByRole('dialog')).toBeInTheDocument();
         });
 
-        const { createTransaction } = require('../utils/transactionService');
+        const { createTransaction } = require('../src/utils/transactionService');
         createTransaction.mockRejectedValue(new Error('Network Error'));
 
         // Mocking console.error
@@ -331,7 +331,7 @@ describe('TransactionHistory Component', () => {
         );
 
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
         });
 
         // Find the first edit button transactionId:3
@@ -359,7 +359,7 @@ describe('TransactionHistory Component', () => {
             expect(screen.getByText('transactions.history')).toBeInTheDocument();
         });
 
-        const { updateTransaction } = require('../utils/transactionService');
+        const { updateTransaction } = require('../src/utils/transactionService');
         expect(updateTransaction).toHaveBeenCalledWith({
             "accountId": -1,
             "amount": "-150",  // Expected: -150 STR
@@ -399,7 +399,7 @@ describe('TransactionHistory Component', () => {
             //expect(screen.queryByText('Test Transaction 3')).not.toBeInTheDocument();
         });
 
-        const { deleteTransaction } = require('../utils/transactionService');
+        const { deleteTransaction } = require('../src/utils/transactionService');
         expect(deleteTransaction).toHaveBeenCalledWith(3); // transactionId
         expect(deleteTransaction).toHaveBeenCalledTimes(1);
     });
@@ -412,7 +412,7 @@ describe('TransactionHistory Component', () => {
         );
 
         await waitFor(() => {
-            expect(require('../utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
+            expect(require('../src/utils/transactionService').getTransactionByVendor).toHaveBeenCalledWith('VendorName');
         });
 
         const addButton = screen.getByRole('button', { name: 'transactions.add-transaction' });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import ReviewSection from '../pages/Landing/ReviewSection';
+import ReviewSection from '../src/pages/Landing/ReviewSection';
 
 // Mock the Slider component from 'react-slick'
 // jest.mock('react-slick', () => {
