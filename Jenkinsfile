@@ -151,8 +151,10 @@ pipeline {
         // Pulls all dependencies from git.
         stage('Pull Dependencies'){
             steps{
-                sh 'git clone -b testing-cohort-dev https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git'
+                sh 'git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Frontend-Testing.git'
                 sh 'git clone https://github.com/My-Budget-Buddy/Budget-Buddy-Kubernetes.git'
+                sh 'git clone https://github.com/My-Budget-Buddy/Budget-Buddy-PerformanceTests.git'
+
             }
         }
 
