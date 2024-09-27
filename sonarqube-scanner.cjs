@@ -17,7 +17,7 @@ scanner(
         'sonar.sources': 'src',
         'sonar.exclusions': 'src/App.tsx,src/i18n.ts,src/main.tsx,src/vite-env.d.ts,src/api/**,src/api/config.ts,src/components/**,src/contexts/**,src/layouts/**,src/pages/Root.tsx,src/pages/Budgets/components/modals/**,src/pages/Budgets/components/requests/**,src/pages/Budgets/components/subComponents/**,src/pages/Budgets/components/util/**,src/pages/Tax/TaxesAPI.ts,src/routing/**,src/util/**',
         'sonar.tests': '__tests__',
-        'sonar.testExecutionReportPaths': 'test-report.xml',
+        // 'sonar.testExecutionReportPaths': 'test-report.xml',
         'sonar.javascript.lcov.reportPaths': 'coverage/lcov.info'
       },
     },
