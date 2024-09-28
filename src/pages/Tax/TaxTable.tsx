@@ -134,8 +134,8 @@ const DisplayTaxTables: React.FC = () => {
                     <td>{data.year}</td>
                     <td>
                       <div className="action-buttons">
-                        <Button type="button" onClick={() => redirectToEditView(data.id)} unstyled id="edit-button"><Icon.Edit /></Button>
-                        <Button type="button" onClick={() => handleDelete(data.id)} unstyled id = "delete-button"><Icon.Delete /></Button>
+                        <Button type="button" onClick={() => redirectToEditView(data.id)} unstyled id="edit-button"  aria-label='edit'><Icon.Edit /></Button>
+                        <Button type="button" onClick={() => handleDelete(data.id)} unstyled id = "delete-button"  aria-label='delete'><Icon.Delete /></Button>
                       </div>
                     </td>
                   </tr>

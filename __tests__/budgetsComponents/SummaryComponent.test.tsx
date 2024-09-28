@@ -3,8 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import SummaryComponent from '../../pages/Budgets/components/SummaryComponent';
-import { store } from '../../util/redux/store';
+import SummaryComponent from '../../src/pages/Budgets/components/SummaryComponent';
+import { store } from '../../src/util/redux/store';
 import { useTranslation } from 'react-i18next';
 import { MockStore } from 'redux-mock-store';
 
@@ -35,7 +35,7 @@ jest.mock("@mui/x-charts/Gauge", () => {
 });
 
 // Mock app selector and dispatch
-jest.mock('../../util/redux/hooks', () => ({
+jest.mock('../../src/util/redux/hooks', () => ({
     useAppSelector: jest.fn().mockImplementation((selector) => selector({
         budgets: {
             spendingBudget: 1000,
@@ -56,12 +56,12 @@ jest.mock('../../util/redux/hooks', () => ({
 }));
 
 // Mock currency formatting
-jest.mock('../../util/helpers', () => ({
+jest.mock('../../src/util/helpers', () => ({
     formatCurrency: (value: number) => `$${Number(value).toFixed(2)}`,
 }));
 
 // Mock summary requests
-jest.mock('../../pages/Budgets/components/requests/summaryRequests', () => ({
+jest.mock('../../src/pages/Budgets/components/requests/summaryRequests', () => ({
     getMonthlySummary: jest.fn().mockResolvedValue({
         summaryId: 1,
         totalBudgetAmount: 1000,
@@ -73,22 +73,22 @@ jest.mock('../../pages/Budgets/components/requests/summaryRequests', () => ({
 }));
 
 // Mock bucket requests
-jest.mock('../../pages/Budgets/components/requests/bucketRequests', () => ({
+jest.mock('../../src/pages/Budgets/components/requests/bucketRequests', () => ({
     getBuckets: jest.fn().mockResolvedValue([]),
 }));
 
 // Mock budget requests
-jest.mock('../../pages/Budgets/components/requests/budgetRequests', () => ({
+jest.mock('../../src/pages/Budgets/components/requests/budgetRequests', () => ({
     getBudgetsByMonthYear: jest.fn().mockResolvedValue([]),
 }));
 
 // Mock transactions calculator
-jest.mock('../../pages/Budgets/components/util/transactionsCalculator', () => ({
+jest.mock('../../src/pages/Budgets/components/util/transactionsCalculator', () => ({
     getCompleteBudgets: jest.fn().mockResolvedValue([]),
 }));
 
 // Mock account requests
-jest.mock('../../pages/Budgets/components/requests/accountRequests', () => ({
+jest.mock('../../src/pages/Budgets/components/requests/accountRequests', () => ({
     getTotalAvailableFunds: jest.fn().mockResolvedValue(1000),
 }));
 
@@ -104,7 +104,7 @@ const MockEditSpendingBudgetModal = ({ summaryId, totalBudgetAmount }: { summary
 
 
 // Use Jest to mock the EditSpendingBudgetModal component
-jest.mock('../../pages/Budgets/components/modals/EditSpendingBudgetModal', () => {
+jest.mock('../../src/pages/Budgets/components/modals/EditSpendingBudgetModal', () => {
     return {
         __esModule: true,
         default: (props: any) => <MockEditSpendingBudgetModal  {...props} />,
