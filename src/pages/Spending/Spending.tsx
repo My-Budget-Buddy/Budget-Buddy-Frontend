@@ -368,7 +368,7 @@ const Spending: React.FC = () => {
                                 <div className="flex-1 flex items-center">
                                     <div>
                                         <card.icon
-                                            className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`}
+                                            className={`text-white ${card.bgColor} rounded-xl p-[5px] text-4xl`} data-testid={`icon-${index}`}
                                         />
                                         <p className="text-bold pt-5 text-3xl" data-testid={`price-${index}`}>${card.price.toLocaleString()}</p>
                                         <p className="text-light pt-1 text-xl" data-testid={`details-${index}`}>{card.details}</p>
@@ -379,7 +379,7 @@ const Spending: React.FC = () => {
 
                                         className={`text-2xl font-light ${card.percentage >= 0 ? "text-green-500" : "text-red-500"
                                             }`}
-
+                                        data-testid={`percentage-${index}`}
                                     >
                                         {card.percentage >= 0 ? (
                                             <Icon.ArrowDropUp
