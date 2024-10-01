@@ -52,28 +52,6 @@ describe('TaxNav Component', () => {
     expect(screen.getByText('tax.refund-planning')).toBeInTheDocument();
   });
 
-  test('handles File Taxes button click', async () => {
-    (createTaxReturn as jest.Mock).mockResolvedValue({
-      data: { id: 123 },
-    });
-
-    render(<TaxNav />);
-
-    const fileTaxesButton = document.getElementById("file-taxes");
-
-    fireEvent.click(fileTaxesButton!);
-
-    await waitFor(() => {
-      expect(createTaxReturn).toHaveBeenCalledWith({
-        year: 2024,
-        userId: 1,
-      });
-      screen.findByText('tax.file-taxes');
-      expect(dispatchMock).toHaveBeenCalledWith(setTaxReturnInfo({ id: 123 }));
-      expect(navigateMock).toHaveBeenCalledWith('/dashboard/tax/123');
-    });
-  });
-
   // Rewrite after Document Checklist functionality is implemented
   test('handles Document Checklist button click', async () => {
 
@@ -125,6 +103,28 @@ describe('TaxNav Component', () => {
     });
   });
 
+  test('handles File Taxes button click', async () => {
+    (createTaxReturn as jest.Mock).mockResolvedValue({
+      data: { id: 123 },
+    });
+
+    render(<TaxNav />);
+
+    const fileTaxesButton = document.getElementById("file-taxes");
+
+    fireEvent.click(fileTaxesButton!);
+
+    await waitFor(() => {
+      expect(createTaxReturn).toHaveBeenCalledWith({
+        year: 2024,
+        userId: 1,
+      });
+      screen.findByText('tax.file-taxes');
+      expect(dispatchMock).toHaveBeenCalledWith(setTaxReturnInfo({ id: 123 }));
+      expect(navigateMock).toHaveBeenCalledWith('/dashboard/tax/123');
+    });
+  });
+
   test('handles error when creating tax return fails', async () => {
     const consoleSpy = jest.spyOn(console, 'log'); // Spy on console.log
     (createTaxReturn as jest.Mock).mockRejectedValue(new Error('Error'));
@@ -146,32 +146,5 @@ describe('TaxNav Component', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith("Error: Could not create new tax return");
     });
-  });
-
-  test('handles Estimate Refund button click', () => {
-    render(<TaxNav />);
-    const estimateRefundButton = screen.getByText('tax.estimate-refund').parentElement;
-    fireEvent.click(estimateRefundButton!);
-
-    // Add your custom logic for handling 'Estimate Refund' click here if needed
-    expect(estimateRefundButton).toBeInTheDocument();
-  });
-
-  test('handles Document Checklist button click', () => {
-    render(<TaxNav />);
-    const documentChecklistButton = screen.getByText('tax.document-checklist').parentElement;
-    fireEvent.click(documentChecklistButton!);
-
-    // Add your custom logic for handling 'Document Checklist' click here if needed
-    expect(documentChecklistButton).toBeInTheDocument();
-  });
-
-  test('handles Refund Planning button click', () => {
-    render(<TaxNav />);
-    const refundPlanningButton = screen.getByText('tax.refund-planning').parentElement;
-    fireEvent.click(refundPlanningButton!);
-
-    // Add your custom logic for handling 'Refund Planning' click here if needed
-    expect(refundPlanningButton).toBeInTheDocument();
   });
 });
