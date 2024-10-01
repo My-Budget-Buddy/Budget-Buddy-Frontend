@@ -20,14 +20,31 @@ jest.mock("../../src/api/config", () => ({
 }));
 
 const mockStore = configureStore([]);
+
+// Helper function to get month and year strings
+const getMonthYearStrings = (date: Date) => {
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth();
+    const monthString = monthNames[month];
+    const monthYear = `${year}-${String(month + 1).padStart(2, '0')}`;
+    return { monthString, monthYear, year, monthNames };
+};
+
+// Get current month/year strings
+const currentDate = new Date();
+const { monthString: currentMonthString, monthYear: currentMonthYear, year: currentYear, monthNames } = getMonthYearStrings(currentDate);
+
 const store = mockStore({
     simpleFormStatus: { isSending: false },
     budgets: {
-        monthYear: '2024-9',
-        selectedMonthString: 'September',
-        selectedYear: 2024,
+        monthYear: currentMonthYear,
+        selectedMonthString: currentMonthString,
+        selectedYear: currentYear,
         budgets: [],
-        months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        months: monthNames,
     },
 });
 
@@ -73,19 +90,28 @@ describe('BudgetsComponent', () => {
     });
 
     it('renders without crashing', () => {
-        expect(screen.getByText(/September 2024 Budget/i)).toBeInTheDocument();
+        expect(screen.getByText(new RegExp(`${currentMonthString} ${currentYear} Budget`, 'i'))).toBeInTheDocument();
     });
 
     it('dispatches updateSelectedDate when previous month button is clicked', () => {
-        fireEvent.click(screen.getByText(/August 2024/i));
+        const previousDate = new Date(currentDate);
+        previousDate.setMonth(currentDate.getUTCMonth() - 1);
+        const { monthString: previousMonthString, year: previousYear } = getMonthYearStrings(previousDate);
+
+        fireEvent.click(screen.getByText(new RegExp(`${previousMonthString} ${previousYear}`, 'i')));
         const actions = store.getActions();
-        expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: 7, selectedYear: 2024 }));
+        expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: previousDate.getUTCMonth(), selectedYear: previousYear }));
+
     });
 
     it('dispatches updateSelectedDate when next month button is clicked', () => {
-        fireEvent.click(screen.getByText(/October 2024/i));
+        const nextDate = new Date(currentDate);
+        nextDate.setMonth(currentDate.getUTCMonth() + 1);
+        const { monthString: nextMonthString, year: nextYear } = getMonthYearStrings(nextDate);
+
+        fireEvent.click(screen.getByText(new RegExp(`${nextMonthString} ${nextYear}`, 'i')));
         const actions = store.getActions();
-        expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: 9, selectedYear: 2024 }));
+        expect(actions).toContainEqual(updateSelectedDate({ selectedMonth: nextDate.getUTCMonth(), selectedYear: nextYear }));
     });
 
     test('renders no budgets message when budgets list is empty', () => {
