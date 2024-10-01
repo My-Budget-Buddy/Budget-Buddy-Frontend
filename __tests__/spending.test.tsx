@@ -109,21 +109,11 @@ const mockTransactions = [
     },
     {
         accountId: 1,
-        amount: 150.00,
-        category: "Dining",
-        date: lastWeek,
-        description: "Restaurant",
-        transactionId: 5,
-        userId: 1,
-        vendorName: "Steakhouse"
-    },
-    {
-        accountId: 1,
         amount: 2100.00,
         category: "Income",
         date: lastWeek,
         description: "Paycheck",
-        transactionId: 5,
+        transactionId: 6,
         userId: 1,
         vendorName: "Skillstorm"
     }, 
@@ -159,7 +149,7 @@ describe("Spending Cards", () => {
             expect(screen.getByTestId("price-0")).toHaveTextContent("$299.99"); // check if rendered with correct price
             expect(screen.getByTestId("details-0")).toHaveTextContent("spending.spentThisWeek"); // check if rendered with correct details
             expect(screen.getByTestId('icon-0')).toBeInTheDocument(); // check if icon is rendered
-            expect(screen.getByTestId('percentage-0')).toHaveTextContent("87.00%");
+            expect(screen.getByTestId('percentage-0')).toHaveTextContent("86.10%");
         });
     });
 
@@ -177,7 +167,7 @@ describe("Spending Cards", () => {
         await waitFor(() => {
             const totalSpent = screen.getAllByText("spending.totalSpent"); // there are two instances of this text
             expect(totalSpent[0]).toBeInTheDocument(); // grab the first instance in spending card
-            expect(screen.getByTestId("price-2")).toHaveTextContent("$2,607.99");
+            expect(screen.getByTestId("price-2")).toHaveTextContent("$2,457.99");
             expect(screen.getByTestId("details-2")).toHaveTextContent("spending.totalSpent");
             expect(screen.getByTestId('icon-2')).toBeInTheDocument();
             expect(screen.getByTestId('percentage-2')).toHaveTextContent("0.00%");
@@ -234,8 +224,13 @@ describe("Top Spending Categories", () => {
     it("should render the top spending categories correctly", async () => {
         await waitFor(() => {
             expect(document.getElementById("top-categories-purchases-vendors")).toBeInTheDocument();
+            expect(screen.getByTestId("top-category")).toBeInTheDocument();
+            expect(screen.getByTestId("Groceries-top")).toBeInTheDocument();
+            expect(screen.getByTestId("Shopping-0")).toBeInTheDocument();
+            expect(screen.getByTestId("Dining-1")).toBeInTheDocument();
+            expect(screen.getByTestId("top-three-purchases")).toBeInTheDocument();
+            expect(screen.getByTestId("top-vendors")).toBeInTheDocument();
         });
-            expect(screen.getByText("spending.topCategories")).toBeInTheDocument();
     });
 });
 

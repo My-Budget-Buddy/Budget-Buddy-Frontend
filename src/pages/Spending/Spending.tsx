@@ -507,7 +507,7 @@ const Spending: React.FC = () => {
 
                         <div id="top-categories-purchases-vendors" className="flex flex-col justify-center mt-3 gap-x-4 items-center flex-1 w-10/12 min-h-[30rem] sm:w-1/3 md:w-1/2 lg:w-full  ">
                             {/* Top Categories components */}
-                            <div className="w-full m-1 p-4 rounded-xl shadow-md border-[0.5px] border-l-8 border-gray-500 bg-white text-gray-800">
+                            <div className="w-full m-1 p-4 rounded-xl shadow-md border-[0.5px] border-l-8 border-gray-500 bg-white text-gray-800" data-testid="top-category">
                                 <p className="text-xl">
                                     {t("spending.topCategories")}{" "}
                                     <span className="font-bold text-2xl mx-2">{topThreePercentage}%</span>{" "}
@@ -523,6 +523,7 @@ const Spending: React.FC = () => {
                                         key={index}
                                         className="w-full m-2 p-7 rounded-xl shadow-md border-[1px] flex items-center"
                                         style={{ backgroundColor: category.color }}
+                                        data-testid={`${category.name}-top`}
                                     >
                                         <div className="flex flex-col items-start">
                                             <div className="flex items-center">
@@ -560,6 +561,7 @@ const Spending: React.FC = () => {
                                             key={index}
                                             className="flex-1 p-6 rounded-xl shadow-md border-[1px] flex"
                                             style={{ backgroundColor: category.color }}
+                                            data-testid={`${category.name}-${index}`}
                                         >
                                             <div className="flex-1 flex items-center justify-between">
                                                 <div>
@@ -581,7 +583,7 @@ const Spending: React.FC = () => {
 
                             <div className="flex flex-col md:flex-row justify-between w-full min-h-[30rem] gap-x-4 m-2">
                                 {/* Top Purchases Section */}
-                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-md border-[1px] w-full ">
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-2 rounded-xl shadow-md border-[1px] w-full" data-testid="top-three-purchases">
                                     <div className="flex flex-col gap-y-7 w-full">
                                         <h2 className="text-xl text-center">
                                             {" "}
@@ -612,7 +614,7 @@ const Spending: React.FC = () => {
                                 </div>
 
                                 {/* Most Popular Vendors Section */}
-                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]  ">
+                                <div className="flex flex-col justify-center items-center flex-1 p-4 m-3 w-full rounded-xl shadow-md border-[1px]" data-testid="top-vendors">
                                     <div className="flex items-center mb-4">
                                         <h2 className="text-2xl text-[#0A5CBA] mr-2">
                                             {" "}
