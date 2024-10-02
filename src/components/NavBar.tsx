@@ -100,7 +100,7 @@ const NavBar = () => {
                             )}
                             <p className="text-sm text-neutral-200">{`${profile.email}`}</p>
                         </div>
-                        <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled"><Icon.Settings className="text-[#d9e8f6]" /></ModalToggleButton>
+                        <ModalToggleButton modalRef={modalRef} opener className="usa-button--unstyled" id="toggle-settings-modal-button"><Icon.Settings className="text-[#d9e8f6]" /></ModalToggleButton>
                         <Modal
                             ref={modalRef}
                             id="settings-modal"
@@ -113,7 +113,7 @@ const NavBar = () => {
                                 <div className="flex flex-col">
                                     <ModalHeading className="mb-6">{t("nav.settings")}</ModalHeading>
                                     <div className="flex">
-                                        <ul className="usa-sidenav">
+                                        <ul className="usa-sidenav" data-testid="profile-modal-sidenav">
                                             {settingOptions.map((option, idx) => (
                                                 <li
                                                     key={idx}
@@ -121,7 +121,7 @@ const NavBar = () => {
                                                         }`}
                                                 >
                                                     <option.icon className="mr-2" fontSize={"small"} />
-                                                    <button onClick={() => setSideNav(`${option.title}`)} id="no-focus">
+                                                    <button onClick={() => setSideNav(`${option.title}`)} id="no-focus" data-testid={option.title.toLowerCase()}>
                                                         {option.title}
                                                     </button>
                                                 </li>
