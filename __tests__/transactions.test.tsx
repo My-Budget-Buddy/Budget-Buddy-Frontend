@@ -5,6 +5,8 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { createTransaction, deleteTransaction, getAccountsByUserId, getTransactionByUserId, getTransactionByVendor, updateTransaction, validateTransaction } from '../src/utils/transactionService';
 import { TransactionCategory } from '../src/types/models';
+import exp from 'constants';
+import TransactionHistory from '../src/pages/Transactions/TransactionHistory';
 
 // Mock the useTranslation hook and Trans component
 jest.mock('react-i18next', () => ({
@@ -32,6 +34,10 @@ jest.mock('focus-trap-react', () => {
     return ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
 });
 
+// mock BarChar
+jest.mock("@mui/x-charts", () => ({
+    BarChart: jest.fn().mockImplementation(({ children }) => children)
+}));
 
 // Mock CategoryIcon
 jest.mock('../src/components/CategoryIcon', () => ({
@@ -164,19 +170,80 @@ describe('Transactions', () => {
         expect(screen.getByLabelText('clearFilters')).toBeInTheDocument();
     });
 
+    it('clicks the clear filters button', async () => {
+        // Find the clear filters button and click it
+        const clearFiltersButton = screen.getByLabelText('clearFilters');
+        fireEvent.click(clearFiltersButton);
+
+        const categoryDropdown = screen.getByLabelText('allCategoriesDropDown') as HTMLSelectElement;
+        const accountDropdown = screen.getByLabelText('allAccountDropDown') as HTMLSelectElement;
+
+        // Wait for the clear filters button to be clicked
+        await waitFor(() => {
+            // Check that the clear filters button was clicked
+            expect(categoryDropdown.value).toBe('All Categories');
+            expect(accountDropdown.value).toBe('All Accounts');
+        });
+    });
+
     //renders the sort transactions button
     it('renders the sort transactions button', () => {
         expect(screen.getByLabelText('sortTransactions')).toBeInTheDocument();
     });
+        
 
     //renders the sort by direction button
     it('renders the sort direction button', () => {
         expect(screen.getByLabelText('sortDirection')).toBeInTheDocument();
     });
 
+
     //renders the add transaction modal button
     it('renders the add transaction modal button', () => {
         expect(screen.getByLabelText('addTransactionBtn')).toBeInTheDocument();
+    });
+
+
+    it('sorts transactions by amount and ascending', async () => {
+        // Find the sort transactions button and click it
+        const sortTransactionsButtons = screen.getAllByLabelText('sortTransactions');
+        const sortTransactionsButton = sortTransactionsButtons[0];
+        fireEvent.click(sortTransactionsButton);
+        fireEvent.change(sortTransactionsButton, { target: { value: 'amount' } });
+
+
+        // Find the sort direction dropdown and change its value
+        const sortDirectionDropdown = screen.getByLabelText('sortDirection');
+        fireEvent.change(sortDirectionDropdown, { target: { value: 'asc' } });
+        // Wait for the transactions to be sorted by amount
+        // Check that the transactions are sorted by amount
+        const amounts = await screen.findAllByText(/\$\d+\.\d{2}/);
+        expect(amounts[0]).toHaveTextContent('$500.00');
+        expect(amounts[1]).toHaveTextContent('$100.00');
+    });
+
+    it('sorts transactions by date', async () => {
+
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    {/* Define the /transactions route to render the Transactions component */}
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+        
+        // Find the sort transactions button and click it
+        const sortTransactionsButtons = screen.getAllByLabelText('sortTransactions');
+        const sortTransactionsButton = sortTransactionsButtons[0];
+        fireEvent.click(sortTransactionsButton);
+        fireEvent.change(sortTransactionsButton, { target: { value: 'date' } });
+
+        // Wait for the transactions to be sorted by date
+        // Check that the transactions are sorted by date
+        const dates = await screen.findAllByText(/[0-9]{4}-[0-9]{2}-[0-9]{2}/);
+        expect(dates[0]).toHaveTextContent('2023-10-01');
+        expect(dates[1]).toHaveTextContent('2022-08-05');
     });
 
 
@@ -711,7 +778,121 @@ describe('Transactions', () => {
             screen.getAllByLabelText('transactionDetailedInfo').forEach(item => {
                 expect(item).toBeInTheDocument();
             });
+            screen.getAllByLabelText('viewHistory').forEach(item => {
+                expect(item).toBeInTheDocument();
+            });
         });
+    });
+
+    it('clicks the view history button', async () => {
+        // Mock the retrieval of transactions by vendor to return a sample transaction
+        mockGetTransactionByVendor.mockResolvedValue([
+            {
+                transactionId: 1,
+                date: "2023-10-01",
+                vendorName: 'VendorName',
+                category: 'Income' as TransactionCategory,
+                amount: 100.0,
+                description: "Test Transaction",
+                accountId: 1,
+                userId: 1,
+            },
+        ]);
+
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // Find all detail buttons in the rendered component (e.g., buttons to view more details about a transaction)
+        const detailsButtons = await screen.findAllByLabelText('transaction-arrow');
+        // Simulate a click on the first details button to open the details modal
+        fireEvent.click(detailsButtons[0]);
+
+        // Wait for the transaction detail information to be rendered in the modal
+        await waitFor(() => {
+            // Verify that all elements with the label 'transactionDetailedInfo' are in the document
+            screen.getAllByLabelText('transactionDetailedInfo').forEach(item => {
+                expect(item).toBeInTheDocument();
+            });
+            screen.getAllByLabelText('viewHistory').forEach(item => {
+                expect(item).toBeInTheDocument();
+            });
+        });
+
+        // Find the view history button and click it
+        const viewHistoryButton = screen.getByLabelText('viewHistory');
+        fireEvent.click(viewHistoryButton);
+        return (
+            <MemoryRouter initialEntries={['/dashboard/transactions/VendorName']}>
+                <Routes>
+                    <Route path="/:first/:second/:name" element={<TransactionHistory/>} />
+                </Routes>
+            </MemoryRouter>
+        );
+    });
+
+    it('resets minDate and maxDate when dateFilter is not "date"', async () => {
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    {/* Define the /transactions route to render the Transactions component */}
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+    
+        // Find the allDatesDropDown and change its value to "date"
+        const allDatesDropDowns = screen.getAllByLabelText('allDatesDropDown');
+        const allDatesDropDown = allDatesDropDowns[0];
+        fireEvent.change(allDatesDropDown, { target: { value: 'date' } });
+    
+        // Check that the elements related to minDate and maxDate are in the document
+        // Wait for the date range inputs (Min Date and Max Date) to appear
+        const minDate = await screen.findByPlaceholderText('Min Date');
+        const maxDate = await screen.findByPlaceholderText('Max Date');
+        expect(minDate).toBeInTheDocument();
+        expect(maxDate).toBeInTheDocument();
+    
+        // Change the value of allDatesDropDown to "all"
+        fireEvent.change(allDatesDropDown, { target: { value: 'all' } });
+    
+        // Check that the elements related to minDate and maxDate are no longer in the document
+        expect(minDate).not.toBeInTheDocument();
+        expect(maxDate).not.toBeInTheDocument();
+    });
+
+    it('resets minAmount and maxAmount when amountFilter is not "amount"', async () => {
+        render(
+            <MemoryRouter initialEntries={['/transactions']}>
+                <Routes>
+                    {/* Define the /transactions route to render the Transactions component */}
+                    <Route path="/transactions" element={<Transactions />} />
+                </Routes>
+            </MemoryRouter>
+        );
+    
+        // Find the allAmountsDropDown and change its value to "amount"
+        const allAmountsDropDowns = screen.getAllByLabelText('allAmountsDropDown');
+        const allAmountsDropDown = allAmountsDropDowns[0];
+        fireEvent.change(allAmountsDropDown, { target: { value: 'amount' } });
+    
+        // Check that the elements related to minAmount and maxAmount are in the document
+        // Wait for the amount range inputs (Min Amount and Max Amount) to appear
+        const minAmount = await screen.findByPlaceholderText('Min Amount');
+        const maxAmount = await screen.findByPlaceholderText('Max Amount');
+        expect(minAmount).toBeInTheDocument();
+        expect(maxAmount).toBeInTheDocument();
+    
+        // Change the value of allAmountsDropDown to "all"
+        fireEvent.change(allAmountsDropDown, { target: { value: 'all' } });
+    
+        // Check that the elements related to minAmount and maxAmount are no longer in the document
+        expect(minAmount).not.toBeInTheDocument();
+        expect(maxAmount).not.toBeInTheDocument();
     });
 
 
