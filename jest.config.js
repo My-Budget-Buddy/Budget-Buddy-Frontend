@@ -19,7 +19,6 @@ export default {
     'src/vite-env.d.ts',
     'src/api/services',
     'src/api/config.ts',
-    'src/components',
     'src/contexts',
     'src/layouts',
     'src/pages/Root.tsx',
