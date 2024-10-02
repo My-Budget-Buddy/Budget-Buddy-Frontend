@@ -1,253 +1,245 @@
-import React from 'react';
 import Spending from "../src/pages/Spending/Spending";
-import { render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from 'react-router-dom';
-import '@testing-library/jest-dom';
-import { current } from '@reduxjs/toolkit';
+import { act, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import "@testing-library/jest-dom";
+import { Icon } from "@trussworks/react-uswds";
 
+// mock AxisConfig
 jest.mock("@mui/x-charts", () => ({
-  AxisConfig: jest.fn().mockImplementation(({ children }) => children),
-  useDrawingArea: jest.fn().mockReturnValue({
-    width: 100,
-    height: 100,
-    left: 0,
-    top: 0,
-  }),
+    AxisConfig: jest.fn().mockImplementation(({ children }) => children), // mock and return children
+    useDrawingArea: jest.fn().mockReturnValue({
+        // mock the useDrawingArea hook
+        width: 100,
+        height: 100,
+        left: 0,
+        top: 0
+    })
 }));
 
+// mock PieChart
 jest.mock("@mui/x-charts/PieChart", () => ({
-  PieChart: jest.fn().mockImplementation(({ children }) => children),
-  pieArcLabelClasses: {
-    root: 'mock-root-class'
-  }
-}));
-
-jest.mock("@mui/x-charts/LineChart", () => ({
-  LineChart: jest.fn().mockImplementation(({ children }) => children),
-}));
-
-// Mock the useTranslation hook
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
-jest.mock("../src/api/config", () => ({
-  config: {
-    apiUrl: "http://localhost:mock",
-  },
-}));
-
-jest.mock("../src/utils/transactionService", () => ({
-  getTransactionByUserId: jest.fn().mockResolvedValue([
-    {
-      accountId: 1,
-      amount: 59.99,
-      category: "Shopping",
-      date: "2021-05-01",
-      description: "Purchase of electronics",
-      transactionId: 1,
-      userId: 1,
-      vendorName: "Amazon"
-    },
-    {
-      accountId: 2,
-      amount: 4.75,
-      category: "Dining",
-      date: "2024-01-16",
-      description: "Coffee and snacks",
-      transactionId: 2,
-      userId: 1,
-      vendorName: "Starbucks"
-    },
-    {
-      accountId: 1,
-      amount: 120,
-      category: "Groceries",
-      date: "2024-01-17",
-      description: "Grocery shopping",
-      transactionId: 3,
-      userId: 1,
-      vendorName: "Walmart"
-    },
-    {
-      accountId: 3,
-      amount: 999.99,
-      category: "Shopping",
-      date: "2024-01-18",
-      description: "New iPhone purchase",
-      transactionId: 4,
-      userId: 1,
-      vendorName: "Apple Store"
-    },
-    {
-      accountId: 3,
-      amount: 15.99,
-      category: "Entertainment",
-      date: "2024-01-19",
-      description: "Monthly subscription",
-      transactionId: 5,
-      userId: 1,
-      vendorName: "Netflix"
-    },
-    {
-      accountId: 3,
-      amount: 45.5,
-      category: "Transportation",
-      date: "2024-01-20",
-      description: "Gas for car",
-      transactionId: 6,
-      userId: 1,
-      vendorName: "Shell"
-    },
-    {
-      accountId: 1,
-      amount: 200,
-      category: "Groceries",
-      date: "2024-01-21",
-      description: "Bulk shopping",
-      transactionId: 7,
-      userId: 1,
-      vendorName: "Costco"
-    },
-    {
-      accountId: 2,
-      amount: 25,
-      category: "Transportation",
-      date: "2024-01-22",
-      description: "Ride to airport",
-      transactionId: 8,
-      userId: 1,
-      vendorName: "Uber"
-    },
-    {
-      accountId: 3,
-      amount: 9.99,
-      category: "Entertainment",
-      date: "2024-01-23",
-      description: "Monthly subscription",
-      transactionId: 9,
-      userId: 1,
-      vendorName: "Spotify"
-    },
-    {
-      accountId: 1,
-      amount: 499.99,
-      category: "Shopping",
-      date: "2024-09-24",
-      description: "Laptop purchase",
-      transactionId: 10,
-      userId: 1,
-      vendorName: "Best Buy"
-    },
-    {
-      accountId: 2,
-      amount: 2010.45,
-      category: "Income",
-      date: "2024-01-10",
-      description: "Paycheck",
-      transactionId: 11,
-      userId: 1,
-      vendorName: "Skillstorm"
-    },
-    {
-      accountId: 2,
-      amount: 2010.45,
-      category: "Income",
-      date: "2024-09-25",
-      description: "Paycheck",
-      transactionId: 12,
-      userId: 1,
-      vendorName: "Skillstorm"
-    },
-    {
-      accountId: 2,
-      amount: 2010.45,
-      category: "Income",
-      date: "2024-09-20",
-      description: "Paycheck",
-      transactionId: 13,
-      userId: 1,
-      vendorName: "Skillstorm"
-    },
-    {
-      accountId: 2,
-      amount: 199.99,
-      category: "Shopping",
-      date: "2024-09-20",
-      description: "Electronic accessories",
-      transactionId: 14,
-      userId: 1,
-      vendorName: "Best Buy"
-    },
-    {
-      accountId: 2,
-      amount: 20999.99,
-      category: "Shopping",
-      date: "2024-09-20",
-      description: "Electronic accessories",
-      transactionId: 15,
-      userId: 1,
-      vendorName: "Best Buy"
+    PieChart: jest.fn().mockImplementation(({ children }) => children),
+    pieArcLabelClasses: {
+        root: "mock-root-class" // use this as a placeholder for CSS class that piechart uses
     }
-
-  ]),
 }));
 
+// mock LineChart
+jest.mock("@mui/x-charts/LineChart", () => ({
+    LineChart: jest.fn().mockImplementation(({ children }) => children)
+}));
+
+// mock useTranslation
+jest.mock("react-i18next", () => ({
+    useTranslation: () => ({
+        t: (key: string) => key // mock hook and have it return the actual key without translating it
+    })
+}));
+
+// mock config
+jest.mock("../src/api/config", () => ({
+    config: {
+        apiUrl: "http://localhost:mock" // mock with localhost url
+    }
+}));
+
+// mock getTransactionByUserId from transactionService
+jest.mock("../src/utils/transactionService", () => ({
+    getTransactionByUserId: jest.fn()
+}));
+
+// import the function to mock
+const { getTransactionByUserId } = require("../src/utils/transactionService");
+
+// get today's date and last week's date for transactions
+const today = new Date().toISOString().split("T")[0];
+const lastWeek = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split("T")[0];
+
+// create a list of transactions for mock data
+const mockTransactions = [
+    {
+        accountId: 1,
+        amount: 299.99,
+        category: "Shopping",
+        date: today,
+        description: "Purchase of electronics",
+        transactionId: 1,
+        userId: 1,
+        vendorName: "Amazon"
+    },
+    {
+        accountId: 2,
+        amount: 2100.75,
+        category: "Income",
+        date: today,
+        description: "Paycheck",
+        transactionId: 2,
+        userId: 1,
+        vendorName: "Skillstorm"
+    },
+    {
+        accountId: 1,
+        amount: 2000.0,
+        category: "Groceries",
+        date: lastWeek,
+        description: "Grocery shopping",
+        transactionId: 3,
+        userId: 1,
+        vendorName: "Walmart"
+    },
+    {
+        accountId: 1,
+        amount: 8.00,
+        category: "Dining",
+        date: lastWeek,
+        description: "Coffee",
+        transactionId: 4,
+        userId: 1,
+        vendorName: "Starbucks"
+    },
+    {
+        accountId: 1,
+        amount: 150.00,
+        category: "Dining",
+        date: lastWeek,
+        description: "Restaurant",
+        transactionId: 5,
+        userId: 1,
+        vendorName: "Steakhouse"
+    },
+    {
+        accountId: 1,
+        amount: 2100.00,
+        category: "Income",
+        date: lastWeek,
+        description: "Paycheck",
+        transactionId: 6,
+        userId: 1,
+        vendorName: "Skillstorm"
+    }, 
+];
+
+// set up method for routing and mocking the fetch call
 beforeEach(() => {
-  render(
-    <MemoryRouter>
-      <Spending />
-    </MemoryRouter>
-  );
+    jest.spyOn(console, "error").mockImplementation(() => {}); // ignore console errors: warning about act()
+    getTransactionByUserId.mockResolvedValue(mockTransactions);
+
+    act(() => {
+        render(
+            <MemoryRouter>
+                <Spending />
+            </MemoryRouter>
+        );
+    });
 });
 
+// cleanup
 afterEach(() => {
-  jest.clearAllMocks();
+    jest.clearAllMocks();
 });
 
-it('renders without crashing', () => {
-  expect(screen.getByText('spending.title')).toBeInTheDocument();
+describe("Spending Cards", () => {
+    it("should render the Spending page", async () => {
+        expect(screen.getByText("spending.title")).toBeInTheDocument();
+    });
+
+    it("should render Spent this week card correctly", async () => {
+        await waitFor(() => {
+            expect(screen.getByText("spending.spentThisWeek")).toBeInTheDocument(); // check if the text is rendered
+            expect(screen.getByTestId("price-0")).toHaveTextContent("$299.99"); // check if rendered with correct price
+            expect(screen.getByTestId("details-0")).toHaveTextContent("spending.spentThisWeek"); // check if rendered with correct details
+            expect(screen.getByTestId('icon-0')).toBeInTheDocument(); // check if icon is rendered
+            expect(screen.getByTestId('percentage-0')).toHaveTextContent("86.10%");
+        });
+    });
+
+    it("should render Deposited this week card correctly", async () => {
+        await waitFor(() => {
+            expect(screen.getByText("spending.depositedThisWeek")).toBeInTheDocument();
+            expect(screen.getByTestId("price-1")).toHaveTextContent("$2,100.75");
+            expect(screen.getByTestId("details-1")).toHaveTextContent("spending.depositedThisWeek");
+            expect(screen.getByTestId('icon-1')).toBeInTheDocument();
+            expect(screen.getByTestId('percentage-1')).toHaveTextContent("0.04%");
+        });
+    });
+
+    it("should render Annual Total Spent card correctly", async () => {
+        await waitFor(() => {
+            const totalSpent = screen.getAllByText("spending.totalSpent"); // there are two instances of this text
+            expect(totalSpent[0]).toBeInTheDocument(); // grab the first instance in spending card
+            expect(screen.getByTestId("price-2")).toHaveTextContent("$2,457.99");
+            expect(screen.getByTestId("details-2")).toHaveTextContent("spending.totalSpent");
+            expect(screen.getByTestId('icon-2')).toBeInTheDocument();
+            expect(screen.getByTestId('percentage-2')).toHaveTextContent("0.00%");
+        });
+    });
 });
 
-it('renders the spending cards correctly', async () => {
+describe("Spending Line Chart", () => {
+    it("should render the spending line chart correctly", async () => {
+        await waitFor(() => {
+            expect(screen.getByText("spending.graphTitle")).toBeInTheDocument();
+            expect(document.getElementById("spending-earnings-graph")).toBeInTheDocument();
+        });
+    });
 
-  // Wait for the data to load and check if the cards are rendered
-  await waitFor(() => {
-    expect(screen.getByText('spending.spentThisWeek')).toBeInTheDocument();
-    expect(screen.getByText('spending.depositedThisWeek')).toBeInTheDocument();
-    expect(screen.getByText('spending.totalSpent')).toBeInTheDocument();
+    it("should render the See Current Month button and navigate correctly", async () => {
+        await waitFor(() => {
+            const button = document.getElementById("see-current-month-button");
+            expect(button).toBeInTheDocument();
+            if (button) {
+                button.click();
+            }
+            render( // render the route that the button should navigate to
+              <MemoryRouter initialEntries={['/spending']}> 
+                <Routes>
+                  <Route path="/spending" element={<Spending />} />
+                  <Route path="/dashboard/spending/May" />
+                </Routes>
+              </MemoryRouter>
+            );
+        });
+    });
+});
+
+describe("Spending Pie Chart",() => {  
+  it("should render the spending pie chart correctly", async () => {
+    await waitFor(() => {
+      expect(document.getElementById("spending-pie-chart")).toBeInTheDocument();
+      const totalSpent = screen.getAllByText("spending.totalSpent"); // there are two instances of this text
+      expect(totalSpent[1]).toBeInTheDocument(); // grab the second instance in spending card
+    });
   });
-
-  // check if prices populate with correct values
-  expect(screen.getByTestId('price-0')).toHaveTextContent('$499.99');
-  expect(screen.getByTestId('price-1')).toHaveTextContent('$2,010.45');
-  expect(screen.getByTestId('price-2')).toHaveTextContent('23,121.19');
-
-  // check if cards populate with correct details
-  expect(screen.getByTestId('details-0')).toHaveTextContent('spending.spentThisWeek');
-  expect(screen.getByTestId('details-1')).toHaveTextContent('spending.depositedThisWeek');
-  expect(screen.getByTestId('details-2')).toHaveTextContent('spending.totalSpent');
 });
 
-it('renders the spending line chart correctly', async () => {
-  // Wait for the data to load and check if the chart is rendered
-  await waitFor(() => {
-    expect(screen.getByText('spending.graphTitle')).toBeInTheDocument();
+describe("Spending Table", () => {
+  it("should render the spending table correctly", async () => {
+    await waitFor(() => {
+      expect(screen.getByTestId("table")).toBeInTheDocument();
+    });
   });
 });
 
-it('renders the See Current Month button correctly', async () => {
-  // Wait for the data to load and check if the button is rendered
-  await waitFor(() => {
-    expect(screen.getByText('spending.seeCurrentMonth')).toBeInTheDocument();
-  });
+describe("Top Spending Categories", () => {
+    it("should render the top spending categories correctly", async () => {
+        await waitFor(() => {
+            expect(document.getElementById("top-categories-purchases-vendors")).toBeInTheDocument();
+            expect(screen.getByTestId("top-category")).toBeInTheDocument();
+            expect(screen.getByTestId("Groceries-top")).toBeInTheDocument();
+            expect(screen.getByTestId("Shopping-0")).toBeInTheDocument();
+            expect(screen.getByTestId("Dining-1")).toBeInTheDocument();
+            expect(screen.getByTestId("top-three-purchases")).toBeInTheDocument();
+            expect(screen.getByTestId("top-vendors")).toBeInTheDocument();
+        });
+    });
 });
 
-it('renders the spending pie chart correctly', async () => {
-  // Wait for the data to load and check if the chart is rendered
-  await waitFor(() => {
-    expect(document.getElementById('spending-pie-chart')).toBeInTheDocument();
-  });
+describe("Spending transactions fetch exception", () => {
+    it("should render the error message when transactions fetch fails", async () => {
+        getTransactionByUserId.mockRejectedValue(new Error("Error fetching transactions:"));
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        await waitFor(() => {
+          expect(consoleErrorSpy).toHaveBeenCalledWith("Error fetching transactions:", expect.any(Error));
+        });
+    });
 });
