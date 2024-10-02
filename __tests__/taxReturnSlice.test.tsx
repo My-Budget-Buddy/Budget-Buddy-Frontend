@@ -1,4 +1,4 @@
-import taxReturnSlice, { setTaxReturnInfo, setAllTaxReturns, resetTaxReturnInfo, taxReturn, TaxReturnState } from "../src/pages/Tax/TaxReturnSlice";
+import taxReturnSlice, { setTaxReturnInfo, setAllTaxReturns, resetTaxReturnInfo, TaxReturnState } from "../src/pages/Tax/TaxReturnSlice";
 
 const initialState: TaxReturnState = {
     taxReturn: {
