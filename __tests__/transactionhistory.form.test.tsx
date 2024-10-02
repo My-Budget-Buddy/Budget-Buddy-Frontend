@@ -273,6 +273,8 @@ describe('TransactionHistory Component', () => {
         });
 
         const { createTransaction } = require('../src/utils/transactionService');
+        const date = new Date();
+        const formattedDate = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
         expect(createTransaction).toHaveBeenCalledWith({
             userId: 1,
             accountId: 1, // Assuming the first account is selected by default
@@ -280,7 +282,7 @@ describe('TransactionHistory Component', () => {
             amount: "-200",
             category: 'Groceries',
             description: 'Test Transaction',
-            date: "2024-09-" + new Date().getUTCDate(),
+            date: formattedDate,
         });
     });
 
