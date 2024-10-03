@@ -46,7 +46,7 @@ jest.mock('../src/components/CategoryIcon', () => ({
 }));
 
 // Mock formatCurrency and formatDate functions
-jest.mock('../src/utils/helpers', () => ({
+jest.mock('../src/util/helpers', () => ({
     formatCurrency: (amount: number | bigint) => {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
