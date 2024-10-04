@@ -121,9 +121,9 @@ const WwStep: React.FC = () => {
                         </thead>
                         <tbody>
                             {W2s.map(item => (
-                                <tr key={item.w2id}>
-                                    <td>{item.w2state}</td>
-                                    <td>{item.w2employer}</td>
+                                <tr key={item.w2id} data-testid={`w2-id-${item.w2id}`}>
+                                    <td data-testid={`w2-state-${item.w2id}`}>{item.w2state}</td>
+                                    <td data-testid={`w2-employer-${item.w2id}`}>{item.w2employer}</td>
                                     <td>
                                         <Button type="button" onClick={() => handleEditClick(item)} id="w2-edit-button">Edit</Button>
                                         <Button type="button" secondary onClick={() => handleDeleteClick(item.w2id)} id="w2-delete-button">Delete</Button>
