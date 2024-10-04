@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useTranslation } from 'react-i18next';
 import { useAuthentication } from '../src/contexts/AuthenticationContext';
-import NavBar from '../src/components/NavBar';
+import NavBar from '../src/components/navigation/AppNavSidebar';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // Mock dependencies

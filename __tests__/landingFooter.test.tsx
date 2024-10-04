@@ -1,5 +1,5 @@
 import { screen, render, waitFor } from "@testing-library/react";
-import LandingFooter from "../src/components/LandingFooter";
+import LandingFooter from "../src/components/navigation/LandingFooter";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 

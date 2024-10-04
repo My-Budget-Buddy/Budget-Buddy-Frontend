@@ -1,5 +1,5 @@
 import exp from "constants";
-import deductionsSlice, { deductions, setDeductionsInfo, resetDeductionsInfo } from "../src/pages/Tax/deductionsSlice";
+import deductionsSlice, { deductions, setDeductionsInfo, resetDeductionsInfo } from "../src/utils/redux/deductionsSlice";
 
 const initialState: deductions = {
     dedid: 0,
