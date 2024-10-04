@@ -5,10 +5,10 @@ import budgetReducer from "./budgetSlice";
 import formSubmissionReducer from "./formSubmissionStateSlice";
 import simpleSubmissionReducer from "./simpleSubmissionSlice";
 import userReducer from "./userSlice";
-import w2Reducer from "../../pages/Tax/W2Slice";
-import taxReturnReducer from "../../pages/Tax/TaxReturnSlice";
-import otherIncomeReducer from "../../pages/Tax/otherIncomeSlice";
-import deductionsReducer from "../../pages/Tax/deductionsSlice";
+import w2Reducer from "./W2Slice";
+import taxReturnReducer from "./TaxReturnSlice";
+import otherIncomeReducer from "./otherIncomeSlice";
+import deductionsReducer from "./deductionsSlice";
 
 export const store = configureStore({
     reducer: {
