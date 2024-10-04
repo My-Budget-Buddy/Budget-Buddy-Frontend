@@ -2,17 +2,17 @@ import { LineChart, Gauge, gaugeClasses } from "@mui/x-charts";
 import { Accordion, Table, Icon, Button, ModalToggleButton, Modal, ModalRef, Title } from "@trussworks/react-uswds";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { formatCurrency, formatDate } from "../../util/helpers";
+import { formatCurrency, formatDate } from "../utils/helpers";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
-import { BudgetRowProps } from "../../types/budgetInterfaces";
-import { updateBudgets } from "../../util/redux/budgetSlice";
-import { getBudgetsByMonthYear } from "../Budgets/components/requests/budgetRequests";
-import { getCompleteBudgets } from "../Budgets/components/util/transactionsCalculator";
+import { BudgetRowProps } from "../types/budgetInterfaces";
+import { updateBudgets } from "../utils/redux/budgetSlice";
+import { getBudgetsByMonthYear } from "../api/requests/budgetRequests";
+import { getCompleteBudgets } from "../utils/transactionsCalculator";
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
-import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "../Tax/taxesAPI";
-import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "./Tax/taxesAPI";
+import { useAuthentication } from "../contexts/AuthenticationContext";
 
 interface InitialAccountType {
     id: number;
@@ -379,7 +379,7 @@ const Dashboard: React.FC = () => {
                                             <ModalToggleButton
                                                 modalRef={modalRef}
                                                 opener
-                                                id = "btnTransactionArrow"
+                                                id="btnTransactionArrow"
                                                 className="usa-button--unstyled"
                                                 onClick={() => setCurrentTransaction(recentTransactions[idx])}
                                             >
@@ -436,7 +436,7 @@ const Dashboard: React.FC = () => {
                                 className="grid-row flex-justify border-b border-black p-3 w-full"
                             >
                                 <p>{budget.category}</p>
-                                <p> 
+                                <p>
                                     <span className={`${budget.spentAmount > budget.totalAmount ? "text-[#b50909] font-bold" : (budget.spentAmount > budget.totalAmount / 2 ? "text-[#e5a000]" : "text-[#00a91c]")}`}>{formatCurrency(budget.spentAmount)}</span> <span className={`${budget.spentAmount >= budget.totalAmount && budget.totalAmount && "text-[#b50909] font-bold"}`}>/ {formatCurrency(budget.totalAmount)}</span>
                                 </p>
                             </div>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
-import { setAuthenticated } from "../util/redux/authSlice";
+import { setAuthenticated } from "../utils/redux/authSlice";
 import Cookies from "js-cookie";
 
 import { URL_validateJwt } from "../api/services/AuthService";

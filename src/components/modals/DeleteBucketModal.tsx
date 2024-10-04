@@ -9,9 +9,9 @@ import {
     ModalToggleButton
 } from "@trussworks/react-uswds";
 import { useRef } from "react";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { deleteBucket } from "../requests/bucketRequests";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { deleteBucket } from "../../api/requests/bucketRequests";
 import { useTranslation } from "react-i18next";
 
 interface TODO_CategoryProps {

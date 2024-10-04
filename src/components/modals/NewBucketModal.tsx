@@ -9,10 +9,10 @@ import {
     TextInput
 } from "@trussworks/react-uswds";
 import React, { useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { postBucket } from "../requests/bucketRequests";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
+import { SavingsBucketRowProps } from "../../types/budgetInterfaces";
+import { postBucket } from "../../api/requests/bucketRequests";
 import { useTranslation } from "react-i18next";
 
 interface NewBucketModalProps {

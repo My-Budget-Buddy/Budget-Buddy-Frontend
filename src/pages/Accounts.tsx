@@ -1,19 +1,18 @@
-import type { Account } from "../../types/models";
+import type { Account } from "../types/models";
 
-import AccountModal from "./AccountModal";
-import CreditScoreModal from "./CreditScoreModal";
-
+import AccountModal from "../components/modals/AccountModal"
+import CreditScoreModal from "../components/modals/CreditScoreModal";
 import { useTranslation } from "react-i18next";
-import { formatCurrency } from "../../util/helpers";
+import { formatCurrency } from "../utils/helpers";
 import { useEffect, useMemo, useState } from "react";
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
-import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { useAuthentication } from "../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
-import { deleteAccountAPI } from "../Tax/taxesAPI";
+import { deleteAccountAPI } from "./Tax/taxesAPI";
 
-import { URL_getAccountsByUserId } from "../../api/services/AccountService";
+import { URL_getAccountsByUserId } from "../api/services/AccountService";
 
 const Accounts: React.FC = () => {
     const { t } = useTranslation();
@@ -125,7 +124,7 @@ const Accounts: React.FC = () => {
                         />
                     ) : (
                         <Gauge
-                            id= "netCash-gauge"
+                            id="netCash-gauge"
                             width={500}
                             height={200}
                             value={-netCash}

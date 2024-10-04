@@ -11,10 +11,10 @@ import {
     Button
 } from "@trussworks/react-uswds";
 import { useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
 import { useTranslation } from "react-i18next";
-import { updateMonthlySummary } from "../requests/summaryRequests";
+import { updateMonthlySummary } from "../../api/requests/summaryRequests";
 
 interface MonthlySummary {
     summaryId: number;

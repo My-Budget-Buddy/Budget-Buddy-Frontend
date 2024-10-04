@@ -1,12 +1,12 @@
 import { Checkbox } from "@trussworks/react-uswds";
-import EditBucketModal from "../modals/EditBucketModal";
+import EditBucketModal from "./modals/EditBucketModal";
 import { useEffect, useRef, useState } from "react";
 import ReservedMoniesInput from "./ReservedMoniesInput";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import DeleteBucketModal from "../modals/DeleteBucketModal";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { putBucket } from "../requests/bucketRequests";
+import { useAppDispatch, useAppSelector } from "../utils/redux/hooks";
+import DeleteBucketModal from "./modals/DeleteBucketModal";
+import { setIsSending } from "../utils/redux/simpleSubmissionSlice";
+import { SavingsBucketRowProps } from "../types/budgetInterfaces";
+import { putBucket } from "../api/requests/bucketRequests";
 import { useTranslation } from "react-i18next";
 
 const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
@@ -107,8 +107,8 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
                         initialized
                             ? handleReservedChange
                             : () => {
-                                  console.log("Initialized");
-                              }
+                                console.log("Initialized");
+                            }
                     }
                     disabled={isSending}
                 />

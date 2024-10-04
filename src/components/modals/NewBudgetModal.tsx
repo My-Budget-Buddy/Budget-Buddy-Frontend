@@ -15,11 +15,11 @@ import {
     Textarea
 } from "@trussworks/react-uswds";
 import { useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { BudgetRowProps } from "../../../../types/budgetInterfaces";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { createBudget } from "../requests/budgetRequests";
-import { TransactionCategory } from "../../../../types/models";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
+import { createBudget } from "../../api/requests/budgetRequests";
+import { TransactionCategory } from "../../types/models";
 import { useTranslation } from "react-i18next";
 
 const NewCategoryModal: React.FC = () => {

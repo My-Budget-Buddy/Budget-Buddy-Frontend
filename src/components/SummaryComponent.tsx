@@ -1,19 +1,19 @@
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 import { useEffect, useState } from "react";
 import EditSpendingBudgetModal from "./modals/EditSpendingBudgetModal";
-import { useAppSelector } from "../../../util/redux/hooks";
-import { updateBudgets, updateSpendingBudget } from "../../../util/redux/budgetSlice";
+import { useAppSelector } from "../utils/redux/hooks";
+import { updateBudgets, updateSpendingBudget } from "../utils/redux/budgetSlice";
 import { useDispatch } from "react-redux";
-import { createMonthlySummary, getMonthlySummary } from "./requests/summaryRequests";
-import { BudgetRowProps } from "../../../types/budgetInterfaces";
-import { updateBuckets } from "../../../util/redux/bucketSlice";
-import { getBuckets } from "./requests/bucketRequests";
-import { getBudgetsByMonthYear } from "./requests/budgetRequests";
-import { getCompleteBudgets } from "./util/transactionsCalculator";
-import { updateUserId } from "../../../util/redux/userSlice";
-import { formatCurrency } from "../../../util/helpers";
+import { createMonthlySummary, getMonthlySummary } from "../api/requests/summaryRequests";
+import { BudgetRowProps } from "../types/budgetInterfaces";
+import { updateBuckets } from "../utils/redux/bucketSlice";
+import { getBuckets } from "../api/requests/bucketRequests";
+import { getBudgetsByMonthYear } from "../api/requests/budgetRequests";
+import { getCompleteBudgets } from "../utils/transactionsCalculator";
+import { updateUserId } from "../utils/redux/userSlice";
+import { formatCurrency } from "../utils/helpers";
 import { useTranslation } from "react-i18next";
-import { getTotalAvailableFunds } from "./requests/accountRequests";
+import { getTotalAvailableFunds } from "../api/requests/accountRequests";
 import { Icon, Title } from "@trussworks/react-uswds";
 
 type CustomComponentProps = {

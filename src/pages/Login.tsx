@@ -2,10 +2,10 @@ import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer, T
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate } from "react-router-dom";
-import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { useAuthentication } from "../contexts/AuthenticationContext";
 import { useDispatch } from "react-redux";
-import { setAuthenticated } from "../../util/redux/authSlice";
-import { URL_loginUser, URL_oauth2SocialLogin } from "../../api/services/AuthService";
+import { setAuthenticated } from "../utils/redux/authSlice";
+import { URL_loginUser, URL_oauth2SocialLogin } from "../api/services/AuthService";
 
 const Login: React.FC = () => {
     const { t } = useTranslation();

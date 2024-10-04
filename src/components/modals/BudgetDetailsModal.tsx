@@ -10,10 +10,10 @@ import {
     Table
 } from "@trussworks/react-uswds";
 import { useRef } from "react";
-import { Transaction } from "../../../../types/models";
+import { Transaction } from "../../types/models";
 import { useTranslation } from "react-i18next";
-import { categoryIconsMap } from "../util/categoryIconsMap";
-import { formatCurrency } from "../../../../util/helpers";
+import { categoryIconsMap } from "../../utils/categoryIconsMap";
+import { formatCurrency } from "../../utils/helpers";
 
 interface BudgetDetailsProps {
     category: string;

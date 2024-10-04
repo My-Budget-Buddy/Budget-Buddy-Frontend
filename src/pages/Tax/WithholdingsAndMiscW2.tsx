@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../util/redux/store";
+import { RootState } from "../../utils/redux/store";
 import { Button, FormGroup, Select, Table, TextInput } from "@trussworks/react-uswds";
-import { deductions } from "./deductionsSlice";
+import { deductions } from "../../utils/redux/deductionsSlice";
 import { SaveDeductionsByTaxReturn, getDeductionsByTaxReturn } from "./taxesAPI";
-import { setDeductionsInfo } from "./deductionsSlice";
+import { setDeductionsInfo } from "../../utils/redux/deductionsSlice";
 import { useParams } from "react-router-dom";
 
 const WithholdingsAndMiscW2: React.FC = () => {

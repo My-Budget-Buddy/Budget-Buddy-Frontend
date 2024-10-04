@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../util/redux/store";
-import { W2State } from "./W2Slice";
+import { RootState } from "../../utils/redux/store";
+import { W2State } from "../../utils/redux/W2Slice";
 import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, Grid, GridContainer } from "@trussworks/react-uswds";
 //import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
 import { findAllDeductionsByTaxReturnAPI, findW2sByTaxReturnIdAPI } from "./taxesAPI";
 import { useNavigate, useParams } from "react-router-dom";
-import { deductions } from "./deductionsSlice";
+import { deductions } from "../../utils/redux/deductionsSlice";
 
 const ReviewAndSubmitStepW2: React.FC = () => {
     const { returnId, formType, formId } = useParams();

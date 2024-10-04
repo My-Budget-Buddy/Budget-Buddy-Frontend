@@ -15,10 +15,10 @@ import {
     ErrorMessage
 } from "@trussworks/react-uswds";
 import { useRef, useState } from "react";
-import { BudgetRowProps } from "../../../../types/budgetInterfaces";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { putBudget } from "../requests/budgetRequests";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
+import { putBudget } from "../../api/requests/budgetRequests";
 import { useTranslation } from "react-i18next";
 
 interface CategoryProps {

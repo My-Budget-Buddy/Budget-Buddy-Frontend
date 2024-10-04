@@ -1,16 +1,15 @@
-import Profile from "./Settings/Profile";
-import Languages from "./Settings/Languages";
-import buddyLogo from "../images/bb-3-dark.png"
+import Profile from "../settings/Profile";
+import Languages from "../settings/Languages";
+import buddyLogo from "/images/bb-logo-medium.png"
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import RequestPageOutlinedIcon from "@mui/icons-material/RequestPageOutlined";
-
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAuthentication } from "../contexts/AuthenticationContext";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Icon, Modal, ModalToggleButton, ModalRef, ModalHeading } from "@trussworks/react-uswds";
 
-const NavBar = () => {
+const AppNavSidebar = () => {
     const { t } = useTranslation();
     const { profile } = useAuthentication();
 
@@ -139,4 +138,4 @@ const NavBar = () => {
     );
 };
 
-export default NavBar;
+export default AppNavSidebar;

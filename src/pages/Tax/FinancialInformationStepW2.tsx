@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../util/redux/store";
-import { otherIncome, setOtherIncomeInfo } from "./otherIncomeSlice";
+import { RootState } from "../../utils/redux/store";
+import { otherIncome, setOtherIncomeInfo } from "../../utils/redux/otherIncomeSlice";
 import { Button, FormGroup, Grid, GridContainer, TextInput } from "@trussworks/react-uswds";
 import { addOtherIncomeAPI, getOtherIncomeAPI } from "./taxesAPI";
 import { useParams } from "react-router-dom";

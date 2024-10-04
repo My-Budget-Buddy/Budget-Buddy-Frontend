@@ -9,9 +9,9 @@ import {
     ModalToggleButton
 } from "@trussworks/react-uswds";
 import { useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { deleteBudget } from "../requests/budgetRequests";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
+import { deleteBudget } from "../../api/requests/budgetRequests";
 import { useTranslation } from "react-i18next";
 
 interface DeleteBudgetModalProps {

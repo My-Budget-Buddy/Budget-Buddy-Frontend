@@ -2,10 +2,10 @@
 // @ts-nocheck
 
 import { useDispatch, useSelector } from "react-redux";
-import taxImage from "./tax-report-icon-free-vector.jpg";
+import taxImage from "/icons/tax-report.jpg";
 import { createTaxReturn } from "./taxesAPI";
-import { RootState } from "../../util/redux/store";
-import { setTaxReturnInfo } from "./TaxReturnSlice";
+import { RootState } from "../../utils/redux/store";
+import { setTaxReturnInfo } from "../../utils/redux/TaxReturnSlice";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 

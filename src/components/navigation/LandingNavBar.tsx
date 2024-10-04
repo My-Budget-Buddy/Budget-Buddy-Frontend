@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuthentication } from "../contexts/AuthenticationContext";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { Header, NavMenuButton, PrimaryNav } from "@trussworks/react-uswds";
-import logo from "../images/logo.png";
+import logo from "/images/bb-logo.png";
 
 const navItems = [
     <Link id="login-link" to="/login" className="usa-nav__link">
@@ -13,7 +13,7 @@ const navItems = [
     </Link>
 ];
 
-const LandingHeader = () => {
+const LandingNavBar = () => {
     const { jwt, logout } = useAuthentication();
     const [mobileExpanded, setMobileExpanded] = useState(false);
 
@@ -47,4 +47,4 @@ const LandingHeader = () => {
     );
 };
 
-export default LandingHeader;
+export default LandingNavBar;

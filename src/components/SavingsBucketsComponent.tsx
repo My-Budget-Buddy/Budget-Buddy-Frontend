@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import SavingsBucketTable from "./subComponents/SavingsBucketsTable";
+import SavingsBucketTable from "./SavingsBucketsTable";
 
 function SavingsBucketComponent() {
     const { t } = useTranslation();

@@ -1,11 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import footerLogo from "../images/footerLogo.png";
+import footerLogo from "/icons/piggy-bank.png";
 
 const Footer: React.FC = () => {
     return (
-
-
         <footer className="usa-footer usa-footer--slim bg-white shadow-md w-full z-50">
             <div className="grid-container usa-footer__return-to-top" style={{ backgroundColor: 'transparent' }}>
                 <a id="return-to-top-button" href="#" aria-label="Return to top" className="usa-footer__return-to-top-link">

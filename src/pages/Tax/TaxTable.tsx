@@ -1,25 +1,23 @@
 import {
-
   Button,
   Icon,
   Table
-
 } from '@trussworks/react-uswds';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TaxNav from './TaxNav';
 import { deleteTaxReturn, getTaxReturnByUserId } from './taxesAPI';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAllTaxReturns } from './TaxReturnSlice';
-import { RootState } from '../../util/redux/store';
-import { taxReturn } from './TaxReturnSlice';
+import { setAllTaxReturns } from '../../utils/redux/TaxReturnSlice';
+import { RootState } from '../../utils/redux/store';
+import { taxReturn } from '../../utils/redux/TaxReturnSlice';
 //commenting out the line below because it was removed from the useeffect for testing purposes
 //import { useAuthentication } from '../../contexts/AuthenticationContext';
 import { useTranslation } from 'react-i18next';
 
 const DisplayTaxTables: React.FC = () => {
   //commenting out the line below because it was removed from the useeffect for testing purposes
- // const { jwt } = useAuthentication();
+  // const { jwt } = useAuthentication();
   const nav = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -30,7 +28,7 @@ const DisplayTaxTables: React.FC = () => {
         dispatch(setAllTaxReturns(res.data)); // Assuming res.data is an array of tax return items
       })
       .catch((err) => console.error(err));
-      //making the dependency blank so that it appears quicker for selenium tests
+    //making the dependency blank so that it appears quicker for selenium tests
   }, []);
 
 
@@ -134,8 +132,8 @@ const DisplayTaxTables: React.FC = () => {
                     <td>{data.year}</td>
                     <td>
                       <div className="action-buttons">
-                        <Button type="button" onClick={() => redirectToEditView(data.id)} unstyled id="edit-button"  aria-label='edit'><Icon.Edit /></Button>
-                        <Button type="button" onClick={() => handleDelete(data.id)} unstyled id = "delete-button"  aria-label='delete'><Icon.Delete /></Button>
+                        <Button type="button" onClick={() => redirectToEditView(data.id)} unstyled id="edit-button" aria-label='edit'><Icon.Edit /></Button>
+                        <Button type="button" onClick={() => handleDelete(data.id)} unstyled id="delete-button" aria-label='delete'><Icon.Delete /></Button>
                       </div>
                     </td>
                   </tr>

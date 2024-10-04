@@ -10,10 +10,10 @@ import {
     TextInput
 } from "@trussworks/react-uswds";
 import React, { useRef, useState } from "react";
-import { setIsSending } from "../../../../util/redux/simpleSubmissionSlice";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { putBucket } from "../requests/bucketRequests";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { SavingsBucketRowProps } from "../../types/budgetInterfaces";
+import { putBucket } from "../../api/requests/bucketRequests";
 import { useTranslation } from "react-i18next";
 // import { SavingsBucketRowProps } from '../../../util/interfaces/interfaces';
 

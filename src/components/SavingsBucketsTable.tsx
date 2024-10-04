@@ -1,11 +1,11 @@
 import { Icon, Table } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import SavingsBucketRow from "./SavingsBucketRow";
-import NewBucketModal from "../modals/NewBucketModal";
-import { useAppDispatch, useAppSelector } from "../../../../util/redux/hooks";
-import { updateBuckets } from "../../../../util/redux/bucketSlice";
-import { SavingsBucketRowProps } from "../../../../types/budgetInterfaces";
-import { getBuckets } from "../requests/bucketRequests";
+import NewBucketModal from "./modals/NewBucketModal";
+import { useAppDispatch, useAppSelector } from "../utils/redux/hooks";
+import { updateBuckets } from "../utils/redux/bucketSlice";
+import { SavingsBucketRowProps } from "../types/budgetInterfaces";
+import { getBuckets } from "../api/requests/bucketRequests";
 import { useTranslation } from "react-i18next";
 //IMPORTANT-  This ensures that key can only be 'id', 'name', 'amount_required', 'amount_reserved', or 'is_currently_reserved'.
 //Avoid just treating keys as a generic string

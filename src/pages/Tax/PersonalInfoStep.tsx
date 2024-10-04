@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../util/redux/store";
-import { setW2Info } from "./W2Slice";
+import { RootState } from "../../utils/redux/store";
+import { setW2Info } from "../../utils/redux/W2Slice";
 import { Button, Fieldset, FormGroup, Grid, GridContainer, Select, TextInput } from "@trussworks/react-uswds";
-import { setTaxReturnInfo, taxReturn } from "./TaxReturnSlice";
+import { setTaxReturnInfo, taxReturn } from "../../utils/redux/TaxReturnSlice";
 import { getTaxReturnById, updateTaxReturnAPI } from "./taxesAPI";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
 import { useParams } from "react-router-dom";

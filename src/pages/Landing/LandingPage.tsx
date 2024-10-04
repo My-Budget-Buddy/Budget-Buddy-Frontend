@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { Icon } from "@trussworks/react-uswds";
-import budgetImg from "../../assets/budgets/Mar-Business_11.jpg";
-import taxImg from "../../assets/taxes/Wavy_Tech-03_Single-12.jpg";
-import transactionsImg from "../../assets/transactions/20943914.jpg";
-import heroBg from "../../assets/hero.jpg";
+import budgetImg from "/images/budgeting-illustration.jpg";
+import taxImg from "/images/tax-illustration.jpg";
+import transactionsImg from "/images/spending-illustration.jpg";
+import heroBg from "/images/hero.jpg";
 import "./LandingPage.css";
 import ReviewSection from "./ReviewSection.tsx";
 
@@ -96,7 +96,7 @@ export default function LandingPage() {
                                     <h2 className="text-4xl font-semibold leading-8 text-gray-900">{feature.title}</h2>
                                 </div>
                                 <div className="mt-4">
-                                    <div  id="feature-text" className="text-xl leading-8 text-gray-600" dangerouslySetInnerHTML={{ __html: feature.description }}></div>
+                                    <div id="feature-text" className="text-xl leading-8 text-gray-600" dangerouslySetInnerHTML={{ __html: feature.description }}></div>
                                 </div>
                             </div>
                         </div>
