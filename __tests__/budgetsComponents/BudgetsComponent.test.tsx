@@ -49,7 +49,7 @@ const store = mockStore({
 });
 
 // Mock budget requests
-jest.mock('../../src/pages/Budgets/components/requests/budgetRequests', () => ({
+jest.mock('../../src/api/requests/budgetRequests', () => ({
     getBudgetsByMonthYear: jest.fn().mockResolvedValue([]),
 }));
 
@@ -70,7 +70,7 @@ const mockMapTransactionsToCategories = jest.fn().mockReturnValue({
 });
 
 // Mock transactions calculator
-jest.mock('../../src/pages/Budgets/components/util/transactionsCalculator', () => ({
+jest.mock('../../src/utils/transactionsCalculator', () => ({
     getCompleteBudgets: jest.fn().mockResolvedValue([]),
     getCategoriesTransactionsMap: jest.fn(async (monthYear: string) => {
         const transactions = await mockGetTransactions(monthYear);

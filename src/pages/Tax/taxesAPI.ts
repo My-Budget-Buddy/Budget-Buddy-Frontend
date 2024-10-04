@@ -1,9 +1,9 @@
 import apiClient from "./index";
 
 import { Transaction } from '../../types/models';
-import { W2State } from './W2Slice';
-import { taxReturn } from './TaxReturnSlice';
-import { otherIncome } from './otherIncomeSlice';
+import { W2State } from '../../utils/redux/W2Slice';
+import { taxReturn } from '../../utils/redux/TaxReturnSlice';
+import { otherIncome } from '../../utils/redux/otherIncomeSlice';
 
 interface initReturn {
     year: number;

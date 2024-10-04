@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BudgetRowProps } from "../../../types/budgetInterfaces";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
 
 // default date values
 const currentDate = new Date();

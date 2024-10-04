@@ -29,7 +29,7 @@ jest.mock('../src/pages/Tax/taxesAPI', () => ({
   createTaxReturn: jest.fn(),
 }));
 
-jest.mock('../src/pages/Tax/TaxReturnSlice', () => ({
+jest.mock('../src/utils/redux/TaxReturnSlice', () => ({
   setTaxReturnInfo: jest.fn(),
 }));
 

@@ -25,7 +25,7 @@ jest.mock('../src/pages/Tax/taxesAPI', () => ({
   deleteTaxReturn: jest.fn()
 }));
 
-jest.mock('../src/pages/Tax/TaxReturnSlice', () => ({
+jest.mock('../src/utils/redux/TaxReturnSlice', () => ({
   setAllTaxReturns: jest.fn()
 }));
 

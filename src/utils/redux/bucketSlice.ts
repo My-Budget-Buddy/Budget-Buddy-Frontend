@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { SavingsBucketRowProps } from "../../../types/budgetInterfaces";
+import { SavingsBucketRowProps } from "../../types/budgetInterfaces";
 
 export const budgetSlice = createSlice({
     name: "update",

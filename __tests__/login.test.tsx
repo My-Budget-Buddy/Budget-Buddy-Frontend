@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import Login from '../src/pages/Authentication/Login';
+import Login from '../src/pages/Login';
 import { AuthenticationProvider, useAuthentication } from '../src/contexts/AuthenticationContext';
 import { store } from '../src/utils/redux/store';
 import { Provider } from 'react-redux';

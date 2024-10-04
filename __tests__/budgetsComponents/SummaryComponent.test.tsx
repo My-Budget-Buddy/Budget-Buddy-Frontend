@@ -35,7 +35,7 @@ jest.mock("@mui/x-charts/Gauge", () => {
 });
 
 // Mock app selector and dispatch
-jest.mock('../../src/util/redux/hooks', () => ({
+jest.mock('../../src/utils/redux/hooks', () => ({
     useAppSelector: jest.fn().mockImplementation((selector) => selector({
         budgets: {
             spendingBudget: 1000,
@@ -56,12 +56,12 @@ jest.mock('../../src/util/redux/hooks', () => ({
 }));
 
 // Mock currency formatting
-jest.mock('../../src/util/helpers', () => ({
+jest.mock('../../src/utils/helpers', () => ({
     formatCurrency: (value: number) => `$${Number(value).toFixed(2)}`,
 }));
 
 // Mock summary requests
-jest.mock('../../src/pages/Budgets/components/requests/summaryRequests', () => ({
+jest.mock('../../src/api/requests/summaryRequests', () => ({
     getMonthlySummary: jest.fn().mockResolvedValue({
         summaryId: 1,
         totalBudgetAmount: 1000,
@@ -73,22 +73,22 @@ jest.mock('../../src/pages/Budgets/components/requests/summaryRequests', () => (
 }));
 
 // Mock bucket requests
-jest.mock('../../src/pages/Budgets/components/requests/bucketRequests', () => ({
+jest.mock('../../src/api/requests/bucketRequests', () => ({
     getBuckets: jest.fn().mockResolvedValue([]),
 }));
 
 // Mock budget requests
-jest.mock('../../src/pages/Budgets/components/requests/budgetRequests', () => ({
+jest.mock('../../src/api/requests/budgetRequests', () => ({
     getBudgetsByMonthYear: jest.fn().mockResolvedValue([]),
 }));
 
 // Mock transactions calculator
-jest.mock('../../src/pages/Budgets/components/util/transactionsCalculator', () => ({
+jest.mock('../../src/utils/transactionsCalculator', () => ({
     getCompleteBudgets: jest.fn().mockResolvedValue([]),
 }));
 
 // Mock account requests
-jest.mock('../../src/pages/Budgets/components/requests/accountRequests', () => ({
+jest.mock('../../src/api/requests/accountRequests', () => ({
     getTotalAvailableFunds: jest.fn().mockResolvedValue(1000),
 }));
 
@@ -104,7 +104,7 @@ const MockEditSpendingBudgetModal = ({ summaryId, totalBudgetAmount }: { summary
 
 
 // Use Jest to mock the EditSpendingBudgetModal component
-jest.mock('../../src/pages/Budgets/components/modals/EditSpendingBudgetModal', () => {
+jest.mock('../../src/components/modals/EditSpendingBudgetModal', () => {
     return {
         __esModule: true,
         default: (props: any) => <MockEditSpendingBudgetModal  {...props} />,

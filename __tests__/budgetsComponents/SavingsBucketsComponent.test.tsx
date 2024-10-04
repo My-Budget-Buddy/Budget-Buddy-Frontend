@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock the SavingsBucketTable component
-jest.mock('../../src/pages/Budgets/components/subComponents/SavingsBucketsTable', () => () => <div>Mocked SavingsBucketTable</div>);
+jest.mock('../../src/components/SavingsBucketsTable', () => () => <div>Mocked SavingsBucketTable</div>);
 
 describe('SavingsBucketComponent', () => {
     test('renders the component with translated text', () => {
