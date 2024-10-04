@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
-import { store } from '../src/util/redux/store';
+import { store } from '../src/utils/redux/store';
 import { BrowserRouter as Router } from 'react-router-dom';
 import PersonalInfoStep from '../src/pages/Tax/PersonalInfoStep';
 import { getTaxReturnById, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';

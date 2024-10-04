@@ -9,16 +9,6 @@ jest.mock('js-cookie', () => ({
   get: jest.fn()
 }));
 
-// Mock the us-icon.svg
-jest.mock('../src/images/us-icon.svg', () => ({
-  UsIcon: () => <svg data-testid="us-icon" />
-}));
-
-// Mock the state-icon.svg
-jest.mock('../src/images/state-icon.svg', () => ({
-  StateIcon: () => <svg data-testid="state-icon" />
-}));
-
 // Mock the react-confetti library
 jest.mock('react-confetti', () => ({
   __esModule: true,

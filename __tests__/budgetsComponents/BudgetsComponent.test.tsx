@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import BudgetsComponent from '../../src/pages/Budgets/components/BudgetsComponent';
-import { updateBudgets, updateSelectedDate } from '../../src/util/redux/budgetSlice';
+import BudgetsComponent from '../../src/components/BudgetsComponent';
+import { updateBudgets, updateSelectedDate } from '../../src/utils/redux/budgetSlice';
 import '@testing-library/jest-dom';
 
 // Mock the useTranslation hook

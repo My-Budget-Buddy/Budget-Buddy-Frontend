@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import WithholdingsAndMiscW2 from '../src/pages/Tax/WithholdingsAndMiscW2';
-import { RootState } from '../src/util/redux/store';
-import { setDeductionsInfo } from '../src/pages/Tax/deductionsSlice';
+import { RootState } from '../src/utils/redux/store';
+import { setDeductionsInfo } from '../src/utils/redux/deductionsSlice';
 import { SaveDeductionsByTaxReturn, getDeductionsByTaxReturn } from '../src/pages/Tax/taxesAPI';
 import '@testing-library/jest-dom/';
 

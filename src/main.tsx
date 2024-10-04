@@ -8,7 +8,7 @@ import { router } from "./routing/Router.tsx";
 import { RouterProvider } from "react-router-dom";
 import "./i18n.ts";
 import { Provider } from "react-redux";
-import { store } from "./util/redux/store.ts";
+import { store } from "./utils/redux/store.ts";
 import { AuthenticationProvider } from "./contexts/AuthenticationContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

@@ -5,10 +5,10 @@ import DisplayTaxTables from '../src/pages/Tax/TaxTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getTaxReturnByUserId, deleteTaxReturn } from '../src/pages/Tax/taxesAPI';
-import { setAllTaxReturns } from '../src/pages/Tax/TaxReturnSlice';
+import { setAllTaxReturns } from '../src/utils/redux/TaxReturnSlice';
 
 // Mock the image import
-jest.mock('../src/pages/Tax/tax-report-icon-free-vector.jpg', () => 'mocked-tax-report-icon');
+jest.mock('../src/pages/Tax/tax-report.jpg', () => 'mocked-tax-report-icon');
 
 // Mock the necessary modules
 jest.mock('react-redux', () => ({

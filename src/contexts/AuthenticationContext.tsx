@@ -1,7 +1,5 @@
 import type { User } from "../types/models";
-
 import Cookies from "js-cookie";
-
 import { Dispatch, SetStateAction, useState, createContext, useEffect, useContext } from "react";
 import { URL_findUserById } from "../api/services/UserService";
 

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useTranslation } from 'react-i18next';
 import { createTaxReturn } from '../src/pages/Tax/taxesAPI';
-import { setTaxReturnInfo } from '../src/pages/Tax/TaxReturnSlice';
+import { setTaxReturnInfo } from '../src/utils/redux/TaxReturnSlice';
 import TaxNav from '../src/pages/Tax/TaxNav';
 
 // Mock dependencies

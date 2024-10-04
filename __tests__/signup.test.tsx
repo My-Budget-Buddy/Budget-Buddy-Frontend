@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent, cleanup, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Register from '../src/pages/AuthenticationPages/Register';
+import Register from '../src/pages/Register';
 import Cookies from 'js-cookie';
 import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom';
 import * as router from 'react-router-dom'
-import Login from '../src/pages/AuthenticationPages/Login';
+import Login from '../src/pages/Login';
 import { act } from 'react';
 import ReactDOM from 'react-dom';
 

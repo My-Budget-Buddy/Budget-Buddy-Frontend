@@ -4,9 +4,9 @@ import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import FinancialInformationStepW2 from '../src/pages/Tax/FinancialInformationStepW2';
-import { otherIncome, setOtherIncomeInfo } from '../src/pages/Tax/otherIncomeSlice';
+import { otherIncome, setOtherIncomeInfo } from '../src/utils/redux/otherIncomeSlice';
 import { getOtherIncomeAPI, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';
-import { store } from '../src/util/redux/store';
+import { store } from '../src/utils/redux/store';
 
 import * as TaxesApi from '../src/pages/Tax/taxesAPI';
 

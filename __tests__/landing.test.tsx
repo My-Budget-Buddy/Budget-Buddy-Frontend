@@ -13,9 +13,9 @@ jest.mock("../src/api/config", () => ({
 }));
 
 //Image mocks
-jest.setMock('../../src/assets/budgets/Mar-Business_11.jpg', () => 'budgetImg');
-jest.setMock('../../src/assets/taxes/Wavy_Tech-03_Single-12.jpg', () => 'taxImg');
-jest.setMock('../../src/assets/transactions/20943914.jpg', () => 'transactionsImg');
+jest.setMock('../../src/assets/budgets/budgeting-illustration.jpg', () => 'budgetImg');
+jest.setMock('../../src/assets/taxes/tax-illustration.jpg', () => 'taxImg');
+jest.setMock('../../src/assets/transactions/spending-illustration.jpg', () => 'transactionsImg');
 jest.mock('../../src/assets/hero.jpg', () => 'heroBg');
 
 jest.mock('../src/pages/Landing/ReviewSection.tsx', () => () => <div>Mocked Review Section</div>);

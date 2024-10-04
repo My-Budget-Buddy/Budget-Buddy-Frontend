@@ -1,11 +1,11 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Accounts from "../src/pages/Accounts/Accounts";
+import Accounts from "../src/pages/Accounts";
 import { Provider } from "react-redux";
 import configureStore from 'redux-mock-store';
 import '@testing-library/jest-dom';
-import AccountModal from "../src/pages/Accounts/AccountModal";
-import CreditScoreModal from "../src/pages/Accounts/CreditScoreModal";
+import AccountModal from "../src/components/modals/AccountModal";
+import CreditScoreModal from "../src/components/modals/CreditScoreModal";
 
 
 /*Have to mock gauge and esl in both x-charts and x-charts/Gauge

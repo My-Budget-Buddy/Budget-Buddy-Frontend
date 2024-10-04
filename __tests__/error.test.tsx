@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import ErrorPage from "../src/pages/Misc/ErrorPage";
+import ErrorPage from "../src/pages/ErrorPage";
 import LandingPage from "../src/pages/Landing/LandingPage";
 
 // Mock the useRouteError hook

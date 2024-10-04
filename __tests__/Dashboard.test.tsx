@@ -2,10 +2,10 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import Dashboard from "../src/pages/Dashboard/Dashboard";
+import Dashboard from "../src/pages/Dashboard";
 //import { useAuthentication } from '../contexts/AuthenticationContext';
 import { Provider } from 'react-redux';
-import { store } from '../src/util/redux/store';
+import { store } from '../src/utils/redux/store';
 import { getAccountByID } from '../src/pages/Tax/taxesAPI';
 
 
