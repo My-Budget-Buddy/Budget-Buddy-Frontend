@@ -110,14 +110,14 @@ const Profile: React.FC = () => {
                             type={showNewPassword ? "text" : "password"}
                         />
                         <InputSuffix onClick={() => setShowNewPassword(!showNewPassword)}>
-                            {showNewPassword ? <Icon.VisibilityOff /> : <Icon.Visibility />}
+                            {showNewPassword ? <Icon.VisibilityOff data-testid="show-password-vis-off" /> : <Icon.Visibility data-testid="show-password-vis-on" />}
                         </InputSuffix>
                     </InputGroup >
                     <Label htmlFor="confirm-password">{t("nav.confirm-password")}</Label>
                     <InputGroup className="unstyled-input-group">
                         <TextInput id="confirm-password" name="confirm-password" type={showConfirmPassword ? "text" : "password"} />
                         <InputSuffix onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                            {showConfirmPassword ? <Icon.VisibilityOff /> : <Icon.Visibility />}
+                            {showConfirmPassword ? <Icon.VisibilityOff data-testid="confirm-password-vis-off" /> : <Icon.Visibility data-testid="confirm-password-vis-on" />}
                         </InputSuffix>
                     </InputGroup>
                     <Button type="submit" >{t("nav.save")}</Button>
