@@ -1,5 +1,5 @@
-import Profile from "../settings/Profile";
-import Languages from "../settings/Languages";
+import Profile from "../Settings/Profile";
+import Languages from "../Settings/Languages";
 import buddyLogo from "/images/bb-logo-medium.png"
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import RequestPageOutlinedIcon from "@mui/icons-material/RequestPageOutlined";

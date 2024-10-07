@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Profile from '../src/components/settings/Profile';
+import Profile from '../src/components/Settings/Profile';
 import { updateUserPassword } from '../src/pages/Tax/taxesAPI';
 import { URL_updateUser } from "../src/api/services/UserService";
 import { useAuthentication } from '../src/contexts/AuthenticationContext';
