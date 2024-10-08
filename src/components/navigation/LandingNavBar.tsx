@@ -31,7 +31,7 @@ const LandingNavBar = () => {
             <div className="usa-nav-container">
                 <div className="usa-navbar w-full flex justify-between">
                     <Link id="landing-link" to="/">
-                        <img className="logo-img" src={logo} alt="logo" />
+                        <img className="logo-img" src={logo} alt="logo" data-testid="header-logo"/>
                     </Link>
 
                     <NavMenuButton id="nav-menu-button" label="Menu" onClick={() => setMobileExpanded((prev) => !prev)} />
