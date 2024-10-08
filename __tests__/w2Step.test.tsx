@@ -235,5 +235,7 @@ describe('W2 Form Errors', () => {
             fireEvent.change(state, { target: { value: 'VIR' } });
             expect(screen.getByText('Must Use 2 Letter State Abbreviation')).toBeInTheDocument();
         }
+
+        
     });
 });
