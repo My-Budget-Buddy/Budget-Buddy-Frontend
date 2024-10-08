@@ -4,16 +4,15 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { BrowserRouter } from 'react-router-dom';
 import "@testing-library/jest-dom";
-import { createW2API } from '../src/pages/Tax/taxesAPI';
 
 const initState = [
     {
         w2state: "FL",
-        w2id: 2,
+        w2id: 1,
         w2taxReturnId: 1,
         w2year: 2024,
         w2userId: 1,
-        w2employer: "Skillstorm",
+        w2employer: "",
         w2wages: 0,
         w2federalIncomeTaxWithheld: 0,
         w2stateIncomeTaxWithheld: 0,
@@ -25,17 +24,17 @@ const initState = [
 
 const mockW2State = [
     {
-        state: "FL",
-        id: 1,
-        taxReturnId: 1,
+        state: "VA",
+        id: 2,
+        taxReturnId: 2,
         year: 2024,
-        userId: 1,
+        userId: 2,
         employer: "Skillstorm",
-        wages: 0,
-        federalIncomeTaxWithheld: 0,
-        stateIncomeTaxWithheld: 0,
-        socialSecurityTaxWithheld: 0,
-        medicareTaxWithheld: 0,
+        wages: 50000,
+        federalIncomeTaxWithheld: 5000,
+        stateIncomeTaxWithheld: 2500,
+        socialSecurityTaxWithheld: 2500,
+        medicareTaxWithheld: 500,
         imageKey: null,
     },
 ]
@@ -55,22 +54,22 @@ jest.mock("../src/pages/Tax/taxesAPI", () => ({
     createW2API: jest.fn(),
 }));
 
+beforeEach(() => {
+    findW2sByTaxReturnIdAPI.mockResolvedValue({ data: mockW2State });
+    render(
+        <Provider store={w2Store}>
+            <BrowserRouter>
+                <W2Step />
+            </BrowserRouter>
+        </Provider>
+    );
+});
+
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
 describe('W2 Table', () => {
-    beforeEach(() => {
-        findW2sByTaxReturnIdAPI.mockResolvedValue({ data: mockW2State });
-        render(
-            <Provider store={w2Store}>
-                <BrowserRouter>
-                    <W2Step />
-                </BrowserRouter>
-            </Provider>
-        );
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
     it('should render table headers correctly', () => {
         expect(screen.getByText('State')).toBeInTheDocument();
         expect(screen.getByText('Employer')).toBeInTheDocument();
@@ -84,9 +83,9 @@ describe('W2 Table', () => {
 
      it('should render W2 states populate correctly', async () => {
         await waitFor(() => {
-            expect(screen.getByTestId('w2-id-1')).toBeInTheDocument();
-            expect(screen.getByTestId('w2-state-1')).toHaveTextContent('FL');
-            expect(screen.getByTestId('w2-employer-1')).toHaveTextContent('Skillstorm');
+            expect(screen.getByTestId('w2-id-2')).toBeInTheDocument();
+            expect(screen.getByTestId('w2-state-2')).toHaveTextContent('VA');
+            expect(screen.getByTestId('w2-employer-2')).toHaveTextContent('Skillstorm');
             expect(document.getElementById('w2-edit-button')).toBeInTheDocument();
             expect(document.getElementById('w2-delete-button')).toBeInTheDocument();
         });
@@ -94,50 +93,18 @@ describe('W2 Table', () => {
 });
 
 describe('W2 Add New Form', () => {
-    beforeEach(() => {
-        findW2sByTaxReturnIdAPI.mockResolvedValue({ data: mockW2State });
-        render(
-            <Provider store={w2Store}>
-                <BrowserRouter>
-                    <W2Step />
-                </BrowserRouter>
-            </Provider>
-        );
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
     it('render the W2 edit for when add button is clicked', async () => {
         await waitFor(() => {
             const addBtn = document.getElementById("w2-add-button");
             addBtn?.click();
         });
-
     });
-
 });
 
 describe('W2 Edit Form', () => {
-    beforeEach(() => {
-        findW2sByTaxReturnIdAPI.mockResolvedValue({ data: mockW2State });
-        render(
-            <Provider store={w2Store}>
-                <BrowserRouter>
-                    <W2Step />
-                </BrowserRouter>
-            </Provider>
-        );
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
     it('renders the W2 edit form', async () => {
         await waitFor(() => {
-            expect(screen.getByTestId('w2-id-1')).toBeInTheDocument();
+            expect(screen.getByTestId('w2-id-2')).toBeInTheDocument();
             const editBtn = document.getElementById("w2-edit-button");
             editBtn?.click();
         });
@@ -155,7 +122,7 @@ describe('W2 Edit Form', () => {
     it('should save and submit the W2 form', async () => {
 
         await waitFor(() => {
-            expect(screen.getByTestId('w2-id-1')).toBeInTheDocument();
+            expect(screen.getByTestId('w2-id-2')).toBeInTheDocument();
             const editBtn = document.getElementById("w2-edit-button");
             editBtn?.click();
         });
@@ -207,24 +174,9 @@ describe('W2 Edit Form', () => {
 });
 
 describe('W2 Form Errors', () => {
-    beforeEach(() => {
-        findW2sByTaxReturnIdAPI.mockResolvedValue({ data: mockW2State });
-        render(
-            <Provider store={w2Store}>
-                <BrowserRouter>
-                    <W2Step />
-                </BrowserRouter>
-            </Provider>
-        );
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
     it('should display error message when form is not filled correctly', async () => {
         await waitFor(() => {
-            expect(screen.getByTestId('w2-id-1')).toBeInTheDocument();
+            expect(screen.getByTestId('w2-id-2')).toBeInTheDocument();
             const editBtn = document.getElementById("w2-edit-button");
             editBtn?.click();
         });
@@ -235,7 +187,15 @@ describe('W2 Form Errors', () => {
             fireEvent.change(state, { target: { value: 'VIR' } });
             expect(screen.getByText('Must Use 2 Letter State Abbreviation')).toBeInTheDocument();
         }
+    });
+});
 
-        
+describe('W2 Delete', () => {
+    it('should delete the W2 form', async () => {
+        await waitFor(() => {
+            expect(screen.getByTestId('w2-id-2')).toBeInTheDocument();
+            const deleteBtn = document.getElementById("w2-delete-button");
+            deleteBtn?.click();
+        });
     });
 });
