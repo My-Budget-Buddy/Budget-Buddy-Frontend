@@ -2,11 +2,11 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import Dashboard from "../src/pages/Dashboard";
+import Dashboard from "../Dashboard";
 //import { useAuthentication } from '../contexts/AuthenticationContext';
 import { Provider } from 'react-redux';
-import { store } from '../src/utils/redux/store';
-import { getAccountByID } from '../src/pages/Tax/taxesAPI';
+import { store } from '../../utils/redux/store';
+import { getAccountByID } from '../../api/taxesAPI';
 
 
 // Mock @mui/x-charts components
@@ -34,14 +34,14 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock API endpoint
-jest.mock('../src/api/config', () => ({
+jest.mock('../../api/config', () => ({
   config: {
     apiUrl: "http://localhost:mock",
   },
 }));
 
 // Mock authentication context
-jest.mock('../src/contexts/AuthenticationContext', () => {
+jest.mock('../../contexts/AuthenticationContext', () => {
   return {
     useAuthentication: () => ({
       profile: { firstName: 'John' }
@@ -50,7 +50,7 @@ jest.mock('../src/contexts/AuthenticationContext', () => {
 });
 
 // Mock getAccountByID function
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
+jest.mock('../../api/taxesAPI', () => ({
   getAccountByID: jest.fn().mockResolvedValue({
     data: [
       {

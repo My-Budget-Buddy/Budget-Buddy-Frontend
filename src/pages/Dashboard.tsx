@@ -11,7 +11,7 @@ import { getBudgetsByMonthYear } from "../api/requests/budgetRequests";
 import { getCompleteBudgets } from "../utils/transactionsCalculator";
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
-import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "./Tax/taxesAPI";
+import { getAccountByID, getCurrentMonthTransactionsAPI, getRecentTransactionsAPI } from "../api/taxesAPI";
 import { useAuthentication } from "../contexts/AuthenticationContext";
 
 interface InitialAccountType {

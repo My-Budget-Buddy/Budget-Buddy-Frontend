@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import ErrorPage from "../src/pages/ErrorPage";
-import LandingPage from "../src/pages/Landing/LandingPage";
+import ErrorPage from "../Error";
+import LandingPage from "../Landing/Landing";
 
 // Mock the useRouteError hook
 jest.mock('react-router-dom', () => ({
@@ -15,7 +15,7 @@ jest.mock('react-router-dom', () => ({
     })
 }));
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },

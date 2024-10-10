@@ -10,7 +10,7 @@ import { useAuthentication } from "../contexts/AuthenticationContext";
 import { Accordion, Alert, Grid, GridContainer, Icon, Title } from "@trussworks/react-uswds";
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
-import { deleteAccountAPI } from "./Tax/taxesAPI";
+import { deleteAccountAPI } from "../api/taxesAPI";
 
 import { URL_getAccountsByUserId } from "../api/services/AccountService";
 

@@ -1,10 +1,10 @@
 import React from 'react';
-import SpendingMonth from '../src/pages/Spending/SpendingMonth';
+import SpendingMonth from '../../Spending/SpendingMonth';
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
   config: {
     apiUrl: "http://localhost:mock",
   },
@@ -42,18 +42,18 @@ jest.mock("@mui/x-charts/BarChart", () => ({
 }));
 
 // mocks transactionService function
-jest.mock("../src/utils/transactionService", () => ({
+jest.mock("../../../utils/transactionService", () => ({
   getTransactionByUserId: jest.fn()
 }));
 
 // Mock CategoryIcon
-jest.mock('../src/components/CategoryIcon', () => ({
+jest.mock('../../../components/CategoryIcon', () => ({
   __esModule: true,
   default: ({ category }: { category: string }) => <div data-testid="mock-category-icon">{category}</div>,
   categoryColors: {},
 }));
 
-jest.mock("../src/utils/transactionService", () => ({
+jest.mock("../../../utils/transactionService", () => ({
   getTransactionByUserId: jest.fn().mockResolvedValue([
     {
       accountId: 1,

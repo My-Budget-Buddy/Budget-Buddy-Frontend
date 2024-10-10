@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Tax from '../src/pages/Tax/Tax';
+import Tax from '../../Tax/Tax';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from '../src/utils/redux/store';
+import { store } from '../../../utils/redux/store';
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
   config: {
     apiUrl: "http://localhost:mock",
   },

@@ -1,11 +1,11 @@
 import React, { act } from 'react';
-import Transactions from "../src/pages/Transactions/Transactions";
+import Transactions from "../../Transactions/Transactions";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import { createTransaction, deleteTransaction, getAccountsByUserId, getTransactionByUserId, getTransactionByVendor, updateTransaction, validateTransaction } from '../src/utils/transactionService';
-import { TransactionCategory } from '../src/types/models';
-import TransactionHistory from '../src/pages/Transactions/TransactionHistory';
+import { createTransaction, deleteTransaction, getAccountsByUserId, getTransactionByUserId, getTransactionByVendor, updateTransaction, validateTransaction } from '../../../utils/transactionService';
+import { TransactionCategory } from '../../../types/models';
+import TransactionHistory from '../../Transactions/TransactionHistory';
 
 // Mock the useTranslation hook and Trans component
 jest.mock('react-i18next', () => ({
@@ -19,14 +19,14 @@ jest.mock('react-i18next', () => ({
 }));
 
 //mock the config file
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
 }));
 
 // Mock the transactionService functions
-jest.mock('../src/utils/transactionService');
+jest.mock('../../../utils/transactionService');
 
 //mock the focus trap react in order for tests to run
 jest.mock('focus-trap-react', () => {
@@ -39,14 +39,14 @@ jest.mock("@mui/x-charts", () => ({
 }));
 
 // Mock CategoryIcon
-jest.mock('../src/components/CategoryIcon', () => ({
+jest.mock('../../../components/CategoryIcon', () => ({
     __esModule: true,
     default: ({ category }: { category: string }) => <div data-testid="mock-category-icon">{category}</div>,
     categoryColors: {},
 }));
 
 // Mock formatCurrency and formatDate functions
-jest.mock('../src/utils/helpers', () => ({
+jest.mock('../../../utils/helpers', () => ({
     formatCurrency: (amount: number | bigint) => {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',

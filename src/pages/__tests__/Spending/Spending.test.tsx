@@ -1,4 +1,4 @@
-import Spending from "../src/pages/Spending/Spending";
+import Spending from "../../Spending/Spending";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "@testing-library/jest-dom";
@@ -37,19 +37,19 @@ jest.mock("react-i18next", () => ({
 }));
 
 // mock config
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock" // mock with localhost url
     }
 }));
 
 // mock getTransactionByUserId from transactionService
-jest.mock("../src/utils/transactionService", () => ({
+jest.mock("../../../utils/transactionService", () => ({
     getTransactionByUserId: jest.fn()
 }));
 
 // import the function to mock
-const { getTransactionByUserId } = require("../src/utils/transactionService");
+const { getTransactionByUserId } = require("../../../utils/transactionService");
 
 // get today's date and last week's date for transactions
 const today = new Date().toISOString().split("T")[0];

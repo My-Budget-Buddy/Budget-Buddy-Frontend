@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Budgets from '../src/pages/Budgets';
+import Budgets from '../Budgets';
 
 // Mock the components
-jest.mock('../src/components/BudgetsComponent.tsx', () => () => <div>Mocked BudgetsComponent</div>);
-jest.mock('../src/components/SummaryComponent.tsx', () => () => <div>Mocked SummaryComponent</div>);
-jest.mock('../src/components/SavingsBucketsComponent', () => () => <div>Mocked SavingsBucketComponent</div>);
+jest.mock('../../components/BudgetsComponent.tsx', () => () => <div>Mocked BudgetsComponent</div>);
+jest.mock('../../components/SummaryComponent.tsx', () => () => <div>Mocked SummaryComponent</div>);
+jest.mock('../../components/SavingsBucketsComponent', () => () => <div>Mocked SavingsBucketComponent</div>);
 
 beforeEach(() => {
     render(<Budgets />);

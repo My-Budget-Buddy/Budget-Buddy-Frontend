@@ -1,30 +1,30 @@
 import React from 'react';
-import LandingPage from '../src/pages/Landing/LandingPage';
+import LandingPage from '../../Landing/Landing';
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import exp from 'constants';
 
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
   config: {
     apiUrl: "http://localhost:mock",
   },
 }));
 
 //Image mocks
-jest.setMock('../../src/assets/budgets/budgeting-illustration.jpg', () => 'budgetImg');
-jest.setMock('../../src/assets/taxes/tax-illustration.jpg', () => 'taxImg');
-jest.setMock('../../src/assets/transactions/spending-illustration.jpg', () => 'transactionsImg');
-jest.mock('../../src/assets/hero.jpg', () => 'heroBg');
+jest.setMock('../../../../public/images/budgeting-illustration.jpg', () => 'budgetImg');
+jest.setMock('../../../../public/images/tax-illustration.jpg', () => 'taxImg');
+jest.setMock('../../../../public/images/spending-illustration.jpg', () => 'transactionsImg');
+jest.mock('../../../../public/images/hero.jpg', () => 'heroBg');
 
-jest.mock('../src/pages/Landing/ReviewSection.tsx', () => () => <div>Mocked Review Section</div>);
+jest.mock('../../../components/landing/ReviewSection/ReviewSection.tsx', () => () => <div>Mocked Review Section</div>);
 
 // Style mocks
-jest.mock('./src/LandingPage.css', () => ({}));
+jest.mock('../../Landing/Landing.css', () => ({}));
 
 
-describe('LandingPage', () => {
+describe('Landing', () => {
   beforeEach(() => {
     render(
       <Router>

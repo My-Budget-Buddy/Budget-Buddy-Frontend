@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import Login from '../src/pages/Login';
-import { AuthenticationProvider, useAuthentication } from '../src/contexts/AuthenticationContext';
-import { store } from '../src/utils/redux/store';
+import Login from '../../Auth/Login';
+import { AuthenticationProvider, useAuthentication } from '../../../contexts/AuthenticationContext';
+import { store } from '../../../utils/redux/store';
 import { Provider } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -18,7 +18,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock API endpoint
-jest.mock('../src/api/config', () => ({
+jest.mock('../../../api/config', () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
@@ -32,7 +32,7 @@ global.fetch = jest.fn(() =>
 );
 
 // Mock authentication
-jest.mock('../src/contexts/AuthenticationContext', () => ({
+jest.mock('../../../contexts/AuthenticationContext', () => ({
     useAuthentication: () => ({
         jwt: null,
         loading: false,

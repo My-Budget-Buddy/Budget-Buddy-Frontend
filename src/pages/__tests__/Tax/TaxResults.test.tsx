@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import TaxResults from '../src/pages/Tax/TaxResults';
+import TaxResults from '../../Tax/TaxResults';
 import Cookies from 'js-cookie';
 
 // Mock the js-cookie library
@@ -16,7 +16,7 @@ jest.mock('react-confetti', () => ({
 }));
 
 // Mock the taxesAPI module
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
+jest.mock('../../../api/taxesAPI', () => ({
   getCurrentRefundAPI: jest.fn().mockResolvedValue({ data: { federalRefund: 1253, stateRefund: 283 } })
 }));
 
@@ -42,8 +42,6 @@ describe('TaxResults', () => {
     expect(stRefund).toBeInTheDocument();
     expect(totRefund).toBeInTheDocument();
   });
-
-
 
   it('should render confetti with the correct number of pieces', async () => {
     await act(async () => {

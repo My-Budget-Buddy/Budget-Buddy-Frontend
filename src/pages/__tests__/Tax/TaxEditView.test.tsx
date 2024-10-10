@@ -1,15 +1,15 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import TaxEditView from '../src/pages/Tax/TaxEditView';
+import TaxEditView from '../../Tax/TaxEditView';
 import '@testing-library/jest-dom';
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
 }));
 
-jest.mock('../src/pages/Tax/W2EditView', () => ({
+jest.mock('../../Tax/W2EditView', () => ({
     __esModule: true,
     default: jest.fn(() => <div>W2 Edit View</div>)
 }))
