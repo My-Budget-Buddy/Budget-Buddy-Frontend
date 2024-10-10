@@ -2,7 +2,7 @@ import { Link } from "@trussworks/react-uswds";
 import { NavLink, useRouteError } from "react-router-dom";
 import { Grid, GridContainer, Icon } from "@trussworks/react-uswds";
 
-const ErrorPage = () => {
+const Error = () => {
     const error = useRouteError();
     console.error(error);
 
@@ -55,4 +55,4 @@ const ErrorPage = () => {
     );
 };
 
-export default ErrorPage;
+export default Error;

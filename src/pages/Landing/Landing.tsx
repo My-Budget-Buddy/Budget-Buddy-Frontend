@@ -5,7 +5,7 @@ import taxImg from "/images/tax-illustration.jpg";
 import transactionsImg from "/images/spending-illustration.jpg";
 import heroBg from "/images/hero.jpg";
 import "./LandingPage.css";
-import ReviewSection from "./ReviewSection.tsx";
+import ReviewSection from "../../components/landing/ReviewSection/ReviewSection.tsx";
 
 const features = [
     {

@@ -2,8 +2,8 @@ import { Grid, Form, Alert, Label, Button, Fieldset, TextInput, GridContainer, T
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useAuthentication } from "../contexts/AuthenticationContext";
-import { URL_oauth2SocialLogin, URL_registerUser } from "../api/services/AuthService";
+import { useAuthentication } from "../../contexts/AuthenticationContext";
+import { URL_oauth2SocialLogin, URL_registerUser } from "../../api/services/AuthService";
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
