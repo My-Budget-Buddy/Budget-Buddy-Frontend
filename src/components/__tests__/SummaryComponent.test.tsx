@@ -3,8 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import SummaryComponent from '../../src/components/SummaryComponent';
-import { store } from '../../src/utils/redux/store';
+import SummaryComponent from './SummaryComponent';
+import { store } from '../utils/redux/store';
 import { useTranslation } from 'react-i18next';
 import { MockStore } from 'redux-mock-store';
 

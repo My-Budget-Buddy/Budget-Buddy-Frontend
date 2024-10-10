@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter } from "react-router-dom";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useAppDispatch, useAppSelector } from '../src/utils/redux/hooks';
-import { setIsSending } from '../src/utils/redux/simpleSubmissionSlice';
-import { putBucket } from '../src/api/requests/bucketRequests';
-import SavingsBucketRow from '../src/components/SavingsBucketRow';
+import { useAppDispatch, useAppSelector } from '../../utils/redux/hooks';
+import { setIsSending } from '../../utils/redux/simpleSubmissionSlice';
+import { putBucket } from '../../api/requests/bucketRequests';
+import SavingsBucketRow from '../SavingsBucketRow';
 import { useTranslation } from "react-i18next";
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event'

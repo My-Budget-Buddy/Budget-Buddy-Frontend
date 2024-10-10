@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useAppDispatch, useAppSelector } from '../src/utils/redux/hooks';
-import { setIsSending } from '../src/utils/redux/simpleSubmissionSlice';
-import NewBucketModal from '../src/components/modals/NewBucketModal';
-import { postBucket } from '../src/api/requests/bucketRequests';
+import { useAppDispatch, useAppSelector } from '../../../utils/redux/hooks';
+import { setIsSending } from '../../../utils/redux/simpleSubmissionSlice';
+import NewBucketModal from '../../modals/NewBucketModal';
+import { postBucket } from '../../../api/requests/bucketRequests';
 
 // Mock dependencies
 jest.mock('react-i18next', () => ({

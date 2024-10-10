@@ -1,5 +1,5 @@
 import { waitFor, render, screen } from "@testing-library/react";
-import TransactionsTable from "../src/components/TransactionsTable";
+import TransactionsTable from "../TransactionsTable";
 import { BrowserRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 

@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useAppDispatch, useAppSelector } from '../src/utils/redux/hooks';
-import { TransactionCategory } from '../src/types/models';
-import NewCategoryModal from '../src/components/modals/NewBudgetModal';
-import { createBudget } from '../src/api/requests/budgetRequests';
+import { useAppDispatch, useAppSelector } from '../../../utils/redux/hooks';
+import { TransactionCategory } from '../../../types/models';
+import NewCategoryModal from '../../modals/NewBudgetModal';
+import { createBudget } from '../../../api/requests/budgetRequests';
 
 // Mock dependencies
 jest.mock('react-i18next', () => ({
