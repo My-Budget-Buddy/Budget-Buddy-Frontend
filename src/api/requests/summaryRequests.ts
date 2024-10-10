@@ -1,4 +1,4 @@
-import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../../pages/Tax/taxesAPI";
+import { createMonthlySummaryAPI, getMonthlySummaryAPI, updateMonthlySummaryAPI } from "../taxesAPI";
 import { URL as url } from "../Endpoint";
 
 export async function getMonthlySummary(monthYear: string): Promise<MonthlySummary> {

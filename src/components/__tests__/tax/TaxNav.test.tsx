@@ -5,9 +5,9 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useTranslation } from 'react-i18next';
-import { createTaxReturn } from '../src/pages/Tax/taxesAPI';
-import { setTaxReturnInfo } from '../src/utils/redux/TaxReturnSlice';
-import TaxNav from '../src/pages/Tax/TaxNav';
+import { createTaxReturn } from '../../../api/taxesAPI';
+import { setTaxReturnInfo } from '../../../utils/redux/TaxReturnSlice';
+import TaxNav from '../../tax/TaxNav';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
@@ -25,11 +25,11 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
+jest.mock('../../../api/taxesAPI', () => ({
   createTaxReturn: jest.fn(),
 }));
 
-jest.mock('../src/utils/redux/TaxReturnSlice', () => ({
+jest.mock('../../../utils/redux/TaxReturnSlice', () => ({
   setTaxReturnInfo: jest.fn(),
 }));
 

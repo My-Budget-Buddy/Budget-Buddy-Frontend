@@ -2,19 +2,19 @@ import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
-import { store } from '../src/utils/redux/store';
+import { store } from '../../../utils/redux/store';
 import { BrowserRouter as Router } from 'react-router-dom';
-import PersonalInfoStep from '../src/pages/Tax/PersonalInfoStep';
-import { getTaxReturnById, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';
+import PersonalInfoStep from '../../tax/PersonalInfoStep';
+import { getTaxReturnById, updateTaxReturnAPI } from '../../../api/taxesAPI';
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
   config: {
     apiUrl: "http://localhost:mock",
   },
 }));
 
 // Mock the taxesAPI module
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
+jest.mock('../../../api/taxesAPI', () => ({
   getTaxReturnById: jest.fn(),
   updateTaxReturnAPI: jest.fn()
 }));

@@ -1,14 +1,14 @@
 import React from 'react';
 import { fireEvent, getByLabelText, render, waitFor, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import DisplayTaxTables from '../src/pages/Tax/TaxTable';
+import DisplayTaxTables from '../../tax/TaxTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getTaxReturnByUserId, deleteTaxReturn } from '../src/pages/Tax/taxesAPI';
-import { setAllTaxReturns } from '../src/utils/redux/TaxReturnSlice';
+import { getTaxReturnByUserId, deleteTaxReturn } from '../../../api/taxesAPI';
+import { setAllTaxReturns } from '../../../utils/redux/TaxReturnSlice';
 
 // Mock the image import
-jest.mock('../src/pages/Tax/tax-report.jpg', () => 'mocked-tax-report-icon');
+jest.mock('../../../../public/icons/tax-report.jpg', () => 'mocked-tax-report-icon');
 
 // Mock the necessary modules
 jest.mock('react-redux', () => ({
@@ -20,12 +20,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn()
 }));
 
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
+jest.mock('../../../api/taxesAPI', () => ({
   getTaxReturnByUserId: jest.fn(),
   deleteTaxReturn: jest.fn()
 }));
 
-jest.mock('../src/utils/redux/TaxReturnSlice', () => ({
+jest.mock('../../../utils/redux/TaxReturnSlice', () => ({
   setAllTaxReturns: jest.fn()
 }));
 

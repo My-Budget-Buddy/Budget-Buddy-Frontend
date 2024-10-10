@@ -3,12 +3,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import FinancialInformationStepW2 from '../src/pages/Tax/FinancialInformationStepW2';
-import { otherIncome, setOtherIncomeInfo } from '../src/utils/redux/otherIncomeSlice';
-import { addOtherIncomeAPI, getOtherIncomeAPI, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';
-import { store } from '../src/utils/redux/store';
+import FinancialInformationStepW2 from '../../tax/FinancialInformationStepW2';
+import { otherIncome, setOtherIncomeInfo } from '../../../utils/redux/otherIncomeSlice';
+import { addOtherIncomeAPI, getOtherIncomeAPI, updateTaxReturnAPI } from '../../../api/taxesAPI';
+import { store } from '../../../utils/redux/store';
 
-import * as TaxesApi from '../src/pages/Tax/taxesAPI';
+import * as TaxesApi from '../../../api/taxesAPI';
 
 
 
@@ -19,7 +19,7 @@ jest.mock('react-redux', () => ({
 }));
 
 // Mock the taxesAPI module
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
+jest.mock('../../../api/taxesAPI', () => ({
     getOtherIncomeAPI: jest.fn().mockResolvedValue({
         data: {
             longTermCapitalGains: 1000,
@@ -41,7 +41,7 @@ jest.mock('../src/pages/Tax/taxesAPI', () => ({
     updateTaxReturnAPI: jest.fn()
 }));
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
@@ -59,10 +59,8 @@ describe('FinancialInformationStepW2', () => {
 
     // Correctly fetches other income data from the API and updates the state
     it('should update state with fetched other income data when API call is successful', async () => {
-
-
         render(<FinancialInformationStepW2 />);
-
+        
         await waitFor(() => {
             expect(mockDispatch).toHaveBeenCalledWith({
                 type: 'otherIncome/setOtherIncomeInfo',

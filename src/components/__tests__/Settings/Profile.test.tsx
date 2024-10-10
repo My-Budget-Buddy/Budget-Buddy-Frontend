@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Profile from '../../Settings/Profile';
-import { updateUserPassword } from '../../../pages/Tax/taxesAPI';
+import { updateUserPassword } from '../../../api/taxesAPI';
 import { URL_updateUser } from "../../../api/services/UserService";
 import { useAuthentication } from '../../../contexts/AuthenticationContext';
 
@@ -10,7 +10,7 @@ import { useAuthentication } from '../../../contexts/AuthenticationContext';
 global.fetch = jest.fn();
 
 // Mock dependencies
-jest.mock('../../../pages/Tax/taxesAPI', () => ({
+jest.mock('../../../api/taxesAPI', () => ({
   updateUserPassword: jest.fn(),
 }));
 

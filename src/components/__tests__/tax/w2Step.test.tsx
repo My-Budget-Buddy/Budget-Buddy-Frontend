@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import W2Step from '../src/pages/Tax/w2Step';
+import W2Step from '../../tax/w2Step';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { BrowserRouter } from 'react-router-dom';
@@ -41,15 +41,15 @@ const mockW2State = [
 
 const mockStore = configureStore([]);
 const w2Store = mockStore({ w2: initState });
-const { findW2sByTaxReturnIdAPI } = require('../src/pages/Tax/taxesAPI');
+const { findW2sByTaxReturnIdAPI } = require('../../../api/taxesAPI');
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock" // mock with localhost url
     }
 }));
 
-jest.mock("../src/pages/Tax/taxesAPI", () => ({
+jest.mock("../../../api/taxesAPI", () => ({
     findW2sByTaxReturnIdAPI: jest.fn(),
     createW2API: jest.fn(),
 }));
