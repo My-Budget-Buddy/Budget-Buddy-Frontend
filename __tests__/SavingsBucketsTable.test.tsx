@@ -41,7 +41,7 @@ const mockBuckets = [
             id: 1,
             name: 'Bucket A', 
             amount_required: 100, 
-            amount_reserved: 50, 
+            amount_reserved: 150, 
             is_currently_reserved: true 
         }
     },
@@ -78,6 +78,7 @@ describe('SavingsBucketTable', () => {
             simpleFormStatus: { isSending: false }
         }));
         (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatchMock);
+        (getBuckets as unknown as jest.Mock).mockResolvedValue(mockBuckets);
     });
 
     afterEach(() => {
@@ -85,7 +86,6 @@ describe('SavingsBucketTable', () => {
     });
 
     it('should render the SavingsBucketTable component', async () => {
-        (getBuckets as unknown as jest.Mock).mockResolvedValue(mockBuckets);
         
         const initialState = {buckets: {buckets: mockBuckets, totalReserved: 0}};
         const store = mockStore(initialState);
@@ -102,14 +102,13 @@ describe('SavingsBucketTable', () => {
         expect(screen.getByText('budgets.required')).toBeInTheDocument();
         expect(screen.getByText('budgets.reserved')).toBeInTheDocument();
         expect(screen.getByText('budgets.actions')).toBeInTheDocument();
-        // expect(screen.getByText('budgets.add-new-bucket')).toBeInTheDocument();
 
         expect(screen.getByText('Bucket A')).toBeInTheDocument();
     });
 
     it('should sort the buckets by name in descending order', async () => {
         const user = userEvent.setup();
-        (getBuckets as unknown as jest.Mock).mockResolvedValue(mockBuckets);
+
         (useAppSelector as unknown as jest.Mock).mockImplementation((selector) => selector({
             buckets: { buckets: mockBuckets, totalReserved: 0 },
             simpleFormStatus: { isSending: true }
@@ -132,5 +131,50 @@ describe('SavingsBucketTable', () => {
 
         const bucketNames = screen.getAllByTestId('bucket-name').map(el => el.textContent);
         expect(bucketNames).toEqual(['Bucket C', 'Bucket B', 'Bucket A']);
+    });
+
+    it('should sort the buckets by required amount in ascending order', async () => {
+        const user = userEvent.setup();
+
+        const initialState = {buckets: {buckets: mockBuckets, totalReserved: 0}};
+        const store = mockStore(initialState);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <SavingsBucketTable />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(async () => {
+            await user.click(screen.getByText('budgets.required'));
+        });
+
+        const bucketNames = screen.getAllByTestId('bucket-name').map(el => el.textContent);
+        expect(bucketNames).toEqual(['Bucket C', 'Bucket A', 'Bucket B']);
+    });
+
+    it('should sort the buckets by reserved amount in descending order', async () => {
+        const user = userEvent.setup();
+
+        const initialState = {buckets: {buckets: mockBuckets, totalReserved: 0}};
+        const store = mockStore(initialState);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <SavingsBucketTable />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(async () => {
+            await user.click(screen.getByText('budgets.reserved'));
+            await user.click(screen.getByText('budgets.reserved'));
+        });
+
+        const bucketNames = screen.getAllByTestId('bucket-name').map(el => el.textContent);
+        expect(bucketNames).toEqual(['Bucket A', 'Bucket B', 'Bucket C']);
     });
 });
