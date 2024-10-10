@@ -1,22 +1,22 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import LandingNavBar from '../src/components/navigation/LandingNavBar';
+import LandingNavBar from '../../navigation/LandingNavBar';
 import { BrowserRouter } from 'react-router-dom';
 import { PrimaryNav } from '@trussworks/react-uswds';
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock" // mock with localhost url
     }
 }));
 
-jest.mock("../src/contexts/AuthenticationContext", () => ({
+jest.mock("../../../contexts/AuthenticationContext", () => ({
     useAuthentication: jest.fn() // Create a mock function here
 }));
 
 describe('Landing Header Not Logged In', () => {
     beforeEach(() => {
-        require("../src/contexts/AuthenticationContext").useAuthentication.mockReturnValue({
+        require("../../../contexts/AuthenticationContext").useAuthentication.mockReturnValue({
             jwt:null,
             logout: jest.fn()
         });
@@ -62,7 +62,7 @@ describe('Landing Header Not Logged In', () => {
 
 describe('Landing Header Logged In', () => {
     beforeEach(() => {
-        require("../src/contexts/AuthenticationContext").useAuthentication.mockReturnValue({
+        require("../../../contexts/AuthenticationContext").useAuthentication.mockReturnValue({
             jwt: 'mock-jwt',
             logout: jest.fn()
         });
@@ -104,7 +104,7 @@ describe('Landing Header Logged In', () => {
         await waitFor(() => {
             const logoutButton = document.getElementById('logout-button');
             logoutButton?.click();
-            expect(require("../src/contexts/AuthenticationContext").useAuthentication().logout).toHaveBeenCalled();
+            expect(require("../../../contexts/AuthenticationContext").useAuthentication().logout).toHaveBeenCalled();
         });
     });
 });

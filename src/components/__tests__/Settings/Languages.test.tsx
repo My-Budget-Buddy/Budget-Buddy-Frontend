@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useTranslation } from 'react-i18next';
-import Languages from '../src/components/Settings/Languages';
+import Languages from '../../Settings/Languages';
 
 const changeLanguageMock = jest.fn();
 const setSideNavMock = jest.fn();

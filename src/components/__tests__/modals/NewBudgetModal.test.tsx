@@ -13,16 +13,16 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-jest.mock('../src/utils/redux/hooks', () => ({
+jest.mock('../../../utils/redux/hooks', () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn(),
 }));
 
-jest.mock('../src/api/requests/budgetRequests', () => ({
+jest.mock('../../../api/requests/budgetRequests', () => ({
     createBudget: jest.fn(),
 }));
 
-jest.mock('../src/utils/redux/simpleSubmissionSlice', () => ({
+jest.mock('../../../utils/redux/simpleSubmissionSlice', () => ({
     setIsSending: jest.fn(),
 }));
 

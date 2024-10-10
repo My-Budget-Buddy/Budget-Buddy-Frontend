@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import BudgetsComponent from '../src/components/BudgetsComponent';
-import { updateBudgets, updateSelectedDate } from '../src/utils/redux/budgetSlice';
+import BudgetsComponent from '../BudgetsComponent';
+import { updateBudgets, updateSelectedDate } from '../../utils/redux/budgetSlice';
 import '@testing-library/jest-dom';
 
 // Mock the useTranslation hook
@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-jest.mock("../../src/api/config", () => ({
+jest.mock("../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
@@ -49,7 +49,7 @@ const store = mockStore({
 });
 
 // Mock budget requests
-jest.mock('../../src/api/requests/budgetRequests', () => ({
+jest.mock('../../api/requests/budgetRequests', () => ({
     getBudgetsByMonthYear: jest.fn().mockResolvedValue([]),
 }));
 
@@ -70,7 +70,7 @@ const mockMapTransactionsToCategories = jest.fn().mockReturnValue({
 });
 
 // Mock transactions calculator
-jest.mock('../../src/utils/transactionsCalculator', () => ({
+jest.mock('../../utils/transactionsCalculator', () => ({
     getCompleteBudgets: jest.fn().mockResolvedValue([]),
     getCategoriesTransactionsMap: jest.fn(async (monthYear: string) => {
         const transactions = await mockGetTransactions(monthYear);

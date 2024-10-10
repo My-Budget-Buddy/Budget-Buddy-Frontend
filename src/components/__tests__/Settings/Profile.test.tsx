@@ -1,29 +1,29 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Profile from '../src/components/Settings/Profile';
-import { updateUserPassword } from '../src/pages/Tax/taxesAPI';
-import { URL_updateUser } from "../src/api/services/UserService";
-import { useAuthentication } from '../src/contexts/AuthenticationContext';
+import Profile from '../../Settings/Profile';
+import { updateUserPassword } from '../../../pages/Tax/taxesAPI';
+import { URL_updateUser } from "../../../api/services/UserService";
+import { useAuthentication } from '../../../contexts/AuthenticationContext';
 
 // Mock the global fetch function
 global.fetch = jest.fn();
 
 // Mock dependencies
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
+jest.mock('../../../pages/Tax/taxesAPI', () => ({
   updateUserPassword: jest.fn(),
 }));
 
 // Mock dependencies
-jest.mock('../src/api/services/UserService', () => ({
+jest.mock('../../../api/services/UserService', () => ({
   URL_updateUser: jest.fn()
 }));
 
-jest.mock('../src/contexts/AuthenticationContext', () => ({
+jest.mock('../../../contexts/AuthenticationContext', () => ({
   useAuthentication: jest.fn(),
 }));
 
-jest.mock('../src/api/config', () => ({
+jest.mock('../../../api/config', () => ({
   config: {
     apiUrl: 'http://localhost:mock',
   }

@@ -7,10 +7,10 @@ import { setIsSending } from '../../../utils/redux/simpleSubmissionSlice';
 import { deleteBudget } from '../../../api/requests/budgetRequests';
 
 // Mock the necessary functions
-jest.mock('../src/utils/redux/hooks');
-jest.mock('../src/api/requests/budgetRequests');
+jest.mock('../../../utils/redux/hooks');
+jest.mock('../../../api/requests/budgetRequests');
 
-jest.mock('../src/api/config', () => ({
+jest.mock('../../../api/config', () => ({
   config: {
     apiUrl: 'http://localhost:mock',
   }

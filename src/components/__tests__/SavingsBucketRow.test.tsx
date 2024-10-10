@@ -10,7 +10,7 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event'
 
 
-jest.mock('../src/utils/redux/hooks', () => ({
+jest.mock('../../utils/redux/hooks', () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn(),
 }));
@@ -21,7 +21,7 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },

@@ -3,8 +3,8 @@ import { render, screen, fireEvent, waitFor, within } from '@testing-library/rea
 import '@testing-library/jest-dom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useTranslation } from 'react-i18next';
-import { useAuthentication } from '../src/contexts/AuthenticationContext';
-import NavBar from '../src/components/navigation/AppNavSidebar';
+import { useAuthentication } from '../../../contexts/AuthenticationContext';
+import NavBar from '../../navigation/AppNavSidebar';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // Mock dependencies
@@ -18,11 +18,11 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-jest.mock('../src/contexts/AuthenticationContext', () => ({
+jest.mock('../../../contexts/AuthenticationContext', () => ({
   useAuthentication: jest.fn(),
 }));
 
-jest.mock('../src/api/config', () => ({
+jest.mock('../../../api/config', () => ({
   config: {
     apiUrl: 'http://localhost:mock',
   }

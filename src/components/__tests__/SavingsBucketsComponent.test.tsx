@@ -2,8 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/';
 import { useTranslation } from 'react-i18next';
-import SavingsBucketComponent from './SavingsBucketsComponent';
-import SavingsBucketTable from './SavingsBucketsTable';
+import SavingsBucketComponent from '../SavingsBucketsComponent';
+import SavingsBucketTable from '../SavingsBucketsTable';
 
 // Mock the useTranslation hook
 jest.mock('react-i18next', () => ({
@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock the SavingsBucketTable component
-jest.mock('../../src/components/SavingsBucketsTable', () => () => <div>Mocked SavingsBucketTable</div>);
+jest.mock('../SavingsBucketsTable', () => () => <div>Mocked SavingsBucketTable</div>);
 
 describe('SavingsBucketComponent', () => {
     test('renders the component with translated text', () => {

@@ -19,16 +19,16 @@ jest.mock('focus-trap-react', () => {
     return ({ children }: { children: ReactNode }) => <div>{children}</div>;
 });
 
-jest.mock('../src/utils/redux/hooks', () => ({
+jest.mock('../../../utils/redux/hooks', () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn(),
 }));
 
-jest.mock('../src/api/requests/bucketRequests', () => ({
+jest.mock('../../../api/requests/bucketRequests', () => ({
     postBucket: jest.fn(),
 }));
 
-jest.mock('../src/utils/redux/simpleSubmissionSlice', () => ({
+jest.mock('../../../utils/redux/simpleSubmissionSlice', () => ({
     setIsSending: jest.fn(),
 }));
 
