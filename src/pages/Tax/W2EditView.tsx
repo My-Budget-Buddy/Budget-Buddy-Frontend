@@ -1,12 +1,10 @@
 import { Button, StepIndicator, StepIndicatorStep } from "@trussworks/react-uswds";
 import { useState } from "react";
-import PersonalInfoStep from "./PersonalInfoStep";
-import WwStep from "./w2Step";
-import ReviewAndSubmitStepW2 from "./ReviewAndSubmitStepW2";
-import FinancialInformationStepW2 from "./FinancialInformationStepW2";
-import WithholdingsAndMiscW2 from "./WithholdingsAndMiscW2";
-
-
+import PersonalInfoStep from "../../components/tax/PersonalInfoStep";
+import W2Step from "../../components/tax/w2Step";
+import ReviewAndSubmitStepW2 from "../../components/tax/ReviewAndSubmitStepW2";
+import FinancialInformationStepW2 from "../../components/tax/FinancialInformationStepW2";
+import WithholdingsAndMiscW2 from "../../components/tax/WithholdingsAndMiscW2";
 
 function W2EditView() {
 
@@ -30,12 +28,8 @@ function W2EditView() {
             updatedSteps[currentStep + 1].status = 'current'; // Mark next step as current
             setSteps(updatedSteps);
             setCurrentStep((prevStep) => prevStep + 1);
-
-
         }
-
     };
-
 
     const handlePreviousStep = () => {
         if (currentStep > 0) {
@@ -65,7 +59,7 @@ function W2EditView() {
                 {/* You can conditionally render content for each step */}
                 <div className="bg-base-lightest  border-4 border-gray-300 shadow-lg ">
                     {currentStep === 0 && <PersonalInfoStep />}
-                    {currentStep === 1 && <WwStep />}
+                    {currentStep === 1 && <W2Step />}
                     {currentStep === 2 && <FinancialInformationStepW2 />}
                     {currentStep === 3 && <WithholdingsAndMiscW2 />}
                     {currentStep === 4 && <ReviewAndSubmitStepW2 />}
@@ -82,7 +76,6 @@ function W2EditView() {
             </div>
         </>
     )
-
 }
 
 export default W2EditView;

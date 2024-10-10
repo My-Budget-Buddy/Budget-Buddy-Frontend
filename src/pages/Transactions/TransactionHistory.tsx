@@ -30,7 +30,7 @@ import {
 import { formatCurrency, formatDate } from "../../utils/helpers";
 import { BarChart } from "@mui/x-charts";
 import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";
-import { getAccountByID } from "../Tax/taxesAPI";
+import { getAccountByID } from "../../api/taxesAPI";
 
 // type TransactionTarget = EventTarget & {
 //     vendorName: HTMLInputElement;

@@ -4,7 +4,7 @@ import UsIcon from "/icons/country-usa.svg";
 import StateIcon from "/icons/state-california.svg";
 import { formatCurrency } from "../../utils/helpers";
 import Confetti from "react-confetti";
-import { getCurrentRefundAPI } from "./taxesAPI";
+import { getCurrentRefundAPI } from "../../api/taxesAPI";
 import { useParams } from "react-router-dom";
 
 // const mockRefunds = {

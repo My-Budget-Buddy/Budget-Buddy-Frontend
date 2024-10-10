@@ -1,14 +1,14 @@
-import DisplayTaxTables from "./TaxTable"
+import DisplayTaxTables from "../../components/tax/TaxTable"
 
 
 
 const Tax: React.FC = () => {
     return (<>
-                
-                <div>
-                    <DisplayTaxTables />
-                </div>
-            </>
+
+        <div>
+            <DisplayTaxTables />
+        </div>
+    </>
     )
 }
 
