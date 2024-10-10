@@ -19,15 +19,12 @@ export default {
     'src/main.tsx',
     'src/vite-env.d.ts',
     'src/api/services',
+    'src/api/requests',
     'src/api/config.ts',
     'src/contexts',
-    'src/layouts',
     'src/pages/Root.tsx',
-    'src/pages/Budgets/components/requests',
-    // 'src/pages/Budgets/components/subComponents',
-    'src/pages/Budgets/components/util',
-    'src/pages/Tax/TaxesAPI.ts',
+    'src/api/TaxesAPI.ts',
     'src/routing',
-    'src/util'
+    'src/utils'
   ],
 };
