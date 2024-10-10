@@ -1,6 +1,6 @@
 import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import LandingLayout from "../layouts/LandingLayout.tsx";
-import AppLayout from "../layouts/AppLayout.tsx";
+import LandingLayout from "../components/layouts/LandingLayout.tsx";
+import AppLayout from "../components/layouts/AppLayout.tsx";
 import LandingPage from "../pages/Landing/LandingPage.tsx";
 import Dashboard from "../pages/Dashboard.tsx";
 import Accounts from "../pages/Accounts.tsx";

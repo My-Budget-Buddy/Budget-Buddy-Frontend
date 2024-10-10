@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import NavBar from "../components/navigation/LandingNavBar.tsx";
-import LandingFooter from "../components/navigation/LandingFooter.tsx";
+import NavBar from "../navigation/LandingNavBar.tsx";
+import LandingFooter from "../navigation/LandingFooter.tsx";
 const LandingLayout: React.FC = () => {
     return (
         <div className="layout-container">

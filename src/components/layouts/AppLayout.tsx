@@ -1,6 +1,6 @@
-import NavBar from "../components/navigation/AppNavSidebar";
+import NavBar from "../navigation/AppNavSidebar";
 import { Outlet } from "react-router-dom";
-import { AuthenticationProvider } from "../contexts/AuthenticationContext";
+import { AuthenticationProvider } from "../../contexts/AuthenticationContext";
 
 const AppLayout: React.FC = () => {
     return (
