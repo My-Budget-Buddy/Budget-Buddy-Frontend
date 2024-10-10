@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import LandingHeader from '../src/components/LandingHeader';
+import LandingNavBar from '../src/components/navigation/LandingNavBar';
 import { BrowserRouter } from 'react-router-dom';
 import { PrimaryNav } from '@trussworks/react-uswds';
 
@@ -23,7 +23,7 @@ describe('Landing Header Not Logged In', () => {
 
         render(
             <BrowserRouter>
-                <LandingHeader />
+                <LandingNavBar />
             </BrowserRouter>
         );
     });
@@ -69,7 +69,7 @@ describe('Landing Header Logged In', () => {
 
         render(
             <BrowserRouter>
-                <LandingHeader />
+                <LandingNavBar />
             </BrowserRouter>
         );
     });

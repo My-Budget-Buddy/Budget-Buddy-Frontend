@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter } from "react-router-dom";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useAppDispatch, useAppSelector } from '../src/util/redux/hooks';
-import { setIsSending } from '../src/util/redux/simpleSubmissionSlice';
-import { putBucket } from '../src/pages/Budgets/components/requests/bucketRequests';
-import SavingsBucketRow from '../src/pages/Budgets/components/subComponents/SavingsBucketRow';
+import { useAppDispatch, useAppSelector } from '../src/utils/redux/hooks';
+import { setIsSending } from '../src/utils/redux/simpleSubmissionSlice';
+import { putBucket } from '../src/api/requests/bucketRequests';
+import SavingsBucketRow from '../src/components/SavingsBucketRow';
 import { useTranslation } from "react-i18next";
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event'
 
 
-jest.mock('../src/util/redux/hooks', () => ({
+jest.mock('../src/utils/redux/hooks', () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn(),
 }));

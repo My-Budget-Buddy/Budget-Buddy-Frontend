@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useAppDispatch, useAppSelector } from '../src/util/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../src/utils/redux/hooks';
 import { TransactionCategory } from '../src/types/models';
-import NewCategoryModal from '../src/pages/Budgets/components/modals/NewBudgetModal';
-import { createBudget } from '../src/pages/Budgets/components/requests/budgetRequests';
+import NewCategoryModal from '../src/components/modals/NewBudgetModal';
+import { createBudget } from '../src/api/requests/budgetRequests';
 
 // Mock dependencies
 jest.mock('react-i18next', () => ({
@@ -13,16 +13,16 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-jest.mock('../src/util/redux/hooks', () => ({
+jest.mock('../src/utils/redux/hooks', () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn(),
 }));
 
-jest.mock('../src/pages/Budgets/components/requests/budgetRequests', () => ({
+jest.mock('../src/api/requests/budgetRequests', () => ({
     createBudget: jest.fn(),
 }));
 
-jest.mock('../src/util/redux/simpleSubmissionSlice', () => ({
+jest.mock('../src/utils/redux/simpleSubmissionSlice', () => ({
     setIsSending: jest.fn(),
 }));
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useAppDispatch, useAppSelector } from '../src/util/redux/hooks';
-import DeleteBudgetModal from '../src/pages/Budgets/components/modals/DeleteBudgetModal';
-import { setIsSending } from '../src/util/redux/simpleSubmissionSlice';
-import { deleteBudget } from '../src/pages/Budgets/components/requests/budgetRequests';
+import { useAppDispatch, useAppSelector } from '../src/utils/redux/hooks';
+import DeleteBudgetModal from '../src/components/modals/DeleteBudgetModal';
+import { setIsSending } from '../src/utils/redux/simpleSubmissionSlice';
+import { deleteBudget } from '../src/api/requests/budgetRequests';
 
 // Mock the necessary functions
-jest.mock('../src/util/redux/hooks');
-jest.mock('../src/pages/Budgets/components/requests/budgetRequests');
+jest.mock('../src/utils/redux/hooks');
+jest.mock('../src/api/requests/budgetRequests');
 
 jest.mock('../src/api/config', () => ({
   config: {
