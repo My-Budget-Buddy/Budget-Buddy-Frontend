@@ -26,7 +26,7 @@ import {
     getTransactionByVendor,
     updateTransaction,
     validateTransaction
-} from "../../utils/transactionService";
+} from "../../api/transactionService";
 import { formatCurrency, formatDate } from "../../utils/helpers";
 import { BarChart } from "@mui/x-charts";
 import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";

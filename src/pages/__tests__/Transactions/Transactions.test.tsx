@@ -3,7 +3,7 @@ import Transactions from "../../Transactions/Transactions";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import { createTransaction, deleteTransaction, getAccountsByUserId, getTransactionByUserId, getTransactionByVendor, updateTransaction, validateTransaction } from '../../../utils/transactionService';
+import { createTransaction, deleteTransaction, getAccountsByUserId, getTransactionByUserId, getTransactionByVendor, updateTransaction, validateTransaction } from '../../../api/transactionService';
 import { TransactionCategory } from '../../../types/models';
 
 // Mock the useTranslation hook and Trans component
@@ -25,7 +25,7 @@ jest.mock("../../../api/config", () => ({
 }));
 
 // Mock the transactionService functions
-jest.mock('../../../utils/transactionService');
+jest.mock('../../../api/transactionService');
 
 //mock the focus trap react in order for tests to run
 jest.mock('focus-trap-react', () => {

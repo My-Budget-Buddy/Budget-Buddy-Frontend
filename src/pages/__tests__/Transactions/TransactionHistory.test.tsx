@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock transactionService functions
-jest.mock('../../../utils/transactionService', () => ({
+jest.mock('../../../api/transactionService', () => ({
     getTransactionByVendor: jest.fn(),
     getAccountsByUserId: jest.fn(),
     updateTransaction: jest.fn(),
@@ -67,7 +67,7 @@ describe('TransactionHistory Component', () => {
             deleteTransaction,
             createTransaction,
             validateTransaction,
-        } = require('../../../utils/transactionService');
+        } = require('../../../api/transactionService');
 
         getTransactionByVendor.mockResolvedValue([
             {
@@ -161,7 +161,7 @@ describe('TransactionHistory Component', () => {
 
         // Wait for data to be loaded
         await waitFor(() => {
-            expect(require('../../../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../../../api/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         // Ensure transactions are displayed
@@ -194,7 +194,7 @@ describe('TransactionHistory Component', () => {
 
         // Wait for data to be loaded
         await waitFor(() => {
-            expect(require('../../../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../../../api/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         // Get the date filter select element
@@ -301,7 +301,7 @@ describe('TransactionHistory Component', () => {
 
         // Wait for data to be loaded
         await waitFor(() => {
-            expect(require('../../../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../../../api/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
 
@@ -337,7 +337,7 @@ describe('TransactionHistory Component', () => {
         );
 
         await waitFor(() => {
-            expect(require('../../../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../../../api/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         const amountFilter = container.querySelector('#allAmountsDropDown') as HTMLSelectElement;
@@ -370,7 +370,7 @@ describe('TransactionHistory Component', () => {
         );
 
         await waitFor(() => {
-            expect(require('../../../utils/transactionService').getTransactionByVendor).toHaveBeenCalled();
+            expect(require('../../../api/transactionService').getTransactionByVendor).toHaveBeenCalled();
         });
 
         const sortByDropdown = container.querySelector('#sortByDropdown') as HTMLSelectElement;
@@ -394,7 +394,7 @@ describe('TransactionHistory Component', () => {
     });
 
     it('handles no accounts gracefully', async () => {
-        const { getAccountsByUserId } = require('../../../utils/transactionService');
+        const { getAccountsByUserId } = require('../../../api/transactionService');
         getAccountsByUserId.mockResolvedValue([]);
 
         render(
@@ -412,7 +412,7 @@ describe('TransactionHistory Component', () => {
     });
 
     it('handles no transactions gracefully', async () => {
-        const { getTransactionByVendor } = require('../../../utils/transactionService');
+        const { getTransactionByVendor } = require('../../../api/transactionService');
         getTransactionByVendor.mockResolvedValue([]);
 
         render(

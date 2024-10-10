@@ -25,7 +25,7 @@ import {
     createTransaction,
     updateTransaction,
     validateTransaction
-} from "../../utils/transactionService";
+} from "../../api/transactionService";
 import { Trans, useTranslation } from "react-i18next";
 import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";
 import { formatCurrency, formatDate } from "../../utils/helpers";

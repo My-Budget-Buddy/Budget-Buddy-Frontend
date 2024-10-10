@@ -7,7 +7,7 @@ import {
     getTransactionByUserIdAPI,
     getTransactionByVendorAPI,
     updateTransactionAPI
-} from "../api/taxesAPI.ts";
+} from "./taxesAPI.ts";
 
 export const getTransactionByUserId = async (userId: number): Promise<Transaction[]> => {
     //const response = await axios.get<Transaction[]>(`${TRANSACTIONS_API_URL}/user/${userId}`);

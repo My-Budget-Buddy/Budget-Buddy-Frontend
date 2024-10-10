@@ -44,12 +44,12 @@ jest.mock("../../../api/config", () => ({
 }));
 
 // mock getTransactionByUserId from transactionService
-jest.mock("../../../utils/transactionService", () => ({
+jest.mock("../../../api/transactionService", () => ({
     getTransactionByUserId: jest.fn()
 }));
 
 // import the function to mock
-const { getTransactionByUserId } = require("../../../utils/transactionService");
+const { getTransactionByUserId } = require("../../../api/transactionService");
 
 // get today's date and last week's date for transactions
 const today = new Date().toISOString().split("T")[0];

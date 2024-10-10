@@ -42,7 +42,7 @@ jest.mock("@mui/x-charts/BarChart", () => ({
 }));
 
 // mocks transactionService function
-jest.mock("../../../utils/transactionService", () => ({
+jest.mock("../../../api/transactionService", () => ({
   getTransactionByUserId: jest.fn()
 }));
 
@@ -53,7 +53,7 @@ jest.mock('../../../components/CategoryIcon', () => ({
   categoryColors: {},
 }));
 
-jest.mock("../../../utils/transactionService", () => ({
+jest.mock("../../../api/transactionService", () => ({
   getTransactionByUserId: jest.fn().mockResolvedValue([
     {
       accountId: 1,
