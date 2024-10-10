@@ -18,12 +18,9 @@ export default {
     'src/i18n.ts',
     'src/main.tsx',
     'src/vite-env.d.ts',
-    'src/api/services',
-    'src/api/requests',
-    'src/api/config.ts',
+    'src/api',
     'src/contexts',
     'src/pages/Root.tsx',
-    'src/api/TaxesAPI.ts',
     'src/routing',
     'src/utils'
   ],
