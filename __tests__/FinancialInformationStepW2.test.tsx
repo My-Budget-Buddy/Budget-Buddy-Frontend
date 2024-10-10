@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import FinancialInformationStepW2 from '../src/pages/Tax/FinancialInformationStepW2';
 import { otherIncome, setOtherIncomeInfo } from '../src/utils/redux/otherIncomeSlice';
-import { getOtherIncomeAPI, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';
+import { addOtherIncomeAPI, getOtherIncomeAPI, updateTaxReturnAPI } from '../src/pages/Tax/taxesAPI';
 import { store } from '../src/utils/redux/store';
 
 import * as TaxesApi from '../src/pages/Tax/taxesAPI';
@@ -52,18 +52,6 @@ const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
     useDispatch: () => mockDispatch,
     useSelector: jest.fn().mockReturnValue({})
-}));
-
-jest.mock('../src/pages/Tax/taxesAPI', () => ({
-    getOtherIncomeAPI: jest.fn().mockResolvedValue({
-        data: {
-            longTermCapitalGains: 1000,
-            shortTermCapitalGains: 500,
-            otherInvestmentIncome: 200,
-            netBusinessIncome: 300,
-            additionalIncome: 400
-        }
-    })
 }));
 
 
@@ -113,6 +101,62 @@ describe('FinancialInformationStepW2', () => {
         });
     });
 
+    it('should display error if longTermCapitalGains is less than 2 characters', async () => {
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
 
+        const input = screen.getByLabelText('Long Term Capital Gains');
+        fireEvent.change(input, { target: { name: 'formType', value: 'a' } });
 
+        waitFor(() => {
+            expect(screen.getByText('Form type must be at least 2 characters long.')).toBeInTheDocument();
+            expect(mockDispatch).not.toHaveBeenCalled();
+        });
+    });
+
+    it('should display error if shortTermCapitalGains is less than 3 characters', async () => {
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
+
+        const input = screen.getByLabelText('Short Term Capital Gains');
+        fireEvent.change(input, { target: { name: 'status', value: 'ab' } });
+
+        waitFor(() => {
+            expect(screen.getByText('Status must be at least 3 characters long.')).toBeInTheDocument();
+            expect(mockDispatch).not.toHaveBeenCalled();
+        });
+    });
+
+    it('should dispatch setOtherIncomeInfo if no error', () => {
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
+        
+        const input = screen.getByLabelText('Long Term Capital Gains');
+        fireEvent.change(input, { target: { name: 'formType', value: 'ab' } });
+
+        expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('should call addOtherIncomeAPI on save', () => {
+
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
+
+        const button = screen.getByText('Save');
+        fireEvent.click(button);
+
+        expect(addOtherIncomeAPI).toHaveBeenCalled();
+    });
 });
