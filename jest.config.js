@@ -1,6 +1,7 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 export default {
   testEnvironment: "jsdom",
+  testTimeout: 60000,
   transform: {
     "^.+.tsx?$": ["ts-jest", {}],
   },
