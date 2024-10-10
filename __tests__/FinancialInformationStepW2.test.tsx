@@ -139,7 +139,65 @@ describe('FinancialInformationStepW2', () => {
                 <FinancialInformationStepW2 />
             </Router>
         );
-        
+
+        const input = screen.getByLabelText('Long Term Capital Gains');
+        fireEvent.change(input, { target: { name: 'formType', value: 'ab' } });
+
+        expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('should call addOtherIncomeAPI on save', () => {
+
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
+
+        const button = screen.getByText('Save');
+        fireEvent.click(button);
+
+        expect(addOtherIncomeAPI).toHaveBeenCalled();
+    });
+    it('should display error if longTermCapitalGains is less than 2 characters', async () => {
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
+
+        const input = screen.getByLabelText('Long Term Capital Gains');
+        fireEvent.change(input, { target: { name: 'formType', value: 'a' } });
+
+        waitFor(() => {
+            expect(screen.getByText('Form type must be at least 2 characters long.')).toBeInTheDocument();
+            expect(mockDispatch).not.toHaveBeenCalled();
+        });
+    });
+
+    it('should display error if shortTermCapitalGains is less than 3 characters', async () => {
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
+
+        const input = screen.getByLabelText('Short Term Capital Gains');
+        fireEvent.change(input, { target: { name: 'status', value: 'ab' } });
+
+        waitFor(() => {
+            expect(screen.getByText('Status must be at least 3 characters long.')).toBeInTheDocument();
+            expect(mockDispatch).not.toHaveBeenCalled();
+        });
+    });
+
+    it('should dispatch setOtherIncomeInfo if no error', () => {
+        render(
+            <Router>
+                <FinancialInformationStepW2 />
+            </Router>
+        );
+
         const input = screen.getByLabelText('Long Term Capital Gains');
         fireEvent.change(input, { target: { name: 'formType', value: 'ab' } });
 
