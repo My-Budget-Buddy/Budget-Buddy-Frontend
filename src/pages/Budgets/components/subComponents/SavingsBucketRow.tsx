@@ -96,7 +96,7 @@ const SavingsBucketRow: React.FC<SavingsBucketRowProps> = ({ data }) => {
 
     return (
         <tr>
-            <td>{data.name}</td>
+            <td data-testid="bucket-name">{data.name}</td>
             {/* TODO Fix css */}
             <td style={{ width: "200px" }}>{data.amount_required}</td>
             <td style={{ width: "200px" }}>
