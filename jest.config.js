@@ -22,7 +22,6 @@ export default {
     'src/contexts',
     'src/layouts',
     'src/pages/Root.tsx',
-    'src/pages/Budgets/components/modals',
     'src/pages/Budgets/components/requests',
     // 'src/pages/Budgets/components/subComponents',
     'src/pages/Budgets/components/util',

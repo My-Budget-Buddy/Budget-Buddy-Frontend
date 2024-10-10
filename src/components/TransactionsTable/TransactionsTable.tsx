@@ -50,9 +50,9 @@ const TransactionsTable: React.FC = () => {
                         <tbody>
                         {transactions.map((transaction, index) => (
                             <tr key={index}>
-                                <td>{transaction.date}</td>
-                                <td>{transaction.name}</td>
-                                <td>{transaction.category}</td>
+                                <td data-testid={`date-${index}`}>{transaction.date}</td>
+                                <td data-testid={`name-${index}`}>{transaction.name}</td>
+                                <td data-testid={`category-${index}`}>{transaction.category}</td>
                                 <td>
                                     <button className="mr-2">
                                         <Icon.Edit />
@@ -61,7 +61,7 @@ const TransactionsTable: React.FC = () => {
                                         <Icon.Delete />
                                     </button>
                                 </td>
-                                <td><Icon.AttachMoney />{transaction.amount}</td>
+                                <td data-testid={`amount-${index}`}><Icon.AttachMoney />{transaction.amount}</td>
                                 <td><Icon.NavigateNext /></td>
                             </tr>
                         ))}
