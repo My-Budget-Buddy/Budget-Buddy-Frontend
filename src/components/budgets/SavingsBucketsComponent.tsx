@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import SavingsBucketTable from "./SavingsBucketsTable";
+import SavingsBucketsTable from "./SavingsBucketsTable";
 
 function SavingsBucketComponent() {
     const { t } = useTranslation();
@@ -7,7 +7,7 @@ function SavingsBucketComponent() {
     return (
         <>
             <h1 className="font-bold mr-4">{t("budgets.savings-bucket")}</h1>
-            <SavingsBucketTable />
+            <SavingsBucketsTable />
         </>
     );
 }

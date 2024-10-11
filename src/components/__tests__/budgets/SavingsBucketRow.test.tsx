@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter } from "react-router-dom";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useAppDispatch, useAppSelector } from '../../utils/redux/hooks';
-import { setIsSending } from '../../utils/redux/simpleSubmissionSlice';
-import { putBucket } from '../../api/requests/bucketRequests';
-import SavingsBucketRow from '../SavingsBucketRow';
+import { useAppDispatch, useAppSelector } from '../../../utils/redux/hooks';
+import { setIsSending } from '../../../utils/redux/simpleSubmissionSlice';
+import { putBucket } from '../../../api/requests/bucketRequests';
+import SavingsBucketRow from '../../budgets/SavingsBucketRow';
 import { useTranslation } from "react-i18next";
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event'
 
 
-jest.mock('../../utils/redux/hooks', () => ({
+jest.mock('../../../utils/redux/hooks', () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn(),
 }));
@@ -21,7 +21,7 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-jest.mock("../../api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },

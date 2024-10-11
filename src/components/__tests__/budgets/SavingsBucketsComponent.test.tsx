@@ -2,8 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/';
 import { useTranslation } from 'react-i18next';
-import SavingsBucketComponent from '../SavingsBucketsComponent';
-import SavingsBucketTable from '../SavingsBucketsTable';
+import SavingsBucketComponent from '../../budgets/SavingsBucketsComponent';
+import SavingsBucketsTable from '../../budgets/SavingsBucketsTable';
 
 // Mock the useTranslation hook
 jest.mock('react-i18next', () => ({
@@ -12,8 +12,8 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-// Mock the SavingsBucketTable component
-jest.mock('../SavingsBucketsTable', () => () => <div>Mocked SavingsBucketTable</div>);
+// Mock the SavingsBucketsTable component
+jest.mock('../../budgets/SavingsBucketsTable', () => () => <div>Mocked SavingsBucketsTable</div>);
 
 describe('SavingsBucketComponent', () => {
     test('renders the component with translated text', () => {
@@ -23,10 +23,10 @@ describe('SavingsBucketComponent', () => {
         expect(getByText('budgets.savings-bucket')).toBeInTheDocument();
     });
 
-    test('renders the SavingsBucketTable component', () => {
+    test('renders the SavingsBucketsTable component', () => {
         const { getByText } = render(<SavingsBucketComponent />);
 
-        // Check if the SavingsBucketTable component is rendered
-        expect(getByText('Mocked SavingsBucketTable')).toBeInTheDocument();
+        // Check if the SavingsBucketsTable component is rendered
+        expect(getByText('Mocked SavingsBucketsTable')).toBeInTheDocument();
     });
 });

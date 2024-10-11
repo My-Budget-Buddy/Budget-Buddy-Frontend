@@ -1,15 +1,15 @@
 import { Table, Button, ButtonGroup, Icon } from "@trussworks/react-uswds";
-import BudgetsRow from "./BudgetsRow";
-import NewBudgetModal from "./modals/NewBudgetModal";
+import BudgetsRow from "./BudgetsRow.tsx";
+import NewBudgetModal from "../modals/NewBudgetModal";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateBudgets, updateSelectedDate } from "../utils/redux/budgetSlice";
-import { getBudgetsByMonthYear } from "../api/requests/budgetRequests";
-import { BudgetRowProps } from "../types/budgetInterfaces";
-import { getCategoriesTransactionsMap, getCompleteBudgets } from "../utils/transactionsCalculator";
-import { Transaction } from "../types/models";
+import { updateBudgets, updateSelectedDate } from "../../utils/redux/budgetSlice";
+import { getBudgetsByMonthYear } from "../../api/requests/budgetRequests";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
+import { getCategoriesTransactionsMap, getCompleteBudgets } from "../../utils/transactionsCalculator";
+import { Transaction } from "../../types/models";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../utils/redux/hooks";
+import { useAppSelector } from "../../utils/redux/hooks";
 
 type SortableKeys = keyof BudgetRowProps;
 const defaultKey: SortableKeys = "category";

@@ -1,6 +1,6 @@
-import BudgetsComponent from "../components/BudgetsComponent.tsx";
+import BudgetsComponent from "../components/budgets/BudgetsComponent.tsx";
 import SummaryComponent from "../components/SummaryComponent.tsx";
-import SavingsBucketComponent from "../components/SavingsBucketsComponent.tsx";
+import SavingsBucketComponent from "../components/budgets/SavingsBucketsComponent.tsx";
 
 const Budgets: React.FC = () => {
     return (
