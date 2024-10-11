@@ -25,10 +25,10 @@ import {
     createTransaction,
     updateTransaction,
     validateTransaction
-} from "../../utils/transactionService";
+} from "../../api/transactionService";
 import { Trans, useTranslation } from "react-i18next";
 import CategoryIcon, { categoryColors } from "../../components/CategoryIcon";
-import { formatCurrency, formatDate } from "../../util/helpers";
+import { formatCurrency, formatDate } from "../../utils/helpers";
 
 const Transactions: React.FC = () => {
     const { t } = useTranslation();
@@ -591,7 +591,7 @@ const Transactions: React.FC = () => {
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button aria-label="addTransactionBtn" id="addTransactionBtn"type="submit">{t("transactions.submit")}</Button>
+                            <Button aria-label="addTransactionBtn" id="addTransactionBtn" type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="transaction-account">{t("transactions.account")}</Label>
@@ -683,7 +683,7 @@ const Transactions: React.FC = () => {
                                 onChange={handleAreaChange}
                                 name="description"
                             />
-                            <Button aria-label= "edit-transactions.submit" id="editTransactionBtn" type="submit">{t("transactions.submit")}</Button>
+                            <Button aria-label="edit-transactions.submit" id="editTransactionBtn" type="submit">{t("transactions.submit")}</Button>
                         </div>
                         <div className="col-span-2">
                             <Label htmlFor="edit-transaction-account">{t("transactions.account")}</Label>

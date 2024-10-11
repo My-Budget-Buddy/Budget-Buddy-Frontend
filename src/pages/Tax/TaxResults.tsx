@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 //import { useTranslation } from "react-i18next";
-import UsIcon from "../../images/us-icon.svg";
-import StateIcon from "../../images/state-icon.svg";
-import { formatCurrency } from "../../util/helpers";
+import UsIcon from "/icons/country-usa.svg";
+import StateIcon from "/icons/state-california.svg";
+import { formatCurrency } from "../../utils/helpers";
 import Confetti from "react-confetti";
-import { getCurrentRefundAPI } from "./taxesAPI";
+import { getCurrentRefundAPI } from "../../api/taxesAPI";
 import { useParams } from "react-router-dom";
 
 // const mockRefunds = {
