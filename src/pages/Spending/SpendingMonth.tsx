@@ -9,7 +9,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import CategoryIcon from "../../components/CategoryIcon";
 import { TransactionCategory, Transaction } from "../../types/models";
 import { useTranslation } from "react-i18next";
-import { getTransactionByUserId } from "../../utils/transactionService";
+import { getTransactionByUserId } from "../../api/transactionService";
 
 //define the type for months
 type Month =
