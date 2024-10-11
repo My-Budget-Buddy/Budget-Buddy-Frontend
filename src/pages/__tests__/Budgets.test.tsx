@@ -4,9 +4,9 @@ import '@testing-library/jest-dom';
 import Budgets from '../Budgets';
 
 // Mock the components
-jest.mock('../../components/BudgetsComponent.tsx', () => () => <div>Mocked BudgetsComponent</div>);
+jest.mock('../../components/budgets/BudgetsComponent.tsx', () => () => <div>Mocked BudgetsComponent</div>);
 jest.mock('../../components/SummaryComponent.tsx', () => () => <div>Mocked SummaryComponent</div>);
-jest.mock('../../components/SavingsBucketsComponent', () => () => <div>Mocked SavingsBucketComponent</div>);
+jest.mock('../../components/budgets/SavingsBucketsComponent', () => () => <div>Mocked SavingsBucketComponent</div>);
 
 beforeEach(() => {
     render(<Budgets />);

@@ -7,14 +7,14 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { BrowserRouter } from "react-router-dom";
 
-import SavingsBucketTable from '../src/pages/Budgets/components/subComponents/SavingsBucketsTable';
-import { useAppDispatch, useAppSelector } from '../src/util/redux/hooks';
-import { updateBuckets } from '../src/util/redux/bucketSlice';
-import { SavingsBucketRowProps } from '../src/types/budgetInterfaces';
-import { getBuckets } from '../src/pages/Budgets/components/requests/bucketRequests';
+import SavingsBucketsTable from '../../budgets/SavingsBucketsTable';
+import { useAppDispatch, useAppSelector } from '../../../utils/redux/hooks';
+import { updateBuckets } from '../../../utils/redux/bucketSlice';
+import { SavingsBucketRowProps } from '../../../types/budgetInterfaces';
+import { getBuckets } from '../../../api/requests/bucketRequests';
 import { useTranslation } from 'react-i18next';
 
-jest.mock('../src/util/redux/hooks');
+jest.mock('../../../utils/redux/hooks');
 
 jest.mock('react-i18next', () => ({
     useTranslation: () => ({
@@ -25,15 +25,15 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-jest.mock("../src/api/config", () => ({
+jest.mock("../../../api/config", () => ({
     config: {
         apiUrl: "http://localhost:mock",
     },
 }));
 
-jest.mock('../src/util/redux/bucketSlice');
-jest.mock('../src/types/budgetInterfaces');
-jest.mock('../src/pages/Budgets/components/requests/bucketRequests');
+jest.mock('../../../utils/redux/bucketSlice');
+jest.mock('../../../types/budgetInterfaces');
+jest.mock('../../../api/requests/bucketRequests');
 
 const mockBuckets = [
     { 
@@ -67,7 +67,7 @@ const mockBuckets = [
 
 const mockStore = configureStore([]);
 
-describe('SavingsBucketTable', () => {
+describe('SavingsBucketsTable', () => {
     // let store: any;
     const dispatchMock = jest.fn();
     
@@ -85,7 +85,7 @@ describe('SavingsBucketTable', () => {
         jest.clearAllMocks();
     });
 
-    it('should render the SavingsBucketTable component', async () => {
+    it('should render the SavingsBucketsTable component', async () => {
         
         const initialState = {buckets: {buckets: mockBuckets, totalReserved: 0}};
         const store = mockStore(initialState);
@@ -93,7 +93,7 @@ describe('SavingsBucketTable', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <SavingsBucketTable />
+                    <SavingsBucketsTable />
                 </BrowserRouter>
             </Provider>
         );
@@ -120,7 +120,7 @@ describe('SavingsBucketTable', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <SavingsBucketTable />
+                    <SavingsBucketsTable />
                 </BrowserRouter>
             </Provider>
         );
@@ -142,7 +142,7 @@ describe('SavingsBucketTable', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <SavingsBucketTable />
+                    <SavingsBucketsTable />
                 </BrowserRouter>
             </Provider>
         );
@@ -164,7 +164,7 @@ describe('SavingsBucketTable', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <SavingsBucketTable />
+                    <SavingsBucketsTable />
                 </BrowserRouter>
             </Provider>
         );

@@ -1,16 +1,16 @@
 import { Checkbox } from "@trussworks/react-uswds";
-import DeleteBudgetModal from "./modals/DeleteBudgetModal";
-import BudgetDetailsModal from "./modals/BudgetDetailsModal";
-import EditBudgetModal from "./modals/EditBudgetModal";
-import { useAppDispatch, useAppSelector } from "../utils/redux/hooks";
-import { setIsSending } from "../utils/redux/simpleSubmissionSlice";
+import DeleteBudgetModal from "../modals/DeleteBudgetModal";
+import BudgetDetailsModal from "../modals/BudgetDetailsModal";
+import EditBudgetModal from "../modals/EditBudgetModal";
+import { useAppDispatch, useAppSelector } from "../../utils/redux/hooks";
+import { setIsSending } from "../../utils/redux/simpleSubmissionSlice";
 import { useEffect, useRef, useState } from "react";
-import { BudgetRowProps } from "../types/budgetInterfaces";
-import { putBudget } from "../api/requests/budgetRequests";
-import { Transaction } from "../types/models";
+import { BudgetRowProps } from "../../types/budgetInterfaces";
+import { putBudget } from "../../api/requests/budgetRequests";
+import { Transaction } from "../../types/models";
 import { useTranslation } from "react-i18next";
-import { categoryIconsMap } from "../utils/categoryIconsMap";
-import { formatCurrency } from "../utils/helpers";
+import { categoryIconsMap } from "../../utils/categoryIconsMap";
+import { formatCurrency } from "../../utils/helpers";
 
 interface BudgetsRowProps {
     id: number;
