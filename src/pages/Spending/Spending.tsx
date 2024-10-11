@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 
 //import axios from "axios";
 
-import { getTransactionByUserId } from "../../utils/transactionService";
+import { getTransactionByUserId } from "../../api/transactionService";
 
 //define the type for months
 

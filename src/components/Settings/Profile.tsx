@@ -3,7 +3,7 @@ import type { User } from "../../types/models";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuthentication } from "../../contexts/AuthenticationContext";
-import { updateUserPassword } from "../../pages/Tax/taxesAPI";
+import { updateUserPassword } from "../../api/taxesAPI";
 import { Alert, Button, Form, Icon, InputGroup, InputSuffix, Label, ModalHeading, TextInput } from "@trussworks/react-uswds";
 import { URL_updateUser } from "../../api/services/UserService";
 
