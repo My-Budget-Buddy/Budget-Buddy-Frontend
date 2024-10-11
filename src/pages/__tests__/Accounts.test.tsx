@@ -53,38 +53,28 @@ jest.mock("../../contexts/AuthenticationContext", () => ({
     useAuthentication: () => ({ jwt: "mocked-jwt-token" })
 }));
 
-jest.mock('@trussworks/react-uswds', () => {
-    const actual = jest.requireActual('@trussworks/react-uswds');
-    return {
-        ...actual,
-        Icon: {
-            ...actual.Icon,
-            Delete: () => <span data-testid="delete-icon">Delete</span>,
-        },
-    };
-});
+// jest.mock('@trussworks/react-uswds', () => {
+//     const actual = jest.requireActual('@trussworks/react-uswds');
+//     return {
+//         ...actual,
+//         Icon: {
+//             ...actual.Icon,
+//             Delete: () => <span data-testid="delete-icon">Delete</span>,
+//         },
+//     };
+// });
 
-jest.mock('@mui/icons-material', () => ({
-    ...jest.requireActual('@mui/icons-material'),
-    Delete: () => <span data-testid="delete-icon">Delete</span>,
-}));
+// jest.mock('@mui/icons-material', () => ({
+//     ...jest.requireActual('@mui/icons-material'),
+//     Delete: () => <span data-testid="delete-icon">Delete</span>,
+// }));
 
-// Mock the global fetch function
+// Mock the global fetch function to return the expected data
 global.fetch = jest.fn(() =>
     Promise.resolve({
         ok: true,
         status: 200,
         json: () => Promise.resolve([
-            { id: 1, type: 'CHECKING', institution: 'Bank A', accountNumber: '1234', currentBalance: 1000 },
-            { id: 2, type: 'CREDIT', institution: 'Bank B', accountNumber: '5678', currentBalance: -500 }
-        ]),
-    } as Response)
-);
-
-// Mock the getAccountByID function
-jest.mock('../../api/taxesAPI', () => ({
-    getAccountByID: jest.fn().mockResolvedValue({
-        data: [
             {
                 id: 1,
                 type: 'CHECKING',
@@ -129,9 +119,9 @@ jest.mock('../../api/taxesAPI', () => ({
                 startingBalance: 3000,
                 currentBalance: 2000
             }
-        ]
-    })
-}));
+        ]),
+    } as Response)
+);
 
 const mockStore = configureStore([]);
 describe('Accounts component', () => {
@@ -140,11 +130,11 @@ describe('Accounts component', () => {
     beforeEach(() => {
         // Mock the store with initial state
         store = mockStore({
-            accounts: [
-                { id: 1, type: 'CHECKING', institution: 'Bank A', accountNumber: '1234', currentBalance: 1000 },
-                { id: 2, type: 'CREDIT', institution: 'Bank B', accountNumber: '5678', currentBalance: -500 }
-            ],
-            simpleFormStatus: { isSending: false }
+            // accounts: [
+            //     { id: 1, type: 'CHECKING', institution: 'Bank A', accountNumber: '1234', currentBalance: 1000 },
+            //     { id: 2, type: 'CREDIT', institution: 'Bank B', accountNumber: '5678', currentBalance: -500 }
+            // ],
+            // simpleFormStatus: { isSending: false }
         });
     });
     test('opens and closes the CreditScore modal', async () => {
