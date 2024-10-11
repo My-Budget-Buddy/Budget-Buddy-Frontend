@@ -204,7 +204,7 @@ const Accounts: React.FC = () => {
                                                         {formatCurrency(acc.currentBalance)}
                                                     </Grid>
                                                     <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                        <button id="delete-icon" onClick={() => handleDelete(acc.id)}>
                                                             <Icon.Delete />
                                                         </button>
                                                     </Grid>
@@ -239,7 +239,7 @@ const Accounts: React.FC = () => {
                                                         {formatCurrency(acc.currentBalance)}
                                                     </Grid>
                                                     <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                        <button id="delete-icon" onClick={() => handleDelete(acc.id)}>
                                                             <Icon.Delete />
                                                         </button>
                                                     </Grid>
@@ -277,7 +277,7 @@ const Accounts: React.FC = () => {
                                                         {formatCurrency(acc.currentBalance)}
                                                     </Grid>
                                                     <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                        <button id="delete-icon" onClick={() => handleDelete(acc.id)}>
                                                             <Icon.Delete />
                                                         </button>
                                                     </Grid>
@@ -312,7 +312,7 @@ const Accounts: React.FC = () => {
                                                         {formatCurrency(acc.currentBalance)}
                                                     </Grid>
                                                     <Grid className="flex justify-end" tablet={{ col: 2 }}>
-                                                        <button onClick={() => handleDelete(acc.id)}>
+                                                        <button id="delete-icon" onClick={() => handleDelete(acc.id)}>
                                                             <Icon.Delete />
                                                         </button>
                                                     </Grid>
