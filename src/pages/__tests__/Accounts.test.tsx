@@ -4,8 +4,9 @@ import Accounts from "../Accounts";
 import { Provider } from "react-redux";
 import configureStore from 'redux-mock-store';
 import '@testing-library/jest-dom';
-import AccountModal from "../../components/modals/AccountModal";
-import CreditScoreModal from "../../components/modals/CreditScoreModal";
+import AccountModal from "../../components/modals/AccountModal.tsx";
+import CreditScoreModal from "../../components/modals/CreditScoreModal.tsx";
+import { BrowserRouter } from "react-router-dom";
 
 
 /*Have to mock gauge and esl in both x-charts and x-charts/Gauge
@@ -79,6 +80,58 @@ global.fetch = jest.fn(() =>
         ]),
     } as Response)
 );
+
+// Mock the getAccountByID function
+jest.mock('../../api/taxesAPI', () => ({
+    getAccountByID: jest.fn().mockResolvedValue({
+        data: [
+            {
+                id: 1,
+                type: 'CHECKING',
+                userId: 1,
+                accountNumber: 123456,
+                routingNumber: 654321,
+                institution: 'Bank A',
+                investmentRate: 0,
+                startingBalance: 1000,
+                currentBalance: 1500
+            },
+            {
+                id: 2,
+                type: 'CREDIT',
+                userId: 1,
+                accountNumber: 789012,
+                routingNumber: 210987,
+                institution: 'Bank B',
+                investmentRate: 0,
+                startingBalance: 2000,
+                currentBalance: 2500
+            },
+            {
+                id: 3,
+                type: 'SAVINGS',
+                userId: 1,
+                accountNumber: 345678,
+                routingNumber: 876543,
+                institution: 'Bank C',
+                investmentRate: 1.5,
+                startingBalance: 5000,
+                currentBalance: 6000
+            },
+            {
+                id: 4,
+                type: 'INVESTMENT',
+                userId: 1,
+                accountNumber: 901234,
+                routingNumber: 432109,
+                institution: 'Bank D',
+                investmentRate: 0,
+                startingBalance: 3000,
+                currentBalance: 2000
+            }
+        ]
+    })
+}));
 
 const mockStore = configureStore([]);
 describe('Accounts component', () => {
@@ -334,5 +387,64 @@ describe('Accounts component', () => {
 
         // Ensure the tooltip disappears
         await waitFor(() => expect(screen.queryByText('accounts.net-desc')).not.toBeInTheDocument())
+    });
+
+    test('deletes an account successfully', async () => {
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Accounts />
+                </BrowserRouter>
+            </Provider>
+        );
+    
+        // Expand all accordion sections using data-testid attributes
+        const checkingAccordion = screen.getByTestId('accordionButton_Checking');
+        const creditAccordion = screen.getByTestId('accordionButton_credit-cards');
+        const savingsAccordion = screen.getByTestId('accordionButton_savings');
+        const investmentAccordion = screen.getByTestId('accordionButton_investments');
+
+    
+        fireEvent.click(checkingAccordion);
+        fireEvent.click(creditAccordion);
+        fireEvent.click(savingsAccordion);
+        fireEvent.click(investmentAccordion);
+
+        // Wait for the accordion sections to expand
+        await waitFor(() => {
+            expect(screen.getByTestId('accordionButton_Checking').getAttribute('aria-expanded')).toBe('true');
+            expect(screen.getByTestId('accordionButton_credit-cards').getAttribute('aria-expanded')).toBe('true');
+            expect(screen.getByTestId('accordionButton_savings').getAttribute('aria-expanded')).toBe('true');
+            expect(screen.getByTestId('accordionButton_investments').getAttribute('aria-expanded')).toBe('true');
+        });
+        
+        // Debugging: Print the contents of the expanded accordion sections
+        const expandedSections = document.getElementsByClassName('usa-accordion__content usa-prose');
+        Array.from(expandedSections).forEach((section1, index1) => {
+            console.log(`Accordion section ${index1}:`, section1.outerHTML);
+        });
+    
+        // Wait for delete buttons to appear and attempt to find them
+        const deleteButtons = await waitFor(() => document.querySelectorAll('#delete-icon'));
+        // Ensure there are delete buttons found
+        expect(deleteButtons.length).toBeGreaterThan(0);
+
+        // Mock the DELETE API call
+        (global.fetch as jest.Mock).mockImplementationOnce(() =>
+            Promise.resolve({
+                ok: true,
+                status: 200,
+            } as Response)
+        );
+
+        // Click the first delete button
+        fireEvent.click(deleteButtons[0]);
+    
+        // Ensure the account is removed from the list
+        await waitFor(() => {
+            expect(screen.queryByText('Bank A')).not.toBeInTheDocument();
+        });
+
+
     });
 });
